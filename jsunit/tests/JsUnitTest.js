@@ -37,10 +37,22 @@ function TestFailureTest( name )
 {
 	TestCase.call( this, name );
 }
+function TestFailureTest_testExceptionMessage()
+{
+	var ft = new TestFailure( this.mTest, this.mException );
+	this.assertEquals( "AssertionFailedError: Message", ft.exceptionMessage());
+}
 function TestFailureTest_testFailedTest()
 {
 	var ft = new TestFailure( this.mTest, this.mException );
 	this.assertEquals( "testFunction", ft.failedTest());
+}
+function TestFailureTest_testIsFailure()
+{
+	var ft = new TestFailure( this.mTest, this.mException );
+	this.assertTrue( ft.isFailure());
+	ft = new TestFailure( this.mTest, new Error( "Error" ));
+	this.assertFalse( ft.isFailure());
 }
 function TestFailureTest_testThrownException()
 {
@@ -53,12 +65,21 @@ function TestFailureTest_testToString()
 	this.assertEquals( 
 		"Test testFunction failed: AssertionFailedError: Message", ft );
 }
+function TestFailureTest_testTrace()
+{
+	var ft = new TestFailure( this.mTest, 
+		new AssertionFailedError( "Message", "Trace" ));
+	this.assertEquals( "Trace", ft.trace());
+}
 TestFailureTest.prototype = new TestCase();
 TestFailureTest.prototype.mException = new AssertionFailedError( "Message", null );
 TestFailureTest.prototype.mTest = "testFunction";
+TestFailureTest.prototype.testExceptionMessage = TestFailureTest_testExceptionMessage;
 TestFailureTest.prototype.testFailedTest = TestFailureTest_testFailedTest;
+TestFailureTest.prototype.testIsFailure = TestFailureTest_testIsFailure;
 TestFailureTest.prototype.testThrownException = TestFailureTest_testThrownException;
 TestFailureTest.prototype.testToString = TestFailureTest_testToString;
+TestFailureTest.prototype.testTrace = TestFailureTest_testTrace;
 
 
 function TestResultTest( name )
@@ -284,30 +305,6 @@ TestResultTest.prototype.testWasSuccessful = TestResultTest_testWasSuccessful;
 function AssertTest( name )
 {
 	TestCase.call( this, name );
-}
-function AssertTest_testAssert()
-{
-	this.mAssert.assert( "Should not throw!", true );
-	this.mAssert.assert( true );
-	try
-	{
-		this.mAssert.assert( "Have to throw!", false );
-		this.fail( "'assert' should have thrown." );
-	}
-	catch( ex )
-	{
-		this.assertTrue( ex instanceof AssertionFailedError );
-		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
-	}
-	try
-	{
-		this.mAssert.assert( false );
-		this.fail( "'assert' should have thrown." );
-	}
-	catch( ex )
-	{
-		this.assertTrue(ex instanceof AssertionFailedError );
-	}
 }
 function AssertTest_testAssertEquals()
 {
@@ -535,7 +532,6 @@ function AssertTest_testFail()
 }
 AssertTest.prototype = new TestCase();
 AssertTest.prototype.mAssert = new Assert();
-AssertTest.prototype.testAssert = AssertTest_testAssert;
 AssertTest.prototype.testAssertEquals = AssertTest_testAssertEquals;
 AssertTest.prototype.testAssertFalse = AssertTest_testAssertFalse;
 AssertTest.prototype.testAssertNotNull = AssertTest_testAssertNotNull;

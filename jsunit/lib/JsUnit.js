@@ -63,7 +63,7 @@ AssertionFailedError.prototype.name = "AssertionFailedError";
 
 /**
  * A test can be run and collect its results.
- * @note Additional to JsUnit 3.7 the test has always a name. The interface
+ * @note Additional to JsUnit 3.8 the test has always a name. The interface
  * requires a getter and a setter and a method to search for tests.
  */
 function Test()
@@ -78,14 +78,14 @@ Test.prototype.countTestCases = function() {}
  * Search a test by name.
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The name of the searched test.
  * @treturn Test The test instance itself of null.
  */
 Test.prototype.findTest = function( testName ) {}
 /**
  * Retrieves the name of the test.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @treturn String The name of test.
  */
 Test.prototype.getName = function() {}
@@ -97,7 +97,7 @@ Test.prototype.getName = function() {}
 Test.prototype.run = function( result ) {}
 /**
  * Sets the name of the test.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The new name of the test.
  */
 Test.prototype.setName = function( testName ) {}
@@ -117,10 +117,27 @@ function TestFailure( test, except )
 	this.mTest = test;
 }
 /**
+ * Retrieve the exception message.
+ * @treturn String Returns the exception message.
+ */
+function TestFailure_exceptionMessage()
+{ 
+	var ex = this.thrownException(); 
+	return ex ? ex.toString() : "";
+}
+/**
  * Retrieve the failed test.
  * @treturn Test Returns the failed test.
  */
 function TestFailure_failedTest() { return this.mTest; }
+/**
+ * Test for a JsUnit failure.
+ * @treturn Boolean Returns true if the exception is a failure.
+ */
+function TestFailure_isFailure() 
+{ 
+	return this.thrownException() instanceof AssertionFailedError; 
+}
 /**
  * Retrieve the thrown exception.
  * @treturn Test Returns the thrown exception.
@@ -133,11 +150,26 @@ function TestFailure_thrownException() { return this.mException; }
  */
 function TestFailure_toString() 
 { 
-	return "Test " + this.mTest + " failed: " + this.mException; 
+	return "Test " + this.mTest + " failed: " + this.thrownException();
 }
+/**
+ * Retrieve the stack trace.
+ * @treturn String Returns stack trace (if available).
+ */
+function TestFailure_trace() 
+{ 
+	var ex = this.thrownException();
+	if( ex && ex.mCallStack )
+		return ex.mCallStack.toString();
+	else
+		return "";
+}
+TestFailure.prototype.exceptionMessage = TestFailure_exceptionMessage;
 TestFailure.prototype.failedTest = TestFailure_failedTest;
+TestFailure.prototype.isFailure = TestFailure_isFailure;
 TestFailure.prototype.thrownException = TestFailure_thrownException;
 TestFailure.prototype.toString = TestFailure_toString;
+TestFailure.prototype.trace = TestFailure_trace;
 
 
 /**
@@ -151,6 +183,7 @@ function Protectable()
  * @tparam Test test The test to run.
  */
 Protectable.prototype.protect = function( test ) {}
+
 
 /**
  * A listener for test progress.
@@ -372,27 +405,6 @@ function Assert()
 {
 }
 /**
- * Asserts that a condition is true.
- * @tparam String msg An optional error message.
- * @tparam String cond The condition to evaluate.
- * @exception AssertionFailedError Thrown if the evaluation was not true.
- * @depricated
- */
-function Assert_assert( msg, cond )
-{
-	if( arguments.length == 1 )
-	{
-		cond = msg;
-		msg = null;
-	}
-	if( !eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
-}
-/**
  * Asserts that two values are equal.
  * @tparam String msg An optional error message.
  * @tparam Object expected The expected value.
@@ -417,7 +429,6 @@ function Assert_assertEquals( msg, expected, actual )
 }
 /**
  * Asserts that a condition is false.
- * @note Not part of JUnit 3.7, but already in development branch.
  * @tparam String msg An optional error message.
  * @tparam String cond The condition to evaluate.
  * @exception AssertionFailedError Thrown if the evaluation was not false.
@@ -571,7 +582,6 @@ function Assert_fail( msg, stack )
 	var afe = new AssertionFailedError( msg, stack );
 	throw afe;
 }
-Assert.prototype.assert = Assert_assert;
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
@@ -595,7 +605,7 @@ Assert.prototype.fail = Assert_fail;
  *
  * For each test implement a method which interacts
  * with the fixture. Verify the expected results with assertions specified
- * by calling <code>assert</code> with a boolean or one of the other assert 
+ * by calling <code>assertTrue</code> with a boolean or one of the other assert 
  * functions.
  *
  * Once the methods are defined you can run them. The framework supports
@@ -635,7 +645,7 @@ function TestCase_countTestCases() { return 1; }
 function TestCase_createResult() { return new TestResult(); }
 /**
  * Find a test by name.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The name of the searched test.
  * @treturn Test Returns this if the test's name matches or null.
  */
@@ -817,7 +827,7 @@ function TestSuite_countTestCases()
 }
 /**
  * Search a test by name.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String name The name of the searched test.
@@ -843,7 +853,7 @@ function TestSuite_findTest( name )
 function TestSuite_getName() { return this.mName; }
 /**
  * Runs the tests and collects their result in a TestResult instance.
- * @note As an enhancement to JUnit 3.7 the method calls also startTest
+ * @note As an enhancement to JUnit 3.8 the method calls also startTest
  * and endTest of the TestResult.
  * @tparam TestResult result The test result to fill.
  */
