@@ -21,14 +21,19 @@ license.
 */
 
 /*! 
+
 \mainpage JsUnit
+
 \section description Description
+
 <P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">
-JUnit</A> written by Erich Gamma and Kent Beck. The port's base is JUnit 
-version 3.2 and covers only the core system and the examples. Main goal of the 
-port is a system that can be invoked by command line retunring en exit code
-to allow automated tests as long as the environment support this scenario.</P>
+JUnit</A> written by Erich Gamma and Kent Beck. The port's base is JUnit
+version 3.2 and covers only the core system and the examples. Main goal of the
+port is a system that can be invoked by command line retunring en exit code to
+allow automated tests as long as the environment support this scenario.</P>
+
 \section contents Contents
+
 <UL>
 	<LI>\ref license
 	<UL>
@@ -38,6 +43,7 @@ to allow automated tests as long as the environment support this scenario.</P>
 	<LI>\ref usage
 	<UL>
 		<LI>\ref codeConv</LI>
+		<LI>\ref interface</LI>
 		<LI>\ref writing</LI>
 		<LI>\ref application</LI>
 		<LI>\ref examples</LI>
@@ -69,17 +75,24 @@ to allow automated tests as long as the environment support this scenario.</P>
 	</UL></LI>
 	<LI>\ref acknowledge</LI>
 </UL>
+
 \section downloads Downloads
+
 <P>
 \htmlonly
-<A href="http://developer.berlios.de">
-<IMG name="BerliOS" src="javascript:document.BerliOS.src=img.src" align="left" width="118" height="52" border="0" alt="BerliOS Logo">
-</A>
+
+<A href="http://developer.berlios.de"> <IMG name="BerliOS"
+src="javascript:document.BerliOS.src=img.src" align="left" width="118"
+height="52" border="0" alt="BerliOS Logo"> </A>
+
 \endhtmlonly
 </P>
-<P>JsUnit is hosted at BerliOS. All versions can be found in the project's
-<A HREF="http://developer.berlios.de/projects/jsunit">Internet home page.</A></P>
+
+<P>JsUnit is hosted at BerliOS. All versions can be found in the project's <A
+HREF="http://developer.berlios.de/projects/jsunit">Internet home page.</A></P>
+
 \htmlonly
 <BR clear="all">
 \endhtmlonly
+
 */

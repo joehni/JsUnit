@@ -21,24 +21,36 @@ license.
 */
 
 /*!
+
 \page acknowledge Acknowledgements
+
 <P>JsUnit would not have been possible in this form without the work and ideas
 of a lot of other people:</P>
+
 <UL>
-	<LI>Edward Hieatt, author of another JsUnit framework writing
-	a great GUI</LI>
-	<LI>Achim Kraus, author of the Perl script converting the JavaScript code
-	into something Doxygen can understand</LI>
+
+	<LI>Edward Hieatt, author of another JsUnit framework writing a great
+	GUI</LI>
+	
 	<LI>Dimitri van Heesch for his wonderful documentation tool <A
 	HREF="http://www.doxygen.org">Doxygen</A></LI>
-	<LI><A HREF="http://www.berlios.de">BerliOS</A> for hosting this 
+	
+	<LI><A HREF="http://www.berlios.de">BerliOS</A> for hosting this
 	project</LI>
-	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for 
+	
+	<LI>Achim Kraus, author of the first Perl script converting the JavaScript
+	code into something Doxygen can understand</LI>
+	
+	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for
 	providing me with the power of the Linux tools in Windows</LI>
-	<LI>Erich Gamma and Kent Beck for developing with 
-	<A HREF="http://www.junit.org">JUnit</A> some kind of standard for unit 
+	
+	<LI>Erich Gamma and Kent Beck for developing with <A
+	HREF="http://www.junit.org">JUnit</A> some kind of standard for unit
 	testing</LI>
+	
 	<LI>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
 	after reading his book it was my first time writing unit tests</LI>
+	
 </UL>
+
 */

@@ -72,6 +72,6 @@ for html in *.html; do
 done
 
 cd ..
-#rm -rf .lib .doc
+rm -rf .lib .doc
 cd $CWD
 

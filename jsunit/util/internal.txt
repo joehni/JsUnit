@@ -23,70 +23,100 @@ license.
 /*!
 \page internal Internals
 \subsection docConv Document Conventions
-\warning This will be change soon, since the code will be written in JsUnit 2.0
-followinf the JavaScript guide for the object model.
-<P>The documentation of JavaScript code has to follow also very strict
-patterns. See following chapter how to generate the documentation.</P>
-<P>The documentation syntax follows the javadoc conventions, but have special
-JavaScript keywords. Documentation blocks within the code are embedded with:</P>
+
+<P>The documentation of JavaScript code follows the JavaDoc conventions. The
+generation is done using a Perl script generating Pseudo C++ code with the
+comments that is processed afterwards with <A
+HREF="www.doxygen.org">DoxyGen</A>. A lot of the features of DoxyGen are
+supported including the QT style of the comments.  See following chapter how
+to generate the documentation.</P>
+
+<P>Documentation blocks within the code are embedded with:</P>
+
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-/**
+&#47;**
 &nbsp;*
 &nbsp;*&#47;</PRE></DIV></P>
 \endhtmlonly
-<P>First element of such a block has to be a meta tag used by the utility script <EM>jsd2ccd.pl</EM>. All meta tags are prepended by two @ characters. The meta tags are</P>
+
+<P>First element of such a block has to be a tag identifying the documented
+element or is directly a brief description of the next code element. Within
+the code following elements are supported:</P>
+
 <UL>
-	<LI>@@attrib <EM>type</EM></LI>
-	<LI>@@class</LI>
-	<LI>@@ctor</LI>
-	<LI>@@file</LI>
-	<LI>@@function [<EM>return type</EM>]</LI>
-	<LI>@@method [<EM>return type</EM>]</LI>
-	<LI>@@struct</LI>
-	<LI>@@var <EM>type</EM></LI>
+	<LI>\@class</LI>
+	<LI>\@ctor</LI>
+	<LI>\@file</LI>
+	<LI>\@fn</LI>
+	<LI>\@interface</LI>
+	<LI>\@var</LI>
 </UL>
-<P>Keep in mind that pseude C++ is produced. Therefore are the meta tags 
-context sensitive. <EM>file</EM> can only be used at the first documentation 
-block in a file. <EM>class</EM>, <EM>function</EM>, <EM>struct</EM>, and 
-<EM>var</EM> are only valid for JavaScript functions at global scope. 
-<EM>attrib</EM> and <EM>method</EM> have to be used for documentation blocks 
-within a function representing a class. The <EM>ctor</EM> tag has to be used 
-within a documentation block for a <EM>class</EM> or a <EM>struct</EM> dividing
-the documentation for the class and the constructor.</P>
-<P>The optional <EM>return type</EM> for <EM>method</EM> and <EM>function</EM>
-is just for documentation, since JavaScript is typeless. Although all
-variables are also typeless, for documentation purpose it is necessary to
-define the <EM>type</EM> of a <EM>var</EM>iable or a class
-<EM>attrib</EM>ute.</P>
-<P>See <EM><A TYPE="text/plain" HREF="../util/jsd2ccd.pl">jsd2ccd.pl</A></EM>
-for further information. You may also use after the JavaScript meta tags any
-Doxygen meta tags.</P>
+
+<P>Other elements like <EM>\@type</EM> or <EM>\@enum</EM> are ignored. The
+element type <EM>\@ctor</EM> is introduced by the Perl script to allow a
+separate description of the class' constructor that is simply the initializer
+function of the class. The class itself is identified by assigning elements to
+its prototype. For an interface only functions should be added to the
+prototype.</P>
+
+<P>Unlike C++ JavaScript has no idea about variable or function types. Since
+this information is nevertheless valuable for the documentation the script
+supports some tags that allow the type specification to be generated in the
+pseudo code:</P>
+
+<UL>
+
+	<LI><EM>\@tparam TYPE PARAM COMMENT</EM><BR>This command sets the type of a
+	parameter.  It is replaced in the documentation comment with the
+	<EM>\@param PARAM COMMENT</EM> command (without the <EM>TYPE</EM>).</LI>
+
+	<LI><EM>\@tparam TYPE COMMENT</EM><BR>This command sets the return type of
+	a function.  It is replaced in the documentation comment with the
+	<EM>\@return COMMENT</EM> command (without the <EM>TYPE</EM>).  This comand
+	is a short cut of the normal <EM>\@return</EM> command and the
+	<EM>\@type</EM> command supported by this program.</LI>
+
+	<LI><EM>\@type TYPE</EM><BR>This command sets the type of a variable or the
+	return type of a function.</LI>
+
+</UL>
+
+<P>Keep in mind that pseude C++ is produced. Unlike in C++ it is quite not
+clear which elements will belong in the end to a class. Therefore the script
+cannot support the grouping commands of DoxyGen.</P>
+
+\subsection docScript Script Manual
+
+<P><PRE>
+\htmlinclude .js2doxy.man
+</PRE></P>
+
 \subsection docGen Rebuilding Documentation
-<P>Like everyone I am not very keen on writing documentation. The best way I can
-live with it is the way javadoc supports this. Luckily there are some other
-tools out there that can be used for other languages, but most of these tools
-are only available for object-oriented languages. While JavaScript allows to
-write object.oriented code, most people are not aware of this. Therefore I
-have used a perl script developed by a friend of mine to transform JavaScript
-code that follow the coding conventions above in some kind of pseudo C++ that
-can be used to fool Doxygen, my favorite non-Java source code documentation
-tool.</P>
-<P>The script <EM>jsdoc</EM> to rebuild the documentation is located in the
-utils directory. It depends on a Unix environment including Perl. I use 
-personally <A HREF="http://sources.redhat.com/">Cygwin</A> that comes nowadays 
-with quite complete Unix packages. Additionally you have to install
-<A HREF="http://www.doxygen.org">Doxygen</A> and 
-<A HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
+
+<P>Like everyone I am not very keen on writing documentation. The best way I
+can live with it is the way javadoc supports this. Luckily there are some
+other tools out there that can be used for other languages, but most of these
+tools are only available for object-oriented languages. While JavaScript
+allows to write object-oriented code, most people are not aware of this.
+Therefore I use a perl script to transform JavaScript code that follow the
+coding conventions above in some kind of pseudo C++ that can be used to fool
+Doxygen, my favorite non-Java source code documentation tool.</P>
+
+<P>Use the script <EM>jsdoc</EM> to rebuild the documentation. It is located
+in the utils directory. It depends on a Unix environment including Perl.
+Personally I use <A HREF="http://sources.redhat.com/">Cygwin</A> that comes
+nowadays with quite complete Unix packages. Additionally you have to install
+<A HREF="http://www.doxygen.org">Doxygen</A> and <A
+HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
 cross-platform drawing toolkit from AT&amp;T. My script expects both tools
 either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
 mounted my Windows program directory to /opt using Cygwin functionality.</P>
-<P>My script will call the Perl script <EM>jsd2ccd.pl</EM> to generate pseudo
-C++. Then it calls Doxygen to generate the first version of the HTML 
-documentation and the Unix man pages. A last sed processing is done to 
-generate this <A CLASS="J">J</A><A CLASS="s">s</A><A CLASS="U">U</A>nit color 
+
+<P>My script will call the Perl script <EM>js2doxy.pl</EM> to generate pseudo
+C++. Then it calls Doxygen to generate the first version of the HTML
+documentation and the Unix man pages. A last sed processing is done to
+generate this <A CLASS="J">J</A><A CLASS="s">s</A><A CLASS="U">U</A>nit color
 style in the headers.</P>
-<P>BTW: The Perl script just extracts code and comments that follow a special
-scheme. Therefore it is no problem to use it also for JavaScript embedded into
-HTML.</P>
+
 */

@@ -21,39 +21,57 @@ license.
 */
 
 /*!
+
 \page compatibility Compatibility
-<P>The JsUnit library has to use exceptions. Exceptions were part of the 
-third ECMA language draft und therefore not everywhere available. The JsUnit
-scripts are only available on systems that support exceptions. Additionally
-the scripts try to expose the call stack in case of an error. This call stack
-is also subject of compatibility and have changed in various versions of the
+
+<P>The JsUnit library has to use exceptions. Exceptions were part of the third
+ECMA language draft und therefore not everywhere available. The JsUnit scripts
+are only available on systems that support exceptions. Additionally the
+scripts try to expose the call stack in case of an error. This call stack is
+also subject of compatibility and have changed in various versions of the
 language implementations of the different vendors. Unfortunately the ECMA
 definition does not have any concept.</P>
+
+<P>The JsUtil collection adds also standard objects and methods like h and pop
+for Arrays or an Error class if the implementation of the interpreter lacks
+it.</P>
+
 \section language The Script language
+
 \subsection ecma ECMAScript
-<P>ECMAScript is the official name of the language commonly called "JavaScript".
-<a href="http://www.ecma.ch">ECMA</a> is an international, industry
-association and dedicated to the standardization of information and
+
+<P>ECMAScript is the official name of the language commonly called
+"JavaScript".  <a href="http://www.ecma.ch">ECMA</a> is an international,
+industry association and dedicated to the standardization of information and
 communication systems. The language is specified in the ECMA-262 document
 currently in the 3rd edition from 1999. This edition introduced exceptions
 into the language. Unfortunately the standard does not define any
 functionality or properties to retrieve the call stack.</P>
+
 \subsection javascript JavaScript
+
 <P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript
-was developed by Netscape and introduced with the Netscape 2.0 browser. Starting
-with JavaScript 1.4 Netscape also implemented the exceptions. Today Mozilla.org
-is developing in accordance with ECMA a new version 2.0 of JavaScript, that
-will implement the features of an upcoming 4th edition of the ECMA standard.</P>
+was developed by Netscape and introduced with the Netscape 2.0 browser.
+Starting with JavaScript 1.4 Netscape also implemented the exceptions. Today
+Mozilla.org is developing in accordance with ECMA a new <a
+href="http://www.mozilla.org/js/language/">version 2.0 of JavaScript</a>, that
+will implement the features of an upcoming 4th edition of the ECMA
+standard.</P>
+
 \subsection jscript JScript
-<P>JScript is the Microsoft's implementation of ECMAScript. The language 
-supports exceptions starting with version 5.0 of JScript. The language was 
-available with Internet Explorer starting with version 5.0, Internet 
-Information Server 5.0 and Windows Scripting Host 2.0. Older versions of
-the internet explorer or the IIS can be upgraded to a newer JScript engine
-by upgrading the Windows Script engine (formerly called WSH).</P>
+
+<P>JScript is the Microsoft's implementation of ECMAScript. The language
+supports exceptions starting with version 5.0 of JScript. The language was
+available with Internet Explorer starting with version 5.0, Internet
+Information Server 5.0 and Windows Scripting Host 2.0. Older versions of the
+internet explorer or the IIS can be upgraded to a newer JScript engine by
+upgrading the Windows Script engine (formerly called WSH).</P>
+
 \section products JavaScript enabled products
-<P>There are a lot of products that are able to process a JavaScript flavor. I 
+
+<P>There are a lot of products that are able to process a JavaScript flavor. I
 have listed all products that I am aware of.</P>
+
 <TABLE BORDER="0">
 <TR>
 	<TD><B>Product</B></TD>
@@ -63,11 +81,18 @@ have listed all products that I am aware of.</P>
 	<TD><B>Comment</B></TD>
 </TR>
 <TR>
-	<TD><A HREF=":http://www.day.com/en/product/communiqu.html">Communiqu&eacute; 2.x</A></TD>
+	<TD><A HREF=":http://www.day.com/en/product.html">Communiqu&eacute; 2.x</A></TD>
 	<TD><A HREF="http://www.day.com">Day International</A></TD>
 	<TD>ECMAScript 1</TD>
 	<TD>no</TD>
 	<TD>no exceptions in this version</TD>
+</TR>
+<TR>
+	<TD><A HREF=":http://www.day.com/en/product.html">Communiqu&eacute; Unify (3.x)</A></TD>
+	<TD><A HREF="http://www.day.com">Day International</A></TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes</TD>
+	<TD>uses Rhino</TD>
 </TR>
 <TR>
 	<TD>Enterprise Server 3.x</TD>
@@ -75,6 +100,20 @@ have listed all products that I am aware of.</P>
 	<TD>JavaScript 1.2</TD>
 	<TD>no</TD>
 	<TD>no exceptions in this version</TD>
+</TR>
+<TR>
+	<TD>Flash 5.x</TD>
+	<TD><A HREF="http://www.macromedia.com">Macromedia</A></TD>
+	<TD>ActionScript</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD><A HREF="http://www.macromedia.com/software/flash/">Flash MX</A></TD>
+	<TD><A HREF="http://www.macromedia.com">Macromedia</A></TD>
+	<TD>ActionScript</TD>
+	<TD>?</TD>
+	<TD>?</TD>
 </TR>
 <TR>
 	<TD>Internet Explorer 4.x</TD>
@@ -91,7 +130,7 @@ have listed all products that I am aware of.</P>
 	<TD></TD>
 </TR>
 <TR>
-	<TD>Internet Explorer 6.x</TD>
+	<TD><A HREF="http://www.microsoft.com/windows/ie/default.asp">Internet Explorer 6.x</TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 6.0</TD>
 	<TD>yes</TD>
@@ -112,18 +151,11 @@ have listed all products that I am aware of.</P>
 	<TD></TD>
 </TR>
 <TR>
-	<TD><A HREF="http://www.iplanet.com/products/iplanet_web_enterprise/home_2_1_1m.html">iPlanet Web Server, Enterprise Edition 4.x</A></TD>
+	<TD><A HREF="http://wwws.sun.com/software/download/download/5051.html">iPlanet Web Server, Enterprise Edition 4.x</A></TD>
 	<TD><A HREF="http://www.iplanet.com">Sun</A></TD>
 	<TD>JavaScript 1.4</TD>
 	<TD>yes</TD>
 	<TD>no call stack support</TD>
-</TR>
-<TR>
-	<TD>iPlanet Web Server, Enterprise Edition 6.x</TD>
-	<TD><A HREF="http://www.iplanet.com">Sun</A></TD>
-	<TD>-</TD>
-	<TD>no</TD>
-	<TD><A HREF="http://docs.iplanet.com/docs/manuals/enterprise/50/rn60.html#37413">JavaScript support dropped</A></TD>
 </TR>
 <TR>
 	<TD><A HREF="http://www.konqueror.org">Konqueror 1.9.8</A></TD>
@@ -140,14 +172,14 @@ have listed all products that I am aware of.</P>
 	<TD></TD>
 </TR>
 <TR>
-	<TD><A HREF="http://www.mozilla.org/releases/">Mozilla 0.9x</A></TD>
+	<TD><A HREF="http://www.mozilla.org/releases/">Mozilla 1.x</A></TD>
 	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 	<TD></TD>
 </TR>
 <TR>
-	<TD><A HREF="http://www.sap.com/solutions/technology/web_app_server.htm">SAP Web Application Server</A></TD>
+	<TD><A HREF="http://www.sap.com/solutions/technology/linux/eval/was/">SAP Web Application Server</A></TD>
 	<TD><A HREF="http://www.sap.com">SAP</A></TD>
 	<TD>?</TD>
 	<TD>?</TD>
@@ -165,7 +197,7 @@ have listed all products that I am aware of.</P>
 	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
-	<TD></TD>
+	<TD>based on Mozilla</TD>
 </TR>
 <TR>
 	<TD>Notes 5.x</TD>
@@ -176,12 +208,21 @@ have listed all products that I am aware of.</P>
 </TR>
 <TR>
 	<TD><A
-	HREF="http://www.broadvision.com/OneToOne/SessionMgr/products/products_main.jsp">One-to-One
+	HREF="http://www.broadvision.com/OneToOne/SessionMgr/overview/overview.jsp">One-to-One
 	5.x</A></TD>
 	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
 	<TD>JavaScript 1.4</TD>
 	<TD>yes</TD>
 	<TD>OEM version of Netscape</TD>
+</TR>
+<TR>
+	<TD><A
+	HREF="http://www.broadvision.com/OneToOne/SessionMgr/overview/overview.jsp">One-to-One
+	6.x</A></TD>
+	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>is now J2EE server</TD>
 </TR>
 <TR>
 	<TD>Opera 4.x</TD>
@@ -191,7 +232,7 @@ have listed all products that I am aware of.</P>
 	<TD>no exceptions in this version</TD>
 </TR>
 <TR>
-	<TD><A HREF="http://www.opera.com/download/">Opera 5.x</A></TD>
+	<TD>Opera 5.x</TD>
 	<TD><A HREF="http://www.opera.com">Opera</A></TD>
 	<TD>ECMAScript 3</TD>
 	<TD>no</TD>
@@ -217,6 +258,13 @@ have listed all products that I am aware of.</P>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 	<TD>no call stack support</TD>
+</TR>
+<TR>
+	<TD>Sun ONE (iPlanet) Web Server, Enterprise Edition 6.x</TD>
+	<TD><A HREF="http://wwws.sun.com/software/iplanet/products/iplanet_web_enterprise/home_web_server.html">Sun</A></TD>
+	<TD>-</TD>
+	<TD>no</TD>
+	<TD><A HREF="http://docs.iplanet.com/docs/manuals/enterprise/50/rn60.html#37413">JavaScript support dropped</A></TD>
 </TR>
 <TR>
 	<TD><A HREF="http://msdn.microsoft.com/vinterdev/">Visual InterDev 6.0</A></TD>
@@ -247,4 +295,5 @@ have listed all products that I am aware of.</P>
 	<TD></TD>
 </TR>
 </TABLE>
+
 */
