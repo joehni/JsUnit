@@ -22,8 +22,7 @@
 
 JS="../lib/JsUnit.js ../lib/JsUnitBV.js ../lib/JsUtil.js"
 JS="$JS ArrayTest.js"
-JS="$JS money/AbstractFunctionCalledException.js money/IMoney.js"
-JS="$JS money/Money.js money/MoneyBag.js money/MoneyTest.js"
+JS="$JS money/IMoney.js money/Money.js money/MoneyBag.js money/MoneyTest.js"
 JS="$JS SimpleTest.js"
 CWD=$PWD
 

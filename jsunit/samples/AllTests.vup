@@ -79,12 +79,6 @@ CFG=AllTests - Generic Debug
 
 # Begin Source File
 
-SOURCE=.\money\AbstractFunctionCalledException.js
-# PROP BASE Deployment_Mode 1
-# PROP Deployment_Mode 1
-# End Source File
-# Begin Source File
-
 SOURCE=.\AllTests.html
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1
