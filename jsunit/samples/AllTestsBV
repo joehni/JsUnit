@@ -20,7 +20,7 @@
 # classes and functions in their production; they are not affected by this 
 # license.
 
-JS="../lib/JsUnit.js ../lib/JsUnitBV.js ../lib/CallStack.js"
+JS="../lib/JsUnit.js ../lib/JsUnitBV.js ../lib/JsUtil.js"
 JS="$JS ArrayTest.js"
 JS="$JS money/AbstractFunctionCalledException.js money/IMoney.js"
 JS="$JS money/Money.js money/MoneyBag.js money/MoneyTest.js"

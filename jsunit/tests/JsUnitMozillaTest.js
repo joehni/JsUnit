@@ -57,10 +57,10 @@ print( "\texceptions working: " + exceptionsWorking );
 print( "\nJsUnit Test Suite:\n" );
 if( exceptionsWorking )
 {
-	load( "../lib/CallStack.js"
+	load( "../lib/JsUtil.js"
 		, "../lib/JsUnit.js"
 		, "../lib/JsUnitMozilla.js"
-		, "CallStackTest.js"
+		, "JsUtilTest.js"
 		, "JsUnitTest.js" );
 
 	quit( main( arguments ));

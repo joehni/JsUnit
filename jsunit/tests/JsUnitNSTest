@@ -21,6 +21,6 @@
 # license.
 
 jsac $* -o JsUnitNSTest.web JsUnitNSTest.html \
-	../lib/JsUnit.js ../lib/JsUnitNSServer.js ../lib/CallStack.js \
-	CallStackTest.js JsUnitTest.js
+	../lib/JsUnit.js ../lib/JsUnitNSServer.js ../lib/JsUtil.js \
+	JsUtilTest.js JsUnitTest.js
 

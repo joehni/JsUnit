@@ -79,13 +79,13 @@ CFG=JsUnit - Generic Debug
 
 # Begin Source File
 
-SOURCE=..\lib\CallStack.js
+SOURCE=..\lib\JsUtil.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1
 # End Source File
 # Begin Source File
 
-SOURCE=..\CallStackTest.js
+SOURCE=..\JsUtilTest.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1
 # End Source File

@@ -20,7 +20,7 @@ classes and functions in their production; they are not affected by this
 license.
 */
 
-load( "../lib/CallStack.js"
+load( "../lib/JsUtil.js"
 	, "../lib/JsUnit.js"
 	, "../lib/JsUnitMozilla.js"
 	, "ArrayTest.js"

@@ -22,7 +22,7 @@ license.
 
 /*!
 \page release Release Notes
-<P>2001-10-26: Current release is version 2.0.alpha.1</P>
+<P>2001-10-26: Current release is version 2.0.alpha.2</P>
 \subsection new New Features
 <UL>
 	<LI>TestSuite has now also function addTestSuite</LI>
@@ -33,6 +33,7 @@ license.
 \subsection change Design Changes
 <UL>
 	<LI>TestSuite supports again strings as name</LI>
+	<LI>CallStack.js has been renamed to JsUtil.js</LI>
 </UL>
 \subsection bug Bug Fixes
 <UL>

@@ -22,8 +22,8 @@
 
 JS="../lib/JsUnit.js"
 JS="$JS ../lib/JsUnitBV.js"
-JS="$JS ../lib/CallStack.js"
-JS="$JS CallStackTest.js"
+JS="$JS ../lib/JsUtil.js"
+JS="$JS JsUtilTest.js"
 JS="$JS JsUnitTest.js"
 CWD=$PWD
 
