@@ -24,99 +24,99 @@ license.
 \page internal Internals
 \subsection docConv Document Conventions
 
-<P>The documentation of JavaScript code follows the JavaDoc conventions. The
+<p>The documentation of JavaScript code follows the JavaDoc conventions. The
 generation is done using a Perl script generating Pseudo C++ code with the
-comments that is processed afterwards with <A
-HREF="http://www.doxygen.org">DoxyGen</A>. A lot of the features of DoxyGen
+comments that is processed afterwards with <a
+href="http://www.doxygen.org">DoxyGen</a>. A lot of the features of DoxyGen
 are supported including the QT style of the comments.  See following chapter
-how to generate the documentation.</P>
+how to generate the documentation.</p>
 
-<P>Documentation blocks within the code are embedded with:</P>
+<p>Documentation blocks within the code are embedded with:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 &#47;**
 &nbsp;*
-&nbsp;*&#47;</PRE></DIV></P>
+&nbsp;*&#47;</pre></div></p>
 \endhtmlonly
 
-<P>First element of such a block has to be a tag identifying the documented
+<p>First element of such a block has to be a tag identifying the documented
 element or is directly a brief description of the next code element. Within
-the code following elements are supported:</P>
+the code following elements are supported:</p>
 
-<UL>
-	<LI>\@class</LI>
-	<LI>\@ctor</LI>
-	<LI>\@file</LI>
-	<LI>\@fn</LI>
-	<LI>\@interface</LI>
-	<LI>\@var</LI>
-</UL>
+<ul>
+	<li>\@class</li>
+	<li>\@ctor</li>
+	<li>\@file</li>
+	<li>\@fn</li>
+	<li>\@interface</li>
+	<li>\@var</li>
+</ul>
 
-<P>Other elements like <EM>\@type</EM> or <EM>\@enum</EM> are ignored. The
-element type <EM>\@ctor</EM> is introduced by the Perl script to allow a
+<p>Other elements like <em>\@type</em> or <em>\@enum</em> are ignored. The
+element type <em>\@ctor</em> is introduced by the Perl script to allow a
 separate description of the class' constructor that is simply the initializer
 function of the class. The class itself is identified by assigning elements to
 its prototype. For an interface only functions should be added to the
-prototype.</P>
+prototype.</p>
 
-<P>Unlike C++ JavaScript has no idea about variable or function types. Since
+<p>Unlike C++ JavaScript has no idea about variable or function types. Since
 this information is nevertheless valuable for the documentation the script
 supports some tags that allow the type specification to be generated in the
-pseudo code:</P>
+pseudo code:</p>
 
-<UL>
+<ul>
 
-	<LI><EM>\@tparam TYPE PARAM COMMENT</EM><BR>This command sets the type of a
+	<li><em>\@tparam TYPE PARAM COMMENT</em><br>This command sets the type of a
 	parameter.  It is replaced in the documentation comment with the
-	<EM>\@param PARAM COMMENT</EM> command (without the <EM>TYPE</EM>).</LI>
+	<em>\@param PARAM COMMENT</em> command (without the <em>TYPE</em>).</li>
 
-	<LI><EM>\@tparam TYPE COMMENT</EM><BR>This command sets the return type of
+	<li><em>\@tparam TYPE COMMENT</em><br>This command sets the return type of
 	a function.  It is replaced in the documentation comment with the
-	<EM>\@return COMMENT</EM> command (without the <EM>TYPE</EM>).  This comand
-	is a short cut of the normal <EM>\@return</EM> command and the
-	<EM>\@type</EM> command supported by this program.</LI>
+	<em>\@return COMMENT</em> command (without the <em>TYPE</em>).  This comand
+	is a short cut of the normal <em>\@return</em> command and the
+	<em>\@type</em> command supported by this program.</li>
 
-	<LI><EM>\@type TYPE</EM><BR>This command sets the type of a variable or the
-	return type of a function.</LI>
+	<li><em>\@type TYPE</em><br>This command sets the type of a variable or the
+	return type of a function.</li>
 
-</UL>
+</ul>
 
-<P>Keep in mind that pseude C++ is produced. Unlike in C++ it is quite not
+<p>Keep in mind that pseude C++ is produced. Unlike in C++ it is quite not
 clear which elements will belong in the end to a class. Therefore the script
-cannot support the grouping commands of DoxyGen.</P>
+cannot support the grouping commands of DoxyGen.</p>
 
 \subsection docScript Script Manual
 
-<P><PRE>
+<p><pre>
 \htmlinclude ".js2doxy.man"
-</PRE></P>
+</pre></p>
 
 \subsection docGen Rebuilding Documentation
 
-<P>Like everyone I am not very keen on writing documentation. The best way I
+<p>Like everyone I am not very keen on writing documentation. The best way I
 can live with it is the way javadoc supports this. Luckily there are some
 other tools out there that can be used for other languages, but most of these
 tools are only available for object-oriented languages. While JavaScript
 allows to write object-oriented code, most people are not aware of this.
 Therefore I use a perl script to transform JavaScript code that follow the
 coding conventions above in some kind of pseudo C++ that can be used to fool
-Doxygen, my favorite non-Java source code documentation tool.</P>
+Doxygen, my favorite non-Java source code documentation tool.</p>
 
-<P>Use the script <EM>jsdoc</EM> to rebuild the documentation. It is located
+<p>Use the script <em>jsdoc</em> to rebuild the documentation. It is located
 in the utils directory. It depends on a Unix environment including Perl.
-Personally I use <A HREF="http://sources.redhat.com/">Cygwin</A> that comes
+Personally I use <a href="http://sources.redhat.com/">Cygwin</a> that comes
 nowadays with quite complete Unix packages. Additionally you have to install
-<A HREF="http://www.doxygen.org">Doxygen</A> and <A
-HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
+<a href="http://www.doxygen.org">Doxygen</a> and <a
+href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a> a
 cross-platform drawing toolkit from AT&amp;T. My script expects both tools
 either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
-mounted my Windows program directory to /opt using Cygwin functionality.</P>
+mounted my Windows program directory to /opt using Cygwin functionality.</p>
 
-<P>My script will call the Perl script <EM>js2doxy.pl</EM> to generate pseudo
+<p>My script will call the Perl script <em>js2doxy.pl</em> to generate pseudo
 C++. Then it calls Doxygen to generate the first version of the HTML
 documentation and the Unix man pages. A last sed processing is done to
-generate this <A CLASS="J">J</A><A CLASS="s">s</A><A CLASS="U">U</A>nit color
-style in the headers.</P>
+generate this <a class="J">J</a><a class="s">s</a><a class="U">U</a>nit color
+style in the headers.</p>
 
 */

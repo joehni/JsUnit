@@ -24,30 +24,30 @@ license.
 
 \page acknowledge Acknowledgements
 
-<P>JsUnit would not have been possible in this form without the work and ideas
-of a lot of other people:</P>
+<p>JsUnit would not have been possible in this form without the work and ideas
+of a lot of other people:</p>
 
-<UL>
+<ul>
 
-	<LI>Dimitri van Heesch for his wonderful documentation tool <A
-	HREF="http://www.doxygen.org">Doxygen</A></LI>
+	<li>Dimitri van Heesch for his wonderful documentation tool <a
+	href="http://www.doxygen.org">Doxygen</a></li>
 	
-	<LI><A HREF="http://www.berlios.de">BerliOS</A> for hosting this
-	project</LI>
+	<li><a href="http://www.berlios.de">BerliOS</a> for hosting this
+	project</li>
 	
-	<LI>Achim Kraus, author of the first Perl script converting the JavaScript
-	code into something Doxygen can understand</LI>
+	<li>Achim Kraus, author of the first Perl script converting the JavaScript
+	code into something Doxygen can understand</li>
 	
-	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for
-	providing me with the power of the Linux tools in Windows</LI>
+	<li>People from <a href="http://sources.redhat.com/">Cygwin</a> for
+	providing me with the power of the Linux tools in Windows</li>
 	
-	<LI>Erich Gamma and Kent Beck for developing with <A
-	HREF="http://www.junit.org">JUnit</A> some kind of standard for unit
-	testing</LI>
+	<li>Erich Gamma and Kent Beck for developing with <a
+	href="http://www.junit.org">JUnit</a> some kind of standard for unit
+	testing</li>
 	
-	<LI>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
-	after reading his book it was my first time writing unit tests</LI>
+	<li>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
+	after reading his book it was my first time writing unit tests</li>
 	
-</UL>
+</ul>
 
 */

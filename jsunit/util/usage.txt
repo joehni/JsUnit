@@ -26,85 +26,85 @@ license.
 
 \subsection codeConv Coding Conventions
 
-<P>To create an object in JavaScript you have to use the new operator. Every
+<p>To create an object in JavaScript you have to use the new operator. Every
 time this operator will call a function that creates automatically the new
 object implicitly. The new object is of the type of the function. This means
 the function's code represents the class definition, the
 &quot;constructor&quot; is the function call itself. Since JsUnit 1.2 the
-standard inheritance mechanism described in the <A
-HREF="http://developer.netscape.com/docs/manuals/js/core/jsguide15/obj2.html">JavaScript
-guide 1.5 for the object model</A> is supported and preferred.</P>
+standard inheritance mechanism described in the <a
+href="http://developer.netscape.com/docs/manuals/js/core/jsguide15/obj2.html">JavaScript
+guide 1.5 for the object model</a> is supported and preferred.</p>
 
-<P>JsUnit follows the scheme that all member variables are declared within
+<p>JsUnit follows the scheme that all member variables are declared within
 this constructor. Afterwards all member functions are declared, using the name
 schema classname_memberfunctionname. All member functions are then added to
 the prototype of the class. This prevents naming conflicts in the global
 namespace. The first section within the constructor is used for the
 inheritance. Call a base class by using the call method of its
-constructor:</P> 
+constructor:</p> 
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 function ClassName( arg1, arg2 )
 {
     BaseClass.call( this, arg1, arg2 );
-}</PRE></DIV></P>
+}</pre></div></p>
 \endhtmlonly
 
-<P>After calling the constuctor you should initialize the member variables by
-assigning them a value:</P>
+<p>After calling the constuctor you should initialize the member variables by
+assigning them a value:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 this.mMember1 = 1;
-this.mMember2 = "yes";</PRE></DIV></P>
+this.mMember2 = "yes";</pre></div></p>
 \endhtmlonly
 
-<P>After writing the constructor it is the time to define all member
+<p>After writing the constructor it is the time to define all member
 functions.  Declare the function using the class name as prefix. Assign all
-functions afterwards to the prototype:</P>
+functions afterwards to the prototype:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 function ClassName_f1() {}
 function ClassName_f2() {}
 
 ClassName.prototype = new BaseClass();
 ClassName.prototype.f1 = ClassName_f1;
-ClassName.prototype.f2 = ClassName_f2;</PRE></DIV></P>
+ClassName.prototype.f2 = ClassName_f2;</pre></div></p>
 \endhtmlonly
 
-<P>It is no problem to overload a function that was already assigned in a the
+<p>It is no problem to overload a function that was already assigned in a the
 base class. Call the overloaded function using its apply or call method in the
-prototype of the constructor:</P>
+prototype of the constructor:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 function ClassName_f1() 
 {
     BaseClass.prototype.f1.apply( this, arguments );
 }
 //...
-ClassName.prototype.f1 = ClassName_f1;</PRE></DIV></P>
+ClassName.prototype.f1 = ClassName_f1;</pre></div></p>
 \endhtmlonly
 
-<P>You may also define static member variables using a prototype
-definition:</P>
+<p>You may also define static member variables using a prototype
+definition:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
-ClassName.prototype.v1 = 1;</PRE></DIV></P>
+<p><div class="fragment"><pre>
+ClassName.prototype.v1 = 1;</pre></div></p>
 \endhtmlonly
 
 \subsection altSyntax Alternative Syntax
 
-<P>The previous chapter followed the coding convention of the JavaScript
+<p>The previous chapter followed the coding convention of the JavaScript
 Reference Guide. A convension always imply you may use an alternative coding
 style, the Perl script \ref docScript "js2doxy.pl" will understand even
-this:</P>
+this:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 function ClassName( arg1, arg2 )
 {
     BaseClass.call( this, arg1, arg2 );
@@ -119,149 +119,149 @@ ClassName.prototype.f2 = function()
     BaseClass.prototype.f2.apply( this, arguments );
 }
 ClassName.prototype.v1 = 1;
-</PRE></DIV></P>
+</pre></div></p>
 \endhtmlonly
 
-<P>A lot of interpreters will not generate in this situation any identifier in
+<p>A lot of interpreters will not generate in this situation any identifier in
 the second braced area to the global namespace keeping it quite clean. The
 disadvantage of method f2 definition is, that the function itself has no name
 and the call stack (if available for the engine) will return an anonymous 
-function call.</P>
+function call.</p>
 
 \subsection interface Interfaces
 
-<P>JavaScript does not support interfaces (although <I>implements</I> is a
+<p>JavaScript does not support interfaces (although <i>implements</i> is a
 keyword). Since it is quite handy to be sure that a class supports a defined
 number of functions, the system implements a new member function \a fulfills of
 the class Function that perfoms this action. Since the functions of an
-interface are never called, they can be implemented quite minimalistic:</P>
+interface are never called, they can be implemented quite minimalistic:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 function InterfaceName() {}
 InterfaceName.prototype.f1 = function() {}
-InterfaceName.prototype.f2 = function( a, b ) {}</PRE></DIV></P>
+InterfaceName.prototype.f2 = function( a, b ) {}</pre></div></p>
 \endhtmlonly
 
-<P>An interface definition may only define member functions, but no member
+<p>An interface definition may only define member functions, but no member
 variables. To ensure that a class fulfills this interface you call its
-function \a fulfills:</P>
+function \a fulfills:</p>
 
 \htmlonly
-<P><DIV CLASS="fragment"><PRE>
+<p><div class="fragment"><pre>
 ClassName()
 {
 }
 //...
 ClassName.prototype.f1 = ClassName_f1;
 ClassName.prototype.f2 = ClassName_f2;
-ClassName.fulfills( InterfaceName );</PRE></DIV></P>
+ClassName.fulfills( InterfaceName );</pre></div></p>
 \endhtmlonly
 
 \subsection writing Writing test cases and test suites
 
 \dontinclude SimpleTest.js
 
-<P>Writing unit tests you have to write at first test cases for your classes.
+<p>Writing unit tests you have to write at first test cases for your classes.
 The programming paradigma of eXtreme Programming demands writing your test
 cases first. Then you are able to programm your class against the test case,
 so you know when you are ready. Anyway, writing a test case means deriving
-from class TestCase:</P>
+from class TestCase:</p>
 
 \skip SimpleTest
 \until }
 
-<P>Overload the setUp function if necessary:<P>
+<p>Overload the setUp function if necessary:<p>
 
 \skip SimpleTest_setUp
 \until }
 
-<P>Add your test fixtures:</P>
+<p>Add your test fixtures:</p>
 
 \skip SimpleTest_testDivide
 \until }
 
-<P>You may also overload the tearDown utility. To complete the class you have
-to assign the methods</P>
+<p>You may also overload the tearDown utility. To complete the class you have
+to assign the methods</p>
 
 \skip prototype
 \until testAsserts;
 
 \subsection application Creating a test application
 
-<P>After writing the test cases we need an application to run the tests. The
+<p>After writing the test cases we need an application to run the tests. The
 application has the responsibility to include all necessary sources. Create a
 TestRunner for reporting the results, add all wanted test suites to the runner
 and perform the test. The TestRunner itself is normally also a derived class,
 that has reporting functions that work perfectly in the system environment.
-See below a sample for the JavaScript shells:</P>
+See below a sample for the JavaScript shells:</p>
 
 \include AllTests.js
 
 \subsection examples Examples
 
-<P>The examples are also ports from the originals that accompany JUnit. Please
+<p>The examples are also ports from the originals that accompany JUnit. Please
 note that the last test case of SimpleTest is supposed to fail to demonstrate
-this case.</P>
+this case.</p>
 
-<P>Most supported environments cannot share their test application. Therefore
+<p>Most supported environments cannot share their test application. Therefore
 are a lot of AllTests*.* files part of the sample package. See the list below
-for all deliveries:</P>
+for all deliveries:</p>
 
-<TABLE>
-<TR>
-	<TD><B>Files</B></TD>
-	<TD><B>Environment</B></TD>
-</TR>
-<TR>
+<table>
+<tr>
+	<td><b>Files</b></td>
+	<td><b>Environment</b></td>
+</tr>
+<tr>
 
-	<TD>AllTests.html</TD>
+	<td>AllTests.html</td>
 	
-	<TD>Any browser with a JavaScript implementation capable of
-	exceptions</TD>
+	<td>Any browser with a JavaScript implementation capable of
+	exceptions</td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>AllTests.vup</TD>
+	<td>AllTests.vup</td>
 	
-	<TD>Project for Microsoft Visual Interdev</TD>
+	<td>Project for Microsoft Visual Interdev</td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>AllTests.wsf</TD>
+	<td>AllTests.wsf</td>
 	
-	<TD>Script for Windows Scripting Host. Run best with <EM>cscript</EM></TD>
+	<td>Script for Windows Scripting Host. Run best with <em>cscript</em></td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>AllTestsBV<BR>AllTestsBV.jsp</TD>
+	<td>AllTestsBV<br>AllTestsBV.jsp</td>
 	
-	<TD>JavaScript Server Page of BroadVision. Use the script AllTestsBV to
-	start the <EM>ctxdriver</EM> for command line invocation.</TD>
+	<td>JavaScript Server Page of BroadVision. Use the script AllTestsBV to
+	start the <em>ctxdriver</em> for command line invocation.</td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>AllTestsNS<BR>AllTestsNS.html</TD>
+	<td>AllTestsNS<br>AllTestsNS.html</td>
 	
-	<TD>Netscape SSJS application. The shell script uses <EM>jsac</EM> to
+	<td>Netscape SSJS application. The shell script uses <em>jsac</em> to
 	compile the web application. The script generates a web file from the HTML
-	source and the other used files.</TD>
+	source and the other used files.</td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>AllTests.js</TD>
+	<td>AllTests.js</td>
 	
-	<TD>JavaScript to use with the JavaScript shells. Use <EM>java js.jar</EM>
-	to run <em>Rhino</em> build from Java source or use <EM>jsshell</EM> to
+	<td>JavaScript to use with the JavaScript shells. Use <em>java js.jar</em>
+	to run <em>Rhino</em> build from Java source or use <em>jsshell</em> to
 	run <em>SpiderMonkey</em> build from C source. You may also use
-	<em>cscript</em> for this file.</TD>
+	<em>cscript</em> for this file.</td>
 	
-</TR>
-</TABLE>
+</tr>
+</table>
 
 */
