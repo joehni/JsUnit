@@ -90,7 +90,8 @@ $cur_line = "";
 # recognized tokens
 @token_patterns =
 (
-    "\\\\.",
+	"\\\\.",
+	"@.",
     quotemeta("/**"),
     quotemeta("/*!"),
     quotemeta("*/"),
@@ -269,20 +270,50 @@ sub parse_doc_comment
 	my $master_doc = $doc;
 	local $_;
 
+	sub parse_type
+	{
+		local $_;
+		my $token;
+		
+		$_ = next_none_ws_token();
+		if( /[\'\"]/ )
+		{
+			my $type = $_;
+			my $string;
+			while(( $token = next_token()) ne $type )
+			{
+				syntax_err( "Unterminated string literal." )
+					if( $token =~ /$newline_pattern/ );
+				$string .= $token;
+			}
+			$_ = $string;
+		}
+		elsif( /^$identifier$/ )
+		{
+			$_ = $_.$token while(( $token = next_token()) !~ /^\s+/ );
+		}
+		else
+		{
+			syntax_err( "Identifier or string literal expected" );
+		}
+
+		( $_, $token );
+	}
+
 	LOOP: while( $scan_mode == $S_DOC_COMMENT )
 	{
-		if( $token =~ /\\./ )
+		if( $token =~ /(?:\\|@)/ )
 		{
 			$_ = $token.next_token();
 			
 			if( not exists $doc->{otype} )
 			{
-				$doc->{otype} = $OT_FILE if( /^\\$identifier$/ );
-				$doc->{otype} = $OT_FUNCTION if( /^\\fn$/ );
-				$doc->{otype} = $OT_INTERFACE if( /^\\interface$/ );
-				$doc->{otype} = $OT_CLASS if( /^\\class$/ );
-				$doc->{otype} = $OT_VARIABLE if( /^\\var$/ );
-				if( /^\\ctor$/ )
+				$doc->{otype} = $OT_FILE if( /^(?:\\|@)$identifier$/ );
+				$doc->{otype} = $OT_FUNCTION if( /^(?:\\|@)fn$/ );
+				$doc->{otype} = $OT_INTERFACE if( /^(?:\\|@)interface$/ );
+				$doc->{otype} = $OT_CLASS if( /^(?:\\|@)class$/ );
+				$doc->{otype} = $OT_VARIABLE if( /^(?:\\|@)var$/ );
+				if( /^(?:\\|@)ctor$/ )
 				{
 					$doc->{text} =~ s/^(.+[\n]+)[^\n]+$/\1/s;
 					$doc->{otype} = $OT_CONSTRUCTOR;
@@ -293,28 +324,27 @@ sub parse_doc_comment
 			}
 			else
 			{
-				/^\\type$/ && do
+				/^(?:\\|@)type$/ && do
 				{
 					$doc->{text} =~ s/^(.+[\n]+)[^\n]+$/\1/s;
-					$doc->{rtype} = next_none_ws_token();
-					syntax_err( "Identifier expected" )
-						if( $doc->{rtype} !~ /^(?:$identifier)$/ );
-					skip_line();
+					( $doc->{rtype}, $token ) = parse_type();
+					skip_line() if( $token !~ /^$newline_pattern/ );
 					$token = next_token();
 					next LOOP;
 				};
-				/^\\tparam$/ && do
+				/^(\\|@)tparam$/ && do
 				{
-					my $type = next_none_ws_token();
-					syntax_err( "Identifier expected" )
-						if( $type !~ /^(?:$identifier)$/ );
+					my $comment = $1;
+					my ( $type, $token ) = parse_type();
+					syntax_err( "Missing identifier" )
+						if( $token =~ /^$newline_pattern/ );
 					my $param = next_none_ws_token();
 					syntax_err( "Identifier expected" )
-						if( $param !~ /^(?:$identifier)$/ );
+						if( $param !~ /^$identifier$/ );
 					$doc->{args}{$param} = $type;
-					$_ = "\\param $param";
+					$_ = $comment."param $param";
 				};
-				/^\\ctor$/ && do
+				/^(?:\\|@)ctor$/ && do
 				{
 					$doc->{text} .= "*/\n";
 					$doc->{ctor} = { text => "/**\n", otype => $OT_UNKNOWN };
@@ -331,7 +361,7 @@ sub parse_doc_comment
 		{
 			$doc->{otype} = $OT_UNKNOWN
 				if(     not exists $doc->{otype} 
-					and $token =~ /^(?:$identifier)$/ );
+					and $token =~ /^$identifier$/ );
 			$doc->{text} .= $token;
 		}
 	
@@ -378,7 +408,7 @@ sub next_parser_token
 
 		if( $scan_mode == $S_CODE )
 		{
-			if( $token =~ /^(?:$identifier)$/ )
+			if( $token =~ /^$identifier$/ )
 			{
 				my $debug = $opt_debug;
 				$opt_debug &= ~$DEB_PARSER;
@@ -389,7 +419,7 @@ sub next_parser_token
 					$struct .= $token;
 					$token = parse_code();
 					syntax_err( "Identifier expected" )
-						if( $token !~ /^(?:$identifier)$/ );
+						if( $token !~ /^$identifier$/ );
 					$struct .= $token;
 				}
 				$last_token = $token if( not $last_token );
@@ -422,7 +452,7 @@ sub parse_variable
 	if( $context->{otype} == $OT_FILE )
 	{
 		syntax_err( "Variable name expected, found '$token'." )
-			if( $token !~ /^(?:$identifier)$/ );
+			if( $token !~ /^$identifier$/ );
 
 		$context->{objs}{$token} = 
 		{ 
@@ -466,7 +496,7 @@ sub parse_function
 	if( $token ne "(" )
 	{
 		syntax_err( "Function name expected, found '$token'." )
-			if( $token !~ /^(?:$identifier)$/ );
+			if( $token !~ /^$identifier$/ );
 		$name = $token;
 		$token = parse_code();
 	}
@@ -524,7 +554,7 @@ sub parse_function
 	{
 		next if( $token eq "," );
 		syntax_err( "Function parameter name expected, found '$token'." )
-			if( $token !~ /^(?:$identifier)$/ );
+			if( $token !~ /^$identifier$/ );
 		push( @{$fnContext->{args}}, { name => $token } );
 	}
 
@@ -566,6 +596,7 @@ sub parse_prototype
 	my $token;
 	my $name;
 	my $member;
+	my $fnContext;
 	local $_;
 	
 	$_ = shift;
@@ -587,9 +618,15 @@ sub parse_prototype
 		print( STDERR "Database: '$name' is a nested class.\n" ) 
 			if( $opt_debug & $DEB_DATABASE );
 	}
-	syntax_err( "Prototype assignment, but no constructor of '$name'." )
-		if( not exists $context->{objs}{$name} );
-	my $fnContext = $context->{objs}{$name};
+	if( exists $context->{objs}{$name} )
+	{
+		$fnContext = $context->{objs}{$name};
+	}
+	else
+	{
+		$fnContext = create_base( $context, $name );
+		$fnContext = $fnContext->{objs}{$name};
+	}
 	$fnContext->{otype} = $OT_CLASS if( $fnContext->{otype} == $OT_FUNCTION );
 	syntax_err( "Prototype assignment to invalid type '"
 			.$object_type_names[$fnContext->{otype}]."'." )
@@ -598,17 +635,17 @@ sub parse_prototype
 	print( STDERR "Database: '$name' is a class.\n" ) 
 		if( $opt_debug & $DEB_DATABASE );
 
-	/^(?:.+\.prototype)/ && do
+	/^.+\.prototype/ && do
 		{
 			parse_prototype( $fnContext, $_ );
 			return;
 		};
-	/^(?:.+\.fulfills)$/ && do
+	/^.+\.fulfills$/ && do
 		{
 			parse_interface( $fnContext, $_ );
 			return;
 		};
-	!/^(?:$identifier)$/ and $_ and do
+	!/^$identifier$/ and $_ and do
 		{
 			warning "Unknown code construction '$_'"
 				." in prototype definition of '$name'.";
@@ -654,7 +691,7 @@ sub parse_prototype
 		my $doc = $last_doc;
 		$last_doc = undef;
 		
-		if(( $token = parse_code()) =~ /^(?:$identifier)$/ )
+		if(( $token = parse_code()) =~ /^$identifier$/ )
 		{
 			my $end = 1;
 			if( $token eq "function" )
@@ -748,7 +785,7 @@ sub parse_interface
 	while(( $token = parse_code()) ne ")" )
 	{
 		next if( $token eq "," );
-		if( $token !~ /^(?:$identifier)$/ or $token =~ /^(?:new|delete)$/ )
+		if( $token !~ /^$identifier$/ or $token =~ /^(?:new|delete)$/ )
 		{
 			warning( "Interface name expected, found '$token'." );
 			return;
@@ -782,14 +819,14 @@ sub parse
 		{
 			for( $token )
 			{
-				/^(?:})$/ && do
+				/^}$/ && do
 				{
 					delete $context->{objs};
 					--$level == 0;
 					$context->{objs} = pop( @{$context->{symbols}} );
 					last PARSE if $context->{otype} != $OT_FILE;
 				};
-				/^(?:{)$/ && do
+				/^{$/ && do
 				{
 					my $objs = $context->{objs};
 					push( @{$context->{symbols}}, $objs );
@@ -800,10 +837,10 @@ sub parse
 					}
 					++$level;
 				};
-				/^(?:var)$/				&& parse_variable( $context );
-				/^(?:function)$/		&& parse_function( $context );
-				/^(?:.+\.prototype)/	&& parse_prototype( $context, $token );
-				/^(?:.+\.fulfills)$/	&& parse_interface( $context, $token );
+				/^var$/				&& parse_variable( $context );
+				/^function$/		&& parse_function( $context );
+				/^.+\.prototype/	&& parse_prototype( $context, $token );
+				/^.+\.fulfills$/	&& parse_interface( $context, $token );
 			}
 		}
 		elsif( $scan_mode == $S_DOC_COMMENT )
@@ -896,7 +933,7 @@ sub generate_forward_classes
 	local $_;
 	for( keys %$objects )
 	{
-		next if( !/^(?:$identifier)$/ );
+		next if( !/^$identifier$/ );
 		print( $pref."class $_;\n" )
 			if( $objects->{$_}{otype} == $OT_CLASS );
 		print( $pref."interface $_;\n" )
@@ -913,7 +950,7 @@ sub generate_function
 	my $doc;
 	my $ctor;
 	
-	return if( $name !~ /^(?:$identifier)$/ );
+	return if( $name !~ /^$identifier$/ );
 	$doc = $func->{doc} 
 		if(    exists $func->{doc} 
 		   and (   $func->{otype} == $OT_FUNCTION
@@ -960,7 +997,7 @@ sub generate_function
 sub generate_variable
 {
 	my ( $var, $name, $pref ) = @_;
-	return if( $name !~ /^(?:$identifier)$/ );
+	return if( $name !~ /^$identifier$/ );
 	my $rtype = "int";
 	if( exists $var->{doc} )
 	{
@@ -980,7 +1017,7 @@ sub generate_class
 	my $type = "class ";
 	local $_;
 	
-	return if( $name !~ /^(?:$identifier)$/ );
+	return if( $name !~ /^$identifier$/ );
 	$type = "interface " if( $context->{otype} == $OT_INTERFACE );
 	if( exists $context->{doc} )
 	{
@@ -1030,7 +1067,7 @@ sub generate
 	my ( $context, $name, $pref ) = @_;
 	for( $context->{otype} )
 	{
-		/^(?:$OT_FILE)$/ && do
+		/^$OT_FILE$/ && do
 			{
 				print( "\n" );
 				generate_file_docs( $context->{doc} )
@@ -1040,7 +1077,7 @@ sub generate
 					for( keys %{$context->{objs}} );
 				print( "\n" );
 			};
-		/^(?:$OT_FUNCTION)$/ && do
+		/^$OT_FUNCTION$/ && do
 			{
 				generate_function( $context, $name, $pref, $OT_FUNCTION );
 			};
@@ -1048,7 +1085,7 @@ sub generate
 			{
 				generate_class( $context, $name, $pref );
 			};
-		/^(?:$OT_VARIABLE)$/ && do
+		/^$OT_VARIABLE$/ && do
 			{
 				generate_variable( $context, $name, $pref );
 			};
