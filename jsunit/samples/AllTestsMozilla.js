@@ -34,9 +34,9 @@ load( "../lib/JsUtil.js"
 function main( test )
 {
 	var runner = new MozillaTestRunner();
-	runner.addSuite( new TestSuite( new ArrayTest()));
-	runner.addSuite( new TestSuite( new MoneyTest()));
-	runner.addSuite( new TestSuite( new SimpleTest()));
+	runner.addSuite( new ArrayTestSuite());
+	runner.addSuite( new MoneyTestSuite());
+	runner.addSuite( new SimpleTestSuite());
 	return runner.start( test );
 }
 
