@@ -22,13 +22,14 @@ license.
 
 /*!
 \page release Release Notes
-<P>2001-09-04: Current release is version 1.1</P>
+<P>2001-09-06: Current release is version 1.1</P>
 \subsection new New Features
 <UL>
 	<LI>Added unit tests for JsUnit library</LI>
 	<LI>Automated test suite generation</LI>
 	<LI>Browser TestSuite for JsUnit checks now JavaScript compatibility</LI>
 	<LI>Support of Rhino and SpiderMonkey shells from Mozilla.org</LI>
+	<LI>Support of Konqueror and Opera failed</LI>
 </UL>
 \subsection change Design Changes
 <UL>
