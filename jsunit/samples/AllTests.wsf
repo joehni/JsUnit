@@ -1,0 +1,23 @@
+<Job id="TestUnitTest">
+<Script language="JScript" src="../CallStack.js" />
+<Script language="JScript" src="../JsUnit.js" />
+<Script language="JScript" src="../JsUnitWSH.js" />
+<Script language="JScript" src="ArrayTest.js" />
+<Script language="JScript" src="money/AbstractFunctionCalledException.js" />
+<Script language="JScript" src="money/IMoney.js" />
+<Script language="JScript" src="money/Money.js" />
+<Script language="JScript" src="money/MoneyBag.js" />
+<Script language="JScript" src="money/MoneyTest.js" />
+<Script language="JScript" src="SimpleTest.js" />
+<Script language="JScript">
+function main()
+{
+	var runner = new WshTestRunner();
+	runner.addSuite( ArrayTest_suite());
+	runner.addSuite( MoneyTest_suite());
+	runner.addSuite( SimpleTest_suite());
+	return runner.start( main.arguments );
+}
+main();
+</Script>
+</Job>

@@ -1,0 +1,15 @@
+<Job id="TestUnitTest">
+<Script language="JScript" src="JsUnit.js" />
+<Script language="JScript" src="JsUnitWSH.js" />
+<Script language="JScript" src="CallStack.js" />
+<Script language="JScript" src="CallStackTest.js" />
+<Script language="JScript">
+function main()
+{
+	var runner = new WshTestRunner();
+	runner.addSuite( CallStackTest_suite());
+	return runner.start( main.arguments );
+}
+main();
+</Script>
+</Job>

@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>TestUnit Test</title>
+<script language="JavaScript1.3" type="text/javascript" src="../CallStack.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="../JsUnit.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="../JsUnitBrowser.js"></script>
+
+<script language="JavaScript1.3" type="text/javascript" src="ArrayTest.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="money/AbstractFunctionCalledException.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="money/IMoney.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="money/Money.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="money/MoneyBag.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="money/MoneyTest.js"></script>
+<script language="JavaScript1.3" type="text/javascript" src="SimpleTest.js"></script>
+
+<script language="JavaScript1.3" type="text/javascript">
+var JavaScript_1_3 = "false";
+</script>
+<script language="JavaScript1.3" type="text/javascript">
+// Proof JavaScript 1.3 capatibility
+// ... fails with Netscape 4 !!
+try { JavaScript_1_3 = "true"; } catch( ex ) { }
+</script>
+<script language="JavaScript1.3" type="text/javascript">
+function main()
+{
+	document.writeln(
+		  "<p>Proof JavaScript 1.3 capability: " 
+		+ JavaScript_1_3 + "</p>");
+
+	var runner = new BrowserTestRunner();
+	runner.addSuite( ArrayTest_suite());
+	runner.addSuite( MoneyTest_suite());
+	runner.addSuite( SimpleTest_suite());
+	return runner.start( main.arguments );
+}
+</script>
+</head>
+<body>
+<h1>TestUnit Test</h1>
+<script language="JavaScript1.3" type="text/javascript">
+main( "all" );
+</script>
+</body>
+</html>
