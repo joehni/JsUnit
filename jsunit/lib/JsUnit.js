@@ -521,6 +521,39 @@ function Assert_assertFalse( msg, cond )
 			, new CallStack(), msg );
 }
 /**
+ * Asserts that two floating point values are equal to within a given tolerence.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @tparam Object tolerance The maximum difference allowed to make equality check pass.
+ * @note This is an enhancement to JUnit 3.8
+ * @exception AssertionFailedError Thrown if the expected value is not within 
+ * the tolerance of the actual one.
+ */
+function Assert_assertFloatEquals( msg, expected, actual, tolerance)
+{
+    if( arguments.length == 3 )
+    {
+        tolerance = actual;
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if(    typeof( actual ) != "number" 
+        || typeof( expected ) != "number" 
+        || typeof( tolerance ) != "number" )
+    {
+        this.fail( "Can not compare " + expected + " and " + actual 
+            + " with tolerance " + tolerance + " (must all be numbers).");
+    }
+ 
+    if( Math.abs(expected - actual) > tolerance)
+    {
+        this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+            , new CallStack(), msg );
+    }
+}
+/**
  * Asserts that an object is not null.
  * @tparam String msg An optional error message.
  * @tparam Object object The valid object.
@@ -660,6 +693,7 @@ function Assert_fail( msg, stack, usermsg )
 }
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
+Assert.prototype.assertFloatEquals = Assert_assertFloatEquals;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
 Assert.prototype.assertNotSame = Assert_assertNotSame;
 Assert.prototype.assertNotUndefined = Assert_assertNotUndefined;

@@ -35,6 +35,8 @@ of a lot of other people:</p>
 
 <ul>
 
+    <li>Shao Lo for contributing to the core lib</li>
+
 	<li>Niklaus Haldimann for his help and contribution for 
 	<a href="www.obtree.com">Obtree</a> support</li>
 	

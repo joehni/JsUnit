@@ -431,6 +431,30 @@ function AssertTest_testAssertFalse()
 		this.assertTrue( ex instanceof AssertionFailedError );
 	}
 }
+function AssertTest_testAssertFloatEquals()
+{
+	this.mAssert.assertFloatEquals( 1, 1, 0 );
+	this.mAssert.assertFloatEquals( "1 is 1", 1, 1, 0 );
+	this.mAssert.assertFloatEquals( 1, 0.99, 0.1 );
+	try
+	{
+		this.mAssert.assertFloatEquals( 0, 1, 0.1 );
+		this.fail( "'assertFloatEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+	try
+	{
+		this.mAssert.assertFloatEquals( 1, "foo", "bar" );
+		this.fail( "'assertFloatEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+}
 function AssertTest_testAssertNotNull()
 {
 	this.mAssert.assertNotNull( "Is null!", 0 );
@@ -648,6 +672,7 @@ AssertTest.prototype = new TestCase();
 AssertTest.prototype.mAssert = new Assert();
 AssertTest.prototype.testAssertEquals = AssertTest_testAssertEquals;
 AssertTest.prototype.testAssertFalse = AssertTest_testAssertFalse;
+AssertTest.prototype.testAssertFloatEquals = AssertTest_testAssertFloatEquals;
 AssertTest.prototype.testAssertNotNull = AssertTest_testAssertNotNull;
 AssertTest.prototype.testAssertNotSame = AssertTest_testAssertNotSame;
 AssertTest.prototype.testAssertNotUndefined = AssertTest_testAssertNotUndefined;
