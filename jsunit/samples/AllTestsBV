@@ -1,0 +1,15 @@
+#!/bin/sh
+
+JS="../JsUnit.js ../JsUnitBV.js ../CallStack.js"
+JS="$JS ArrayTest.js"
+JS="$JS money/AbstractFunctionCalledException.js money/IMoney.js"
+JS="$JS money/Money.js money/MoneyBag.js money/MoneyTest.js"
+JS="$JS SimpleTest.js"
+CWD=$PWD
+
+rm -rf .ctx/ > /dev/null 2>&1
+mkdir .ctx
+(cd .ctx; for js in $JS; do ln -s $CWD/$js `basename $js`; done)
+ctxdriver -R -s .ctx:$BV1TO1/script_library -l $BV1TO1/lib/components JsUnitBVTest.jsp
+rm -rf .ctx/ 
+
