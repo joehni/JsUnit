@@ -73,6 +73,7 @@ function CallStackTest_testToString()
 	}
 }
 CallStackTest.prototype = new TestCase();
+CallStackTest.prototype.ctor = CallStackTest;
 CallStackTest.prototype.testCtor = CallStackTest_testCtor;
 CallStackTest.prototype.testGetStack = CallStackTest_testGetStack;
 CallStackTest.prototype.testFill = CallStackTest_testFill;
@@ -279,6 +280,122 @@ FunctionTest.prototype = new TestCase();
 FunctionTest.prototype.testFulfills = FunctionTest_testFulfills;
 
 
+function PrinterWriterErrorTest( name )
+{
+	TestCase.call( this, name );
+}
+function PrinterWriterErrorTest_testAttributes()
+{
+	var err = new PrinterWriterError( "my message" );
+	this.assertEquals( "PrinterWriterError", err.name );
+	this.assertEquals( "my message", err.message );
+}
+PrinterWriterErrorTest.prototype = new TestCase();
+PrinterWriterErrorTest.prototype.testAttributes = PrinterWriterErrorTest_testAttributes;
+
+
+function PrinterWriterTest( name )
+{
+	TestCase.call( this, name );
+}
+function PrinterWriterTest_setUp()
+{
+	this.mWriter = new PrinterWriter();
+	this.mWriter.mLastLine = "";
+	this.mWriter._flush = function( str )
+	{
+		this.mLastLine = str;
+	}
+	this.mWriter.toString = function()
+	{
+		return this.mLastLine;
+	}
+}
+function PrinterWriterTest_tearDown()
+{
+	delete this.mWriter;
+}
+function PrinterWriterTest_testClose()
+{
+	this.assertFalse( this.mWriter.mClosed );
+	this.mWriter.close();
+	this.assertTrue( this.mWriter.mClosed );
+}
+function PrinterWriterTest_testFlush()
+{
+	this.assertSame( "", this.mWriter.toString());
+	this.mWriter.print( "Test it" );
+	this.assertSame( "", this.mWriter.toString());
+	this.mWriter.flush();
+	this.assertEquals( "Test it\n", this.mWriter.toString());
+	this.mWriter.close();
+	var err = null;
+	try { this.mWriter.flush(); } catch( ex ) { err = ex; }
+	this.assertEquals( "PrinterWriterError", err.name );
+}
+function PrinterWriterTest_testPrint()
+{
+	this.mWriter.print( "Test it" );
+	this.assertSame( "", this.mWriter.toString());
+	this.assertEquals( "Test it", this.mWriter.mBuffer );
+	this.mWriter.flush();
+	this.assertEquals( "Test it\n", this.mWriter.toString());
+	this.mWriter.print();
+	this.mWriter.print( null );
+	this.assertEquals( "Test it\n", this.mWriter.toString());
+	this.mWriter.close();
+	var err = null;
+	try { this.mWriter.print( "again" ); } catch( ex ) { err = ex; }
+	this.assertEquals( "PrinterWriterError", err.name );
+}
+function PrinterWriterTest_testPrintln()
+{
+	this.assertSame( "", this.mWriter.toString());
+	this.mWriter.println( "Test it" );
+	this.assertEquals( "Test it\n", this.mWriter.toString());
+}
+PrinterWriterTest.prototype = new TestCase();
+PrinterWriterTest.prototype.setUp = PrinterWriterTest_setUp;
+PrinterWriterTest.prototype.tearDown = PrinterWriterTest_tearDown;
+PrinterWriterTest.prototype.testClose = PrinterWriterTest_testClose;
+PrinterWriterTest.prototype.testFlush = PrinterWriterTest_testFlush;
+PrinterWriterTest.prototype.testPrint = PrinterWriterTest_testPrint;
+PrinterWriterTest.prototype.testPrintln = PrinterWriterTest_testPrintln;
+
+
+function SystemWriterTest( name )
+{
+	TestCase.call( this, name );
+}
+function SystemWriterTest_testClose()
+{
+	var writer = JsUtil.prototype.getSystemWriter();
+	this.assertFalse( writer.mClosed );
+	writer.close();
+	this.assertFalse( writer.mClosed );
+}
+SystemWriterTest.prototype = new TestCase();
+SystemWriterTest.prototype.testClose = SystemWriterTest_testClose;
+
+
+function StringWriterTest( name )
+{
+	TestCase.call( this, name );
+}
+function StringWriterTest_testGet()
+{
+	var writer = new StringWriter();
+	this.assertFalse( writer.mClosed );
+	writer.print( "Js" );
+	writer.println( "Unit" );
+	writer.print( "rocks!" );
+	this.assertEquals( "JsUnit\nrocks!\n", writer.get());
+	this.assertTrue( writer.mClosed );
+}
+StringWriterTest.prototype = new TestCase();
+StringWriterTest.prototype.testGet = StringWriterTest_testGet;
+
+
 function JsUtilTestSuite()
 {
 	TestSuite.call( this, "JsUtilTest" );
@@ -289,6 +406,10 @@ function JsUtilTestSuite()
 	this.addTestSuite( TypeErrorTest );
 	this.addTestSuite( InterfaceDefinitionErrorTest );
 	this.addTestSuite( FunctionTest );
+	this.addTestSuite( PrinterWriterErrorTest );
+	this.addTestSuite( PrinterWriterTest );
+	this.addTestSuite( SystemWriterTest );
+	this.addTestSuite( StringWriterTest );
 }
 JsUtilTestSuite.prototype = new TestSuite();
 

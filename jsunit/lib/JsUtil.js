@@ -56,13 +56,18 @@ function JsUtil_getCaller( fn )
 	return undefined;
 }
 /**
- * Loads a file.
+ * Includes a JavaScript file.
  * @tparam String fname The file name.
- * Loads the content of a file into a String. Works for command line
- * shells WSH, Rhino and SpiderMonkey.
- * @treturn String The content of the file.
+ * Loads the content of a JavaScript file into a String that has to be
+ * evaluated. Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @note This function is highly quirky. While WSH works as expected, the
+ * Mozilla shells will evaluate the file immediately and add any symbols to
+ * the global name space and return just "true". Therefore you have to 
+ * evaluate the returned string for WSH at global level also. Otherwise the
+ * function is not portable.
+ * @treturn String The JavaScript code to be evaluated.
  */
-function JsUtil_load( fname )
+function JsUtil_include( fname )
 {
 	var ret = "true";
 	if( JsUtil.prototype.isMozillaShell )
@@ -79,23 +84,16 @@ function JsUtil_load( fname )
 	return ret;
 }
 /**
- * Print a single line.
- * @tparam String str The line to print.
- * Prints a complete text line incl. line feed. Works for command line
- * shells WSH, Rhino and SpiderMonkey.
+ * Returns the SystemWriter.
+ * Instanciates a SystemWriter depending on the current JavaScript engine.
+ * Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @type SystemWriter
  */
-function JsUtil_print( str )
+function JsUtil_getSystemWriter()
 {
-	if( JsUtil.prototype.isMozillaShell )
-		print( str );
-	else if( JsUtil.prototype.isBrowser )
-		document.writeln( str );
-	else if( JsUtil.prototype.isWSH )
-		WScript.Echo( str );
-	/*
-	else if( JsUtil.prototype.isNSServer )
-		write( str + "\n" );
-	*/
+	if( !JsUtil.prototype.mWriter )
+		JsUtil.prototype.mWriter = new SystemWriter();
+	return JsUtil.prototype.mWriter;
 }
 /**
  * Quits the JavaScript engine.
@@ -111,9 +109,15 @@ function JsUtil_quit( exit )
 		WScript.Quit( exit );
 }
 JsUtil.prototype.getCaller = JsUtil_getCaller;
-JsUtil.prototype.load = JsUtil_load;
-JsUtil.prototype.print = JsUtil_print;
+JsUtil.prototype.include = JsUtil_include;
+JsUtil.prototype.getSystemWriter = JsUtil_getSystemWriter;
 JsUtil.prototype.quit = JsUtil_quit;
+/**
+ * The SystemWriter.
+ * @type SystemWriter
+ * @see getSystemWriter
+ */
+JsUtil.prototype.mWriter = null;
 /**
  * Flag for a browser.
  * @type Boolean
@@ -198,7 +202,7 @@ function CallStack( depth )
 	 * @type Array<String>
 	 */
 	this.mStack = null;
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 		this._fill( depth );
 }
 /**
@@ -256,7 +260,7 @@ function CallStack__fill( depth )
 function CallStack_fill( depth )
 {
 	this.mStack = null;
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 		this._fill( depth );
 }
 /**
@@ -532,4 +536,195 @@ function Function_fulfills()
 	}
 }
 Function.prototype.fulfills = Function_fulfills;
+
+
+/**
+ * PrinterWriterError class.
+ * This error class is used for errors in the PrinterWriter.
+ * @see PrinterWriter::close
+ * @ctor
+ * Constructor.
+ * The constructor initializes the \c message member with the argument 
+ * \a msg.
+ * @tparam String msg The error message.
+ **/
+function PrinterWriterError( msg )
+{
+	//TypeError.call( this, msg );
+	this.message = msg;
+}
+PrinterWriterError.prototype = new TypeError();
+/**
+ * The name of the PrinterWriterError class as String.
+ * @type String
+ **/
+PrinterWriterError.prototype.name = "PrinterWriterError";
+
+
+/**
+ * A PrinterWriter is an abstract base class for printing text.
+ * @note This is a helper construct to support different writers in 
+ * ResultPrinter e.g. depending on the JavaScript engine.
+ */
+function PrinterWriter()
+{
+	this.mBuffer = null;	
+	this.mClosed = false;
+}
+/**
+ * Closes the writer.
+ * After closing the steam no further writing is allowed. Multiple calls to
+ * close should be allowed.
+ */
+function PrinterWriter_close() 
+{
+	this.flush();
+	this.mClosed = true;
+}
+/**
+ * Flushes the writer.
+ * Writes any buffered data to the underlaying output stream system immediatly.
+ * @exception PrinterWriterError If flush was called after closing.
+ */
+function PrinterWriter_flush()
+{
+	if( !this.mClosed )
+	{
+		if( this.mBuffer !== null )
+		{
+			this._flush( this.mBuffer + "\n" );
+			this.mBuffer = null;	
+		}
+	}
+	else	
+		throw new PrinterWriterError( 
+			"'flush' called for closed PrinterWriter." );
+}
+/**
+ * Prints into the writer.
+ * @tparam Object data The data to print as String.
+ * @exception PrinterWriterError If print was called after closing.
+ */
+function PrinterWriter_print( data )
+{
+	if( !this.mClosed )
+	{
+		var undef;
+		if( data === undef || data == null )
+			data = "";
+		if( this.mBuffer )
+			this.mBuffer += data.toString();
+		else
+			this.mBuffer = data.toString();
+	}
+	else	
+		throw new PrinterWriterError( 
+			"'print' called for closed PrinterWriter." );
+}
+/**
+ * Prints a line into the writer.
+ * @tparam Object data The data to print as String.
+ * @exception PrinterWriterError If println was called after closing.
+ */
+function PrinterWriter_println( data )
+{
+	this.print( data );
+	this.flush();
+}
+PrinterWriter.prototype.close = PrinterWriter_close;
+PrinterWriter.prototype.flush = PrinterWriter_flush;
+PrinterWriter.prototype.print = PrinterWriter_print;
+PrinterWriter.prototype.println = PrinterWriter_println;
+/** 
+ * \internal 
+ */
+PrinterWriter.prototype._flush = function() {};
+
+
+/**
+ * The PrinterWriter of the JavaScript engine.
+ */
+function SystemWriter() 
+{
+	PrinterWriter.call( this );
+} 
+/**
+ * Closes the writer.
+ * Function just flushes the writer. Closing the system writer is not possible.
+ */
+function SystemWriter_close() 
+{
+	this.flush();
+}
+/** 
+ * \internal 
+ */
+function SystemWriter__flush( str ) 
+{
+	/* self-modifying code ... */
+	if( JsUtil.prototype.isMozillaShell )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				print( str.substring( 0, str.length - 1 )); 
+			}
+	else if( JsUtil.prototype.isBrowser )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				document.write( str );
+			}
+	else if( JsUtil.prototype.isWSH )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				WScript.Echo( str.substring( 0, str.length - 1 )); 
+			}
+	/*
+	else if( JsUtil.prototype.isNSServer )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				write( str );
+			}
+	*/
+	else
+		this._flush = function() {}
+
+	this._flush( str );
+}
+SystemWriter.prototype = new PrinterWriter();
+SystemWriter.prototype.close = SystemWriter_close;
+SystemWriter.prototype._flush = SystemWriter__flush;
+
+
+/**
+ * The PrinterWriter into a String.
+ */
+function StringWriter() 
+{
+	PrinterWriter.call( this );
+	this.mString = "";
+} 
+/**
+ * Returns the written String.
+ * The function will close also the stream if it is still open.
+ * @type String
+ */
+function StringWriter_get() 
+{
+	if( !this.mClosed )
+		this.close();
+	return this.mString;
+}
+/** 
+ * \internal 
+ */
+function StringWriter__flush( str )
+{
+	this.mString += str;
+}
+StringWriter.prototype = new PrinterWriter();
+StringWriter.prototype.get = StringWriter_get;
+StringWriter.prototype._flush = StringWriter__flush;
 

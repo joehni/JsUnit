@@ -46,14 +46,15 @@ if( this.WScript )
 else
 	load( "../lib/JsUtil.js" );
 
-JsUtil.prototype.print( "\nJavaScript compatibility:" );
-JsUtil.prototype.print( "\thas exceptions: " + hasExceptions );
-JsUtil.prototype.print( "\texceptions working: " + exceptionsWorking );
+var writer = JsUtil.prototype.getSystemWriter();
+writer.println( "\nJavaScript compatibility:" );
+writer.println( "\thas exceptions: " + hasExceptions );
+writer.println( "\texceptions working: " + exceptionsWorking );
 
-JsUtil.prototype.print( "\nJavaScript engine detection:" );
+writer.println( "\nJavaScript engine detection:" );
 for( var i in JsUtil.prototype )
 	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
-		JsUtil.prototype.print( "\t" + i + ": " + JsUtil.prototype[i] );
+		writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
 
 function main( args )
 {
@@ -63,12 +64,12 @@ function main( args )
 	return runner.start( args );
 }
 
-JsUtil.prototype.print( "\nJsUnit Test Suite:\n" );
+writer.println( "\nJsUnit Test Suite:\n" );
 if( exceptionsWorking )
 {
-	eval( JsUtil.prototype.load( "../lib/JsUnit.js" ));
-	eval( JsUtil.prototype.load( "JsUtilTest.js" ));
-	eval( JsUtil.prototype.load( "JsUnitTest.js" ));
+	eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+	eval( JsUtil.prototype.include( "JsUtilTest.js" ));
+	eval( JsUtil.prototype.include( "JsUnitTest.js" ));
 
 	var args;
 	if( this.WScript )
@@ -83,7 +84,7 @@ if( exceptionsWorking )
 }
 else
 {
-	JsUtil.prototype.print( "\tSorry, exceptions not working!\n" );
+	writer.println( "\tSorry, exceptions not working!\n" );
 	JsUtil.prototype.quit( -1 );
 }
 

@@ -24,31 +24,41 @@ license.
 
 \page release Release Notes
 
-<P>2002-06-25: Current release is version 2.0.alpha.3</P>
+<P>2002-09-20: Current release is version 1.2.beta.1</P>
 
-<P>While it seems not to be too much work to change the object model to
-standard ECMA script, the real work was done writing the new Perl script
-to support the documentation generation again.  This bullied me to learn
-Perl (nice language) and the script is now quite smart detecting what you
-have really defined.</P>
+<P>A lot of internal work has already be done. Most changes of JUnit 3.8.1
+have been integrated and JsUnit is running quite smoothly for JScript,
+SpiderMonkey and Rhino. Also the new documentation script works fine.</P>
+
+<P>Since the current state of the framework is now quite stable regading
+the mensioned JavaScript engines I will release an intermediate version 1.2
+before version 2.0, that was proposed to have an integration with Edward
+Hieatt's browser GUI.</P>
 
 \subsection new New Features
 
 <UL>
-	<LI>TestSuite supports object class definitions</LI>
+	<LI>BaseTestRunner supports preferences</LI>
 	<LI>TestSuite has now also function addTestSuite</LI>
 	<LI>TestResult has now also function removeListener and runProtected</LI>
 	<LI>Assert has new functions assertSame, assertTrue and assertFalse</LI>
-	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
-	time</LI>
+	<LI>BaseTestRunner has new function countMilliSeconds to measure the
+	elapsed	time</LI>
+	<LI>BaseTestRunner supports preferences</LI>
+	<LI>Support of class ResultPrinter</LI>
 	<LI>Interface Protectable supported</LI>
-	<LI>Test is an interface now (conforming JUnit), TestCase and TestSuite
-	implement this interface</LI>
+	<LI>Test is an interface now (conforming with JUnit), TestCase and 
+	TestSuite implement this interface</LI>
 	<LI>Support conforming Error object hierarchy</LI>
 	<LI>Alternative interface design contract by Function.fulfills</LI>
 	<LI>New script for document generation recognizes functions and classes
 	directly</LI>
-	<LI>Support of the JUnit 3.7 extension classes</LI>
+	<LI>Support of the JUnit extension classes</LI>
+	<LI>Changes of JUnit 3.8.1 and new classes migrated to JsUnit</LI>
+	<LI>Special support in Assert.assertEquals comparing Strings or match a
+	RegExp against a string</LI>
+	<LI>New utility class JsUtil and enhanced CallStack API</LI>
+	<LI>New utility class hierarchy PrinterWriter</LI>
 </UL>
 
 \subsection change Design Changes
@@ -60,7 +70,9 @@ have really defined.</P>
 	<LI>Support of Array.push and Array.pop at all systems</LI>
 	<LI>TestSuites for complete test files provided</LI>
 	<LI>TestSuite needs now a TextCase object as argument</LI>
+	<LI>TestRunner renamed to BaseTestRunner according to JUnit</LI>
 	<LI>Call base class always with explicit name</LI>
+	<LI>Name of fixtures ar eprepended with the name of the TestCase</LI>
 </UL>
 
 \subsection bug Bug Fixes
@@ -70,13 +82,11 @@ have really defined.</P>
 	<LI>Added test code for constructors</LI>
 	<LI>HTML output of exceptions</LI>
 	<LI>Expression 'this.constructor' does not refer direct base class</LI>
-	<LI>TestSuite constructor cannot create test fixture from object</LI>
 </UL>
 
 \subsection progress Work in Progress
 
 <UL>
-	<LI>Port of JsUnit 3.7</LI>
 	<LI>New file JsUnitBrowser.js used for Edward's browser GUI</LI>
 	<LI>JsUnit.js has a browser detection</LI>
 </UL>

@@ -44,7 +44,10 @@ constructor:</P>
 
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-BaseClass.call( this, arg1, arg2 );</PRE></DIV></P>
+function ClassName( arg1, arg2 )
+{
+	BaseClass.call( this, arg1, arg2 );
+}</PRE></DIV></P>
 \endhtmlonly
 
 <P>After calling the constuctor you should initialize the member variables by
@@ -92,13 +95,45 @@ definition:</P>
 ClassName.prototype.v1 = 1;</PRE></DIV></P>
 \endhtmlonly
 
+\subsection altSyntax Alternative Syntax
+
+<P>The previous chapter followed the coding convention of the JavaScript
+Reference Guide. As convensions imply you may use an alternative coding style,
+the js2doxy Perl script will understand even this:</P>
+
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+function ClassName( arg1, arg2 )
+{
+	BaseClass.call( this, arg1, arg2 );
+}
+{
+	ClassName.prototype = new BaseClass();
+	ClassName.prototype.f1 = function ClassName_f1( arg1 ) 
+	{
+    	BaseClass.prototype.f1.call( this, arg1 );
+	}
+	ClassName.prototype.f2 = function() 
+	{
+    	BaseClass.prototype.f2.apply( this, arguments );
+	}
+	ClassName.prototype.v1 = 1;
+}</PRE></DIV></P>
+\endhtmlonly
+
+<P>A lot of interpreters will not generate in this situation any identifier in
+the second braced area to the global namespace keeping it quite clean. The
+disadvantage of method f2 definition is, that the function itself has no name
+and the call stack (if available for the engine) will return an anonymous 
+function call.</P>
+
 \subsection interface Interfaces
 
-<P>JavaScritp does not support interfaces (although <I>implements</I> is a
+<P>JavaScript does not support interfaces (although <I>implements</I> is a
 keyword). Since it is quite handy to be sure that a class supports a defined
-number of function, the system implements a new member function \a fulfills of
+number of functions, the system implements a new member function \a fulfills of
 the class Function that perfoms this action. Since the functions of an
-interface are never called, they can be implemented quite minimal:</P>
+interface are never called, they can be implemented quite minimalistic:</P>
 
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
@@ -218,11 +253,12 @@ for all deliveries:</P>
 </TR>
 <TR>
 
-	<TD>AllTestsMozilla.js</TD>
+	<TD>AllTests.js</TD>
 	
-	<TD>JavaScript to use with the JavaScript shells of Mozilla.org. Use
-	<EM>java js.jar</EM> to run it with the Java version of the interpreter or
-	use <EM>jsshell</EM> to run it with the C version.</TD>
+	<TD>JavaScript to use with the JavaScript shells. Use <EM>java js.jar</EM>
+	to run <em>Rhino</em> build with Java or use <EM>jsshell</EM> to run 
+	<em>SpiderMonkey</em> build with C. You may also use <em>cscript</em> for
+	this file.</TD>
 	
 </TR>
 </TABLE>

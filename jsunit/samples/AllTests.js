@@ -31,13 +31,13 @@ if( this.WScript )
 else
 	load( "../lib/JsUtil.js" );
 
-eval( JsUtil.prototype.load( "../lib/JsUnit.js" ));
-eval( JsUtil.prototype.load( "ArrayTest.js" ));
-eval( JsUtil.prototype.load( "money/IMoney.js" ));
-eval( JsUtil.prototype.load( "money/Money.js" ));
-eval( JsUtil.prototype.load( "money/MoneyBag.js" ));
-eval( JsUtil.prototype.load( "money/MoneyTest.js" ));
-eval( JsUtil.prototype.load( "SimpleTest.js" ));
+eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+eval( JsUtil.prototype.include( "ArrayTest.js" ));
+eval( JsUtil.prototype.include( "money/IMoney.js" ));
+eval( JsUtil.prototype.include( "money/Money.js" ));
+eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
+eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
+eval( JsUtil.prototype.include( "SimpleTest.js" ));
 
 function main( test )
 {
