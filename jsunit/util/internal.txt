@@ -1,0 +1,90 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+\page internal Internals
+\section docConv Document Conventions
+<P>The documentation of JavaScript code has to follow also very strict
+patterns. See following chapter how to generate the documentation.</P>
+<P>The documentation syntax follows the javadoc conventions, but have special
+JavaScript keywords. Documentation blocks within the code are embedded with:</P>
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+/**
+&nbsp;*
+&nbsp;*&#47;</PRE></DIV></P>
+\endhtmlonly
+<P>First element of such a block has to be a meta tag used by the utility script <EM>jsd2ccd.pl</EM>. All meta tags are prepended by two @ characters. The meta tags are</P>
+<UL>
+	<LI>@@attrib <EM>type</EM></LI>
+	<LI>@@class</LI>
+	<LI>@@ctor</LI>
+	<LI>@@file</LI>
+	<LI>@@function [<EM>return type</EM>]</LI>
+	<LI>@@method [<EM>return type</EM>]</LI>
+	<LI>@@struct</LI>
+	<LI>@@var <EM>type</EM></LI>
+</UL>
+<P>Keep in mind that pseude C++ is produced. Therefore are the meta tags 
+context sensitive. <EM>file</EM> can only be used at the first documentation 
+block in a file. <EM>class</EM>, <EM>function</EM>, <EM>struct</EM>, and 
+<EM>var</EM> are only valid for JavaScript functions at global scope. 
+<EM>attrib</EM> and <EM>method</EM> have to be used for documentation blocks 
+within a function representing a class. The <EM>ctor</EM> tag has to be used 
+within a documentation block for a <EM>class</EM> or a <EM>struct</EM> dividing
+the documentation for the class and the constructor.</P>
+<P>The optional <EM>return type</EM> for <EM>method</EM> and <EM>function</EM>
+is just for documentation, since JavaScript is typeless. Although all
+variables are also typeless, for documentation purpose it is necessary to
+define the <EM>type</EM> of a <EM>var</EM>iable or a class
+<EM>attrib</EM>ute.</P>
+<P>See <EM><A TYPE="text/plain" HREF="../util/jsd2ccd.pl">jsd2ccd.pl</A></EM>
+for further information. You may also use after the JavaScript meta tags any
+Doxygen meta tags.</P>
+\section docGen Rebuilding Documentation
+<P>Like everyone I am not very keen on writing documentation. The best way I can
+live with it is the way javadoc supports this. Luckily there are some other
+tools out there that can be used for other languages, but most of these tools
+are only available for object-oriented languages. While JavaScript allows to
+write object.oriented code, most people are not aware of this. Therefore I
+have used a perl script developed by a friend of mine to transform JavaScript
+code that follow the coding conventions above in some kind of pseudo C++ that
+can be used to fool Doxygen, my favorite non-Java source code documentation
+tool.</P>
+<P>The script <EM>jsdoc</EM> to rebuild the documentation is located in the
+utils directory. It depends on a Unix environment including Perl. I use 
+personally <A HREF="http://sources.redhat.com/">Cygwin</A> that comes nowadays 
+with quite complete Unix packages. Additionally you have to install
+<A HREF="http://www.doxygen.org">Doxygen</A> and 
+<A HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
+cross-platform drawing toolkit from AT&amp;T. My script expects both tools
+either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
+mounted my Windows program directory to /opt using Cygwin functionality.</P>
+<P>My script will call the Perl script <EM>jsd2ccd.pl</EM> to generate pseudo
+C++. Then it calls Doxygen to generate the first version of the HTML 
+documentation and the Unix man pages. A last sed processing is done to 
+generate this <A CLASS="J">J</A><A CLASS="s">s</A><A CLASS="U">U</A>nit color 
+style in the headers.</P>
+<P>BTW: The Perl script just extracts code and comments that follow a special
+scheme. Therefore it is no problem to use it also for JavaScript embedded into
+HTML.</P>
+*/

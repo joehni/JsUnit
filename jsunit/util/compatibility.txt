@@ -1,0 +1,204 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+\page compatibility Compatibility
+<P>The JsUnit library has to use exceptions. Exceptions were part of the 
+third ECMA language draft und therefore not everywhere available. The JsUnit
+scripts are only available on systems that support exceptions. Additionally
+the scripts try to expose the call stack in case of an error. This call stack
+is also subject of compatibility and have changed in various versions of the
+language implementations of the different vendors. Unfortunately the ECMA
+definition does not have any concept.</P>
+\section language The Script language
+\subsection ecma ECMAScript
+<P>ECMAScript is the official name of the language commonly called "JavaScript".
+<a href="http://www.ecma.ch">ECMA</a> is an international, industry
+association and dedicated to the standardization of information and
+communication systems. The language is specified in the ECMA-262 document
+currently in the 3rd edition from 1999. This edition introduced exceptions
+into the language. Unfortunately the standard does not define any
+functionality or properties to retrieve the call stack.</P>
+\subsection javascript JavaScript
+<P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript
+was developed by Netscape and introduced with the Netscape 2.0 browser. Starting
+with JavaScript 1.4 Netscape also implemented the exceptions. Unfortunately
+this version was first time  included into the 4.72 version of the browser. 
+Despite the client-side, the language was available for Server-Side 
+programming and built into the Netscape Enterprise Server 4.x, now called 
+iPlanet.</P>
+\subsection jscript JScript
+<P>JScript is the Microsoft's implementation of ECMAScript. The language 
+supports exceptions starting with version 5.0 of JScript. The language is 
+available with Internet Explorer starting with version 5.0, Internet 
+Information Server 5.0 and Windows Scripting Host 2.0.</P>
+\section products JavaScript enabled products
+<P>There are a lot of products that are able to process a JavaScript flavor. I 
+have listed all products that I am aware of.</P>
+<TABLE BORDER="0">
+<TR>
+	<TD><B>Product</B></TD>
+	<TD><B>Vendor</B></TD>
+	<TD><B>JavaScript version</B></TD>
+	<TD><B>JsUnit support</B></TD>
+</TR>
+<TR>
+	<TD>Communiqu&eacute; 2.x</TD>
+	<TD><A HREF="http://www.daynetwork.com">Day International</A></TD>
+	<TD>ECMAScript 3 (not complete)</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Enterprise Server 3.x</TD>
+	<TD><A HREF="http://www.sun.com">Netscape</A></TD>
+	<TD>JavaScript 1.2</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Enterprise Server 4.x</TD>
+	<TD>Netscape</TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 4.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 5.x</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 6.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 6.0</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Internet Information Server 4.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Internet Information Server 5.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD><A
+	HREF="http://developer.iplanet.com/docs/manuals/enterprise.html">iPlanet</A></TD>
+	<TD>Sun</TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes, but no call stack</TD>
+</TR>
+<TR>
+	<TD>Konqueror ?</TD>
+	<TD><A HREF="http://www.kde.org">KDE.org</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Mozilla 0.8x</TD>
+	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Mozilla 0.9x</TD>
+	<TD>Mozilla.org</TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>mySAP.com ?</TD>
+	<TD><A HREF="http://www.sap.com">SAP</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Navigator 4.x</TD>
+	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
+	<TD>JavaScript 1.4 ?</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Navigator 6.x</TD>
+	<TD>Netscape</TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Notes 5.x</TD>
+	<TD><A HREF="http://www.lotus.com">Lotus/IBM</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>One-to-One 5.x</TD>
+	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Opera 4.x</TD>
+	<TD><A HREF="http://www.opera.com">Opera</A></TD>
+	<TD>ECMAScript 2</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Opera 5.x</TD>
+	<TD><A HREF="http://www.opera.com">Opera</A></TD>
+	<TD>ECMAScript 3 (not complete)</TD>
+	<TD>no, exceptions too buggy<BR>no callstack</TD>
+</TR>
+<TR>
+	<TD>Tomcat 3.x</TD>
+	<TD><A HREF="http://jakarta.apache.org">Apache Jakarta</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Visual InterDev 6.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Windows Scripting Host 1.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Windows Scripting Host 2.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+</TABLE>
+*/

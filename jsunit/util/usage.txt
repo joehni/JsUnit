@@ -1,0 +1,151 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+\page usage Usage
+<P>If you look at the source code of JsUnit you will detect a lot of source code
+documentation and an unusual JavaScript programming style. The approach
+enables a good porting of the Java code, offers pseudo multiple inheritance
+and allows the automated reference manual. I may try to return to standard
+JavaScript inheritance one day. I thought I had compatibility problems with
+the BroadVision 5.x platform, but I cannot test this, since I do not have
+access anymore</P>
+\section codeConv Coding Conventions
+<P>To create an object in JavaScript you have to use the new operator. Every
+time this operator will call a function that creates automatically the new
+object implicitly. The new object is of the type of the function. This means 
+the function's code represents the class definition, the 
+&quot;constructor&quot; is the function call itself. Someone may ask why I did 
+not use the prototype functionality, but I found compatibility issues as well 
+as the mechanism would have prevented multiple inheritance.</P>
+<P>JsUnit follows the scheme that all member functions and variables are 
+declared within this constructor and assigned explicitly at the end of it.
+This prevents naming conflicts in the global namespace and gives the
+impression of a real class definition. The first section within the constructor
+is used for the inheritance. Every base class (i.e. function) is assigned the 
+internal member <CODE>_super</CODE> and then called with all necessary 
+arguments and using the current object as environment:</P> 
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+this._super = BaseClass1;
+this._super( arg1, arg2 );
+this._super = BaseClass2;
+this._super( arg1, arg2 );</PRE></DIV></P>
+\endhtmlonly
+<P>After calling the constuctors you should initialize the member variables by
+assigning them a value:</P>
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+this.mMember1 = 1;
+this.mMember2 = "yes";</PRE></DIV></P>
+\endhtmlonly
+<P>Now is the time to define all member functions. Just nest  the function
+declaration into the constructor. Assign all functions at the end of the
+constructor:</P>
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+function f1() {}
+function f2() {}
+
+this.f1 = f1;
+this.f2 = f2;</PRE></DIV></P>
+\endhtmlonly
+<P>It is no problem to overload a function that was already assign in a
+constructor of a base class. Unfortunately you have to follow a naming
+convention, if your new function has to call the overloaded function of the 
+base class:</P>
+\htmlonly
+<P><DIV CLASS="fragment"><PRE>
+function f1() 
+{
+    this.Base1_f1();
+}
+
+this.Base1_f1 = this.f1;
+this.f1 = f1;</PRE></DIV></P>
+\endhtmlonly
+<P>After assigning all functions you may add additional code necessary for
+proper initialization of the object.</P>
+\section writing Writing test cases and test suites
+\dontinclude SimpleTest.js
+<P>Writing unit tests you have to write at first test cases for your classes.
+The programming paradigma of eXtreme Programming demands writing your test
+cases first. Then you are able to programm your class against the test case,
+so you know when you are ready. Anyway, writing a test case means deriving
+from class TestCase:</P>
+\skip function
+\until );
+<P>Overload the setUp function if necessary:<P>
+\skip setUp
+\until }
+<P>Add your test fixtures:</P>
+\skip testDivide
+\until }
+<P>You may also overload the tearDown utility. To complete the class you have
+to assign the methods</P>
+\skip setUp
+\until }
+<P>Any additional initialization code may follow.</P>
+\section application Creating a test application
+<P>After writing the test cases we need an application to run the
+tests. The application has the responsibility to include all necessary
+sources. Create a TestRunner for reporting the results, add all wanted test
+suites to the runner and perform the test. The TestRunner itself is normally
+also a derived class, that has reporting functions that work perfectly in
+the system environment. See below a sample for the Windows Scripting Host:</P>
+\include AllTests.wsf
+\section examples Examples
+<P>The examples are also ports from the originals that accompany JUnit. Please
+note that the last test case of SimpleTest is supposed to fail to demonstrate
+this case.</P>
+<P>Most supported environments cannot share their test application. Therefore
+are a lot of AllTests*.* files part of the sample package. See the list below
+for all deliveries:</P>
+<TABLE>
+<TR>
+	<TD><B>Files</B></TD>
+	<TD><B>Environment</B></TD>
+</TR>
+<TR>
+	<TD>AllTests.html</TD>
+	<TD>Any browser with a JavaScript implementation capable of exceptions</TD>
+</TR>
+<TR>
+	<TD>AllTests.vup</TD>
+	<TD>Project for Microsoft Visual Interdev</TD>
+</TR>
+<TR>
+	<TD>AllTests.wsf</TD>
+	<TD>Script for Windows Scripting Host. Run best with <EM>cscript</EM></TD>
+</TR>
+<TR>
+	<TD>AllTestsBV<BR>AllTestsBV.jsp</TD>
+	<TD>JavaScript Server Page of BroadVision. Use the script AllTestsBV to
+	start the <EM>ctxdriver</EM> for command line invocation.</TD>
+</TR>
+<TR>
+	<TD>AllTestsNS<BR>AllTestsNS.html</TD>
+	<TD>Shell script using <EM>jsac</EM> to compile a Netscape iPlanet web 
+	application. The script compiles the web from the HTML source.</TD>
+</TR>
+</TABLE>
+*/

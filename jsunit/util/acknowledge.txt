@@ -1,0 +1,42 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+\page acknowledge Acknowledgements
+<P>JsUnit would not have been possible in this form without the work and ideas
+of a lot of other people:</P>
+<UL>
+	<LI>Achim Kraus, author of the Perl script converting the JavaScript code
+	into something Doxygen can understand</LI>
+	<LI>Dimitri van Heesch for his wonderful documentation tool <A
+	HREF="http://www.doxygen.org">Doxygen</A></LI>
+	<LI><A HREF="http://www.berlios.de">BerliOS</A> for hosting this 
+	project</LI>
+	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for 
+	providing me with the power of the Linux tools in Windows</LI>
+	<LI>Erich Gamma and Kent Beck for developing with 
+	<A HREF="http://www.junit.org">JUnit</A> some kind of standard for unit 
+	testing</LI>
+	<LI>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
+	after reading his book it was my first time writing unit tests</LI>
+</UL>
+*/
