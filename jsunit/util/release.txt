@@ -50,6 +50,12 @@ license.
 	<TD><B>Comment</B></TD>
 </TR>
 <TR>
+	<TD>Port current version 3.7 of JUnit</TD>
+	<TD>JsUnit was designed very close to the JUnit structure. Despite some
+	special Java constructs it could be done with not too much effort. It
+	depends more on my available time.</TD>
+</TR>
+<TR>
 	<TD>Use normal derivation mechanism of JavaScript</TD>
 	<TD>My current approach supports multiple inheritance. I have to think
 	about a new model supporting at least Java &quot;interfaces&quot; that

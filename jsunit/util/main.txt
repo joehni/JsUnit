@@ -34,6 +34,7 @@ to allow automated tests as long as the environment support this scenario.</P>
 	<UL>
 		<LI>\ref gnu</LI>
 	</UL></LI>
+	<LI>\ref downloads</LI>
 	<LI>\ref usage
 	<UL>
 		<LI>\ref codeConv</LI>
@@ -67,10 +68,24 @@ to allow automated tests as long as the environment support this scenario.</P>
 	</UL></LI>
 	<LI>\ref acknowledge</LI>
 </UL>
-\section home Internet Home
-<P><A href="http://developer.berlios.de/projects/jsunit">
+\section downloads Downloads
+<P>
+\htmlonly
+<SCRIPT language="JavaScript"><!--
+// Reference BerliOS if viewed in the web.
+if( document.URL.indexOf( "http:", 0 ) >= 0 )
+{
+	var img = new Image();
+	img.src = "http://developer.berlios.de/sflogo.php?group_id=158&type=1";
+}
+--></SCRIPT>
+<A href="http://developer.berlios.de/projects/jsunit">
 <IMG src="berlios.bmp" align="left" width="118" height="52" border="0" alt="BerliOS Logo">
-</A>JsUnit is hosted at BerliOS.</P>
+</A>
+\endhtmlonly
+</P>
+<P>JsUnit is hosted at BerliOS. All versions can be found in the project's
+<A HREF="http://developer.berlios.de/projects/jsunit">Internet home page.</A></P>
 \htmlonly
 <BR clear="all">
 \endhtmlonly
