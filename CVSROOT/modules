@@ -26,4 +26,5 @@
 # spread out over the entire source repository.
 
 JsUnit lib/JavaScript/JsUnit
+JSI    lib/C++/JSI
 
