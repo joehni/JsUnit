@@ -110,7 +110,9 @@ used to debug scripts embedded in HTML documents or for single JavaScript
 files.</p>
 
 <ul>
-	<a href="http://msdn.microsoft.com/downloads/default.asp?URL=/downloads/sample.asp?url=/msdn-files/027/001/733/msdncompositedoc.xml">Windows Script Debugger</a>
+	<li><a
+	href="http://msdn.microsoft.com/downloads/default.asp?URL=/downloads/sample.asp?url=/msdn-files/027/001/733/msdncompositedoc.xml">Windows
+	Script Debugger</a></li>
 </ul>
 
 <p>To debug a script from command-line use the command-line interpreters with

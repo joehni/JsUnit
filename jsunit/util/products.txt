@@ -239,7 +239,8 @@ have listed all products that I am aware of.</p>
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.microsoft.com/windows/ie/default.asp">Internet Explorer 6.x</td>
+	<td><a href="http://www.microsoft.com/windows/ie/default.asp">Internet
+	Explorer 6.x</a></td>
 	<td><a href="http://www.microsoft.com">Microsoft</a></td>
 	<td>JScript 6.0</td>
 	<td>JScript</td>

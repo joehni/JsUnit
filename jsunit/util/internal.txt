@@ -89,7 +89,7 @@ cannot support the grouping commands of DoxyGen.</p>
 \subsection docScript Script Manual
 
 <p><pre>
-\htmlinclude ".js2doxy.man"
+\htmlinclude "js2doxy.man"
 </pre></p>
 
 \subsection docGen Rebuilding Documentation

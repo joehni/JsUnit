@@ -404,7 +404,7 @@ if( !this.Error )
 	 * Constructor.
 	 * The constructor initializes the \c message member with the argument 
 	 * \a msg.
-	 * \attension The ECMA standard does not ensure, that the constructor
+	 * \attention The ECMA standard does not ensure, that the constructor
 	 * of the internal Error class may be called by derived objects. It will
 	 * normally return a new Error instance if called as function.
 	 * @tparam String msg The error message.
@@ -428,7 +428,7 @@ if( !this.Error )
 	 * String representation of the error.
 	 * @treturn String Returns a \c String containing the Error class name 
 	 * and the error message.
-	 * \attension The format of the returned string is not defined by ECMA
+	 * \attention The format of the returned string is not defined by ECMA
 	 * and is up to the vendor only. This implementation follows the behaviour
 	 * of Mozilla.org's SpiderMonkey.
 	 */
@@ -466,11 +466,11 @@ else
  * Constructor.
  * The constructor initializes the \c message member with the argument 
  * \a msg.
- * \attension The ECMA standard does not ensure, that the constructor
+ * \attention The ECMA standard does not ensure, that the constructor
  * of the internal Error class may be called by derived objects. It will
  * normally return a new Error instance if called as function.
  * @tparam String msg The error message.
- * \attension This constructor may <b>not</b> be called as normal function.
+ * \attention This constructor may <b>not</b> be called as normal function.
  */
 function JsUnitError( msg )
 {

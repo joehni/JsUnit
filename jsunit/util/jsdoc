@@ -20,19 +20,17 @@
 # classes and functions in their production; they are not affected by this 
 # license.
 
-_DOXYGEN=`type doxygen > /dev/null 2>&1`
-if test -z "$_DOXYGEN"; then
+type doxygen > /dev/null 2>&1
+if test $? -ne 0; then
 	if test -d /opt/doxygen/bin; then
 		PATH=$PATH:/opt/doxygen/bin
-		_DOXYGEN=YES
+	else
+		echo "doxygen not available!"
+		exit 1
 	fi
 fi
-if test -z "$_DOXYGEN"; then
-	echo "doxygen not available!"
-	exit 1
-fi
-_DOT=`type dot > /dev/null 2>&1`
-if test -z "$_DOT"; then
+type dot > /dev/null 2>&1
+if test $? -ne 0; then
 	if test -d /opt/graphviz/bin; then
 		HAVE_DOT="YES"
 		PATH=$PATH:/opt/graphviz/bin
@@ -49,7 +47,7 @@ OUTPUT_DIRECTORY=.
 VERSION=`dirname $0`/version.cfg
 VERSION=`cat $VERSION`
 GENERATE_HTML=YES
-PERL_PATH=/bin/perl
+PERL_PATH=/usr/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
@@ -64,7 +62,7 @@ CWD=$PWD
 cd `dirname $0`/..
 rm -rf .lib/ .docs/ docs/ > /dev/null 2>&1
 mkdir .lib .docs 
-PAGER=cat perldoc -t util/js2doxy.pl > .lib/.js2doxy.man
+PAGER=cat perldoc -t util/js2doxy.pl > .lib/js2doxy.man
 cd lib
 for js in *.js; do 
 	../util/js2doxy.pl $js > ../.lib/$js

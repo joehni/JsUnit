@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/perl
 
 # JsUnit - a JUnit port for JavaScript
 # Copyright (C) 1999,2000,2001,2002 Joerg Schaible
