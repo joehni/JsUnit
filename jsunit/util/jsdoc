@@ -1,0 +1,13 @@
+#!/bin/sh
+
+CWD=$CWD
+cd `dirname $0`/..
+rm -rf .lib/ > /dev/null 2>&1
+mkdir .lib
+cd lib
+for js in *.js; do 
+	../util/jsd2ccd.pl $js | sed -e 's/\(.*\)/\1/g' > ../.lib/$js
+done
+#rm -rf ../.lib
+cd $CWD
+
