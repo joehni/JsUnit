@@ -24,6 +24,9 @@ if( true )
 
 var regex = /function (\w+)([^\{\}]*\))/;
 
+this["ActionScriptContext"].ActionScriptClass = ActionScript;
+ActionScript.prototype.context = this["ActionScriptContext"];
+
 /**
  * This is variable v.
  * \type Array<int>
