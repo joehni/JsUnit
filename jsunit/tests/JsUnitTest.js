@@ -33,6 +33,51 @@ AssertionFailedErrorTest.prototype = new TestCase();
 AssertionFailedErrorTest.prototype.testToString = AssertionFailedErrorTest_testToString;
 
 
+function ComparisonFailureTest( name )
+{
+	TestCase.call( this, name );
+}
+function ComparisonFailureTest_testToString()
+{
+	var cf = new ComparisonFailure( "!", "a", "b", null );
+	this.assertEquals( "ComparisonFailure: ! expected:<a>, but was:<b>", cf );
+	cf = new ComparisonFailure( null, "a", "b", null );
+	this.assertEquals( "ComparisonFailure: expected:<a>, but was:<b>", cf );
+	cf = new ComparisonFailure( null, "ba", "bc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...a>, but was:<...c>", cf );
+	cf = new ComparisonFailure( null, "ab", "cb", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<a...>, but was:<c...>", cf );
+	cf = new ComparisonFailure( null, "ab", "ab", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<ab>, but was:<ab>", cf );
+	cf = new ComparisonFailure( null, "abc", "adc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...b...>, but was:<...d...>", cf );
+	cf = new ComparisonFailure( null, "ab", "abc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...>, but was:<...c>", cf );
+	cf = new ComparisonFailure( null, "bc", "abc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...>, but was:<a...>", cf );
+	cf = new ComparisonFailure( null, "abc", "abbc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<......>, but was:<...b...>", cf );
+	cf = new ComparisonFailure( null, "abcdde", "abcde", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...d...>, but was:<......>", cf );
+	cf = new ComparisonFailure( null, "a", null, null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<a>, but was:<null>", cf );
+	cf = new ComparisonFailure( null, null, "a", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<null>, but was:<a>", cf );
+}
+ComparisonFailureTest.prototype = new TestCase();
+ComparisonFailureTest.prototype.testToString = ComparisonFailureTest_testToString;
+
+
 function TestFailureTest( name )
 {
 	TestCase.call( this, name );
@@ -382,6 +427,33 @@ function AssertTest_testAssertNotNull()
 		this.assertTrue( ex.toString().indexOf( "Is null!" ) > 0 );
 	}
 }
+function AssertTest_testAssertNotSame()
+{
+	var one = new String( "1" );
+	this.mAssert.assertNotSame( "Should not throw!", one, new String( "1" ));
+	this.mAssert.assertNotSame( one, one, new String( "1" ));
+	try
+	{
+		var me = this;
+		this.mAssert.assertNotSame( "Have to throw!", this, me );
+		this.fail( "'assertNotSame' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		var me = this;
+		this.mAssert.assertNotSame( this, me );
+		this.fail( "'assertNotSame' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+}
 function AssertTest_testAssertNotUndefined()
 {
 	this.mAssert.assertNotUndefined( "Is undefined!", 0 );
@@ -443,8 +515,8 @@ function AssertTest_testAssertSame()
 	this.mAssert.assertSame( this, me );
 	try
 	{
-		var one = "1";
-		this.mAssert.assertSame( "Have to throw!", one, 1 );
+		var one = new String( "1" );
+		this.mAssert.assertSame( "Have to throw!", one, new String( "1" ));
 		this.fail( "'assertSame' should have thrown." );
 	}
 	catch( ex )
@@ -454,8 +526,8 @@ function AssertTest_testAssertSame()
 	}
 	try
 	{
-		var one = "1";
-		this.mAssert.assertSame( one, 1 );
+		var one = new String( "1" );
+		this.mAssert.assertSame( one, new String( "1" ));
 		this.fail( "'assertSame' should have thrown." );
 	}
 	catch( ex )
@@ -535,6 +607,7 @@ AssertTest.prototype.mAssert = new Assert();
 AssertTest.prototype.testAssertEquals = AssertTest_testAssertEquals;
 AssertTest.prototype.testAssertFalse = AssertTest_testAssertFalse;
 AssertTest.prototype.testAssertNotNull = AssertTest_testAssertNotNull;
+AssertTest.prototype.testAssertNotSame = AssertTest_testAssertNotSame;
 AssertTest.prototype.testAssertNotUndefined = AssertTest_testAssertNotUndefined;
 AssertTest.prototype.testAssertNull = AssertTest_testAssertNull;
 AssertTest.prototype.testAssertSame = AssertTest_testAssertSame;
@@ -1120,6 +1193,7 @@ function JsUnitTestSuite()
 {
 	TestSuite.call( this, "JsUnitTest" );
 	this.addTestSuite( AssertionFailedErrorTest );
+	this.addTestSuite( ComparisonFailureTest );
 	this.addTestSuite( TestFailureTest );
 	this.addTestSuite( TestResultTest );
 	this.addTestSuite( AssertTest );

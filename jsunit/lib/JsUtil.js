@@ -37,7 +37,7 @@ function JsUtil()
 }
 /**
  * Print a single line.
- * @tparam String str The line to print.
+ * @tparam String script The line to print.
  * Prints a complete text line incl. line feed. Works for command line
  * shells WSH, Rhino and SpiderMonkey.
  */

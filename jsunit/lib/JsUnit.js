@@ -37,7 +37,7 @@ license.
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /**
- * Thrown, when a test assertion fails.
+ * Thrown when a test assertion fails.
  * @ctor
  * Constructor.
  * An AssertionFailedMessage needs a message and a call stack for construction.
@@ -55,10 +55,82 @@ function AssertionFailedError( msg, stack )
 }
 AssertionFailedError.prototype = new Error();
 /**
- * The name of the TypeError class as String.
+ * The name of the AssertionFailedError class as String.
  * @type String
  */
 AssertionFailedError.prototype.name = "AssertionFailedError";
+
+
+/**
+ * Thrown when a test assert comparing equal strings fail.
+ * @ctor
+ * Constructor.
+ * An AssertionFailedMessage needs a message and a call stack for construction.
+ * @tparam String msg Failure message.
+ * @tparam String expected The expected string value.
+ * @tparam String sctual The actual string value.
+ * @tparam CallStack stack The call stack of the assertion.
+ */
+function ComparisonFailure( msg, expected, actual, stack )
+{
+	AssertionFailedError.call( 
+		this, ( msg ? msg + " " : "" ) + "expected", stack );
+	this.mExpected = new String( expected );
+	this.mActual = new String( actual );
+}
+/**
+ * Returns the error message.
+ * @treturn String Returns the formatted error message.
+ * Returns "..." in place of common prefix and "..." in
+ * place of common suffix between expected and actual.
+ */
+function ComparisonFailure_toString()
+{
+	var str = AssertionFailedError.prototype.toString.call( this );
+	
+	var end = Math.min( this.mExpected.length, this.mActual.length );
+	var i = 0;
+	for( ; i < end; ++i )
+		if( this.mExpected.charAt( i ) != this.mActual.charAt( i ))
+			break;
+	var j = this.mExpected.length - 1;
+	var k = this.mActual.length - 1;
+	for( ; k >= i && j >= i; --k, --j )
+		if( this.mExpected.charAt( j ) != this.mActual.charAt( k ))
+			break;
+
+	var expected;
+	var actual;
+
+	if( j < i && k < i )
+	{
+		expected = this.mExpected;
+		actual = this.mActual;
+	}
+	else
+	{
+		expected = this.mExpected.substring( i, j + 1 );
+		actual = this.mActual.substring( i, k + 1 );
+		if( i <= end && i > 0 )
+		{
+			expected = "..." + expected;
+			actual = "..." + actual;
+		}
+		if( j < this.mExpected.length - 1 )
+			expected += "...";
+		if( k < this.mActual.length - 1 )
+			actual += "...";
+	}
+	
+	return str + ":<" + expected + ">, but was:<" + actual + ">";
+}
+ComparisonFailure.prototype = new AssertionFailedError();
+ComparisonFailure.prototype.toString = ComparisonFailure_toString;
+/**
+ * The name of the ComparisonFailure class as String.
+ * @type String
+ */
+ComparisonFailure.prototype.name = "ComparisonFailure";
 
 
 /**
@@ -421,11 +493,8 @@ function Assert_assertEquals( msg, expected, actual )
 		msg = null;
 	}
 	if( expected != actual )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Expected:<" + expected + ">, but was:<" + actual + ">";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+			, new CallStack(), msg );
 }
 /**
  * Asserts that a condition is false.
@@ -441,11 +510,8 @@ function Assert_assertFalse( msg, cond )
 		msg = null;
 	}
 	if( eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition should have failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Condition should have failed \"" + cond + "\""
+			, new CallStack(), msg );
 }
 /**
  * Asserts that an object is not null.
@@ -461,10 +527,27 @@ function Assert_assertNotNull( msg, object )
 		msg = null;
 	}
 	if( object === null )
+		this.fail( "Object was null.", new CallStack(), msg );
+}
+/**
+ * Asserts that two values are not the same.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @exception AssertionFailedError Thrown if the expected value is not the 
+ * actual one.
+ */
+function Assert_assertNotSame( msg, expected, actual )
+{
+	if( arguments.length == 2 )
 	{
-		var m = ( msg ? ( msg + " " ) : "" ) + "Object was null.";
-		this.fail( m, new CallStack());
+		actual = expected;
+		expected = msg;
+		msg = null;
 	}
+	if( expected === actual )
+		this.fail( "Not the same expected:<" + expected + ">"
+			, new CallStack(), msg );
 }
 /**
  * Asserts that an object is not undefined.
@@ -480,11 +563,8 @@ function Assert_assertNotUndefined( msg, object )
 		msg = null;
 	}
 	if( object === undefined )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was undefined.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was undefined."
+			, new CallStack(), msg );
 }
 /**
  * Asserts that an object is null.
@@ -500,11 +580,8 @@ function Assert_assertNull( msg, object )
 		msg = null;
 	}
 	if( object !== null )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was not null.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was not null."
+			, new CallStack(), msg );
 }
 /**
  * Asserts that two values are the same.
@@ -525,11 +602,8 @@ function Assert_assertSame( msg, expected, actual )
 	if( expected === actual )
 		return;
 	else
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Same expected:<" + expected + ">, but was:<" + actual + ">";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Same expected:<" + expected + ">, but was:<" + actual + ">"
+			, new CallStack(), msg );
 }
 /**
  * Asserts that a condition is true.
@@ -545,11 +619,7 @@ function Assert_assertTrue( msg, cond )
 		msg = null;
 	}
 	if( !eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Condition failed \"" + cond + "\"", new CallStack(), msg );
 }
 /**
  * Asserts that an object is undefined.
@@ -565,26 +635,26 @@ function Assert_assertUndefined( msg, object )
 		msg = null;
 	}
 	if( object !== undefined )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was not undefined.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was not undefined."
+			, new CallStack(), msg );
 }
 /**
  * Fails a test with a give message.
  * @tparam String msg The error message.
  * @tparam CallStack stack The call stack of the error.
+ * @tparam String usermsg The message part of the user.
  * @exception AssertionFailedError Is always thrown.
  */
-function Assert_fail( msg, stack )
+function Assert_fail( msg, stack, usermsg )
 {
-	var afe = new AssertionFailedError( msg, stack );
+	var afe = new AssertionFailedError(
+		( usermsg ? usermsg + " " : "" ) + msg, stack );
 	throw afe;
 }
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
+Assert.prototype.assertNotSame = Assert_assertNotSame;
 Assert.prototype.assertNotUndefined = Assert_assertNotUndefined;
 Assert.prototype.assertNull = Assert_assertNull;
 Assert.prototype.assertSame = Assert_assertSame;
@@ -695,11 +765,12 @@ function TestCase_runBare()
  */
 function TestCase_runTest()
 {
+	this.assertNotNull( this.mName );
 	var method = this[this.mName];
 	if( method )
 		method.call( this );
 	else
-		this.fail( "Method '" + this.mName + "' not found!" );
+		this.fail( "Method '" + this.getName() + "' not found!" );
 }
 /**
  * Sets the name of the test case.
@@ -784,7 +855,7 @@ function TestSuite( obj )
 		default: name = null; break;
 	}
 
-	this.mName = name;
+	this.setName( name );
 
 	// collect all testXXX methods
 	if( typeof( obj ) == "function" )
@@ -983,11 +1054,13 @@ function TestDecorator_countTestCases() { return this.mTest.countTestCases(); }
 function TestDecorator_findTest( name ) { return this.mTest.findTest( name ); }
 /** 
  * Returns name of the test.
+ * @note This is an enhancement to JUnit 3.8
  * @type String
  */
 function TestDecorator_getName() { return this.mTest.getName(); }
 /** 
  * Returns name the decorated test.
+ * @note This is an enhancement to JUnit 3.8
  * @type Test
  */
 function TestDecorator_getTest() { return this.mTest; }
@@ -1003,6 +1076,7 @@ function TestDecorator_run( result ) { this.basicRun( result ); }
 function TestDecorator_setName( name ) { this.mTest.setName( name ); }
 /** 
  * Returns the test as string. 
+ * @note This is an enhancement to JUnit 3.8
  * @type String
  */
 function TestDecorator_toString() { return this.mTest.toString(); }
