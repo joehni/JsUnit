@@ -1,11 +1,29 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 /*! \mainpage JsUnit Manual
 \htmlonly
 <H2>Introduction</H2>
-<P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">JUnit</A> written by
-Erich Gamma and Kent Beck. The port's base is JUnit version 3.2 and covers
-only the core system and the examples. Main goal of the port is a
-system that can be invoked by command line exiting with a return code to
-support automated tests as long as the environment support this scenario.</P>
+<P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">
+JUnit</A> written by Erich Gamma and Kent Beck. The port's base is JUnit 
+version 3.2 and covers only the core system and the examples. Main goal of the 
+port is a system that can be invoked by command line exiting with a return code
+to allow automated tests as long as the environment support this scenario.</P>
 <H2>License</H2>
 <P>Copyright &copy; 1999-2001 by 
 <A HREF="mailto:joerg.schaible@gmx.de">J&ouml;rg Schaible</A>.</P>
@@ -13,19 +31,18 @@ support automated tests as long as the environment support this scenario.</P>
 documentation under the terms of the GNU General Public License is hereby 
 granted. No representations are made about the suitability of this software 
 for any purpose. It is provided "as is" without express or implied warranty.
-See the 
-<A HREF="http://www.gnu.org/copyleft/gpl.html">
-GNU General Public License</A>
-for more details.</P>
+See the <A HREF="http://www.gnu.org/copyleft/gpl.html">
+GNU General Public License</A> for more details.</P>
 <P>Applications using JsUnit to perform unit tests are derivative works; they
 are not affected by this license.</P>
 <H2>Compatibility</H2>
-<P>The JsUnit library has to use exceptions. These exceptions were not part of
-the first language draft und therefore not everywhere available. The JsUnit
+<P>The JsUnit library has to use exceptions. Exceptions were part of the 
+third ECMA language draft und therefore not everywhere available. The JsUnit
 scripts are only available on systems that support exceptions. Additionally
 the scripts try to expose the call stack in case of an error. This call stack
 is also subject of compatibility and have changed in various versions of the
-language implementations of the different vendors.</P>
+language implementations of the different vendors. Unfortunately the ECMA
+definition does not have any concept.</P>
 <H3>The Script Language</H3>
 <H4>ECMAScript</H4>
 <P>ECMAScript is the official name of the language commonly called "JavaScript".
@@ -34,25 +51,23 @@ association and dedicated to the standardization of information and
 communication systems. The language is specified in the ECMA-262 document
 currently in the 3rd edition from 1999. This edition introduced exceptions
 into the language. Unfortunately the standard does not define any
-functionality or properties to retrieve the call stack. Communiqu&eacute; of <A HREF="http://www.daynetwork.com">Day International</A> is the
-only product I am aware of, that has an own implementation of ECMAScript.
-Unfortunately it does do not provide the full standard and exceptions are not
-supported.</P>
+functionality or properties to retrieve the call stack.</P>
 <H4>JavaScript</H4>
-<P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript was
-developed by Netscape and introduced with the Netscape 2.0 browser. Starting
+<P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript
+was developed by Netscape and introduced with the Netscape 2.0 browser. Starting
 with JavaScript 1.4 Netscape also implemented the exceptions. Unfortunately
-this version is not included into the 4.x versions of the browser. Despite the
-client-side, the language was available for Server-Side programming and built
-into the Netscape Enterprise Server 4.x, now called iPlanet.</P>
+this version was first time  included into the 4.72 version of the browser. 
+Despite the client-side, the language was available for Server-Side 
+programming and built into the Netscape Enterprise Server 4.x, now called 
+iPlanet.</P>
 <H4>JScript</H4>
-<P>JScript is the Microsoft's implementation of ECMAScript. The language supports
-exceptions starting with version 5.0 of JScript. The language is available
-with 
-Internet Explorer starting with version 5.0, Internet Information Server
-5.0 and Windows Scripting Host 2.0.</P>
+<P>JScript is the Microsoft's implementation of ECMAScript. The language 
+supports exceptions starting with version 5.0 of JScript. The language is 
+available with Internet Explorer starting with version 5.0, Internet 
+Information Server 5.0 and Windows Scripting Host 2.0.</P>
 <H3>JavaScript enabled products</H3>
-<P>There are a lot of products that are able to process a JavaScript flavor. I have listed all products that I am aware of.</P>
+<P>There are a lot of products that are able to process a JavaScript flavor. I 
+have listed all products that I am aware of.</P>
 <TABLE BORDER="0">
 <TR>
 	<TH ALIGN="left">Product</TH>
@@ -63,7 +78,7 @@ Internet Explorer starting with version 5.0, Internet Information Server
 <TR>
 	<TD>Communiqu&eacute; 2.x</TD>
 	<TD><A HREF="http://www.daynetwork.com">Day International</A></TD>
-	<TD>ECMAScript 2nd edition</TD>
+	<TD>ECMAScript 3 (not complete)</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
@@ -79,7 +94,7 @@ Internet Explorer starting with version 5.0, Internet Information Server
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>Internet Explorer 4.0</TD>
+	<TD>Internet Explorer 4.x</TD>
 	<TD>Microsoft</TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
@@ -91,13 +106,13 @@ Internet Explorer starting with version 5.0, Internet Information Server
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>Internet Explorer 6.0</TD>
+	<TD>Internet Explorer 6.x</TD>
 	<TD>Microsoft</TD>
-	<TD>JScript ?</TD>
+	<TD>JScript 6.0</TD>
 	<TD>?</TD>
 </TR>
 <TR>
-	<TD>Internet Information Server 4.0</TD>
+	<TD>Internet Information Server 4.x</TD>
 	<TD>Microsoft</TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
@@ -116,19 +131,25 @@ Internet Explorer starting with version 5.0, Internet Information Server
 	<TD>yes, but no call stack</TD>
 </TR>
 <TR>
+	<TD>Konqueror ?</TD>
+	<TD><A HREF="http://www.kde.org">KDE.org</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
 	<TD>Mozilla 0.8x</TD>
 	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
-	<TD>JavaScript 1.4 ?</TD>
+	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
 	<TD>Mozilla 0.9x</TD>
 	<TD>Mozilla.org</TD>
-	<TD>JavaScript 1.4 ?</TD>
+	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>mySAP.com</TD>
+	<TD>mySAP.com ?</TD>
 	<TD><A HREF="http://www.sap.com">SAP</A></TD>
 	<TD>?</TD>
 	<TD>?</TD>
@@ -142,7 +163,7 @@ Internet Explorer starting with version 5.0, Internet Information Server
 <TR>
 	<TD>Navigator 6.x</TD>
 	<TD>Netscape</TD>
-	<TD>JavaScript 1.4 ?</TD>
+	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
@@ -158,10 +179,16 @@ Internet Explorer starting with version 5.0, Internet Information Server
 	<TD>yes</TD>
 </TR>
 <TR>
+	<TD>Opera 4.x</TD>
+	<TD><A HREF="http://www.opera.com">Opera</A></TD>
+	<TD>ECMAScript 2</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
 	<TD>Opera 5.x</TD>
 	<TD><A HREF="http://www.opera.com">Opera</A></TD>
-	<TD>JavaScript 1.4 ?</TD>
-	<TD>no, no exceptions</TD>
+	<TD>ECMAScript 3 (not complete)</TD>
+	<TD>no, exceptions too buggy<BR>no callstack</TD>
 </TR>
 <TR>
 	<TD>Tomcat 3.x</TD>
@@ -176,7 +203,7 @@ Internet Explorer starting with version 5.0, Internet Information Server
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>Windows Scripting Host 1.0</TD>
+	<TD>Windows Scripting Host 1.x</TD>
 	<TD>Microsoft</TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
@@ -192,17 +219,25 @@ Internet Explorer starting with version 5.0, Internet Information Server
 <P>If you look at the source code of JsUnit you will detect a lot of source code
 documentation and an unusual JavaScript programming style. The approach
 enables a good porting of the Java code, offers pseudo multiple inheritance
-and allows the automated reference manual.</P>
+and allows the automated reference manual. I may try to return to standard
+JavaScript inheritance one day. I thought I had compatibility problems with
+the BroadVision 5.x platform, but I cannot test this, since I do not have
+access anymore</P>
 <H3>Coding conventions</H3>
 <P>To create an object in JavaScript you have to use the new operator. Every
 time this operator will call a function that creates automatically the new
-object implicitly. The new object is of the type of the function. This means the function's code represents the class definition, the &quot;constructor&quot; is the function call itself. Someone may ask why I did not use the prototype functionality, but I found compatibility issues as well as the mechanism would have prevented multiple inheritance.</P>
-<P>JsUnit follows the scheme that all member functions and variables are declared within this constructor and assigned explicitly at the end of it.
+object implicitly. The new object is of the type of the function. This means 
+the function's code represents the class definition, the 
+&quot;constructor&quot; is the function call itself. Someone may ask why I did 
+not use the prototype functionality, but I found compatibility issues as well 
+as the mechanism would have prevented multiple inheritance.</P>
+<P>JsUnit follows the scheme that all member functions and variables are 
+declared within this constructor and assigned explicitly at the end of it.
 This prevents naming conflicts in the global namespace and gives the
-impression of a real class definition. The first section within the
-constructor is used for the inheritance. Every base class (i.e.
-function) is assigned the internal member <CODE>_super</CODE> and
-then called with all necessary argumants and using the current object as environment:</P> 
+impression of a real class definition. The first section within the constructor
+is used for the inheritance. Every base class (i.e. function) is assigned the 
+internal member <CODE>_super</CODE> and then called with all necessary 
+arguments and using the current object as environment:</P> 
 <P><DIV CLASS="fragment"><PRE>
 this._super = BaseClass1;
 this._super( arg1, arg2 );
@@ -224,7 +259,8 @@ this.f1 = f1;
 this.f2 = f2;</PRE></DIV></P>
 <P>It is no problem to overload a function that was already assign in a
 constructor of a base class. Unfortunately you have to follow a naming
-convention, if your new function has to call the overloaded function of the base class:</P>
+convention, if your new function has to call the overloaded function of the 
+base class:</P>
 <P><DIV CLASS="fragment"><PRE>
 function f1() 
 {
@@ -298,8 +334,8 @@ for all deliveries:</P>
 </TR>
 <TR>
 	<TD>AllTestsNS<BR>AllTestsNS.html</TD>
-	<TD>Shell script using <EM>jsac</EM> to compile a Netscape iPlanet web application. 
-	The script compiles the web from the HTML source.</TD>
+	<TD>Shell script using <EM>jsac</EM> to compile a Netscape iPlanet web 
+	application. The script compiles the web from the HTML source.</TD>
 </TR>
 </TABLE>
 <H2>Internals</H2>
@@ -323,21 +359,22 @@ JavaScript keywords. Documentation blocks within the code are embedded with:</P>
 	<LI>@@struct</LI>
 	<LI>@@var <EM>type</EM></LI>
 </UL>
-<P>Keep in mind that pseude C++ is produced. Therefore are the meta tags context sensitive. <EM>file</EM> can only be used at the
-first documentation block in a file. <EM>class</EM>, <EM>function</EM>,
-<EM>struct</EM>, and <EM>var</EM> are only valid for JavaScript functions at
-global scope. <EM>attrib</EM> and <EM>method</EM> have to be used for
-documentation blocks within a function representing a class. The <EM>ctor</EM>
-tag has to be used within a documentation block for a <EM>class</EM> or a
-<EM>struct</EM> dividing the documentation for the class and the constructor.</P>
+<P>Keep in mind that pseude C++ is produced. Therefore are the meta tags 
+context sensitive. <EM>file</EM> can only be used at the first documentation 
+block in a file. <EM>class</EM>, <EM>function</EM>, <EM>struct</EM>, and 
+<EM>var</EM> are only valid for JavaScript functions at global scope. 
+<EM>attrib</EM> and <EM>method</EM> have to be used for documentation blocks 
+within a function representing a class. The <EM>ctor</EM> tag has to be used 
+within a documentation block for a <EM>class</EM> or a <EM>struct</EM> dividing
+the documentation for the class and the constructor.</P>
 <P>The optional <EM>return type</EM> for <EM>method</EM> and <EM>function</EM>
 is just for documentation, since JavaScript is typeless. Although all
 variables are also typeless, for documentation purpose it is necessary to
 define the <EM>type</EM> of a <EM>var</EM>iable or a class
 <EM>attrib</EM>ute.</P>
-<P>See <EM><A TYPE="text/plain" HREF="../util/jsd2ccd.pl">jsd2ccd.pl</A></EM> for further
-information. You may also use after the JavaScript meta tags any Doxygen meta
-tags.</P>
+<P>See <EM><A TYPE="text/plain" HREF="../util/jsd2ccd.pl">jsd2ccd.pl</A></EM>
+for further information. You may also use after the JavaScript meta tags any
+Doxygen meta tags.</P>
 <H3>Rebuilding documentation</H3>
 <P>Like everyone I am not very keen on writing documentation. The best way I can
 live with it is the way javadoc supports this. Luckily there are some other
@@ -348,33 +385,36 @@ have used a perl script developed by a friend of mine to transform JavaScript
 code that follow the coding conventions above in some kind of pseudo C++ that
 can be used to fool Doxygen, my favorite non-Java source code documentation
 tool.</P>
-<P>The script <EM>jsdoc</EM> to rebuild the documentation is located in the utils directory.
-It depends on a Unix environment including Perl. I use personally <A
-HREF="http://sources.redhat.com/">Cygwin</A> that
-comes nowadays with quite complete Unix packages. Additionally you have to install
-<A HREF="http://www.doxygen.org">Doxygen</A> and <A
-HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
+<P>The script <EM>jsdoc</EM> to rebuild the documentation is located in the
+utils directory. It depends on a Unix environment including Perl. I use 
+personally <A HREF="http://sources.redhat.com/">Cygwin</A> that comes nowadays 
+with quite complete Unix packages. Additionally you have to install
+<A HREF="http://www.doxygen.org">Doxygen</A> and 
+<A HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
 cross-platform drawing toolkit from AT&amp;T. My script expects both tools
 either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
 mounted my Windows program directory to /opt using Cygwin functionality.</P>
-<P>My script will call the Perl script <EM>jsd2ccd.pl</EM> to generate pseudo C++. Then it calls
-Doxygen to generate the first version of the HTML documentation and the Unix
-man pages. A last sed processing is done to generate this <A CLASS="J">J</A><A
-CLASS="s">s</A><A CLASS="U">U</A>nit color style in the headers.</P>
+<P>My script will call the Perl script <EM>jsd2ccd.pl</EM> to generate pseudo
+C++. Then it calls Doxygen to generate the first version of the HTML 
+documentation and the Unix man pages. A last sed processing is done to 
+generate this <A CLASS="J">J</A><A CLASS="s">s</A><A CLASS="U">U</A>nit color 
+style in the headers.</P>
 <P>BTW: The Perl script just extracts code and comments that follow a special
-scheme. Therefore it is no problem to use it also for JavaScript embedded into HTML.</P>
+scheme. Therefore it is no problem to use it also for JavaScript embedded into
+HTML.</P>
 <H2>Acknowledgements</H2>
-<P>JsUnit would not have been possible in this form without the work and ideas of
-a lot of other people:</P>
+<P>JsUnit would not have been possible in this form without the work and ideas
+of a lot of other people:</P>
 <UL>
 	<LI>Achim Kraus, author of the Perl script converting the JavaScript code
 	into something Doxygen can understand</LI>
 	<LI>Dimitri van Heesch for his wonderful documentation tool <A
 	HREF="http://www.doxygen.org">Doxygen</A></LI>
-	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for providing me with the power of the Linux tools in Windows</LI>
-	<LI>Erich Gamma and Kent Beck for developing with <A
-	HREF="http://www.junit.org">JUnit</A> some kind of
-	standard for unit testing</LI>
+	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for 
+	providing me with the power of the Linux tools in Windows</LI>
+	<LI>Erich Gamma and Kent Beck for developing with 
+	<A HREF="http://www.junit.org">JUnit</A> some kind of standard for unit 
+	testing</LI>
 	<LI>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
 	after reading his book it was my first time writing unit tests</LI>
 </UL>
