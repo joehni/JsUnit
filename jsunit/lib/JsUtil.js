@@ -35,23 +35,44 @@ license.
 function JsUtil()
 {
 }
+/** 
+ * Retrieve the caller of a function.
+ * @tparam Function fn The function to examine.
+ * @treturn Function The caller as Function or undefined.
+ **/
+function JsUtil_getCaller( fn )
+{
+	switch( typeof( fn ))
+	{
+		case "undefined":
+			return JsUtil_getCaller( JsUtil_getCaller );
+			
+		case "function":
+			if( fn.caller )
+				return fn.caller;
+			if( fn.arguments && fn.arguments.caller )
+				return fn.arguments.caller;
+	}
+	return undefined;
+}
 /**
- * Print a single line.
- * @tparam String script The line to print.
- * Prints a complete text line incl. line feed. Works for command line
+ * Loads a file.
+ * @tparam String fname The file name.
+ * Loads the content of a file into a String. Works for command line
  * shells WSH, Rhino and SpiderMonkey.
+ * @treturn String The content of the file.
  */
-function JsUtil_load( script )
+function JsUtil_load( fname )
 {
 	var ret = "true";
 	if( JsUtil.prototype.isMozillaShell )
 	{
-		load( script );
+		load( fname );
 	}
 	else if( JsUtil.prototype.isWSH )
 	{
 		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-		var file = fso.OpenTextFile( script, 1 );
+		var file = fso.OpenTextFile( fname, 1 );
 		ret = file.ReadAll();
 		file.Close();
 	}
@@ -89,6 +110,7 @@ function JsUtil_quit( exit )
 	else if( JsUtil.prototype.isWSH )
 		WScript.Quit( exit );
 }
+JsUtil.prototype.getCaller = JsUtil_getCaller;
 JsUtil.prototype.load = JsUtil_load;
 JsUtil.prototype.print = JsUtil_print;
 JsUtil.prototype.quit = JsUtil_quit;
@@ -139,6 +161,13 @@ JsUtil.prototype.isShell =
 	   JsUtil.prototype.isMozillaShell 
 	|| JsUtil.prototype.isWSH;
 /**
+ * Flag for call stack support.
+ * @type Boolean
+ * The member is true, if the engine provides call stack info.
+ */
+JsUtil.prototype.hasCallStackSupport = 
+	   JsUtil.prototype.getCaller() !== undefined;
+/**
  * \internal
  */
 JsUtil.prototype.hasCompatibleErrorClass = 
@@ -147,12 +176,13 @@ JsUtil.prototype.hasCompatibleErrorClass =
 	  	  || (   JsUtil.prototype.isJScript 
 		      && ( this.ScriptEngineMajorVersion() >= 6 ))));
 
+
 /**
  * CallStack object.
  * The object is extremly system dependent, since its functionality is not
- * within the range of ECMA 262, 3rd edition. It is supported by the
- * JScript engine and was supported in Netscape Enterprise Server 2.x, but
- * not in the newer version 4.x.
+ * within the range of ECMA 262, 3rd edition. It is supported by JScript
+ * and SpiderMonkey and was supported in Netscape Enterprise Server 2.x, 
+ * but not in the newer version 4.x.
  * @ctor
  * Constructor.
  * The object collects the current call stack up to the JavaScript engine.
@@ -167,63 +197,81 @@ function CallStack( depth )
 	 * The array with the stack. 
 	 * @type Array<String>
 	 */
+	this.mStack = null;
+	if( JsUtil.prototype.hasCallBackSupport )
+		this._fill( depth );
+}
+/**
+ * \internal
+ */
+function CallStack__fill( depth )
+{
 	this.mStack = new Array();
-
+	
 	// set stack depth to default
 	if( depth == null )
 		depth = 10;
 
-	var fn = this.getCaller( CallStack );
-	if( fn === undefined )
+	++depth;
+	var fn = JsUtil.prototype.getCaller( CallStack__fill );
+	while( fn != null && depth > 0 )
 	{
-		this.mStack.push( "[CallStack information not supported]" );
-	}
-	else
-	{
-		while( fn != null && depth > 0 )
-		{
-			s = new String( fn );
-			--depth;
-	
-			// Extract function name and argument list
-			var r = /function (\w+)([^\{\}]*\))/;
-			r.exec( s );
-			var f = new String( RegExp.$1 );
-			var args = new String( RegExp.$2 );
-			this.mStack.push( f + args );
-	
-			// Retrieve caller function
-			if( fn == this.getCaller( fn ))
-			{
-				this.mStack.push( "[JavaScript recursion]" );
-				break;
-			}
-			else
-				fn = this.getCaller( fn );
-		}
-	
-		if( fn == null )
-		{
-			this.mStack.push( "[JavaScript engine]" );
-		}
-	}
-}
+		s = new String( fn );
+		--depth;
 
-/** 
- * Retrieve the caller of a function.
- * @tparam Function fn The function to examin.
- * @treturn Function The caller as Function or undefined.
+		// Extract function name and argument list
+		var r = /function (\w+)([^\{\}]*\))/;
+		r.exec( s );
+		var f = new String( RegExp.$1 );
+		var args = new String( RegExp.$2 );
+		this.mStack.push(( f + args ).replace( /\s/g, "" ));
+
+		// Retrieve caller function
+		if( fn == JsUtil.prototype.getCaller( fn ))
+		{
+			// Some interpreter's caller use global objects and may start
+			// an endless recursion.
+			this.mStack.push( "[JavaScript recursion]" );
+			break;
+		}
+		else
+			fn = JsUtil.prototype.getCaller( fn );
+	}
+
+	if( fn == null )
+		this.mStack.push( "[JavaScript engine]" );
+
+	// remove direct calling function CallStack or CallStack_fill
+	this.mStack.shift();
+}
+/**
+ * Fills the object with the current call stack info.
+ * The function collects the current call stack up to the JavaScript engine.
+ * Any previous data of the instance is lost.
+ * Most engines will not support call stack information with a recursion.
+ * Therefore the collection is stopped when the stack has two identical
+ * functions in direct sequence.
+ * @tparam Number depth Maximum recorded stack depth (defaults to 10).
  **/
-function CallStack_getCaller( fn )
+function CallStack_fill( depth )
 {
-	if( fn.caller !== undefined )
-		return fn.caller;
-	if( fn.arguments !== undefined && fn.arguments.caller !== undefined )
-		return fn.arguments.caller;
-			
-	return undefined;
+	this.mStack = null;
+	if( JsUtil.prototype.hasCallBackSupport )
+		this._fill( depth );
 }
-
+/**
+ * Retrieve call stack as array.
+ * The function returns the call stack as Array of Strings. 
+ * @treturn Array<String> The call stack as array of strings.
+ **/
+function CallStack_getStack()
+{
+	var a = new Array();
+	if( this.mStack != null )
+		for( var i = this.mStack.length; i--; )
+			a[i] = this.mStack[i];
+	return a;
+}
 /**
  * Retrieve call stack as string.
  * The function returns the call stack as string. Each stack frame has an 
@@ -232,17 +280,20 @@ function CallStack_getCaller( fn )
  **/
 function CallStack_toString()
 {
-	var s = new String();
-	for( var i = 1; i <= this.mStack.length; ++i )
-	{
-		if( s.length != 0 )
-			s += "\n";
-		s += i.toString() + ": " + this.mStack[i-1];
-	}
+	var s = "";
+	if( this.mStack != null )
+		for( var i = 1; i <= this.mStack.length; ++i )
+		{
+			if( s.length != 0 )
+				s += "\n";
+			s += i.toString() + ": " + this.mStack[i-1];
+		}
 	return s;
 }
 
-CallStack.prototype.getCaller = CallStack_getCaller;
+CallStack.prototype._fill = CallStack__fill;
+CallStack.prototype.fill = CallStack_fill;
+CallStack.prototype.getStack = CallStack_getStack;
 CallStack.prototype.toString = CallStack_toString;
 
 

@@ -24,38 +24,73 @@ function CallStackTest( name )
 {
 	TestCase.call( this, name );
 }
+function CallStackTest_testCtor()
+{
+	if( JsUtil.prototype.hasCallBackSupport )
+	{
+		var cs = this.f0().getStack();
+		cs = this.f12().getStack();
+		this.assertEquals( 10, cs.length );
+		this.assertEquals( /^f9\(.*\)$/, cs.pop());
+		cs = this.f12(13).getStack();
+		this.assertEquals( /^f12\(.*\)$/, cs.pop());
+		cs = this.f4().getStack();
+		this.assertEquals( /^f4\(.*\)$/, cs[4] );
+		this.assertEquals( /^CallStackTest_testCtor\(.*\)$/, cs[5] );
+	}
+}
+function CallStackTest_testFill()
+{
+	if( JsUtil.prototype.hasCallBackSupport )
+	{
+		this.f0 = function f0( d ) { this.cs.fill(d); }
+
+		this.cs = new CallStack();
+		this.f12(13);
+		this.assertEquals( /^f12\(.*\)$/, this.cs.getStack().pop());
+		this.f0();
+		this.assertEquals( /^f0\(.*\)$/, this.cs.getStack()[0] );
+	}
+}
+function CallStackTest_testGetStack()
+{
+	if( JsUtil.prototype.hasCallBackSupport )
+	{
+		var cs = this.f12(13);
+		this.assertEquals( 13, cs.getStack().length );
+		cs = this.f0();
+		this.assertEquals( 10, cs.getStack().length );
+	}
+}
 function CallStackTest_testToString()
 {
-	function f0(d) { return new CallStack(d); }
-	function f1(d) { return f0(d); }
-	function f2(d) { return f1(d); }
-	function f3(d) { return f2(d); }
-	function f4(d) { return f3(d); }
-	function f5(d) { return f4(d); }
-	function f6(d) { return f5(d); }
-	function f7(d) { return f6(d); }
-	function f8(d) { return f7(d); }
-	function f9(d) { return f8(d); }
-	function f10(d) { return f9(d); }
-	function f11(d) { return f10(d); }
-	function f12(d) { return f11(d); }
-
-	var cs = f0().toString().replace(/\n/g, "|");
-	if( cs.indexOf( "not supported" ) == -1 )
+	if( JsUtil.prototype.hasCallBackSupport )
 	{
-		cs = f12().toString().replace( /\n/g, "|" );
-		this.assertTrue( cs.indexOf( "f10" ) == -1 );
-		this.assertTrue( cs.indexOf( "f9" ) > 0 );
-		cs = f12(13).toString().replace( /\n/g, "|" );
-		this.assertTrue( cs.indexOf( "f12" ) > 0 );
-		cs = f4().toString().replace( /\n/g, "|" );
+		var cs = this.f4().toString().replace( /\n/g, "|" );
 		this.assertTrue( cs.indexOf( "f5" ) == -1 );
 		this.assertTrue( cs.indexOf( "f4" ) >= 0 );
 		this.assertTrue( cs.indexOf( "testToString" ) >= 0 );
 	}
 }
 CallStackTest.prototype = new TestCase();
+CallStackTest.prototype.testCtor = CallStackTest_testCtor;
+CallStackTest.prototype.testGetStack = CallStackTest_testGetStack;
+CallStackTest.prototype.testFill = CallStackTest_testFill;
 CallStackTest.prototype.testToString = CallStackTest_testToString;
+CallStackTest.prototype.f0 = function f0(d) { return new CallStack(d); }
+CallStackTest.prototype.f1 = function f1(d) { return this.f0(d); }
+CallStackTest.prototype.f2 = function f2(d) { return this.f1(d); }
+CallStackTest.prototype.f3 = function f3(d) { return this.f2(d); }
+CallStackTest.prototype.f4 = function f4(d) { return this.f3(d); }
+CallStackTest.prototype.f5 = function f5(d) { return this.f4(d); }
+CallStackTest.prototype.f6 = function f6(d) { return this.f5(d); }
+CallStackTest.prototype.f7 = function f7(d) { return this.f6(d); }
+CallStackTest.prototype.f8 = function f8(d) { return this.f7(d); }
+CallStackTest.prototype.f9 = function f9(d) { return this.f8(d); }
+CallStackTest.prototype.f10 = function f10(d) { return this.f9(d); }
+CallStackTest.prototype.f11 = function f11(d) { return this.f10(d); }
+CallStackTest.prototype.f12 = function f12(d) { return this.f11(d); }
+
 
 function ArrayTest( name )
 {

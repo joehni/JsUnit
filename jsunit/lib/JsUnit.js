@@ -492,7 +492,12 @@ function Assert_assertEquals( msg, expected, actual )
 		expected = msg;
 		msg = null;
 	}
-	if( expected != actual )
+	if( expected instanceof RegExp && typeof( actual ) == "string" )
+	{
+		if( !actual.match( expected ))
+			this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">" );
+	}
+	else if( expected != actual )
 		if( typeof( expected ) == "string" && typeof( actual ) == "string" )
 			throw new ComparisonFailure( msg, expected, actual, new CallStack());
 		else

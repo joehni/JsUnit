@@ -131,7 +131,7 @@ document.writeln("</p>");
 <!--
 document.writeln("<p>");
 for( var i in JsUtil.prototype )
-	if( typeof JsUtil.prototype[i] != "function" && i.indexOf( "is" ) == 0 )
+	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 		document.writeln( i + ": " + JsUtil.prototype[i] + "<br>" );
 document.writeln("</p>");
 // -->

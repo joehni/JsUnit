@@ -52,7 +52,7 @@ JsUtil.prototype.print( "\texceptions working: " + exceptionsWorking );
 
 JsUtil.prototype.print( "\nJavaScript engine detection:" );
 for( var i in JsUtil.prototype )
-	if( typeof JsUtil.prototype[i] != "function" && i.indexOf( "is" ) == 0 )
+	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 		JsUtil.prototype.print( "\t" + i + ": " + JsUtil.prototype[i] );
 
 function main( args )
