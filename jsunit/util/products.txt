@@ -112,12 +112,12 @@ are in this case provided by JsUnit.
 The Windows Script host has two utilities running scripts from command-line:
 cscript and wscript. Both utilities recognize the file extension and will run
 JScript files directly. wscript will execute them in a GUI environment, while
-cscript is a console application running the script in the console.
+cscript is a console application running the script in the console. JScript
+code can be within normal .js files or the JScript files can be included using
+a Windows Script Host (.wsf) file. JsUnit delivers a sample for both variants.
 
-JScript code can be within normal .js files or the JScript files can be
-included using a Windows Script Host (.wsh) file. JsUnit delivers a sample for
-both variants. See description to \ref wsdebug for debugging. Alternativly you
-can use Visual InterDev.
+See description to \ref wsdebug for debugging. Alternativly you
+can use \ref interdev.
 
 \subsection iexplore Internet Explorer
 
@@ -146,5 +146,19 @@ cscript /X <i>&lt;filename&gt;.js</i></pre>
 \endhtmlonly
 
 \image html msscriptdebugger.png
+
+\subsection interdev Microsoft Visual InterDev
+
+<a
+href="http://msdn.microsoft.com/vinterdev/technical/documentation.asp">Microsoft
+Visual InterDev 6.0</a> is a development environment for web applications. It
+is very comfortable with debugging client-side JavaScript code. JsUnit
+contains a Visual InterDev solution (.sln) and project (.vup) file for the
+unit tests and the samples.
+
+\image html interdev.png
+
+<a href="http://msdn.microsoft.com/vinterdev/default.asp">Visual InterDev is
+now integrated into Visual Studio .NET</a>.
 
 */

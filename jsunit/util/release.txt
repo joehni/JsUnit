@@ -76,7 +76,9 @@ Hieatt's browser GUI.</p>
 	<li>Name of fixtures are prepended with the name of the TestCase</li>
 	<li>Native report format equals now JUnit. Old format supported by
 	class ClassicReportPrinter</li>
-	<li>Use TextTestRunner.prototype.main to call
+	<li>Use TextTestRunner.prototype.main to call</li>
+	<li>Use own Error class hierarchy since ECMA standard does not guarantee
+	consistant behaviour deriving from system classes</li>
 </ul>
 
 \subsection bug Bug Fixes
