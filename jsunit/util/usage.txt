@@ -46,7 +46,7 @@ constructor:</P>
 <P><DIV CLASS="fragment"><PRE>
 function ClassName( arg1, arg2 )
 {
-	BaseClass.call( this, arg1, arg2 );
+    BaseClass.call( this, arg1, arg2 );
 }</PRE></DIV></P>
 \endhtmlonly
 
@@ -98,27 +98,27 @@ ClassName.prototype.v1 = 1;</PRE></DIV></P>
 \subsection altSyntax Alternative Syntax
 
 <P>The previous chapter followed the coding convention of the JavaScript
-Reference Guide. As convensions imply you may use an alternative coding style,
-the js2doxy Perl script will understand even this:</P>
+Reference Guide. A convension always imply you may use an alternative coding
+style, the Perl script \ref docScript "js2doxy.pl" will understand even
+this:</P>
 
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
 function ClassName( arg1, arg2 )
 {
-	BaseClass.call( this, arg1, arg2 );
+    BaseClass.call( this, arg1, arg2 );
 }
+ClassName.prototype = new BaseClass();
+ClassName.prototype.f1 = function ClassName_f1( arg1 ) 
 {
-	ClassName.prototype = new BaseClass();
-	ClassName.prototype.f1 = function ClassName_f1( arg1 ) 
-	{
-    	BaseClass.prototype.f1.call( this, arg1 );
-	}
-	ClassName.prototype.f2 = function() 
-	{
-    	BaseClass.prototype.f2.apply( this, arguments );
-	}
-	ClassName.prototype.v1 = 1;
-}</PRE></DIV></P>
+    BaseClass.prototype.f1.call( this, arg1 );
+}
+ClassName.prototype.f2 = function() 
+{
+    BaseClass.prototype.f2.apply( this, arguments );
+}
+ClassName.prototype.v1 = 1;
+</PRE></DIV></P>
 \endhtmlonly
 
 <P>A lot of interpreters will not generate in this situation any identifier in
@@ -193,9 +193,9 @@ application has the responsibility to include all necessary sources. Create a
 TestRunner for reporting the results, add all wanted test suites to the runner
 and perform the test. The TestRunner itself is normally also a derived class,
 that has reporting functions that work perfectly in the system environment.
-See below a sample for the Windows Scripting Host:</P>
+See below a sample for the JavaScript shells:</P>
 
-\include AllTests.wsf
+\include AllTests.js
 
 \subsection examples Examples
 
@@ -256,9 +256,9 @@ for all deliveries:</P>
 	<TD>AllTests.js</TD>
 	
 	<TD>JavaScript to use with the JavaScript shells. Use <EM>java js.jar</EM>
-	to run <em>Rhino</em> build with Java or use <EM>jsshell</EM> to run 
-	<em>SpiderMonkey</em> build with C. You may also use <em>cscript</em> for
-	this file.</TD>
+	to run <em>Rhino</em> build from Java source or use <EM>jsshell</EM> to
+	run <em>SpiderMonkey</em> build from C source. You may also use
+	<em>cscript</em> for this file.</TD>
 	
 </TR>
 </TABLE>

@@ -29,9 +29,6 @@ of a lot of other people:</P>
 
 <UL>
 
-	<LI>Edward Hieatt, author of another JsUnit framework writing a great
-	GUI</LI>
-	
 	<LI>Dimitri van Heesch for his wonderful documentation tool <A
 	HREF="http://www.doxygen.org">Doxygen</A></LI>
 	
