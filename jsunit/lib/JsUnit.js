@@ -46,14 +46,13 @@ license.
  */
 function AssertionFailedError( msg, stack )
 {
-	// Error.call( this, msg );
-	this.message = msg;
+	JsUnitError.call( this, msg );
 	/**
 	 * The call stack for the message.
 	 */
 	this.mCallStack = stack;
 }
-AssertionFailedError.prototype = new Error();
+AssertionFailedError.prototype = new JsUnitError();
 /**
  * The name of the AssertionFailedError class as String.
  * @type String
@@ -1891,11 +1890,10 @@ function TextTestRunner_start( args )
 {
 	function Usage( msg )
 	{
-		//Error.call( this, msg );
-		this.message = 
-			"[JavaScript engine] [TestScript] TestName [TestName2]" + msg;
+		JsUnitError.call( this, 
+			"[JavaScript engine] [TestScript] TestName [TestName2]" + msg );
 	}
-	Usage.prototype = new Error();
+	Usage.prototype = new JsUnitError();
 	Usage.prototype.name = "Usage";
 
 	var testCases = new Array();

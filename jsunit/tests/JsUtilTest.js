@@ -157,67 +157,48 @@ function ErrorTest( name )
 }
 function ErrorTest_testAttributes()
 {
-	var err = new Error( "my message" );
-	this.assertEquals( "Error", err.name );
-	this.assertEquals( "my message", err.message );
-	if(   JsUtil.prototype.isJScript 
-	   && !JsUtil.prototype.hasCompatibleErrorClass )
+	if( Error.testable )
 	{
-		this.assertEquals( "JScript", ScriptEngine());
-		err = null;
-		var z = 0;
-		try
-		{
-			eval( "this = 5" );
-		}
-		catch( ex )
-		{
-			z = parseInt( ex.number );
-		}
-		this.assertTrue( z != 0 );
+		var err = new Error( "my message" );
+		this.assertEquals( "Error", err.name );
+		this.assertEquals( "my message", err.message );
 	}
 }
-function ErrorTest_testToString()
+function ErrorTest_testCtorAsFunction()
 {
-	var err = new Error( "my message" );
-	this.assertTrue( err.toString().indexOf( "Error" ) >= 0 );
-	this.assertTrue( err.toString().indexOf( "my message" ) >= 0 );
+	if( Error.testable )
+	{
+		var err = Error( "my message" );
+		this.assertTrue( err instanceof Error );
+		this.assertEquals( "Error", err.name );
+		this.assertEquals( "my message", err.message );
+	}
 }
 ErrorTest.prototype = new TestCase();
 ErrorTest.prototype.testAttributes = ErrorTest_testAttributes;
-ErrorTest.prototype.testToString = ErrorTest_testToString;
+ErrorTest.prototype.testCtorAsFunction = ErrorTest_testCtorAsFunction;
 
 
-function TypeErrorTest( name )
+function JsUnitErrorTest( name )
 {
 	TestCase.call( this, name );
 }
-function TypeErrorTest_testAttributes()
+function JsUnitErrorTest_testAttributes()
 {
-	var err = new TypeError( "my message" );
-	this.assertEquals( "TypeError", err.name );
+	var err = new JsUnitError( "my message" );
+	this.assertEquals( "JsUnitError", err.name );
 	this.assertEquals( "my message", err.message );
-	if(   JsUtil.prototype.isJScript 
-	   && !JsUtil.prototype.hasCompatibleErrorClass )
-	{
-		this.assertEquals( "JScript", ScriptEngine());
-		err = null;
-		var z = 0;
-		try
-		{
-			var x = new ClassThatDoesNotExist();
-		}
-		catch( ex )
-		{
-			z = parseInt( ex.number );
-			err = ex;
-		}
-		this.assertTrue( z != 0 );
-		this.assertEquals( "TypeError", err.name );
-	}
+	err = new JsUnitError();
+	this.assertEquals( "", err.message );
 }
-TypeErrorTest.prototype = new TestCase();
-TypeErrorTest.prototype.testAttributes = TypeErrorTest_testAttributes;
+function JsUnitErrorTest_testToString()
+{
+	var err = new JsUnitError( "my message" );
+	this.assertEquals( "JsUnitError: my message", err.toString());
+}
+JsUnitErrorTest.prototype = new TestCase();
+JsUnitErrorTest.prototype.testAttributes = JsUnitErrorTest_testAttributes;
+JsUnitErrorTest.prototype.testToString = JsUnitErrorTest_testToString;
 
 
 function InterfaceDefinitionErrorTest( name )
@@ -258,9 +239,9 @@ function FunctionTest_testFulfills()
 	this.assertNotNull( F.fulfills );
 	var err = null;
 	try { F.fulfills( 1 ); } catch( ex ) { err = ex; }
-	this.assertEquals( "TypeError", err.name );
+	this.assertEquals( "InterfaceDefinitionError", err.name );
 	try { F.fulfills( new F()); } catch( ex ) { err = ex; }
-	this.assertEquals( "TypeError", err.name );
+	this.assertEquals( "InterfaceDefinitionError", err.name );
 	try { F.fulfills( F ); } catch( ex ) { err = ex; }
 	this.assertEquals( "InterfaceDefinitionError", err.name );
 	try { F.fulfills( MyInterface1 ); } catch( ex ) { err = ex; }
@@ -439,7 +420,7 @@ function JsUtilTestSuite()
 	this.addTestSuite( ArrayTest );
 	this.addTestSuite( StringTest );
 	this.addTestSuite( ErrorTest );
-	this.addTestSuite( TypeErrorTest );
+	this.addTestSuite( JsUnitErrorTest );
 	this.addTestSuite( InterfaceDefinitionErrorTest );
 	this.addTestSuite( FunctionTest );
 	this.addTestSuite( PrinterWriterErrorTest );

@@ -171,14 +171,6 @@ JsUtil.prototype.isShell =
  */
 JsUtil.prototype.hasCallStackSupport = 
 	   JsUtil.prototype.getCaller() !== undefined;
-/**
- * \internal
- */
-JsUtil.prototype.hasCompatibleErrorClass = 
-	(    this.Error != null 
-	  && (   !JsUtil.prototype.isJScript 
-	  	  || (   JsUtil.prototype.isJScript 
-		      && ( this.ScriptEngineMajorVersion() >= 6 ))));
 
 
 /**
@@ -394,77 +386,101 @@ function String_trim( chars )
 String.prototype.trim = String_trim;
 
 
-if( !this.Error || !JsUtil.prototype.hasCompatibleErrorClass )
+if( !this.Error )
 {
 	/**
 	 * Error class according ECMA specification.
 	 * This class is only active, if the ECMA implementation of the current
-	 * engine does not support it or implements it not following the ECMA 
-	 * standard (3rd edition).
+	 * engine does not support it.
 	 * @ctor
 	 * Constructor.
 	 * The constructor initializes the \c message member with the argument 
 	 * \a msg.
+	 * \attension The ECMA standard does not ensure, that the constructor
+	 * of the internal Error class may be called by derived objects. It will
+	 * normally return a new Error instance if called as function.
 	 * @tparam String msg The error message.
-	 **/
+	 */
 	function Error( msg )
 	{
-		/**
-		 * The error message.
-		 * @type String
-		 **/
-		this.message = msg || "";
+		if( this instanceof Error )
+		{
+			/**
+			 * The error message.
+			 * @type String
+			 */
+			this.message = msg || "";
+		}
+		else
+		{
+			return new Error( msg );
+		}
 	}
-	Error.prototype = new Object();
-	/**
-	 * The name of the Error class as String.
-	 * @type String
-	 **/
-	Error.prototype.name = "Error";
-}
-if(   JsUtil.prototype.isRhino 
-   || !Error.prototype.toString 
-   || !JsUtil.prototype.hasCompatibleErrorClass )
-{
 	/**
 	 * String representation of the error.
 	 * @treturn String Returns a \c String containing the Error class name 
 	 * and the error message.
-	 **/
+	 * \attension The format of the returned string is not defined by ECMA
+	 * and is up to the vendor only. This implementation follows the behaviour
+	 * of Mozilla.org's SpiderMonkey.
+	 */
 	function Error_toString()
 	{
 		var msg = this.message;
 		return this.name + ": " + msg;
 	}
+	Error.prototype = new Object();
 	Error.prototype.toString = Error_toString;
-}
-
-
-if( !this.TypeError || !JsUtil.prototype.hasCompatibleErrorClass )
-{
 	/**
-	 * TypeError class according ECMA specification.
-	 * This class is only active, if the ECMA implementation of the current
-	 * engine does not support it or implements it nof following the ECMA 
-	 * standard (3rd edition).
-	 * @ctor
-	 * Constructor.
-	 * The constructor initializes the \c message member with the argument 
-	 * \a msg.
-	 * @tparam String msg The error message.
-	 **/
-	function TypeError( msg )
-	{
-		Error.call( this, msg );
-	}
-	TypeError.prototype = new Error();
-	/**
-	 * The name of the TypeError class as String.
+	 * The name of the Error class as String.
 	 * @type String
-	 **/
-	TypeError.prototype.name = "TypeError";
+	 */
+	Error.prototype.name = "Error";
+	/**
+	 * \internal
+	 */
+	Error.prototype.testable = true;
 }
 
+/**
+ * JsUnitError class.
+ * Since ECMA does not define any inheritability of the Error class and the
+ * class itself is highly vender specific, JsUnit uses its own base class for
+ * all errors in the framework.
+ * @ctor
+ * Constructor.
+ * The constructor initializes the \c message member with the argument 
+ * \a msg.
+ * \attension The ECMA standard does not ensure, that the constructor
+ * of the internal Error class may be called by derived objects. It will
+ * normally return a new Error instance if called as function.
+ * @tparam String msg The error message.
+ * \attension This constructor may <b>not</b> be called as normal function.
+ */
+function JsUnitError( msg )
+{
+	this.message = msg || "";	
+}
+/**
+ * String representation of the error.
+ * The format of the returned string is not defined by ECMA
+ * and is up to the vendor only. This implementation follows the behaviour
+ * of Mozilla.org's SpiderMonkey.
+ * @treturn String Returns a \c String containing the Error class name 
+ * and the error message.
+ */
+function JsUnitError_toString()
+{
+	var msg = this.message;
+	return this.name + ": " + msg;
+}
+JsUnitError.prototype = new Error();
+JsUnitError.prototype.toString = JsUnitError_toString;
+/**
+ * The name of the Error class as String.
+ * @type String
+ */
+JsUnitError.prototype.name = "JsUnitError";
 
 /**
  * InterfaceDefinitionError class.
@@ -480,10 +496,9 @@ if( !this.TypeError || !JsUtil.prototype.hasCompatibleErrorClass )
  **/
 function InterfaceDefinitionError( msg )
 {
-	//TypeError.call( this, msg );
-	this.message = msg;
+	JsUnitError.call( this, msg );
 }
-InterfaceDefinitionError.prototype = new TypeError();
+InterfaceDefinitionError.prototype = new JsUnitError();
 /**
  * The name of the InterfaceDefinitionError class as String.
  * @type String
@@ -512,9 +527,10 @@ function Function_fulfills()
 	{
 		var I = arguments[i];
 		if( typeof I != "function" || !I.prototype )
-			throw new TypeError( I.toString() + " is not an Interface" );
+			throw new InterfaceDefinitionError( 
+				I.toString() + " is not an Interface" );
 		if( !this.prototype )
-			throw new TypeError( 
+			throw new InterfaceDefinitionError( 
 				"Current instance is not a Function definition" );
 		for( var f in I.prototype )
 		{
@@ -550,10 +566,9 @@ Function.prototype.fulfills = Function_fulfills;
  **/
 function PrinterWriterError( msg )
 {
-	//TypeError.call( this, msg );
-	this.message = msg;
+	JsUnitError.call( this, msg );
 }
-PrinterWriterError.prototype = new TypeError();
+PrinterWriterError.prototype = new JsUnitError();
 /**
  * The name of the PrinterWriterError class as String.
  * @type String
