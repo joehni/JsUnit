@@ -1,0 +1,16 @@
+Microsoft Visual Studio Solution File, Format Version 1.00
+Project("{2CA5CB9B-D322-11D0-AD8F-00C04FB6BE4C}") = "JsUnit", "JsUnit.vup", "{71EAC100-6359-11D4-A39E-000000000000}"
+EndProject
+Project("{2CA5CB9B-D322-11D0-AD8F-00C04FB6BE4C}") = "AllTests", "samples\AllTests.vup", "{71EAC109-6359-11D4-A39E-000000000000}"
+EndProject
+Global
+	GlobalSection(LocalDeployment) = postSolution
+		StartupProject = {71EAC100-6359-11D4-A39E-000000000000}
+	EndGlobalSection
+	GlobalSection(BuildOrder) = postSolution
+		0 = {71EAC100-6359-11D4-A39E-000000000000}
+		1 = {71EAC109-6359-11D4-A39E-000000000000}
+	EndGlobalSection
+	GlobalSection(DeploymentRoot) = postSolution
+	EndGlobalSection
+EndGlobal
