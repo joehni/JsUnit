@@ -32,7 +32,7 @@ sub syntax_err
 
 ############ Scanner ####################
 
-use vars qw( @scan_mode_names $scan_mode $string_type $string_len );
+use vars qw( @scan_mode_names $scan_mode $string_type );
 use vars qw( $S_CODE $S_COMMENT $S_DOC_COMMENT $S_LINE_COMMENT $S_STRING );
 # general scanner modes
 @scan_mode_names = qw( CODE COMMENT DOC_COMMENT LINE_COMMENT STRING );
@@ -43,13 +43,13 @@ $S_LINE_COMMENT = 3;
 $S_STRING = 4;
 $scan_mode = $S_CODE;
 $string_type = "";
-$string_len = 0;
 
-use vars qw($identifier $prototype);
+use vars qw( $identifier $prototype $interface );
 $identifier = "[a-zA-Z_]\\w*";
 $prototype = $identifier."\\s*\\.\\s*prototype(?!\\w)";
+$interface = $identifier."\\s*\\.\\s*fulfills(?!\\w)";
 
-use vars qw($cur_line @token_patterns $newline_pattern);
+use vars qw( $cur_line @token_patterns $newline_pattern );
 # lexer 
 $cur_line = "";
 # recognized tokens
@@ -60,16 +60,17 @@ $cur_line = "";
     quotemeta("/*"),
     quotemeta("//"),
     "@@",
-    "\\d+",
+    "(?:0[xX])?\\d+",
     $prototype,
+    $interface,
     $identifier,
     "\\s+",
     "\\\\.",
-#    "<!--",
-#    "-->",
     ".",
 );
 $newline_pattern = "[\\n\\r\\f]";
+
+use subs qw(switch_scan_mode);
 
 # get next Token according to the @token_patterns array. 
 # Reads next line, if current line is completed.
@@ -92,7 +93,7 @@ sub next_token
 		}
 	}
 	
-	switch_scan_mode( $token );
+	switch_scan_mode $token;
 	# printf STDERR ( "Mode: %s\n", $mode_names[$mode] );
 
 	$token;
@@ -112,7 +113,7 @@ sub next_none_ws_token
 	$token;
 }
  
-# handle $mode properly
+# handle $scan_mode properly
 # recognize comments and strings
 sub switch_scan_mode
 {
@@ -135,12 +136,7 @@ sub switch_scan_mode
 			if( $token eq $string_type )
 			{
 				$string_type = "";
-				$string_len = 0;
 				$scan_mode = $S_CODE;
-			}
-			else
-			{
-				$string_len += length $token;
 			}
 		}
 		# recognize the mode startings
@@ -160,7 +156,6 @@ sub switch_scan_mode
 		{
 			$scan_mode = $S_STRING;
 			$string_type = $&;
-			$string_len = 0;
 		}
 	}
 }
@@ -168,14 +163,7 @@ sub switch_scan_mode
 
 ############ Parser #####################
 
-use vars qw( $parsemode_names $parsetype_names $parsemode );
-$parsemode_names = qw( NONE COMMENT FUNCTION );
-$parsetype_names = qw( FILE FUNCTION CLASS );
-
-use vars qw( $M_NONE $M_COMMENT $M_FUNCTION );
-$M_NONE = 0;
-$M_COMMENT = 1;
-$M_FUNCTION = 2;
+use vars qw( $string );
 
 use vars qw( $T_FILE $T_FUNCTION $T_CLASS $T_MEMBERFUNCTION );
 $T_FILE = 0;
@@ -183,14 +171,49 @@ $T_FUNCTION = 1;
 $T_CLASS = 2;
 $T_MEMBERFUNCTION = 3;
 
-$parsemode = $M_NONE;
+use subs qw( parse );
 
-sub parse;
+sub parse_string
+{
+	my $token = shift;
+	$string = $token;
+
+	$string .= $token
+		while(( $token = next_token ), $scan_mode == $S_STRING );
+
+	$token;
+}
+
+sub parse_comment
+{
+	my $token;
+
+	$token = next_token 
+		while $scan_mode == $S_COMMENT or $scan_mode = $S_LINE_COMMENT;
+
+	$token;
+}
+
+sub parse_code
+{
+	my $token; 
+	while(( $token = next_none_ws_token ) ne "" )
+	{
+		syntax_err "Unexpected documentation comment." 
+			if $scan_mode == $S_DOC_COMMENT;
+
+		next if    $scan_mode == $S_COMMENT 
+				or $scan_mode == $S_LINE_COMMENT;
+
+		last;
+	}
+
+	$token;
+}
 
 sub parse_function
 {
 	my $context = shift;
-	$parsemode = $M_FUNCTION;
 	
 	my $name;
 	my $token = next_none_ws_token;
@@ -230,6 +253,7 @@ sub parse_function
 	$name;
 }
 
+
 sub parse_prototype
 {
 	my $context = shift;
@@ -238,44 +262,43 @@ sub parse_prototype
 	$token =~ /($identifier)/;
 	my $name = $1;
 	
-	if (( $token = next_none_ws_token ) =~ /(?:\.|\=)/ )
+	syntax_err "Syntax error in prototype definition."
+		if (( $token = next_none_ws_token ) !~ /(?:\.|\=)/ );
+		
+	syntax_err "Prototype assignment, but no constructor of $name."
+		if not exists $$context->{objs}{$name};
+	my $fnContext = $$context->{objs}{$name};
+	$fnContext->{type} = $T_CLASS if $fnContext->{type} == $T_FUNCTION;
+	syntax_err "Prototype assignment to invalid type."
+		if $fnContext->{type} != $T_CLASS;
+			
+	if( $token eq "=" )
 	{
-		syntax_err "Prototype assignment, but no constructor of $name."
-			if not exists $$context->{objs}{$name};
-		my $fnContext = $$context->{objs}{$name};
-		$fnContext->{type} = $T_CLASS if $fnContext->{type} == $T_FUNCTION;
-		syntax_err "Prototype assignment to invalid type."
-			if $fnContext->{type} != $T_CLASS;
-			
-		if( $token eq "=" )
+		syntax_err "'new' expected." if next_none_ws_token ne "new";
+		syntax_err "Identifier expected." 
+			if next_none_ws_token !~ /($identifier)/;
+		while(( $token = next_token ) =~ /[ \t()]+/ ) {}
+		syntax_err "';' expected." if $token ne ";";
+		
+		my $scope = $context;
+		$scope = $$scope->{scope} 
+			while defined $$scope && not exists $$scope->{objs}{$1};
+		if( not defined $$scope )
 		{
-			syntax_err "'new' expected." if next_none_ws_token ne "new";
-			syntax_err "Identifier expected." 
-				if next_none_ws_token !~ /($identifier)/;
-			while(( $token = next_token ) =~ /[ \t()]+/ ) {}
-			syntax_err "';' expected." if $token ne ";";
-			
-			my $scope = $context;
-			$scope = $$scope->{scope} 
-				while defined $$scope && not exists $$scope->{objs}{$1};
-			if( not defined $$scope )
-			{
-				$$context->{objs}{$1} = 
-					{ type => $T_CLASS, scope => $$context };
-				$scope = $context;
-			}
-
-			$fnContext->{base} = $$scope->{objs}{$1};
+			$$context->{objs}{$1} = { type => $T_CLASS, scope => $$context };
+			$scope = $context;
 		}
-		else
+		$fnContext->{base} = $$scope->{objs}{$1};
+	}
+	else
+	{
+		syntax_err "Identifier expected." 
+			if(( $token = next_none_ws_token ) !~ /$identifier/ );
+		$name = $token;
+		syntax_err "'=' expcted." if(( $token = next_none_ws_token ) ne "=" );
+
+		if(( $token = next_none_ws_token ) =~ /$identifier/ )
 		{
-			syntax_err "Identifier expected." 
-				if(( $token = next_none_ws_token ) !~ /$identifier/ );
-			$name = $token;
-			syntax_err "'=' expcted." 
-				if(( $token = next_none_ws_token ) ne "=" );
-			syntax_err "Identifier expected." 
-				if(( $token = next_none_ws_token ) !~ /$identifier/ );
 			$token = parse_function $context if( $token eq "function" );
 			my $scope = $context;
 			$scope = $$scope->{scope} 
@@ -290,9 +313,53 @@ sub parse_prototype
 			$scope->{type} = $T_MEMBERFUNCTION if $scope->{type} == $T_FUNCTION;
 			syntax_err $token, " is not a member function." 
 				if $scope->{type} != $T_MEMBERFUNCTION;
-
-			$fnContext->{member_functions}{$name} = $scope;
+			$fnContext->{member_funcs}{$name} = $scope;
 		}
+		else
+		{
+			my $value = $token;
+			if( $scan_mode == $S_STRING )
+			{
+				$value .= $token 
+					while(( $token = next_token ), $scan_mode == $S_STRING );
+
+				$fnContext->{member_vars}{$name} = {};
+			}
+		}
+	}
+}
+
+sub parse_interface
+{
+	my $context = shift;
+	my $token = shift;
+
+	$token =~ /($identifier)/;
+	my $name = $1;
+	
+	syntax_err "'(' expected." if (( $token = next_none_ws_token ) ne "(" );
+	syntax_err "Prototype fulfillment, but no constructor of $name."
+		if not exists $$context->{objs}{$name};
+	my $fnContext = $$context->{objs}{$name};
+	$fnContext->{fulfills} = {};
+	while(( $token = next_none_ws_token ) ne ")" )
+	{
+		next if( $token =~ /,/ );
+		syntax_err "Interface name expected." if( $token !~ /$identifier/ );
+		
+		my $scope = $context;
+		$scope = $$scope->{scope} 
+			while defined $$scope && not exists $$scope->{objs}{$token};
+		if( not defined $$scope )
+		{
+			$$context->{objs}{$token} = 
+				{ type => $T_CLASS, scope => $$context };
+			$scope = $context;
+		}
+		$scope = $$context->{objs}{$token};
+		syntax_err $token, " is not a class." if $scope->{type} != $T_CLASS;
+		
+		$fnContext->{fulfills}{$token} = $scope;
 	}
 }
 
@@ -316,6 +383,7 @@ sub parse
 				/{/						&& ++$level;
 				/function/				&& parse_function $context;
 				/$prototype/			&& parse_prototype $context, $token;
+				/$interface/			&& parse_interface $context, $token;
 			}
 		}
 	} continue {
