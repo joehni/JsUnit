@@ -22,6 +22,12 @@ license.
 
 /*!
 
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
 \page usage Usage
 
 \subsection codeConv Coding Conventions
@@ -122,11 +128,10 @@ ClassName.prototype.v1 = 1;
 </pre></div></p>
 \endhtmlonly
 
-<p>A lot of interpreters will not generate in this situation any identifier in
-the second braced area to the global namespace keeping it quite clean. The
-disadvantage of method f2 definition is, that the function itself has no name
-and the call stack (if available for the engine) will return an anonymous 
-function call.</p>
+<p>The advantage of method <code>f2</code> definition is, that the code is
+quite compact and keeps the global namespace clean. The disadvantage is that
+the function itself has no name and the call stack (if supported by the
+engine) will return an anonymous function call.</p>
 
 \subsection interface Interfaces
 
@@ -145,7 +150,7 @@ InterfaceName.prototype.f2 = function( a, b ) {}</pre></div></p>
 
 <p>An interface definition may only define member functions, but no member
 variables. To ensure that a class fulfills this interface you call its
-function \a fulfills:</p>
+function \a fulfills </p>
 
 \htmlonly
 <p><div class="fragment"><pre>
@@ -194,9 +199,12 @@ application has the responsibility to include all necessary sources. Create a
 TestRunner for reporting the results, add all wanted test suites to the runner
 and perform the test. The TestRunner itself is normally also a derived class,
 that has reporting functions that work perfectly in the system environment.
-See below a sample for the JavaScript shells:</p>
+See below a sample callable from the JavaScript shells:</p>
 
 \include AllTests.js
+
+<p>This file can also be included from HTML code using a script tag. See
+AllScripts.html that demonstrated this reuse. </p>
 
 \subsection examples Examples
 
@@ -263,5 +271,11 @@ for all deliveries:</p>
 	
 </tr>
 </table>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
 
 */

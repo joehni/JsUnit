@@ -22,6 +22,12 @@ license.
 
 /*!
 
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
 \page acknowledge Acknowledgements
 
 <p>JsUnit would not have been possible in this form without the work and ideas
@@ -45,9 +51,17 @@ of a lot of other people:</p>
 	href="http://www.junit.org">JUnit</a> some kind of standard for unit
 	testing</li>
 	
-	<li>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
-	after reading his book it was my first time writing unit tests</li>
+	<li>John Lakos, author of <a
+	href="http://www.amazon.com/exec/obidos/tg/detail/-/0201633620/qid=1049317504/sr=8-1/ref=sr_8_1/102-0653728-9333704?v=glance&s=books&n=507846">Large-Scale
+	C++ Software Design</a>; after reading his book it was my first time
+	writing unit tests</li>
 	
 </ul>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
 
 */

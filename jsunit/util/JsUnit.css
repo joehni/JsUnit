@@ -20,7 +20,7 @@ classes and functions in their production; they are not affected by this
 license.
 */
 
-h1 { text-align: center }
+h1 { text-align: center; font-family:Times,serif }
 caption { font-weight: bold }
 hr { border-color: rgb(198,166,70); border-style: solid }
 img { border-color: #ffffcc; border-style: ridge; border-width: 6px }
@@ -39,7 +39,7 @@ td.mdname1 { background-color: #ffff88; font-weight: bold; color: #602020; }
 td.mdname { background-color: #ffff88; font-weight: bold; color: #602020; width: 600px; }
 table.header { border: 0; vertical-align: middle }
 /* table.header td { margin: 6; padding-left: 12; padding-right: 12 } */
-div.header { font-size: 300%; font-weight: bold }
+div.header { font-size: 300%; font-weight: bold; font-family:Times,serif }
 div.groupHeader { margin-left: 16; margin-top: 12; margin-bottom: 6; font-weight: bold }
 div.groupText { margin-left: 16; font-style: italic; font-size: smaller }
 body { background: #ffffcc }
@@ -83,3 +83,34 @@ font.charliteral   { color: #008080 }
 span.J { color: #00CC00 }
 span.s { color: #0000CC }
 span.U { color: #FF0000 }
+
+.cell3d { 
+	border-top: silver 1px solid;
+	border-left: silver 1px solid;
+	border-bottom: black 1px solid; 
+	border-right: black 1px solid; 
+}
+.tab3d {
+	border-top: silver 1px solid;
+	border-left: silver 1px solid;
+	border-bottom: #666666 1px solid; 
+	border-right: #666666 1px solid; 
+   	background-color: rgb(198,166,70); 
+	color: #ffffcc
+}
+
+div td { 
+   background-color: #ffff88; 
+   padding-right  : 10px; 
+   padding-top    : 2px; 
+   padding-left   : 10px; 
+   padding-bottom : 2px; 
+   margin-left    : 0px; 
+   margin-right   : 0px; 
+   margin-top     : 2px; 
+   margin-bottom  : 2px;
+   border-width	  : 2;
+   border-style	  : solid;
+   border-color   : rgb(198,166,70)
+}
+

@@ -22,6 +22,13 @@ license.
 
 /*!
 
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
+
 \page compatibility Compatibility
 
 <p>The JsUnit library has to use exceptions. Exceptions were part of the third
@@ -75,7 +82,7 @@ standard.</p>
 <p>There are a lot of products that are able to process a JavaScript flavor. I
 have listed all products that I am aware of.</p>
 
-<TABLE BORDER="0">
+<table border="0">
 <tr>
 	<td><b>Product</b></td>
 	<td><b>Vendor</b></td>
@@ -209,7 +216,7 @@ have listed all products that I am aware of.</p>
 	<td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
 	<td><a href="http://www.kde.org">KDE.org</a></td>
 	<td>?</td>
-	<td>?</td>
+	<td>KHTML</td>
 	<td>1.2 ?</td>
 	<td>&nbsp;</td>
 </tr>
@@ -310,7 +317,7 @@ have listed all products that I am aware of.</p>
 	<td>OEM of iPlanet 4.x</td>
 </tr>
 <tr>
-	<td>One-to-One 6.x</td>
+	<td>One-to-One 6.x or newer</td>
 	<td><a href="http://www.broadvision.com">BroadVision</a></td>
 	<td>?</td>
 	<td>?</td>
@@ -356,6 +363,14 @@ have listed all products that I am aware of.</p>
 	<td>Rhino</td>
 	<td>1.2</td>
 	<td>no call stack support</td>
+</tr>
+<tr>
+	<td><a href="http://www.apple.com/safari">Safari</a></td>
+	<td><a href="http://www.apple.com">Apple</a></td>
+	<td>?</td>
+	<td>KHTML</td>
+	<td>1.2 ?</td>
+	<td>&nbsp;</td>
 </tr>
 <tr>
 	<td><a href="http://www.sap.com/solutions/technology/linux/eval/was/">SAP Web Application Server</a></td>
@@ -414,5 +429,11 @@ have listed all products that I am aware of.</p>
 	<td>&nbsp;</td>
 </tr>
 </table>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
 
 */

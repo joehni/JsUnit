@@ -46,14 +46,14 @@ else
 	HAVE_DOT="YES"
 fi
 OUTPUT_DIRECTORY=.
-VERSION=`cat version.cfg`
+VERSION=`dirname $0`/version.cfg
+VERSION=`cat $VERSION`
 GENERATE_HTML=YES
-GENERATE_MAN=YES
 PERL_PATH=/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
-export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAVE_DOT PERL_PATH VERSION
+export GENERATE_HTML OUTPUT_DIRECTORY HAVE_DOT PERL_PATH VERSION
 if test "$1" = "--keep-temp"; then
 	KEEP=1
 else
@@ -62,8 +62,8 @@ fi
 
 CWD=$PWD
 cd `dirname $0`/..
-rm -rf .lib/ .doc/ doc/ man/ > /dev/null 2>&1
-mkdir .lib .doc doc man
+rm -rf .lib/ .docs/ docs/ > /dev/null 2>&1
+mkdir .lib .docs 
 PAGER=cat perldoc -t util/js2doxy.pl > .lib/.js2doxy.man
 cd lib
 for js in *.js; do 
@@ -72,21 +72,27 @@ done
 
 cd ..
 doxygen util/Doxyfile
-cp util/*.png doc/
-mv doc/*.html .doc/
-cd .doc
+cp util/*.png docs/
+mv docs/*.html .docs/
+cd .docs
 for html in *.html; do 
-	sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../doc/$html; 
-	#sed -e 's,JsUnit\([ <]\),<span class="J">J</span><span class="s">s</span><span class="U">U</span>nit\1,g' $html > ../doc/$html; 
+	sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../docs/$html
+#	if test "$html" = "index.html" -o -f ../util/`basename $html .html`.txt; then
+#		mv ../docs/$html .$html
+#		sed -e 's,<body>,<body><div class="JsUnit">,g' .$html | sed -e 's,</body>,</div></body>,g' > ../docs/$html
+#	fi	
 done
 
 cd ..
-cd doc
-chmod 444 *
+cd docs
+chmod 644 *
 
-cd ..
+cd ../..
 if test $KEEP -eq 0; then 
-	rm -rf .lib .doc
+	rm -rf .lib .docs
 fi
+
+#wget --mirror --convert-links --html-extension -nH --cut-dirs=2 -P docs http://localhost/JsUnit/php/index.php
+
 cd $CWD
 
