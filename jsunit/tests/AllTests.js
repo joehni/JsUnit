@@ -25,7 +25,7 @@ var exceptionsWorking = "false";
 
 function throwEx()
 {
-	throw new Error;
+	throw new Object();
 }
 function testEx()
 {
@@ -35,31 +35,55 @@ function testEx()
 }
 new testEx();
 
+if( this.WScript )
+{
+	var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+	var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
+	var all = file.ReadAll();
+	file.Close();
+	eval( all );
+}
+else
+	load( "../lib/JsUtil.js" );
+
+JsUtil.prototype.print( "\nJavaScript compatibility:" );
+JsUtil.prototype.print( "\thas exceptions: " + hasExceptions );
+JsUtil.prototype.print( "\texceptions working: " + exceptionsWorking );
+
+JsUtil.prototype.print( "\nJavaScript engine detection:" );
+for( var i in JsUtil.prototype )
+	if( typeof JsUtil.prototype[i] != "function" && i.indexOf( "is" ) == 0 )
+		JsUtil.prototype.print( "\t" + i + ": " + JsUtil.prototype[i] );
+
 function main( args )
 {
-	var runner = new MozillaTestRunner();
+	var runner = new TextTestRunner();
 	runner.addSuite( new JsUtilTestSuite());
 	runner.addSuite( new JsUnitTestSuite());
 	return runner.start( args );
 }
 
-print( "\nJavaScript compatibility:" );
-print( "\thas exceptions: " + hasExceptions );
-print( "\texceptions working: " + exceptionsWorking );
-
-print( "\nJsUnit Test Suite:\n" );
+JsUtil.prototype.print( "\nJsUnit Test Suite:\n" );
 if( exceptionsWorking )
 {
-	load( "../lib/JsUtil.js"
-		, "../lib/JsUnit.js"
-		, "../lib/JsUnitMozilla.js"
-		, "JsUtilTest.js"
-		, "JsUnitTest.js" );
+	eval( JsUtil.prototype.load( "../lib/JsUnit.js" ));
+	eval( JsUtil.prototype.load( "JsUtilTest.js" ));
+	eval( JsUtil.prototype.load( "JsUnitTest.js" ));
 
-	quit( main( arguments ));
+	var args;
+	if( this.WScript )
+	{
+		if( WScript.Arguments.Count())
+			args = WScript.Arguments( 0 );
+	}
+	else 
+		args = arguments;
+		
+	JsUtil.prototype.quit( main( args ));
 }
 else
 {
-	write( "\tSorry, exceptions not working!\n" );
-	quit( -1 );
+	JsUtil.prototype.print( "\tSorry, exceptions not working!\n" );
+	JsUtil.prototype.quit( -1 );
 }
+

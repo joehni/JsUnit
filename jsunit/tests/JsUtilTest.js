@@ -124,7 +124,8 @@ function ErrorTest_testAttributes()
 	var err = new Error( "my message" );
 	this.assertEquals( "Error", err.name );
 	this.assertEquals( "my message", err.message );
-	if( isJScript && !hasCompatibleErrorClass )
+	if(   JsUtil.prototype.isJScript 
+	   && !JsUtil.prototype.hasCompatibleErrorClass )
 	{
 		this.assertEquals( "JScript", ScriptEngine());
 		err = null;
@@ -160,7 +161,8 @@ function TypeErrorTest_testAttributes()
 	var err = new TypeError( "my message" );
 	this.assertEquals( "TypeError", err.name );
 	this.assertEquals( "my message", err.message );
-	if( isJScript && !hasCompatibleErrorClass )
+	if(   JsUtil.prototype.isJScript 
+	   && !JsUtil.prototype.hasCompatibleErrorClass )
 	{
 		this.assertEquals( "JScript", ScriptEngine());
 		err = null;
@@ -182,18 +184,18 @@ TypeErrorTest.prototype = new TestCase();
 TypeErrorTest.prototype.testAttributes = TypeErrorTest_testAttributes;
 
 
-function InterfaceErrorTest( name )
+function InterfaceDefinitionErrorTest( name )
 {
 	TestCase.call( this, name );
 }
-function InterfaceErrorTest_testAttributes()
+function InterfaceDefinitionErrorTest_testAttributes()
 {
-	var err = new InterfaceError( "my message" );
-	this.assertEquals( "InterfaceError", err.name );
+	var err = new InterfaceDefinitionError( "my message" );
+	this.assertEquals( "InterfaceDefinitionError", err.name );
 	this.assertEquals( "my message", err.message );
 }
-InterfaceErrorTest.prototype = new TestCase();
-InterfaceErrorTest.prototype.testAttributes = InterfaceErrorTest_testAttributes;
+InterfaceDefinitionErrorTest.prototype = new TestCase();
+InterfaceDefinitionErrorTest.prototype.testAttributes = InterfaceDefinitionErrorTest_testAttributes;
 
 
 function FunctionTest( name )
@@ -224,9 +226,9 @@ function FunctionTest_testFulfills()
 	try { F.fulfills( new F()); } catch( ex ) { err = ex; }
 	this.assertEquals( "TypeError", err.name );
 	try { F.fulfills( F ); } catch( ex ) { err = ex; }
-	this.assertEquals( "InterfaceError", err.name );
+	this.assertEquals( "InterfaceDefinitionError", err.name );
 	try { F.fulfills( MyInterface1 ); } catch( ex ) { err = ex; }
-	this.assertEquals( "InterfaceError", err.name );
+	this.assertEquals( "InterfaceDefinitionError", err.name );
 	F.prototype.if1 = function() {}
 	F.prototype.if2 = function() {}
 	F.fulfills( MyInterface1 ); 
@@ -238,37 +240,8 @@ function FunctionTest_testFulfills()
 
 	G.fulfills( MyInterface1, MyInterface2Ex ); 
 }
-function FunctionTest_testInherits()
-{
-	function F() {}
-	F.prototype.m1 = "member";
-	
-	function Class1() {}
-	Class1.prototype.c1m = "Class 1 member"
-	
-	function Class2() {}
-	Class2.prototype.c2m = "Class 2 member"
-	
-	function Class3() {}
-	Class3.prototype.c3m = "Class 3 member"
-	
-	this.assertNotNull( F.inherits );
-	var err = null;
-	try { F.inherits( 1 ); } catch( ex ) { err = ex; }
-	this.assertEquals( "TypeError", err.name );
-	try { F.inherits( new F()); } catch( ex ) { err = ex; }
-	this.assertEquals( "TypeError", err.name );
-	F.inherits( Class1 );
-	this.assertNotUndefined( F.prototype.c1m );
-	F.inherits( Class2, Class3 );
-	this.assertNotUndefined( F.prototype.c2m );
-	this.assertNotUndefined( F.prototype.c3m );
-	try { F.inherits( Class1 ); } catch( ex ) { err = ex; }
-	this.assertEquals( "Error", err.name );
-}
 FunctionTest.prototype = new TestCase();
 FunctionTest.prototype.testFulfills = FunctionTest_testFulfills;
-FunctionTest.prototype.testInherits = FunctionTest_testInherits;
 
 
 function JsUtilTestSuite()
@@ -279,7 +252,7 @@ function JsUtilTestSuite()
 	this.addTestSuite( StringTest );
 	this.addTestSuite( ErrorTest );
 	this.addTestSuite( TypeErrorTest );
-	this.addTestSuite( InterfaceErrorTest );
+	this.addTestSuite( InterfaceDefinitionErrorTest );
 	this.addTestSuite( FunctionTest );
 }
 JsUtilTestSuite.prototype = new TestSuite();

@@ -23,16 +23,15 @@ license.
 <html>
 <head>
 <title>JsUnit Test</title>
-<script language="JavaScript1.3" src="../lib/JsUtil.js"></script>
-<script language="JavaScript1.3" src="../lib/JsUnit.js"></script>
-<script language="JavaScript1.3" src="../lib/JsUnitHTML.js"></script>
+<script type="text/javascript" language="JavaScript" src="../lib/JsUtil.js"></script>
+<script type="text/javascript" language="JavaScript" src="../lib/JsUnit.js"></script>
 
-<script language="JavaScript1.3" src="ArrayTest.js"></script>
-<script language="JavaScript1.3" src="money/IMoney.js"></script>
-<script language="JavaScript1.3" src="money/Money.js"></script>
-<script language="JavaScript1.3" src="money/MoneyBag.js"></script>
-<script language="JavaScript1.3" src="money/MoneyTest.js"></script>
-<script language="JavaScript1.3" src="SimpleTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="ArrayTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="money/IMoney.js"></script>
+<script type="text/javascript" language="JavaScript" src="money/Money.js"></script>
+<script type="text/javascript" language="JavaScript" src="money/MoneyBag.js"></script>
+<script type="text/javascript" language="JavaScript" src="money/MoneyTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="SimpleTest.js"></script>
 
 <script language="JavaScript1.3">
 function main()
@@ -41,7 +40,7 @@ function main()
 	runner.addSuite( new ArrayTestSuite());
 	runner.addSuite( new MoneyTestSuite());
 	runner.addSuite( new SimpleTestSuite());
-	return runner.start( main.arguments );
+	return runner.start( arguments );
 }
 </script>
 </head>

@@ -1313,7 +1313,7 @@ function TextTestRunner_printFooter( result )
 	else
 		this.writeLn( 
 			  result.runCount() + " tests successful in " 
-			+ ( this.mElapsedTime / 1000 ) + " seconds.");
+			+ ( this.mElapsedTime / 1000 ) + " seconds." );
 }
 /**
  * Start the test functionality of the application.
@@ -1378,9 +1378,81 @@ TextTestRunner.prototype.startTest = TextTestRunner_startTest;
  * Write a line of text.
  * @tparam String str The text to print on the line.
  * The method of this object does effectivly nothing. It must be 
- * overloaded with a proper version, that knows how to print a line.
+ * overloaded with a proper version, that knows how to print a line,
+ * if the script engine cannot be detected (yet).
  */
-TextTestRunner.prototype.writeLn = function ( str ){};
+TextTestRunner.prototype.writeLn = function ( str )
+{
+	JsUtil.prototype.print( str );
+};
+
+
+/**
+ * Class for an application running test suites reporting in HTML.
+ */
+function HTMLTestRunner()
+{
+	TextTestRunner.call( this );
+	this.mPrefix = "";
+	this.mPostfix = "";
+}
+/**
+ * Write a header starting the application.
+ * The function will add a \<pre\> tag in front of the header.
+ */
+function HTMLTestRunner_printHeader()
+{
+	this.setPrefix( "<pre>" );
+	TextTestRunner.prototype.printHeader.call( this );
+	this.setPrefix( "" );
+}
+/**
+ * Write a footer at application end with a summary of the tests.
+ * @tparam TestResult result The result of the test run.
+ * The function will add a \</pre\> tag at the end of the footer.
+ */
+function HTMLTestRunner_printFooter( result )
+{
+	this.setPostfix( "</pre>" );
+	TextTestRunner.prototype.printFooter.call( this, result );
+	this.setPostfix( "" );
+}
+/**
+ * Set prefix of printed lines.
+ * @tparam String prefix The prefix.
+ */
+function HTMLTestRunner_setPrefix( prefix )
+{
+	this.mPrefix = prefix;
+}
+/**
+ * Set postfix of printed lines.
+ * @tparam String postfix The postfix.
+ */
+function HTMLTestRunner_setPostfix( postfix )
+{
+	this.mPostfix = postfix;
+}
+/**
+ * Write a line of text to the output stream.
+ * @tparam String str The text to print on the line.
+ * The function will convert '\&' and '\<' to \&amp; and \&lt; and add
+ * prefix and postfix to the string.
+ */
+function HTMLTestRunner_writeLn( str ) 
+{ 
+	str = str.toString();
+	str = str.replace( /&/g, "&amp;" ); 
+	str = str.replace( /</g, "&lt;" ); 
+	str = this.mPrefix + str + this.mPostfix;
+	TextTestRunner.prototype.writeLn.call( this, str );
+}
+HTMLTestRunner.prototype = new TextTestRunner();
+HTMLTestRunner.prototype.printHeader = HTMLTestRunner_printHeader;
+HTMLTestRunner.prototype.printFooter = HTMLTestRunner_printFooter;
+HTMLTestRunner.prototype.setPrefix = HTMLTestRunner_setPrefix;
+HTMLTestRunner.prototype.setPostfix = HTMLTestRunner_setPostfix;
+HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
 
 
 /*************************************************************/

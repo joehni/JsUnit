@@ -28,6 +28,125 @@ license.
  * environments, too.
  */
 
+
+/**
+ * Helper class with static flags.
+ */
+function JsUtil()
+{
+}
+/**
+ * Print a single line.
+ * @tparam String str The line to print.
+ * Prints a complete text line incl. line feed. Works for command line
+ * shells WSH, Rhino and SpiderMonkey.
+ */
+function JsUtil_load( script )
+{
+	var ret = "true";
+	if( JsUtil.prototype.isMozillaShell )
+	{
+		load( script );
+	}
+	else if( JsUtil.prototype.isWSH )
+	{
+		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+		var file = fso.OpenTextFile( script, 1 );
+		ret = file.ReadAll();
+		file.Close();
+	}
+	return ret;
+}
+/**
+ * Print a single line.
+ * @tparam String str The line to print.
+ * Prints a complete text line incl. line feed. Works for command line
+ * shells WSH, Rhino and SpiderMonkey.
+ */
+function JsUtil_print( str )
+{
+	if( JsUtil.prototype.isMozillaShell )
+		print( str );
+	else if( JsUtil.prototype.isBrowser )
+		document.writeln( str );
+	else if( JsUtil.prototype.isWSH )
+		WScript.Echo( str );
+	/*
+	else if( JsUtil.prototype.isNSServer )
+		write( str + "\n" );
+	*/
+}
+/**
+ * Quits the JavaScript engine.
+ * @tparam Number exit The exit code.
+ * Stops current JavaScript engine and returns an exit code. Works for 
+ * command line shells WSH, Rhino and SpiderMonkey.
+ */
+function JsUtil_quit( exit )
+{
+	if( JsUtil.prototype.isMozillaShell )
+		quit( exit );
+	else if( JsUtil.prototype.isWSH )
+		WScript.Quit( exit );
+}
+JsUtil.prototype.load = JsUtil_load;
+JsUtil.prototype.print = JsUtil_print;
+JsUtil.prototype.quit = JsUtil_quit;
+/**
+ * Flag for a browser.
+ * @type Boolean
+ * The member is true, if the script runs within a browser environment.
+ */
+JsUtil.prototype.isBrowser = this.window != null;
+/**
+ * Flag for Microsoft JScript.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft JScript engine.
+ */
+JsUtil.prototype.isJScript = this.ScriptEngine != null;
+/**
+ * Flag for Microsoft Windows Scripting Host.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft Windows Scripting
+ * Host.
+ */
+JsUtil.prototype.isWSH = this.WScript != null;
+/**
+ * Flag for Netscape Enterprise Server (iPlanet) engine.
+ * @type Boolean
+ * The member is true, if the script runs in the iPlanet as SSJS.
+ */
+JsUtil.prototype.isNSServer = this.Packages != null && !this.importPackage;
+/**
+ * Flag for Rhino.
+ * @type Boolean
+ * The member is true, if the script runs in Rhino of Mozilla.org.
+ */
+JsUtil.prototype.isRhino = this.importPackage != null;
+/**
+ * Flag for a Mozilla JavaScript shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell of a
+ * Mozilla.org script engine (either SpiderMonkey or Rhino).
+ */
+JsUtil.prototype.isMozillaShell = this.load != null;
+/**
+ * Flag for a command line shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell.
+ */
+JsUtil.prototype.isShell = 
+	   JsUtil.prototype.isMozillaShell 
+	|| JsUtil.prototype.isWSH;
+/**
+ * \internal
+ */
+JsUtil.prototype.hasCompatibleErrorClass = 
+	(    this.Error != null 
+	  && (   !JsUtil.prototype.isJScript 
+	  	  || (   JsUtil.prototype.isJScript 
+		      && ( this.ScriptEngineMajorVersion() >= 6 ))));
+
 /**
  * CallStack object.
  * The object is extremly system dependent, since its functionality is not
@@ -220,21 +339,7 @@ function String_trim( chars )
 String.prototype.trim = String_trim;
 
 
-/**
- * Flag for Microsoft JScript.
- * @type Boolean
- * The variable is true, if the script is run by the Microsoft JScript engine.
- */
-var isJScript = this.ScriptEngine != null;
-/**
- * \internal
- */
-var hasCompatibleErrorClass = 
-	(    this.Error != null 
-	  && (   !isJScript 
-	  	  || ( isJScript && ( this.ScriptEngineMajorVersion() >= 6 ))));
-
-if( !this.Error || !hasCompatibleErrorClass )
+if( !this.Error || !JsUtil.prototype.hasCompatibleErrorClass )
 {
 	/**
 	 * Error class according ECMA specification.
@@ -255,6 +360,17 @@ if( !this.Error || !hasCompatibleErrorClass )
 		 **/
 		this.message = msg || "";
 	}
+	Error.prototype = new Object();
+	/**
+	 * The name of the Error class as String.
+	 * @type String
+	 **/
+	Error.prototype.name = "Error";
+}
+if(   JsUtil.prototype.isRhino 
+   || !Error.prototype.toString 
+   || !JsUtil.prototype.hasCompatibleErrorClass )
+{
 	/**
 	 * String representation of the error.
 	 * @treturn String Returns a \c String containing the Error class name 
@@ -265,17 +381,11 @@ if( !this.Error || !hasCompatibleErrorClass )
 		var msg = this.message;
 		return this.name + ": " + msg;
 	}
-	Error.prototype = new Object();
 	Error.prototype.toString = Error_toString;
-	/**
-	 * The name of the Error class as String.
-	 * @type String
-	 **/
-	Error.prototype.name = "Error";
 }
 
 
-if( !this.TypeError || !hasCompatibleErrorClass )
+if( !this.TypeError || !JsUtil.prototype.hasCompatibleErrorClass )
 {
 	/**
 	 * TypeError class according ECMA specification.
@@ -302,7 +412,7 @@ if( !this.TypeError || !hasCompatibleErrorClass )
 
 
 /**
- * InterfaceError class.
+ * InterfaceDefinitionError class.
  * This error class is used for interface definitions. Such definitions are 
  * simulated using Function::fulfills. The class has no explicit functionality
  * despite the separate type
@@ -313,18 +423,17 @@ if( !this.TypeError || !hasCompatibleErrorClass )
  * \a msg.
  * @tparam String msg The error message.
  **/
-function InterfaceError( msg )
+function InterfaceDefinitionError( msg )
 {
-	// TypeError.call( this, msg );
+	//TypeError.call( this, msg );
 	this.message = msg;
 }
-InterfaceError.prototype = new TypeError();
+InterfaceDefinitionError.prototype = new TypeError();
 /**
- * The name of the InterfaceError class as String.
+ * The name of the InterfaceDefinitionError class as String.
  * @type String
  **/
-InterfaceError.prototype.name = "InterfaceError";
-
+InterfaceDefinitionError.prototype.name = "InterfaceDefinitionError";
 
 /**
  * \class Function
@@ -339,8 +448,8 @@ InterfaceError.prototype.name = "InterfaceError";
  * whether the current class fulfills the interface of the given classes or not.
  * @exception TypeError If the current object is not a class or the interface
  * is not a Function object with a prototype.
- * @exception InterfaceError If an interface is not fulfilled or the interface
- * has invalid members.
+ * @exception InterfaceDefinitionError If an interface is not fulfilled or the 
+ * interface has invalid members.
  */
 function Function_fulfills()
 {
@@ -355,52 +464,21 @@ function Function_fulfills()
 		for( var f in I.prototype )
 		{
 			if( typeof I.prototype[f] != "function" )
-				throw new InterfaceError( f.toString() 
+				throw new InterfaceDefinitionError( f.toString() 
 					+ " is not a method in Interface " + I.toString());
 			if(    typeof this.prototype[f] != "function" 
 				&& typeof this[f] != "function" )
 			{
 				if(    typeof this.prototype[f] == "undefined" 
 					&& typeof this[f] == "undefined" )
-					throw new InterfaceError( 
+					throw new InterfaceDefinitionError( 
 						f.toString() + " is not defined" );
 				else
-					throw new InterfaceError( 
+					throw new InterfaceDefinitionError( 
 						f.toString() + " is not a function" );
 			}
 		}
 	}
 }
-/**
- * Simulate multiple inheritance.
- * The function adds any element of the prototype of the given classes to the
- * prototype of the current classes. Therefore the class seems to inherit the
- * definitions of the given classes. Since it is no true ECMAScript inheritance
- * any extension to the classes inherited by this function will not be 
- * available for the current class and the constructor is also not called
- * automatically.
- * @exception Error If an ambiguity occurs inheriting a class.
- * @exception TypeError If the current object is not a class or the given class
- * is not a Function object with a prototype.
- */
-function Function_inherits()
-{
-	for( var i = 0; i < arguments.length; ++i )
-	{
-		var C = arguments[i];
-		if( typeof C != "function" || !C.prototype )
-			throw new TypeError( C.toString() + " is not a Class" );
-		if( !this.prototype )
-			throw new TypeError( 
-				"Current instance is not a Function definition" );
-		for( var m in C.prototype )
-		{
-			if( this.prototype[m] )
-				throw new Error( "Ambiguity inheriting member " + m );
-			this.prototype[m] = C.prototype[m];
-		}
-	}
-}
 Function.prototype.fulfills = Function_fulfills;
-Function.prototype.inherits = Function_inherits;
 
