@@ -24,7 +24,7 @@ license.
 
 \page release Release Notes
 
-<P>2002-05-17: Current release is version 2.0.alpha.2</P>
+<P>2002-06-10: Current release is version 2.0.alpha.2</P>
 
 <P>While it seems not to be too much work to change the object model to
 standard ECMA script, the real work was done writing the new Perl script
