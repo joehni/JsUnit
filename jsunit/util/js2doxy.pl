@@ -66,16 +66,16 @@ $cur_line = "";
 # recognized tokens
 @token_patterns =
 (
+    "\\\\.",
     quotemeta("/**"),
     quotemeta("/*!"),
     quotemeta("*/"),
     quotemeta("/*"),
     quotemeta("//"),
-    "@@",
+#    "@@",
     "(?:0[xX])?\\d+",
     $identifier,
     "\\s+",
-    "\\\\.",
     ".",
 );
 $newline_pattern = "[\\n\\r\\f]";
@@ -104,7 +104,9 @@ sub next_token
 	}
 	
 	switch_scan_mode $token;
-	$_ = $token, s/\n/\\n/go, s/\r//go, printf STDERR ( "Scanner: '%s' ~ '%s' %s\n", $_, $pattern, $scan_mode_names[$scan_mode] )
+	$_ = $token, s/\n/\\n/go, s/\r//go
+			, printf STDERR ( "Scanner: '%s' ~ '%s' %s\n", 
+							  $_, $pattern, $scan_mode_names[$scan_mode] )
 		if $opt_debug & $DEB_SCANNER;
 
 	$token;
@@ -174,24 +176,29 @@ sub switch_scan_mode
 
 ############ Parser #####################
 
-use vars qw( $last_token $last_document );
+use vars qw( $last_token $last_doc @object_type_names $file );
 $last_token = "";
-$last_document = "";
-
-use vars qw( 
+@object_type_names = 
+	qw( FILE FUNCTION CLASS INTERFACE MEMBER_FUNCTION MEMBER_VARIABLE );
+$object_type_names[-1] = "UNDEF";
+use vars qw(
+	$OT_UNKNOWN
 	$OT_FILE 
+	$OT_VARIABLE 
 	$OT_FUNCTION 
 	$OT_CLASS 
 	$OT_INTERFACE 
-	$OT_MEMBERFUNC 
 	$OT_MEMBERVAR 
+	$OT_MEMBERFUNC 
 );
+$OT_UNKNOWN = -1;
 $OT_FILE = 0;
-$OT_FUNCTION = 1;
-$OT_CLASS = 2;
-$OT_INTERFACE = 3;
-$OT_MEMBERFUNC = 4;
+$OT_VARIABLE = 1;
+$OT_FUNCTION = 2;
+$OT_CLASS = 3;
+$OT_INTERFACE = 4;
 $OT_MEMBERVAR = 5;
+$OT_MEMBERFUNC = 6;
 
 use subs qw( parse next_parser_token );
 
@@ -212,17 +219,40 @@ sub parse_comment
 
 sub parse_doc_comment
 {
-	my $token;
-	my $doc;
-	while( $token ne "@@" )
-	{
-		$token = next_token;
-		last if $scan_mode != $S_DOC_COMMENT;
-		$doc .= $token;
-	}
+	my $token = "/**";
+	my %doc = { text => "" };
 
-	$last_token = "@@" if $token eq "@@";
-	$doc;
+	while( $scan_mode == $S_DOC_COMMENT )
+	{
+		if( $token =~ /\\./ )
+		{
+			$_ = $token.next_token;
+			
+			if( not exists $doc{type} )
+			{
+				$doc{type} = $OT_FILE if /\\$identifier/;
+				$doc{type} = $OT_FUNCTION if /\\fn/;
+				$doc{type} = $OT_INTERFACE if /\\interface/;
+				$doc{type} = $OT_CLASS if /\\class/;
+				$doc{type} = $OT_VARIABLE if /\\var/;
+			}
+			
+			$doc{text} .= $_;
+		}
+		else
+		{
+			$doc{type} = $OT_UNKNOWN
+				if not exists $doc{type} and $token =~ /$identifier/;
+			$doc{text} .= $token;
+		}
+	
+		$token = next_token;
+	}
+	$doc{text} .= "*/\n";
+	printf STDERR ( "Parser: Document for type %s\n", 
+					$object_type_names[$doc{type}] )
+		if $opt_debug & $DEB_PARSER;
+	$last_doc = \%doc;
 }
 
 sub parse_code
@@ -240,7 +270,8 @@ sub parse_code
 
 		last;
 	}
-	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] ) if $opt_debug & $DEB_PARSER;
+	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] )
+		if $opt_debug & $DEB_PARSER;
 	$token;
 }
 
@@ -286,25 +317,12 @@ sub next_parser_token
 		}
 		elsif( $scan_mode == $S_DOC_COMMENT )
 		{
-			$token = next_none_ws_token, last if $token eq "@@";
+			last;
 		}
 	}
-	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] ) if $opt_debug & $DEB_PARSER;
+	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] )
+		if $opt_debug & $DEB_PARSER;
 	$token;
-}
-
-sub parse_doc_file
-{
-	my $context = shift;
-	my $doc = parse_doc_comment;
-
-	if( $$context->{otype} != $OT_FILE )
-	{
-		warning "File comment in wrong context.";
-		return;
-	}
-
-	$$context->{comment} = $doc;
 }
 
 sub parse_function
@@ -399,7 +417,8 @@ sub parse_prototype
 		if not exists $$context->{objs}{$name};
 	my $fnContext = $$context->{objs}{$name};
 	$fnContext->{otype} = $OT_CLASS if $fnContext->{otype} == $OT_FUNCTION;
-	syntax_err "Prototype assignment to invalid type."
+	syntax_err "Prototype assignment to invalid type '"
+		.$object_type_names[$fnContext->{otype}]."'."
 		if    $fnContext->{otype} != $OT_CLASS 
 		   && $fnContext->{otype} != $OT_INTERFACE;
 			
@@ -493,7 +512,8 @@ sub parse_interface
 		my $scope = create_base $context, $token;
 		$scope = $$scope->{objs}{$token};
 		$scope->{otype} = $OT_INTERFACE if $scope->{otype} == $OT_CLASS;
-		syntax_err $token, " is not a class." 
+		syntax_err $token." is a '"
+				.$object_type_names[$scope->{otype}]."', but not a class." 
 			if $scope->{otype} != $OT_INTERFACE;
 		
 		$fnContext->{fulfills}{$token} = $scope;
@@ -521,9 +541,12 @@ sub parse
 		}
 		elsif( $scan_mode == $S_DOC_COMMENT )
 		{
-			for( $token )
+			parse_doc_comment;
+			if( $last_doc->{type} == $OT_FILE )
 			{
-				/(?:file)/			&& parse_doc_file $context;
+				$file->{comment} = [] if not exists $file->{comment};
+				push @{$file->{comment}}, $last_doc->{text};
+				$last_doc = undef;
 			}
 		}
 	}
@@ -561,6 +584,8 @@ sub dump_context
 		foreach my $i ( 0 .. $#$context )
 		{
 			my $value = $context->[$i];
+			$value =~ s/\n/\\n/go;
+			$value =~ s/\r//go;
 			print $prefix, "[", $i, "]: ", $value, "\n";
 			for( ref $value )
 			{
@@ -575,11 +600,10 @@ sub dump_context
 
 my $indent = "\t";
 
-sub generate_comment
+sub generate_file_comments
 {
-	my ( $type, $text, $pref ) = @_;
-	$text = "/** \\$type".$text."*/";
-	s/^\s*//, print $pref.$_."\n" for split /(\r?\n|^\n?)[ \t]/, $text;
+	my $docs = shift;
+	print $docs->[$_] foreach ( 0 .. $#$docs );
 }
 
 sub generate_forward_classes
@@ -601,10 +625,10 @@ sub generate_function
 	
 	return if $name !~ /$identifier/;
 	$virtual = $virtual == $OT_INTERFACE ? "virtual " : "";
-	print $pref, "void ", $name, "(";
+	print $pref, $virtual."void ", $name, "(";
 	for my $arg (@{$func->{args}})
 	{
-		print $delim, $virtual."void ", $arg->{name};
+		print $delim, "void ", $arg->{name};
 		$delim = ",";
 	}
 	print ");\n";
@@ -657,7 +681,7 @@ sub generate
 	{
 		/(?:$OT_FILE)/ && do
 			{
-				generate_comment "file ".$ARGV, $context->{comment}
+				generate_file_comments $context->{comment}
 					if exists $context->{comment};
 				generate_forward_classes $context->{objs}, "";
 				generate $context->{objs}{$_}, $_, ""
@@ -683,6 +707,7 @@ $context =
 	otype => $OT_FILE,
 	scope => undef
 };
+$file = $context;
 
 parse \$context;
 dump_context $context, "Main: " if $opt_debug & $DEB_DATABASE;
