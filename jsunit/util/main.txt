@@ -90,7 +90,6 @@ some samples demonstrating the usage of JsUnit in different environments.</p>
 	<li>\ref interface</li>
 	<li>\ref writing</li>
 	<li>\ref examples</li>
-	<li>\ref compatibility</li>
 	<li>\ref products</li>
 </ul>
 
