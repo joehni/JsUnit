@@ -20,23 +20,27 @@ classes and functions in their production; they are not affected by this
 license.
 -->
 
-<HTML>
-<HEAD>
-<TITLE>JsUnit Test</TITLE>
-<SCRIPT language="JavaScript"><!--
+<html>
+<head>
+<title>JsUnit Test</title>
+<script type="text/javascript" language="JavaScript">
+<!--
 function myOnLoadEvent()
 {
 	alert("onLoad event restored");
 }
-window.onload=myOnLoadEvent; // --></SCRIPT>
-<SCRIPT language="JavaScript" src="../lib/JsUnit.js"></SCRIPT>
-<SCRIPT language="JavaScript" src="../lib/JsUnitHTML.js"></SCRIPT>
+window.onload=myOnLoadEvent; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript" src="../lib/JsUnit.js"></script>
+<script type="text/javascript" language="JavaScript" src="../lib/JsUnitHTML.js"></script>
 
-<SCRIPT language="JavaScript" src="../lib/JsUtil.js"></SCRIPT>
-<SCRIPT language="JavaScript" src="JsUtilTest.js"></SCRIPT>
-<SCRIPT language="JavaScript" src="JsUnitTest.js"></SCRIPT>
+<script type="text/javascript" language="JavaScript" src="../lib/JsUtil.js"></script>
+<script type="text/javascript" language="JavaScript" src="JsUtilTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="JsUnitTest.js"></script>
 
-<SCRIPT language="JavaScript"><!--
+<script type="text/javascript" language="JavaScript">
+<!--
 var JavaScript = "true"; 
 var JavaScript_1_2 = "false"; 
 var JavaScript_1_3 = "false"; 
@@ -46,20 +50,40 @@ var JavaScript_1_6 = "false";
 var JScript = "false"; 
 var hasExceptions = "false";
 var exceptionsWorking = "false";
-// --></SCRIPT>
-<SCRIPT language="JavaScript1.2"><!--
-JavaScript_1_2 = true; // --></SCRIPT>
-<SCRIPT language="JavaScript1.3"><!--
-JavaScript_1_3 = true; // --></SCRIPT>
-<SCRIPT language="JavaScript1.4"><!--
-JavaScript_1_4 = true; // --></SCRIPT>
-<SCRIPT language="JavaScript1.5"><!--
-JavaScript_1_5 = true; // --></SCRIPT>
-<SCRIPT language="JavaScript1.6"><!--
-JavaScript_1_6 = true; // --></SCRIPT>
-<SCRIPT language="JScript"><!--
-JScript = true; // --></SCRIPT>
-<SCRIPT language="JavaScript1.3"><!--
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.2">
+<!--
+JavaScript_1_2 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.3">
+<!--
+JavaScript_1_3 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.4">
+<!--
+JavaScript_1_4 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.5">
+<!--
+JavaScript_1_5 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.6">
+<!--
+JavaScript_1_6 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JScript">
+<!--
+JScript = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript1.3">
+<!--
 function throwEx()
 {
 	throw new Error;
@@ -71,8 +95,10 @@ function testEx()
 	catch( ex ) { exceptionsWorking = this == me; }
 }
 new testEx();
-// --></SCRIPT>
-<SCRIPT language="JavaScript"><!--
+// -->
+</script>
+<script type="text/javascript" language="JavaScript">
+<!--
 function main()
 {
 	var runner = new HTMLTestRunner();
@@ -90,12 +116,14 @@ function main()
 	runner.addSuite( new TestSuite( new TextTestRunnerTest()));
 	return runner.start( main.arguments );
 }
-// --></SCRIPT>
-</HEAD>
-<BODY>
-<H1>JsUnit Test</H1>
-<H2>Language Support</H2>
-<SCRIPT language="JavaScript"><!--
+// -->
+</script>
+</head>
+<body>
+<h1>JsUnit Test</h1>
+<h2>Language Support</h2>
+<script type="text/javascript" language="JavaScript">
+<!--
 document.writeln("<P>");
 document.writeln("JavaScript: " + JavaScript + "<BR>");
 document.writeln("JavaScript 1.2: " + JavaScript_1_2 + "<BR>");
@@ -107,14 +135,17 @@ document.writeln("JScript: " + JScript + "<BR>");
 document.writeln("has exceptions: " + hasExceptions + "<BR>");
 document.writeln("exceptions working: " + exceptionsWorking + "<BR>");
 document.writeln("</P>");
-// --></SCRIPT>
-<NOSCRIPT><P style="color:red">JavaScript seems to be disabled!</P></NOSCRIPT>
-<H2>JsUnit Test Suite</H2>
-<SCRIPT language="JavaScript"><!--
+// -->
+</script>
+<noscript><p style="color:red">JavaScript seems to be disabled!</p></noscript>
+<h2>JsUnit Test Suite</h2>
+<script type="text/javascript" language="JavaScript">
+<!--
 if( exceptionsWorking )
 	main( "all" );
 else
-	document.writeln("<P style='color:red'>Sorry, exceptions not working!</P>");
-// --></SCRIPT>
-</BODY>
-</HTML>
+	document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");
+// -->
+</script>
+</body>
+</html>
