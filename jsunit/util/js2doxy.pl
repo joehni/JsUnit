@@ -45,7 +45,7 @@ Getopt::Long::GetOptions(
 	'help' => \$opt_help,
 	'version' => \$opt_version );
 
-print( "Version: $VERSION\n" ) and exit( 0 ) if( $opt_version );
+print( "Version: $VERSION\n" ) && exit( 0 ) if( $opt_version );
 pod2usage( -exitval => 0, -verbose => 2 ) if( $opt_help );
 pod2usage( 1 ) if( $opt_usage or ( $#ARGV < 0 && -t ));
 
@@ -193,7 +193,7 @@ sub switch_scan_mode
 		{
 			$scan_mode = $S_COMMENT;
 		}
-		elsif( $token eq "/**" or $token eq "/*!" )
+		elsif(( $token eq "/**" ) or ( $token eq "/*!" ))
 		{
 			$scan_mode = $S_DOC_COMMENT;
 		}
@@ -233,6 +233,7 @@ use vars qw(
 	$OT_CLASS 
 	$OT_INTERFACE 
 	$OT_MEMBERVAR 
+	$OT_MEMBERSVAR 
 	$OT_MEMBERFUNC 
 	$OT_CONSTRUCTOR 
 );
@@ -243,8 +244,9 @@ $OT_FUNCTION = 2;
 $OT_CLASS = 3;
 $OT_INTERFACE = 4;
 $OT_MEMBERVAR = 5;
-$OT_MEMBERFUNC = 6;
-$OT_CONSTRUCTOR = 7;
+$OT_MEMBERSVAR = 6;
+$OT_MEMBERFUNC = 7;
+$OT_CONSTRUCTOR = 8;
 
 use subs qw( parse next_parser_token parse_interface );
 
@@ -259,7 +261,8 @@ sub parse_comment
 {
 	my $token;
 	$token = next_token() 
-		while( $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT );
+		while(   ( $scan_mode == $S_COMMENT ) 
+			  || ( $scan_mode == $S_LINE_COMMENT ));
 	$token;
 }
 
@@ -326,11 +329,21 @@ sub parse_doc_comment
 			{
 				/^(?:\\|@)type$/ && do
 				{
+					warning( "Return type already defined!" )
+						if( exists $doc->{rtype} );
 					$doc->{text} =~ s/^(.+[\n]+)[^\n]+$/\1/s;
 					( $doc->{rtype}, $token ) = parse_type();
 					skip_line() if( $token !~ /^$newline_pattern/ );
 					$token = next_token();
 					next LOOP;
+				};
+				/^(\\|@)treturn$/ && do
+				{
+					warning( "Return type already defined!" )
+						if( exists $doc->{rtype} );
+					my $comment = $1;
+					( $doc->{rtype}, $token ) = parse_type();
+					$_ = $comment."return $token";
 				};
 				/^(\\|@)tparam$/ && do
 				{
@@ -360,8 +373,8 @@ sub parse_doc_comment
 		else
 		{
 			$doc->{otype} = $OT_UNKNOWN
-				if(     not exists $doc->{otype} 
-					and $token =~ /^$identifier$/ );
+				if(    ( not exists $doc->{otype} )
+					&& ( $token =~ /^$identifier$/ ));
 			$doc->{text} .= $token;
 		}
 	
@@ -385,7 +398,8 @@ sub parse_code
 			if( $scan_mode == $S_DOC_COMMENT );
 
 		parse_comment(), next
-			if( $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT );
+			if(   ( $scan_mode == $S_COMMENT ) 
+			   || ( $scan_mode == $S_LINE_COMMENT ));
 
 		last;
 	}
@@ -404,7 +418,8 @@ sub next_parser_token
 		$last_token = "";
 
 		parse_comment(), next
-			if( $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT );
+			if(   ( $scan_mode == $S_COMMENT ) 
+			   || ( $scan_mode == $S_LINE_COMMENT ));
 
 		if( $scan_mode == $S_CODE )
 		{
@@ -485,6 +500,45 @@ sub parse_variable
 	while(( $token = parse_code()) ne ";" ) {}
 	$last_doc = undef;
 	$token;
+}
+
+sub parse_this
+{
+	my ( $context, $token ) = @_;
+
+	if( $token =~ s/^this\.($identifier)$/\1/ )
+	{
+		return if( parse_code() ne "=" );
+		
+		if( not exists $context->{members}{$token} )
+		{
+			$context->{members}{$token} = 
+			{ 
+				name => $token,
+				otype => $OT_MEMBERVAR, 
+				scope => $context 
+			};
+			
+			print( STDERR "Database: Added member variable '$token' to class '"
+					.$context->{name}.".\n" ) 
+				if( $opt_debug & $DEB_DATABASE );
+		}
+		if( $last_doc )
+		{
+			if( exists $context->{members}{$token}{doc} )
+			{
+				warning( "Comment for '$token' already exists, ignoring new." );
+			}
+			else
+			{
+				$context->{members}{$token}{doc} = $last_doc;
+				print( STDERR "Database: Comment for "
+						."member variable '$token'.\n" ) 
+					if( $opt_debug & $DEB_DATABASE );
+			}
+		}
+		$last_doc = undef;
+	}
 }
 
 sub parse_function
@@ -569,8 +623,9 @@ sub parse_function
 sub create_base
 {
 	my ( $context, $base ) = @_;
+	#TODO: look in inherited classes, too.
 	my $scope = $context;
-	while( $scope && not exists $scope->{objs}{$base} )
+	while( $scope && ( not exists $scope->{objs}{$base} ))
 	{
 		$context = $scope;
 		$scope = $scope->{scope};
@@ -590,6 +645,66 @@ sub create_base
 	return $scope;
 }
 
+sub find_member
+{
+	my ( $context, $member ) = @_;
+	my $scope;
+
+	$member =~ s/^($identifier)(\.prototype\.(.*))?$/\1/;
+	my $struct = $3;
+
+	syntax_err( $context->{name}." is a '".
+			$object_type_names[$context->{otype}]."', but not a class" )
+		if( $context->{otype} != $OT_CLASS );
+
+	if( not $struct )
+	{
+		$scope = $context->{members}{$member}
+			if( exists $context->{members}{$member} );
+
+		$scope = find_member( $context->{base}, $member )
+			if(( not $scope ) && ( exists $context->{base} ));
+
+		if(( not $scope ) && ( exists $context->{inherits} ))
+		{
+			for my $class ( keys %{$context->{inherits}} )
+			{
+				$scope = find_member( $context->{inherits}{$class}, $member );
+				last if( $scope );
+			}
+		}
+	}
+	else
+	{
+		$scope = $context->{objs}{$member}
+			if(   ( exists $context->{objs} )
+			   && ( exists $context->{objs}{$member} ));
+
+		if( not $scope )
+		{
+			$scope = find_member( $context->{base}, 
+								  "$member.prototype.$struct" )
+				if(( not $scope ) && ( exists $context->{base} ));
+
+			if(( not $scope ) && ( exists $context->{inherits} ))
+			{
+				for my $class ( keys %{$context->{inherits}} )
+				{
+					$scope = find_member( $context->{inherits}{$class}, 
+										  "$member.prototype.$struct" );
+					last if( $scope );
+				}
+			}
+		}
+		else
+		{
+			$scope = find_member( $scope, $struct );
+		}
+	}
+	
+	return $scope;
+}
+
 sub parse_prototype
 {
 	my $context = shift;
@@ -606,8 +721,8 @@ sub parse_prototype
 	
 	$name = $1;
 	
-	if(    not exists $context->{objs}{$name}
-	   and exists $context->{members}{$name} )
+	if(   ( not exists $context->{objs}{$name} )
+	   && ( exists $context->{members}{$name} ))
 	{
 		syntax_err( "Wrong prototype assignment to '$name' of type "
 				.$object_type_names[$context->{members}{$name}{otype}]."." )
@@ -630,8 +745,8 @@ sub parse_prototype
 	$fnContext->{otype} = $OT_CLASS if( $fnContext->{otype} == $OT_FUNCTION );
 	syntax_err( "Prototype assignment to invalid type '"
 			.$object_type_names[$fnContext->{otype}]."'." )
-		if(   $fnContext->{otype} != $OT_CLASS 
-		   && $fnContext->{otype} != $OT_INTERFACE );
+		if(   ( $fnContext->{otype} != $OT_CLASS )
+		   && ( $fnContext->{otype} != $OT_INTERFACE ));
 	print( STDERR "Database: '$name' is a class.\n" ) 
 		if( $opt_debug & $DEB_DATABASE );
 
@@ -693,28 +808,62 @@ sub parse_prototype
 		
 		if(( $token = parse_code()) =~ /^$identifier$/ )
 		{
+			my $base = $token;
 			my $end = 1;
-			if( $token eq "function" )
+			if( $base eq "function" )
 			{
-				$token = parse_function( $context );
+				$base = parse_function( $context );
 				$end = 0;
-			}
-			my $scope = $context;
-			$scope = $scope->{scope} 
-				while( $scope && not exists $scope->{objs}{$token} );
-			if( not $scope )
-			{
-				warning( "'$token' is not defined." );
 			}
 			else
 			{
-				$scope = $context->{objs}{$token};
-				$scope->{otype} = $OT_MEMBERFUNC 
-					if( $scope->{otype} == $OT_FUNCTION );
-				syntax_err( "$token is not a member." )
-					if(   $scope->{otype} != $OT_MEMBERFUNC 
-					   && $scope->{otype} != $OT_MEMBERVAR );
-				print( STDERR "Database: '$member' is a member "
+				while( $_ = parse_code())
+				{
+					/^;$/ 			&& ( $end = 0, last );
+					/^\.$/ 			&& $token =~ /$identifier$/ 
+									&& ( $token .= $_, next );
+					/^prototype$/	&& $token !~ /\.prototype\.$/ 
+									&& $token =~ /\.$/ 
+									&& ( $token .= $_, next );
+					/^$identifier$/	&& $token =~ /\.prototype\.$/ 
+									&& !/^prototype$/
+									&& ( $token .= $_, next );
+					syntax_err( "Unexpected token '$token$_'"
+						." in prototype assignment" );
+				}
+			}
+			my $scope = $context;
+			#TODO: look in inherited classes, too.
+			$scope = $scope->{scope} 
+				while( $scope and ( not exists $scope->{objs}{$base} ));
+			if( not $scope )
+			{
+				warning( "'$base' is not defined." );
+			}
+			else
+			{
+				$scope = $scope->{objs}{$base};
+				if( $token =~ /\./ )
+				{
+					$token =~ s/^$base\.prototype\.(.*)$/\1/;
+					$scope = find_member( $scope, $token );
+				}
+				else
+				{
+					$scope->{otype} = $OT_MEMBERFUNC 
+						if( $scope->{otype} == $OT_FUNCTION );
+					$scope->{otype} = $OT_MEMBERSVAR
+						if( $scope->{otype} == $OT_MEMBERVAR );
+					syntax_err( "$base is a '"
+							.$object_type_names[$scope->{otype}]
+							."' and not a member." )
+						if(   ( $scope->{otype} != $OT_MEMBERFUNC )
+						   && ( $scope->{otype} != $OT_MEMBERSVAR ));
+				}
+				print( STDERR "Database: '$member' is a "
+					   .(  $scope->{otype} == $OT_MEMBERSVAR
+						 ? "static " 
+						 : "")."member "
 					   .(  $scope->{otype} == $OT_MEMBERFUNC 
 						 ? "function" 
 						 : "variable")." with global name '"
@@ -722,14 +871,15 @@ sub parse_prototype
 					if( $opt_debug & $DEB_DATABASE );
 				$fnContext->{members}{$member} = $scope;
 				syntax_err( "';' expected, found '$token'." )
-					if( $end and parse_code() ne ";" );
+					if( $end and ( $token = parse_code()) ne ";" );
 			}
 		}
 		else
 		{
 			syntax_err( "'$member' already defined." )
-				if( exists $fnContext->{members}{$member} );
-			$fnContext->{members}{$member} = { otype => $OT_MEMBERVAR };
+				if(   exists $fnContext->{members}{$member}
+				   && $fnContext->{members}{$member}{otype} != $OT_MEMBERVAR );
+			$fnContext->{members}{$member} = { otype => $OT_MEMBERSVAR };
 			print( STDERR "Database: Added member variable '$member'.\n" ) 
 				if( $opt_debug & $DEB_DATABASE );
 			while(( $token = parse_code()) ne ";" ) {}
@@ -788,7 +938,7 @@ sub parse_interface
 	while(( $token = parse_code()) ne ")" )
 	{
 		next if( $token eq "," );
-		if( $token !~ /^$identifier$/ or $token =~ /^(?:new|delete)$/ )
+		if(( $token !~ /^$identifier$/ ) || ( $token =~ /^(?:new|delete)$/ ))
 		{
 			warning(( $type eq "fulfills" ? "Interface" : "Class" )
 				." name expected, found '$token'." );
@@ -798,7 +948,7 @@ sub parse_interface
 		my $scope = create_base( $context, $token );
 		$scope = $scope->{objs}{$token};
 		$scope->{otype} = $OT_INTERFACE 
-			if( $type eq "fulfills" && $scope->{otype} == $OT_CLASS );
+			if(( $type eq "fulfills" ) && ( $scope->{otype} == $OT_CLASS ));
 		syntax_err( "$token is a '"
 				.$object_type_names[$scope->{otype}]."', but not a class." )
 			if(   ( $type eq "fulfills" && $scope->{otype} != $OT_INTERFACE )
@@ -808,9 +958,9 @@ sub parse_interface
 		
 		$fnContext->{$type}{$token} = $scope;
 		print( STDERR "Database: '$name' implements '$token'.\n" ) 
-			if( $type eq "fulfills" && ( $opt_debug & $DEB_DATABASE ));
+			if(( $type eq "fulfills" ) and ( $opt_debug & $DEB_DATABASE ));
 		print( STDERR "Database: '$name' is inherited by '$token'.\n" ) 
-			if( $type eq "inherits" && ( $opt_debug & $DEB_DATABASE ));
+			if(( $type eq "inherits" ) and ( $opt_debug & $DEB_DATABASE ));
 	}
 }
 
@@ -831,13 +981,13 @@ sub parse
 				{
 					delete $context->{objs};
 					--$level == 0;
-					$context->{objs} = pop( @{$context->{symbols}} );
+					$context->{objs} = pop( @{$context->{symbol_stack}} );
 					last PARSE if $context->{otype} != $OT_FILE;
 				};
 				/^{$/ && do
 				{
 					my $objs = $context->{objs};
-					push( @{$context->{symbols}}, $objs );
+					push( @{$context->{symbol_stack}}, $objs );
 					delete $context->{objs};
 					foreach my $key ( keys %$objs )
 					{
@@ -846,6 +996,7 @@ sub parse
 					++$level;
 				};
 				/^var$/				&& parse_variable( $context );
+				/^this\./			&& parse_this( $context, $token );
 				/^function$/		&& parse_function( $context );
 				/^.+\.prototype/	&& parse_prototype( $context, $token );
 				/^.+\.(?:fulfills|inherits)$/	
@@ -961,23 +1112,23 @@ sub generate_function
 	
 	return if( $name !~ /^$identifier$/ );
 	$doc = $func->{doc} 
-		if(    exists $func->{doc} 
-		   and (   $func->{otype} == $OT_FUNCTION
-				or $func->{otype} == $OT_MEMBERFUNC ));
+		if(   exists $func->{doc} 
+		   && (   $func->{otype} == $OT_FUNCTION
+			   || $func->{otype} == $OT_MEMBERFUNC ));
 	$ctor = $func->{ctor}
-		if(    exists $func->{ctor} 
-		   and (   $func->{otype} == $OT_CLASS
-		   	    or $func->{otype} == $OT_INTERFACE ));
+		if(   exists $func->{ctor} 
+		   && (   $func->{otype} == $OT_CLASS
+		   	   || $func->{otype} == $OT_INTERFACE ));
 	$ctor = $func->{doc}{ctor} 
-		if(    exists $func->{doc} 
-		   and exists $func->{doc}{ctor} 
-		   and (   $func->{otype} == $OT_CLASS
-		   	    or $func->{otype} == $OT_INTERFACE ));
+		if(   exists $func->{doc} 
+		   && exists $func->{doc}{ctor} 
+		   && (   $func->{otype} == $OT_CLASS
+		   	   || $func->{otype} == $OT_INTERFACE ));
 	if( $doc )
 	{
 		syntax_err( "Documentation for $name is not for a function." )
-			if(    $doc->{otype} != $func->{otype}
-			   and $doc->{otype} != $OT_UNKNOWN );
+			if(   $doc->{otype} != $func->{otype}
+			   && $doc->{otype} != $OT_UNKNOWN );
 		print( "\n".$doc->{text} );
 		$rtype = $doc->{rtype} if( exists $doc->{rtype} );
 		$argtypes = $doc->{args} if( exists $doc->{args} );
@@ -995,7 +1146,7 @@ sub generate_function
 	print( $pref.$virtual."$rtype $name(" );
 	for my $arg( @{$func->{args}} )
 	{
-		my $argtype = ( $argtypes and exists $doc->{args}{$arg->{name}} )
+		my $argtype = ( $argtypes and ( exists $doc->{args}{$arg->{name}} ))
 			? $doc->{args}{$arg->{name}} : "void";
 		print( $delim."$argtype ", $arg->{name} );
 		$delim = ", ";
@@ -1031,8 +1182,8 @@ sub generate_class
 	if( exists $context->{doc} )
 	{
 		syntax_err( "Documentation for $name is not for a $type." )
-			if( 	$context->{doc}{otype} != $context->{otype}
-				and $context->{doc}{otype} != $OT_UNKNOWN );
+			if(   $context->{doc}{otype} != $context->{otype}
+			   && $context->{doc}{otype} != $OT_UNKNOWN );
 		print( "\n".$context->{doc}{text} );
 	}
 	print( $pref.$type.$name );
@@ -1069,6 +1220,8 @@ sub generate_class
 			if( $member->{otype} == $OT_MEMBERFUNC );
 		generate_variable( $member, $_, $pref.$indent )
 			if( $member->{otype} == $OT_MEMBERVAR );
+		generate_variable( $member, $_, $pref.$indent."static " )
+			if( $member->{otype} == $OT_MEMBERSVAR );
 	}
 	print( "$pref};\n\n" );
 }
@@ -1190,13 +1343,23 @@ This command starts the description of the constructor.
 It can be placed within the documentation comment for a class. 
 It may be used also as first command in such a comment.
 
-=item B<\tparam TYPE PARAM>
+=item B<\tparam TYPE PARAM COMMENT>
 
 This command sets the type of a parameter.
-It is replaced in the documentation comment with the B<\param> command
-(without the B<TYPE>). 
+It is replaced in the documentation comment with the B<\param PARAM COMMENT> 
+command (without the B<TYPE>). 
 The program will use the type information in the generated C++ code.  
 It may not be the first command in a documentation comment.
+
+=item B<\tparam TYPE COMMENT>
+
+This command sets the return type of a function.
+It is replaced in the documentation comment with the B<\return COMMENT> 
+command (without the B<TYPE>). 
+The program will use the type information in the generated C++ code.  
+It may not be the first command in a documentation comment.
+This comand is a short cut of the normal B<\return> command and the B<\type>
+command supported by this program.
 
 =item B<\type TYPE>
 
@@ -1209,9 +1372,14 @@ The program uses internally a has map for the database.
 Therefore the sequence of the identified elements is by chance and the
 grouping commands of Doxygen are not supported.
 
-The program is currently not able to handle nested JavaScript prototype
-assignments, e.g.:
+The program does currently not support single line documentation blocks
+or documentation blocks that *follow* the declaration:
 
- x.prototype.y.prototype = new z();
+ ///
+ //!
+ /**< */
+ ///<
+ /*!< */
+ //!< */
 
 =cut

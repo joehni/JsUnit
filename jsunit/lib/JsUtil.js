@@ -44,7 +44,7 @@ license.
  **/
 function CallStack( depth )
 {
-	/* TODO
+	/**
 	 * The array with the stack. 
 	 * @type Array<String>
 	 */
@@ -93,8 +93,7 @@ function CallStack( depth )
 /** 
  * Retrieve the caller of a function.
  * @tparam Function fn The function to examin.
- * @type Function
- * @return The caller as Function or undefined.
+ * @treturn Function The caller as Function or undefined.
  **/
 function CallStack_getCaller( fn )
 {
@@ -110,8 +109,7 @@ function CallStack_getCaller( fn )
  * Retrieve call stack as string.
  * The function returns the call stack as string. Each stack frame has an 
  * own line and is prepended with the call stack depth.
- * @type String
- * @return The call stack as string.
+ * @treturn String The call stack as string.
  **/
 function CallStack_toString()
 {
@@ -133,15 +131,14 @@ CallStack.prototype.toString = CallStack_toString;
 if( !Array.prototype.pop )
 {
 	/**
-	 * Pops last element from Array
-	 * @type Object
+	 * Pops last element from Array.
 	 * The function is an implementation of the Array::pop method described
 	 * in the ECMA standard. It removes the last element of the Array and
 	 * returns it.
 	 *
 	 * The function is active if the ECMA implementation does not implement
 	 * it (like Microsoft JScript engine up to version 5.5).
-	 * @return Last element or undefined
+	 * @treturn Object Last element or undefined
 	 */
 	function Array_pop()
 	{
@@ -159,8 +156,7 @@ if( !Array.prototype.pop )
 if( !Array.prototype.push )
 { 
 	/**
-	 * Pushes elements into Array
-	 * @type Object
+	 * Pushes elements into Array.
 	 * The function is an implementation of the Array::push method described
 	 * in the ECMA standard. It adds all given parameters at the end of the
 	 * array.
@@ -168,7 +164,7 @@ if( !Array.prototype.push )
 	 * The function is active if the ECMA implementation does not implement
 	 * it (like Microsoft JScript engine up to version 5.5).
 	 * @type Number
-	 * @return Number of added elements
+	 * @treturn Object Number of added elements
 	 */
 	function Array_push()
 	{
@@ -201,7 +197,7 @@ if( !Array.prototype.push )
  *
  * The function is written as String enhancement and available as new member 
  * function of the class String.
- * @return String without given characters at start or end.
+ * @treturn String String without given characters at start or end.
  */
 function String_trim( chars )
 {
@@ -240,7 +236,7 @@ if( !this.Error || !hasCompatibleErrorClass )
 	 **/
 	function Error( msg )
 	{
-		/* TODO
+		/**
 		 * The error message.
 		 * @type String
 		 **/
@@ -248,9 +244,8 @@ if( !this.Error || !hasCompatibleErrorClass )
 	}
 	/**
 	 * String representation of the error.
-	 * @type String
-	 * @return Returns a \c String containing the Error class name and the
-	 * error message.
+	 * @treturn String Returns a \c String containing the Error class name 
+	 * and the error message.
 	 **/
 	function Error_toString()
 	{

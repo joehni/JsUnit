@@ -43,7 +43,7 @@ license.
 function AssertionFailedError( msg, stack )
 {
 	this.message = msg || "";
-	/* TODO
+	/**
 	 * The call stack for the message.
 	 */
 	this.mCallStack = stack;
@@ -69,8 +69,7 @@ function Test( testName )
 }
 /**
  * Counts the number of test cases that will be run by this test.
- * @type Number
- * @return The number of test cases.
+ * @treturn Number The number of test cases.
  */
 function Test_countTestCases() { return 0; }
 /**
@@ -78,8 +77,7 @@ function Test_countTestCases() { return 0; }
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String testName The name of the searched test.
- * @type String
- * @return The instance itself of null.
+ * @treturn String The instance itself of null.
  */
 function Test_findTest( testName ) 
 { 
@@ -87,8 +85,7 @@ function Test_findTest( testName )
 }
 /**
  * Retrieves the name of the test.
- * @type String
- * @return The name of test cases.
+ * @treturn String The name of test cases.
  */
 function Test_name() { return this.mName; }
 /**
@@ -98,8 +95,7 @@ function Test_name() { return this.mName; }
 function Test_run( result ) {}
 /**
  * Retrieve the test case as string.
- * @type String
- * @return Returns the name of the test case.
+ * @treturn String Returns the name of the test case.
  */
 function Test_toString() { return this.mName; }
 Test.prototype.countTestCases = Test_countTestCases;
@@ -124,20 +120,17 @@ function TestFailure( test, except )
 }
 /**
  * Retrieve the failed test.
- * @type Test
- * @return Returns the failed test.
+ * @treturn Test Returns the failed test.
  */
 function TestFailure_failedTest() { return this.mTest; }
 /**
  * Retrieve the thrown exception.
- * @type Test
- * @return Returns the thrown exception.
+ * @treturn Test Returns the thrown exception.
  */
 function TestFailure_thrownException() { return this.mException.toString(); }
 /**
  * Retrieve failure as string.
- * @type String
- * @return Returns the error message.
+ * @treturn String Returns the error message.
  */
 function TestFailure_toString() 
 { 
@@ -500,8 +493,7 @@ function TestCase( name )
 }
 /**
  * Counts the number of test cases that will be run by this test.
- * @type Number
- * @return Returns 1.
+ * @treturn Number Returns 1.
  */
 function TestCase_countTestCases() { return 1; }
 /**
@@ -623,8 +615,7 @@ function TestSuite_addTestSuite( testCase )
 }
 /**
  * Counts the number of test cases that will be run by this test suite.
- * @type Number
- * @return The number of test cases.
+ * @treturn Number The number of test cases.
  */
 function TestSuite_countTestCases()
 {
@@ -638,8 +629,7 @@ function TestSuite_countTestCases()
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String name The name of the searched test.
- * @type String
- * @return The instance itself of null.
+ * @treturn String The instance itself of null.
  */
 function TestSuite_findTest( name )
 {
@@ -723,21 +713,18 @@ function TestRunner_addSuite( suite ) { this.mSuites.addTest( suite ); }
 /**
  * Counts the number of test cases that will be run by this test 
  * application.
- * @type Number
- * @return The number of test cases.
+ * @treturn Number The number of test cases.
  */
 function TestRunner_countTestCases() { return this.mSuites.countTestCases(); }
 /**
  * The milliseconds needed to execute all registered tests of the runner.
  * This number is 0 as long as the test was never started.
- * @type Number
- * @return The milliseconds.
+ * @treturn Number The milliseconds.
  */
 function TestRunner_countMilliSeconds() { return this.mElapsedTime; }
 /**
  * Creates an instance of a TestResult.
- * @type TestResult
- * @return Returns the new TestResult instance.
+ * @treturn TestResult Returns the new TestResult instance.
  */
 function TestRunner_createTestResult() { return new TestResult(); }
 /**
@@ -870,8 +857,7 @@ function TextTestRunner_printFooter( result )
 /**
  * Start the test functionality of the application.
  * @param args list of test names in an array or a single test name
- * @type Number
- * @returns 0 if no test fails, otherwise -1
+ * @treturn Number 0 if no test fails, otherwise -1
  */
 function TextTestRunner_start( args )
 {
