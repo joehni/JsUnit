@@ -81,14 +81,14 @@ have listed all products that I am aware of.</P>
 	<TD><B>Comment</B></TD>
 </TR>
 <TR>
-	<TD><A HREF=":http://www.day.com/en/product.html">Communiqu&eacute; 2.x</A></TD>
+	<TD><A HREF="http://www.day.com/en/product.html">Communiqu&eacute; 2.x</A></TD>
 	<TD><A HREF="http://www.day.com">Day International</A></TD>
 	<TD>ECMAScript 1</TD>
 	<TD>no</TD>
 	<TD>no exceptions in this version</TD>
 </TR>
 <TR>
-	<TD><A HREF=":http://www.day.com/en/product.html">Communiqu&eacute; Unify (3.x)</A></TD>
+	<TD><A HREF="http://www.day.com/en/product.html">Communiqu&eacute; Unify (3.x)</A></TD>
 	<TD><A HREF="http://www.day.com">Day International</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>

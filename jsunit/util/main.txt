@@ -26,73 +26,48 @@ license.
 
 \section description Description
 
-<P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">
-JUnit</A> written by Erich Gamma and Kent Beck. The port's base is JUnit
-version 3.2 and covers only the core system and the examples. Main goal of the
-port is a system that can be invoked by command line retunring en exit code to
-allow automated tests as long as the environment support this scenario.</P>
+<P>JsUnit is a simple framework to write repeatable tests in JavaScript. It is
+an instance of the xUnit architecture for <a
+href="http://www.xprogramming.com/software.htm">unit testing frameworks</a>.
+JsUnit is a port of <a href="http://www.junit.org">JUnit</a> 3.2 written by
+Erich Gamma and Kent Beck. It covers the core system and the examples.</P>
 
-\section contents Contents
+<P>For further information follow the links at <a
+href="http://c2.com/cgi/wiki?TestingFramework">Portland Pattern Repository for
+Testing Frameworks</a> and the homepage of <a
+href="http://www.junit.org">JUnit</a>.
 
-<UL>
-	<LI>\ref license
-	<UL>
-		<LI>\ref gnu</LI>
-	</UL></LI>
-	<LI>\ref downloads</LI>
-	<LI>\ref usage
-	<UL>
-		<LI>\ref codeConv</LI>
-		<LI>\ref interface</LI>
-		<LI>\ref writing</LI>
-		<LI>\ref application</LI>
-		<LI>\ref examples</LI>
-	</UL></LI>
-	<LI>\ref release
-	<UL>
-		<LI>\ref new</LI>
-		<LI>\ref change</LI>
-		<LI>\ref progress</LI>
-		<LI>\ref bug</LI>
-	</UL></LI>
-	<LI>\ref todo</LI>
-	<LI>\ref history
-	<UL>
-		<LI>\ref v1_0</LI>
-	</UL></LI>
-	<LI>\ref compatibility</LI>
-	<LI>\ref language
-	<UL>
-		<LI>\ref ecma</LI>
-		<LI>\ref javascript</LI>
-		<LI>\ref jscript</LI>
-	</UL></LI>
-	<LI>\ref products</LI>
-	<LI>\ref internal
-	<UL>
-		<LI>\ref docConv</LI>
-		<LI>\ref docGen</LI>
-	</UL></LI>
-	<LI>\ref acknowledge</LI>
-</UL>
+\section overview Overview
 
-\section downloads Downloads
+<p>\ref license of JsUnit is the \ref gnu.</p>
 
-<P>
-\htmlonly
+<p>All downloads are available at the <a
+href="http://developer.berlios.de/project/filelist.php?group_id=158">download
+section</a> of the JsUnit project page. See the \ref release for specific
+information regarding the files. There is also a \ref todo and the \ref
+history available.</p>
 
-<A href="http://developer.berlios.de"> <IMG name="BerliOS"
-src="javascript:document.BerliOS.src=img.src" align="left" width="118"
-height="52" border="0" alt="BerliOS Logo"> </A>
+<p>You can send e-mail to <a href="mailto:joehni@mail.berlios.de">J&ouml;rg
+Schaible</a> for any question, suggestion or problem or join the <a
+href="http://groups.yahoo.com/group/jsunit/join">JsUnit mailing list</a>
+hosted by <a href="http://groups.yahoo.com/">Yahoo! Groups</a>. Please
+recognize that more than one JsUnit project exists.</p>
 
-\endhtmlonly
-</P>
+<p>The \ref usage of JsUnit is described in the follwing sections:
+<ul>
+	<li>\ref codeConv</li>
+	<li>\ref interface</li>
+	<li>\ref writing</li>
+	<li>\ref application</li>
+	<li>\ref examples</li>
+</ul></p>
 
-<P>JsUnit is hosted at BerliOS. All versions can be found in the project's <A
-HREF="http://developer.berlios.de/projects/jsunit">Internet home page.</A></P>
+<p>JsUnit supports a number of applications. See \ref compatibility for a
+reference and the different language versions.</p>
 
-\htmlonly
-<BR clear="all">
-\endhtmlonly
+<p>The \ref internal provide information about the source code comment
+convensions that can be used to build own documentation like this one.</p>
+
+<p>Last, but not least, the \ref acknowledge.</p>
 
 */

@@ -1470,7 +1470,7 @@ command (without the B<TYPE>).
 The program will use the type information in the generated C++ code.  
 It may not be the first command in a documentation comment.
 
-=item B<\tparam TYPE COMMENT>
+=item B<\treturn TYPE COMMENT>
 
 This command sets the return type of a function.
 It is replaced in the documentation comment with the B<\return COMMENT> 

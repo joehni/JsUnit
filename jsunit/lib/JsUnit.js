@@ -403,8 +403,8 @@ function Assert_assertNull( object )
 }
 /**
  * Asserts that a condition is true.
- * @param String cond The condition to evaluate.
- * @param String msg An optional error message.
+ * @tparam String cond The condition to evaluate.
+ * @tparam String msg An optional error message.
  * @exception AssertionFailedError Thrown if the evaluation was not true.
  */
 function Assert_assertTrue( cond, msg )
@@ -919,7 +919,7 @@ TextTestRunner.prototype.startTest = TextTestRunner_startTest;
  * The method of this object does effectivly nothing. It must be 
  * overloaded with a proper version, that knows how to print a line.
  */
-TextTestRunner.prototype.writeLn = function (){};
+TextTestRunner.prototype.writeLn = function ( str ){};
 
 
 /*************************************************************/

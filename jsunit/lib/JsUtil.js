@@ -198,7 +198,8 @@ if( !Array.prototype.push )
 /**
  * Trims characters from string.
  * @tparam String chars String with characters to remove.  The character may
- * also be a regular expression character class like "\\s".
+ * also be a regular expression character class like "\\s" (which is the 
+ * default).
  *
  * The function removes the given chararcters \a chars from the beginning an 
  * the end from the current string and returns the result. The function will 

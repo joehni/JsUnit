@@ -27,9 +27,9 @@ license.
 <P>The documentation of JavaScript code follows the JavaDoc conventions. The
 generation is done using a Perl script generating Pseudo C++ code with the
 comments that is processed afterwards with <A
-HREF="www.doxygen.org">DoxyGen</A>. A lot of the features of DoxyGen are
-supported including the QT style of the comments.  See following chapter how
-to generate the documentation.</P>
+HREF="http://www.doxygen.org">DoxyGen</A>. A lot of the features of DoxyGen
+are supported including the QT style of the comments.  See following chapter
+how to generate the documentation.</P>
 
 <P>Documentation blocks within the code are embedded with:</P>
 
@@ -89,7 +89,7 @@ cannot support the grouping commands of DoxyGen.</P>
 \subsection docScript Script Manual
 
 <P><PRE>
-\htmlinclude .js2doxy.man
+\htmlinclude ".js2doxy.man"
 </PRE></P>
 
 \subsection docGen Rebuilding Documentation

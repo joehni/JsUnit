@@ -36,6 +36,9 @@ if test -z "$_DOT"; then
 	if test -d /opt/graphviz/bin; then
 		HAS_DOT="YES"
 		PATH=$PATH:/opt/graphviz/bin
+	elif test -d /opt/ATT/Graphviz/bin; then
+		HAS_DOT="YES"
+		PATH=$PATH:/opt/ATT/Graphviz/bin
 	else
 		HAS_DOT="NO"
 	fi
@@ -51,11 +54,17 @@ if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
 export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH VERSION
+if test "$1" = "--keep-temp"; then
+	KEEP=1
+else
+	KEEP=0
+fi
 
 CWD=$CWD
 cd `dirname $0`/..
 rm -rf .lib/ .doc/ doc/ man/ > /dev/null 2>&1
 mkdir .lib .doc doc man
+PAGER=cat perldoc -t util/js2doxy.pl > .lib/.js2doxy.man
 cd lib
 for js in *.js; do 
 	../util/js2doxy.pl $js > ../.lib/$js
@@ -67,11 +76,13 @@ cp util/*.bmp doc/
 mv doc/*.html .doc/
 cd .doc
 for html in *.html; do 
-	sed -e 's,<[hH]1>JsU\(nit.*\)</[hH]1>,<H1><A class="J">J</A><A class="s">s</A><A class="U">U</A>\1</H1>,g' $html > ../doc/$html; 
-	#sed -e 's,JsUnit\([ <]\),<A class="J">J</A><A class="s">s</A><A class="U">U</A>nit\1,g' $html > ../doc/$html; 
+	sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../doc/$html; 
+	#sed -e 's,JsUnit\([ <]\),<span class="J">J</span><span class="s">s</span><span class="U">U</span>nit\1,g' $html > ../doc/$html; 
 done
 
 cd ..
-rm -rf .lib .doc
+if test $KEEP -eq 0; then 
+	rm -rf .lib .doc
+fi
 cd $CWD
 
