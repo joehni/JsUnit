@@ -26,16 +26,17 @@ license.
 
 \section description Description
 
-<P>JsUnit is a simple framework to write repeatable tests in JavaScript. It is
+<p>JsUnit is a simple framework to write repeatable tests in JavaScript. It is
 an instance of the xUnit architecture for <a
 href="http://www.xprogramming.com/software.htm">unit testing frameworks</a>.
-JsUnit is a port of <a href="http://www.junit.org">JUnit</a> 3.2 written by
-Erich Gamma and Kent Beck. It covers the core system and the examples.</P>
+JsUnit is a port of <a href="http://www.junit.org">JUnit</a> 3.8.1 originally 
+written by Erich Gamma and Kent Beck. It covers the core system and the 
+examples.</p>
 
-<P>For further information follow the links at <a
+<p>For further information follow the links at <a
 href="http://c2.com/cgi/wiki?TestingFramework">Portland Pattern Repository for
 Testing Frameworks</a> and the homepage of <a
-href="http://www.junit.org">JUnit</a>.
+href="http://www.junit.org">JUnit</a>.</p>
 
 \section overview Overview
 
@@ -67,6 +68,13 @@ reference and the different language versions.</p>
 
 <p>The \ref internal provide information about the source code comment
 convensions that can be used to build own documentation like this one.</p>
+
+<p>JsUnit uses a Perl script to support JavaDoc comments for JavaScript. This
+script js2doxy.pl is used by some people on its own. It is linked also at the
+<a href="http://www.doxygen.org">Doxygen</a> homepage. Getthe latest version
+directly form the <a
+href="http://cvs.berlios.de/cgi-bin/viewcvs.cgi/jsunit/jsunit/util/js2doxy.pl">CVS
+repository</a> of JsUnit.</p>
 
 <p>Last, but not least, the \ref acknowledge.</p>
 

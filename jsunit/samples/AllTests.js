@@ -20,24 +20,27 @@ classes and functions in their production; they are not affected by this
 license.
 */
 
-if( this.WScript )
+if( !this.JsUtil )
 {
-	var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-	var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
-	var all = file.ReadAll();
-	file.Close();
-	eval( all );
+	if( this.WScript )
+	{
+		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+		var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
+		var all = file.ReadAll();
+		file.Close();
+		eval( all );
+	}
+	else
+		load( "../lib/JsUtil.js" );
+	
+	eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+	eval( JsUtil.prototype.include( "ArrayTest.js" ));
+	eval( JsUtil.prototype.include( "money/IMoney.js" ));
+	eval( JsUtil.prototype.include( "money/Money.js" ));
+	eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
+	eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
+	eval( JsUtil.prototype.include( "SimpleTest.js" ));
 }
-else
-	load( "../lib/JsUtil.js" );
-
-eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
-eval( JsUtil.prototype.include( "ArrayTest.js" ));
-eval( JsUtil.prototype.include( "money/IMoney.js" ));
-eval( JsUtil.prototype.include( "money/Money.js" ));
-eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
-eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
-eval( JsUtil.prototype.include( "SimpleTest.js" ));
 
 function AllTests()
 {
@@ -54,16 +57,21 @@ function AllTests_suite()
 AllTests.prototype = new TestSuite();
 AllTests.prototype.suite = AllTests_suite;
 
-var args;
-if( this.WScript )
+if( JsUtil.prototype.isShell )
 {
-	args = new Array();
-	for( var i = 0; i < WScript.Arguments.Count(); ++i )
-		args[i] = WScript.Arguments( i );
-}
-else 
-	args = arguments;
+	var args;
+	if( this.WScript )
+	{
+		args = new Array();
+		for( var i = 0; i < WScript.Arguments.Count(); ++i )
+			args[i] = WScript.Arguments( i );
+	}
+	else if( this.arguments )
+		args = arguments;
+	else
+		args = new Array();
 		
-var result = TextTestRunner.prototype.main( args );
-JsUtil.prototype.quit( result );
+	var result = TextTestRunner.prototype.main( args );
+	JsUtil.prototype.quit( result );
+}
 

@@ -28,6 +28,7 @@ license.
 
 <script type="text/javascript" language="JavaScript" src="JsUtilTest.js"></script>
 <script type="text/javascript" language="JavaScript" src="JsUnitTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="AllTests.js"></script>
 
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -38,8 +39,8 @@ var JavaScript_1_4 = "false";
 var JavaScript_1_5 = "false"; 
 var JavaScript_1_6 = "false"; 
 var JScript = "false"; 
-var hasExceptions = "false";
-var exceptionsWorking = "false";
+//var hasExceptions = "false";
+//var exceptionsWorking = "false";
 // -->
 </script>
 <script type="text/javascript" language="JavaScript1.2">
@@ -74,6 +75,7 @@ JScript = true;
 </script>
 <script type="text/javascript" language="JavaScript1.3">
 <!--
+/*
 function throwEx()
 {
 	throw new Error;
@@ -85,16 +87,19 @@ function testEx()
 	catch( ex ) { exceptionsWorking = this == me; }
 }
 new testEx();
+*/
 // -->
 </script>
 <script type="text/javascript" language="JavaScript">
 <!--
 function main()
 {
+/*
 	var runner = new HTMLTestRunner();
 	runner.addSuite( new JsUtilTestSuite());
 	runner.addSuite( new JsUnitTestSuite());
 	return runner.start( arguments );
+*/
 }
 // -->
 </script>
@@ -132,7 +137,10 @@ document.writeln("</p>");
 <script type="text/javascript" language="JavaScript">
 <!--
 if( exceptionsWorking )
-	main( "all" );
+{
+	var runner = new HTMLTestRunner( new StringWriter());
+	runner.start( "--classic" );
+}
 else
 	document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");
 // -->

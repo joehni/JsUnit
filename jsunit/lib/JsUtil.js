@@ -728,3 +728,49 @@ StringWriter.prototype = new PrinterWriter();
 StringWriter.prototype.get = StringWriter_get;
 StringWriter.prototype._flush = StringWriter__flush;
 
+
+/**
+ * A filter for a PrinterWriter encoding HTML.
+ * @ctor
+ * Constructor.
+ * @tparam PrinterWriter writer The writer to filter.
+ * The constructor accepts the writer to wrap.
+ */
+function HTMLWriterFilter( writer )
+{
+	PrinterWriter.call( this );
+	this.setWriter( writer );
+}
+/**
+ * Returns the wrapped PrinterWriter.
+ * @type PrinterWriter
+ */
+function HTMLWriterFilter_getWriter() 
+{
+	return this.mWriter;
+}
+/**
+ * Sets the PrinterWriter to wrap.
+ * @tparam PrinterWriter writer The writer to filter.
+ * If the argument is omitted a StringWriter is created and wrapped.
+ */
+function HTMLWriterFilter_setWriter( writer ) 
+{
+	this.mWriter = writer ? writer : new StringWriter();
+}
+/** 
+ * \internal 
+ */
+function HTMLWriterFilter__flush( str )
+{
+	str = str.toString();
+	str = str.replace( /&/g, "&amp;" ); 
+	str = str.replace( /</g, "&lt;" ); 
+	str = str.replace( /\"/g, "&quot;" ); 
+	str = str.replace( /\n/g, "<br>" );
+	this.mWriter._flush( str );
+}
+HTMLWriterFilter.prototype = new PrinterWriter();
+HTMLWriterFilter.prototype.getWriter = HTMLWriterFilter_getWriter;
+HTMLWriterFilter.prototype.setWriter = HTMLWriterFilter_setWriter;
+HTMLWriterFilter.prototype._flush = HTMLWriterFilter__flush;

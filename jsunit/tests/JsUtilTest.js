@@ -369,7 +369,8 @@ function SystemWriterTest( name )
 }
 function SystemWriterTest_testClose()
 {
-	var writer = JsUtil.prototype.getSystemWriter();
+	var writer = new SystemWriter();
+	writer._flush = function() {}
 	this.assertFalse( writer.mClosed );
 	writer.close();
 	this.assertFalse( writer.mClosed );
@@ -396,6 +397,41 @@ StringWriterTest.prototype = new TestCase();
 StringWriterTest.prototype.testGet = StringWriterTest_testGet;
 
 
+function HTMLWriterFilterTest( name )
+{
+	TestCase.call( this, name );
+}
+function HTMLWriterFilterTest_testFlush()
+{
+	var filter = new HTMLWriterFilter();
+	filter.println( "Hello & Co. Test if \"5 < 6\" and \"6 > 5\" ..." );
+	var str = filter.getWriter().get();
+	this.assertEquals( /&amp;/, str );
+	this.assertEquals( /&lt;/, str );
+	this.assertEquals( /&quot;/, str );
+	this.assertEquals( /<br>$/, str );
+	this.assertFalse( str.match( /&gt;/ ));
+}
+function HTMLWriterFilterTest_testGetWriter()
+{
+	var writer = new PrinterWriter();
+	var filter = new HTMLWriterFilter( writer );
+	this.assertSame( writer, filter.getWriter());
+}
+function HTMLWriterFilterTest_testSetWriter()
+{
+	var filter = new HTMLWriterFilter();
+	this.assertTrue( filter.getWriter() instanceof StringWriter );
+	var writer = new PrinterWriter();
+	filter.setWriter( writer );
+	this.assertSame( writer, filter.getWriter());
+}
+HTMLWriterFilterTest.prototype = new TestCase();
+HTMLWriterFilterTest.prototype.testFlush = HTMLWriterFilterTest_testFlush;
+HTMLWriterFilterTest.prototype.testGetWriter = HTMLWriterFilterTest_testGetWriter;
+HTMLWriterFilterTest.prototype.testSetWriter = HTMLWriterFilterTest_testSetWriter;
+
+
 function JsUtilTestSuite()
 {
 	TestSuite.call( this, "JsUtilTest" );
@@ -410,6 +446,7 @@ function JsUtilTestSuite()
 	this.addTestSuite( PrinterWriterTest );
 	this.addTestSuite( SystemWriterTest );
 	this.addTestSuite( StringWriterTest );
+	this.addTestSuite( HTMLWriterFilterTest );
 }
 JsUtilTestSuite.prototype = new TestSuite();
 JsUtilTestSuite.prototype.suite = function (){ return new JsUtilTestSuite(); }

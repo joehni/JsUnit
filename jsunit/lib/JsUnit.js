@@ -1361,12 +1361,6 @@ function BaseTestRunner_addFailure( test, afe )
 		test.toString(), afe.toString()); 
 }
 /**
- * The milliseconds needed to execute all registered tests of the runner.
- * This number is 0 as long as the test was never started.
- * @treturn Number The milliseconds.
- */
-function BaseTestRunner_countMilliSeconds() { return this.mElapsedTime; }
-/**
  * Implementation of TestListener.
  * @tparam Test test The ended test.
  */
@@ -1409,14 +1403,21 @@ function BaseTestRunner_getTest( name )
 		return null;
 	}
 	var test;
-	var testFunc = eval( name );
-	if(   ( testFunc instanceof Function ) 
-	   && testFunc.prototype
-	   && testFunc.prototype.suite )
+	try
 	{
-		test = new testFunc.prototype.suite();
+		var testFunc = eval( name );
+		if( typeof( testFunc ) == "function" && testFunc.prototype )
+		{
+		  	if( testFunc.prototype.suite )
+				test = new testFunc.prototype.suite();
+			else if( name.match( /Test$/ ))
+				test = new TestSuite( name );
+		}
 	}
-	if( !( test instanceof TestSuite ))
+	catch( ex )
+	{
+	}
+	if( test === undefined || !( test instanceof TestSuite ))
 	{
 		this.runFailed( "Test not found \"" + name + "\"" );
 		return null;
@@ -1476,7 +1477,6 @@ BaseTestRunner.prototype.mPreferences = new Object();
 BaseTestRunner.prototype.addError = BaseTestRunner_addError;
 BaseTestRunner.prototype.addFailure = BaseTestRunner_addFailure;
 BaseTestRunner.prototype.clearStatus = function() {}
-BaseTestRunner.prototype.countMilliSeconds = BaseTestRunner_countMilliSeconds;
 BaseTestRunner.prototype.endTest = BaseTestRunner_endTest;
 BaseTestRunner.prototype.getPreference = BaseTestRunner_getPreference;
 BaseTestRunner.prototype.getPreferences = BaseTestRunner_getPreferences;
@@ -1571,7 +1571,7 @@ TestRunner.prototype.runAll = TestRunner_runAll;
  */
 function ResultPrinter( writer )
 {
-	this.mWriter = writer ? writer : JsUtil.prototype.getSystemWriter();
+	this.setWriter( writer );
 	this.mColumn = 0;
 }
 /**
@@ -1723,16 +1723,30 @@ function ResultPrinter_printHeader( runTime )
 	writer.println( "Time: " + this.elapsedTimeAsString( runTime ));
 }
 /**
+ * Sets the PrinterWriter.
+ * @note This is an enhancement to JUnit 3.8
+ * @tparam PrinterWriter writer The writer for the report.
+ * Initialization of the ResultPrinter. If no \a writer is provided the 
+ * instance uses the SystemWriter.
+ */
+function ResultPrinter_setWriter( writer )
+{
+	this.mWriter = writer ? writer : JsUtil.prototype.getSystemWriter();
+}
+/**
  * Implementation of TestListener.
  * @tparam Test test The test that starts.
  */
 function ResultPrinter_startTest( test )
 {
-	this.getWriter().print( "." );
-	if( this.mColumn++ >= 40 )
+	if( !( test instanceof TestSuite ))
 	{
-		this.getWriter().println();
-		this.mColumn = 0;
+		this.getWriter().print( "." );
+		if( this.mColumn++ >= 39 )
+		{
+			this.getWriter().println();
+			this.mColumn = 0;
+		}
 	}
 }
 ResultPrinter.prototype.addError = ResultPrinter_addError;
@@ -1749,6 +1763,7 @@ ResultPrinter.prototype.printErrors = ResultPrinter_printErrors;
 ResultPrinter.prototype.printFailures = ResultPrinter_printFailures;
 ResultPrinter.prototype.printFooter = ResultPrinter_printFooter;
 ResultPrinter.prototype.printHeader = ResultPrinter_printHeader;
+ResultPrinter.prototype.setWriter = ResultPrinter_setWriter;
 ResultPrinter.prototype.startTest = ResultPrinter_startTest;
 ResultPrinter.fulfills( TestListener );
 
@@ -1809,13 +1824,19 @@ function TextTestRunner_run( test )
 /**
  * Program entry point.
  * @tparam Array<String> args Program arguments.
- * The function will exit the program with an error code indicating the type
- * of success.
+ * The function will create a TextTestRunner or the TestRunner given by the
+ * preference "TestRunner" and run the tests given by the arguments. The 
+ * function will exit the program with an error code indicating the type of
+ * success.
  */
 function TextTestRunner_main( args )
 {
 	var ex;
-	var runner = new TextTestRunner();
+	var runner = BaseTestRunner.prototype.getPreference( "TestRunner" );
+	if( runner )
+		runner = new runner();
+	if( !runner )
+		 runner = new TextTestRunner();
 	try
 	{
 		var result = runner.start( args );
@@ -1826,7 +1847,7 @@ function TextTestRunner_main( args )
 	}
 	catch( ex )
 	{
-		TextTestRunner.prototype.runFailed( ex.toString());
+		runner.runFailed( ex.toString());
 	}
 }
 /**
@@ -1862,16 +1883,17 @@ function TextTestRunner_setPrinter( outdev )
  * Starts a test run.
  * @tparam Object args The (optional) arguments as Array or String
  * @type TestResult
+ * @exception Usage If an unknown option is used
  * Analyzes the command line arguments and runs the given test suite. If
  * no argument was given, the function tries to run AllTests.suite().
  */
 function TextTestRunner_start( args )
 {
-	function Usage()
+	function Usage( msg )
 	{
 		//Error.call( this, msg );
 		this.message = 
-			"[JavaScript engine] [TestScript] TestName [TestName2]";
+			"[JavaScript engine] [TestScript] TestName [TestName2]" + msg;
 	}
 	Usage.prototype = new Error();
 	Usage.prototype.name = "Usage";
@@ -1881,14 +1903,16 @@ function TextTestRunner_start( args )
 	if( typeof( args ) == "undefined" )
 		args = new Array();
 	else if( typeof( args ) == "string" )
-		args = args.split( / ,;/ );
+		args = args.split( /[ ,;]/ );
 
 	var optionsPossible = true;
+	var msg = "";
 	for( var i = 0; i < args.length; ++i )
 	{
-		if( args[i].match( /^-/ ))
+		args[i] = args[i].trim();
+		if( optionsPossible && args[i].match( /^-/ ))
 		{
-			if( args[i] == "--" || !optionsPossible )
+			if( args[i] == "--" )
 			{
 				optionsPossible = false;
 				continue;
@@ -1900,10 +1924,9 @@ function TextTestRunner_start( args )
 					continue;
 					
 				default:
-					JsUtil.prototype.getSystemWriter().println( 
-						"Unknown option \"" + args[i] + "\"" );
+					msg = "\nUnknown option \"" + args[i] + "\"";
 				case "-?" :
-					throw new Usage();
+					throw new Usage( msg );
 			}
 		}
 		testCases.push( args[i] );
@@ -1921,7 +1944,10 @@ function TextTestRunner_start( args )
 	else
 		suite = this.getTest( testCases[0] );
 
-	return this.doRun( suite );
+	if( suite )
+		return this.doRun( suite );
+	else
+		return new TestResult();
 }
 TextTestRunner.prototype = new BaseTestRunner();
 TextTestRunner.prototype.createTestResult = TextTestRunner_createTestResult;
@@ -2086,67 +2112,23 @@ ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
 /**
  * Class for an application running test suites reporting in HTML.
  */
-function HTMLTestRunner()
+function HTMLTestRunner( outdev )
 {
-	TextTestRunner.call( this );
-	this.mPrefix = "";
-	this.mPostfix = "";
+	TextTestRunner.call( this, outdev );
 }
 /**
- * Write a header starting the application.
- * The function will add a \<pre\> tag in front of the header.
+ * Set printer.
+ * @tparam Object outdev Output device
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ * The function wraps the PrinterWriter of the new ResultPrinter with a 
+ * HTMLWriterFilter.
  */
-function HTMLTestRunner_printHeader()
+function HTMLTestRunner_setPrinter( outdev )
 {
-	this.setPrefix( "<pre>" );
-	TextTestRunner.prototype.printHeader.call( this );
-	this.setPrefix( "" );
-}
-/**
- * Write a footer at application end with a summary of the tests.
- * @tparam TestResult result The result of the test run.
- * The function will add a \</pre\> tag at the end of the footer.
- */
-function HTMLTestRunner_printFooter( result )
-{
-	this.setPostfix( "</pre>" );
-	TextTestRunner.prototype.printFooter.call( this, result );
-	this.setPostfix( "" );
-}
-/**
- * Set prefix of printed lines.
- * @tparam String prefix The prefix.
- */
-function HTMLTestRunner_setPrefix( prefix )
-{
-	this.mPrefix = prefix;
-}
-/**
- * Set postfix of printed lines.
- * @tparam String postfix The postfix.
- */
-function HTMLTestRunner_setPostfix( postfix )
-{
-	this.mPostfix = postfix;
-}
-/**
- * Write a line of text to the output stream.
- * @tparam String str The text to print on the line.
- * The function will convert '\&' and '\<' to \&amp; and \&lt; and add
- * prefix and postfix to the string.
- */
-function HTMLTestRunner_writeLn( str ) 
-{ 
-	str = str.toString();
-	str = str.replace( /&/g, "&amp;" ); 
-	str = str.replace( /</g, "&lt;" ); 
-	str = this.mPrefix + str + this.mPostfix;
-	TextTestRunner.prototype.writeLn.call( this, str );
+	TextTestRunner.prototype.setPrinter.call( this, outdev );
+	var wrapper = new HTMLWriterFilter( this.mPrinter.getWriter());
+	this.mPrinter.setWriter( wrapper );
 }
 HTMLTestRunner.prototype = new TextTestRunner();
-HTMLTestRunner.prototype.printHeader = HTMLTestRunner_printHeader;
-HTMLTestRunner.prototype.printFooter = HTMLTestRunner_printFooter;
-HTMLTestRunner.prototype.setPrefix = HTMLTestRunner_setPrefix;
-HTMLTestRunner.prototype.setPostfix = HTMLTestRunner_setPostfix;
-HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
+HTMLTestRunner.prototype.setPrinter = HTMLTestRunner_setPrinter;
 

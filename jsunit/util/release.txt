@@ -38,17 +38,16 @@ Hieatt's browser GUI.</P>
 \subsection new New Features
 
 <UL>
-	<LI>BaseTestRunner supports preferences</LI>
-	<LI>TestSuite has now also function addTestSuite</LI>
-	<LI>TestResult has now also function removeListener and runProtected</LI>
-	<LI>Assert has new functions assertSame, assertTrue and assertFalse</LI>
-	<LI>BaseTestRunner has new function countMilliSeconds to measure the
-	elapsed	time</LI>
-	<LI>BaseTestRunner supports preferences</LI>
-	<LI>Support of class ResultPrinter</LI>
-	<LI>Interface Protectable supported</LI>
 	<LI>Test is an interface now (conforming with JUnit), TestCase and 
 	TestSuite implement this interface</LI>
+	<LI>Assert supports member functions assertSame, assertTrue and 
+	assertFalse</LI>
+	<LI>TestSuite supports member function addTestSuite</LI>
+	<LI>TestResult supports member function removeListener and 
+	runProtected</LI>
+	<LI>Support of class ResultPrinter</LI>
+	<LI>BaseTestRunner supports preferences</LI>
+	<LI>Interface Protectable supported</LI>
 	<LI>Support conforming Error object hierarchy</LI>
 	<LI>Alternative interface design contract by Function.fulfills</LI>
 	<LI>New script for document generation recognizes functions and classes
@@ -59,6 +58,8 @@ Hieatt's browser GUI.</P>
 	RegExp against a string</LI>
 	<LI>New utility class JsUtil and enhanced CallStack API</LI>
 	<LI>New utility class hierarchy PrinterWriter</LI>
+	<LI>Special HTML support with classes HTMLTestRunner and 
+	HTMLWriterFilter</LI>
 </UL>
 
 \subsection change Design Changes
@@ -72,7 +73,10 @@ Hieatt's browser GUI.</P>
 	<LI>TestSuite needs now a TextCase object as argument</LI>
 	<LI>TestRunner renamed to BaseTestRunner according to JUnit</LI>
 	<LI>Call base class always with explicit name</LI>
-	<LI>Name of fixtures ar eprepended with the name of the TestCase</LI>
+	<LI>Name of fixtures are prepended with the name of the TestCase</LI>
+	<LI>Native report format equals now JUnit. Old format supported by
+	class ClassicReportPrinter</LI>
+	<LI>Use TextTestRunner.prototype.main to call
 </UL>
 
 \subsection bug Bug Fixes

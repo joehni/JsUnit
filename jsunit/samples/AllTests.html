@@ -32,22 +32,14 @@ license.
 <script type="text/javascript" language="JavaScript" src="money/MoneyBag.js"></script>
 <script type="text/javascript" language="JavaScript" src="money/MoneyTest.js"></script>
 <script type="text/javascript" language="JavaScript" src="SimpleTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="AllTests.js"></script>
 
-<script language="JavaScript1.3">
-function main()
-{
-	var runner = new HTMLTestRunner();
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-	return runner.start( arguments );
-}
-</script>
 </head>
 <body>
 <h1>JsUnit Test</h1>
 <script language="JavaScript1.3">
-main( "all" );
+var runner = new HTMLTestRunner( new StringWriter());
+runner.start( "--classic" );
 </script>
 </body>
 </html>
