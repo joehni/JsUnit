@@ -67,6 +67,7 @@ $cur_line = "";
 @token_patterns =
 (
     quotemeta("/**"),
+    quotemeta("/*!"),
     quotemeta("*/"),
     quotemeta("/*"),
     quotemeta("//"),
@@ -103,7 +104,7 @@ sub next_token
 	}
 	
 	switch_scan_mode $token;
-	printf STDERR ( "Scanner: '%s' ~ '%s' %s\n", $token, $pattern, $scan_mode_names[$scan_mode] )
+	$_ = $token, s/\n/\\n/go, s/\r//go, printf STDERR ( "Scanner: '%s' ~ '%s' %s\n", $_, $pattern, $scan_mode_names[$scan_mode] )
 		if $opt_debug & $DEB_SCANNER;
 
 	$token;
@@ -154,7 +155,7 @@ sub switch_scan_mode
 		{
 			$scan_mode = $S_COMMENT;
 		}
-		elsif( $token eq "/**" )
+		elsif( $token eq "/**" or $token eq "/*!" )
 		{
 			$scan_mode = $S_DOC_COMMENT;
 		}
@@ -173,8 +174,9 @@ sub switch_scan_mode
 
 ############ Parser #####################
 
-use vars qw( $last_token );
+use vars qw( $last_token $last_document );
 $last_token = "";
+$last_document = "";
 
 use vars qw( 
 	$OT_FILE 
@@ -208,6 +210,21 @@ sub parse_comment
 	$token;
 }
 
+sub parse_doc_comment
+{
+	my $token;
+	my $doc;
+	while( $token ne "@@" )
+	{
+		$token = next_token;
+		last if $scan_mode != $S_DOC_COMMENT;
+		$doc .= $token;
+	}
+
+	$last_token = "@@" if $token eq "@@";
+	$doc;
+}
+
 sub parse_code
 {
 	my $token; 
@@ -223,7 +240,7 @@ sub parse_code
 
 		last;
 	}
-	printf STDERR ( "Parser: '%s'\n", $token ) if $opt_debug & $DEB_PARSER;
+	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] ) if $opt_debug & $DEB_PARSER;
 	$token;
 }
 
@@ -267,9 +284,27 @@ sub next_parser_token
 			$token = parse_string $token;
 			last;
 		}
+		elsif( $scan_mode == $S_DOC_COMMENT )
+		{
+			$token = next_none_ws_token, last if $token eq "@@";
+		}
 	}
-	printf STDERR ( "Parser: '%s'\n", $token ) if $opt_debug & $DEB_PARSER;
+	printf STDERR ( "Parser: '%s' %s\n", $token, $scan_mode_names[$scan_mode] ) if $opt_debug & $DEB_PARSER;
 	$token;
+}
+
+sub parse_doc_file
+{
+	my $context = shift;
+	my $doc = parse_doc_comment;
+
+	if( $$context->{otype} != $OT_FILE )
+	{
+		warning "File comment in wrong context.";
+		return;
+	}
+
+	$$context->{comment} = $doc;
 }
 
 sub parse_function
@@ -484,6 +519,13 @@ sub parse
 				/(?:.+\.fulfills)/	&& parse_interface $context, $token;
 			}
 		}
+		elsif( $scan_mode == $S_DOC_COMMENT )
+		{
+			for( $token )
+			{
+				/(?:file)/			&& parse_doc_file $context;
+			}
+		}
 	}
 
 	syntax_err "Unbalanced '}' found." if $level < 0;
@@ -503,6 +545,8 @@ sub dump_context
 		foreach my $key ( keys %$context )
 		{
 			my $value = $context->{$key};
+			$value =~ s/\n/\\n/go;
+			$value =~ s/\r//go;
 			print $prefix, $key, ": ", $value, "\n";
 			next if $key =~ /(?:scope|base)/;
 			for( ref $value )
@@ -531,10 +575,16 @@ sub dump_context
 
 my $indent = "\t";
 
+sub generate_comment
+{
+	my ( $type, $text, $pref ) = @_;
+	$text = "/** \\$type".$text."*/";
+	s/^\s*//, print $pref.$_."\n" for split /(\r?\n|^\n?)[ \t]/, $text;
+}
+
 sub generate_forward_classes
 {
-	my $objects = shift;
-	my $pref = shift;
+	my ( $objects, $pref ) = @_;
 	for ( keys %$objects )
 	{
 		print $pref, "class ", $_, ";\n" 
@@ -546,16 +596,15 @@ sub generate_forward_classes
 
 sub generate_function
 {
-	my $func = shift;
-	my $name = shift;
-	my $pref = shift;
+	my ( $func, $name, $pref, $virtual ) = @_;
 	my $delim = "";
 	
 	return if $name !~ /$identifier/;
+	$virtual = $virtual == $OT_INTERFACE ? "virtual " : "";
 	print $pref, "void ", $name, "(";
 	for my $arg (@{$func->{args}})
 	{
-		print $delim, "void ", $arg->{name};
+		print $delim, $virtual."void ", $arg->{name};
 		$delim = ",";
 	}
 	print ");\n";
@@ -563,25 +612,21 @@ sub generate_function
 
 sub generate_variable
 {
-	my $var = shift;
-	my $name = shift;
-	my $pref = shift;
-	
+	my ( $var, $name, $pref ) = @_;
 	print $pref, "int ", $name, ";\n";
 }
 
 sub generate_class
 {
-	my $context = shift;
-	my $name = shift;
-	my $pref = shift;
-	my $delim = "";
-			
-	print $pref, "class ", $name;
-	print " : " if exists $context->{fulfills} || exists $context->{base};
+	my ( $context, $name, $pref ) = @_;
+	my $delim = " : ";
+	my $type = "class ";
+	
+	$type = "interface " if $context->{otype} == $OT_INTERFACE;
+	print $pref.$type.$name;
 	if( exists $context->{base} )
 	{
-		print "public ", $context->{base}{name};
+		print $delim, "public ", $context->{base}{name};
 		$delim = ", ";
 	}
 	for my $if (keys %{$context->{fulfills}})
@@ -591,13 +636,14 @@ sub generate_class
 	}
 	print "\n", $pref, "{\n", $pref, "public:\n";
 	generate_forward_classes $context->{objs}, $pref.$indent;
-	generate_function $context, $name, $pref.$indent;
+	generate_function $context, $name, $pref.$indent, $context->{otype};
 	for ( keys %{$context->{members}} )
 	{
-		generate_function $context, $_, $pref.$indent
-			if $context->{members}{$_}{otype} == $OT_MEMBERFUNC;
-		generate_variable $context, $_, $pref.$indent
-			if $context->{members}{$_}{otype} == $OT_MEMBERVAR;
+		my $member = $context->{members}{$_};
+		generate_function $member, $_, $pref.$indent, $context->{otype}
+			if $member->{otype} == $OT_MEMBERFUNC;
+		generate_variable $member, $_, $pref.$indent
+			if $member->{otype} == $OT_MEMBERVAR;
 	}
 	print $pref, "};\n"
 }
@@ -606,14 +652,13 @@ sub generate
 {
 	sub generate;
 
-	my $context = shift;
-	my $name = shift;
-	my $pref = shift;
-	
+	my ( $context, $name, $pref ) = @_;
 	for( $context->{otype} )
 	{
 		/(?:$OT_FILE)/ && do
 			{
+				generate_comment "file ".$ARGV, $context->{comment}
+					if exists $context->{comment};
 				generate_forward_classes $context->{objs}, "";
 				generate $context->{objs}{$_}, $_, ""
 					for ( keys %{$context->{objs}} );
