@@ -173,6 +173,12 @@ JsUtil.prototype.isShell =
 	   JsUtil.prototype.isMozillaShell 
 	|| JsUtil.prototype.isWSH;
 /**
+ * Flag for Obtree C4.
+ * @type Boolean
+ * The member is true, if the script runs in Obtree C4 of IXOS.
+ */
+JsUtil.prototype.isObtree = this.WebObject != null;
+/**
  * Flag for call stack support.
  * @type Boolean
  * The member is true, if the engine provides call stack info.
@@ -724,6 +730,12 @@ function SystemWriter__flush( str )
 				write( str );
 			}
 	*/
+	else if( JsUtil.prototype.isObtree )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				write( str ); 
+			}
 	else
 		this._flush = function() {}
 

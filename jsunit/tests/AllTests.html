@@ -42,6 +42,8 @@ var JavaScript_1_7 = "false";
 var JavaScript_1_8 = "false"; 
 var JavaScript_1_9 = "false"; 
 var JavaScript_2_0 = "false"; 
+var JavaScript_2_1 = "false"; 
+var JavaScript_3_0 = "false"; 
 var JScript = "false"; 
 // -->
 </script>
@@ -90,6 +92,16 @@ JavaScript_1_9 = true;
 JavaScript_2_0 = true; 
 // -->
 </script>
+<script type="text/javascript" language="JavaScript2.1">
+<!--
+JavaScript_2_1 = true; 
+// -->
+</script>
+<script type="text/javascript" language="JavaScript9.0">
+<!--
+JavaScript_9_0 = true; 
+// -->
+</script>
 <script type="text/javascript" language="JScript">
 <!--
 JScript = true; 
@@ -112,6 +124,8 @@ document.writeln("JavaScript 1.7: " + JavaScript_1_7 + "<br>");
 document.writeln("JavaScript 1.8: " + JavaScript_1_8 + "<br>");
 document.writeln("JavaScript 1.9: " + JavaScript_1_9 + "<br>");
 document.writeln("JavaScript 2.0: " + JavaScript_2_0 + "<br>");
+document.writeln("JavaScript 2.1: " + JavaScript_2_1 + " (version seems ignored)<br>");
+document.writeln("JavaScript 9.0: " + JavaScript_9_0 + " (version seems ignored)<br>");
 document.writeln("JScript: " + JScript + "<br>");
 document.writeln("has exceptions: " + hasExceptions + "<br>");
 document.writeln("exceptions working: " + exceptionsWorking + "<br>");

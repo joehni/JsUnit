@@ -41,8 +41,11 @@ of a lot of other people:</p>
 	<li><a href="http://www.berlios.de">BerliOS</a> for hosting this
 	project</li>
 	
-	<li>Achim Kraus, author of the first Perl script converting the JavaScript
-	code into something Doxygen can understand</li>
+	<li>Niklaus Haldimann for his help and contribution for Obtree
+	support</li>
+	
+	<li>Achim Kraus, author of the first Perl script converting the
+	JavaScript code into something Doxygen can understand</li>
 	
 	<li>People from <a href="http://sources.redhat.com/">Cygwin</a> for
 	providing me with the power of the Linux tools in Windows</li>
