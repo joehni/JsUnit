@@ -7,11 +7,18 @@ $VERSION = "2.0";
 
 ############ Options ####################
 
+use vars qw( $DEB_NONE $DEB_PARSER $DEB_SCANNER );
+$DEB_NONE = 0;
+$DEB_PARSER = 1;
+$DEB_SCANNER = 2;
+
 use Getopt::Long;
 use Pod::Usage;
-my ( $opt_usage, $opt_help, $opt_version );
+my ( $opt_usage, $opt_help, $opt_version, $opt_debug );
+$opt_debug = 0;
 GetOptions(
 	'questionmark|?' => \$opt_usage,
+	'debug:i' => \$opt_debug,
 	'help' => \$opt_help,
 	'version' => \$opt_version );
 Getopt::Long::Configure( "bundling", "no_ignore_case", "no_permute" );
@@ -61,8 +68,8 @@ $cur_line = "";
     quotemeta("//"),
     "@@",
     "(?:0[xX])?\\d+",
-    $prototype,
-    $interface,
+#    $prototype,
+#    $interface,
     $identifier,
     "\\s+",
     "\\\\.",
@@ -70,13 +77,13 @@ $cur_line = "";
 );
 $newline_pattern = "[\\n\\r\\f]";
 
-use subs qw(switch_scan_mode);
+use subs qw( switch_scan_mode );
 
 # get next Token according to the @token_patterns array. 
 # Reads next line, if current line is completed.
 sub next_token
 {
-	my ( $token, $token_pattern );
+	my ( $token, $token_pattern, $pattern );
 
 	$cur_line = <> if $cur_line eq "";
 	
@@ -87,14 +94,15 @@ sub next_token
 			if( $cur_line =~ s/^($token_pattern)// )
 			{
 				$token = $1;
-	   		    printf STDERR ( "Found: '%s' ~ '%s'\n", $token, $token_pattern );
+				$pattern = $token_pattern;
 				last;
 			}
 		}
 	}
 	
 	switch_scan_mode $token;
-	# printf STDERR ( "Mode: %s\n", $mode_names[$mode] );
+	printf STDERR ( "Scanner: '%s' ~ '%s' %s\n", $token, $pattern, $scan_mode_names[$scan_mode] )
+		if $opt_debug & $DEB_SCANNER;
 
 	$token;
 }
@@ -132,7 +140,7 @@ sub switch_scan_mode
 		}
 		elsif( $scan_mode == $S_STRING ) 
 		{
-			syntax_err "Unterminated string literal." if( $token =~ /[\n\r]/ );
+			syntax_err "Unterminated string literal." if $token =~ /[\n\r]/;
 			if( $token eq $string_type )
 			{
 				$string_type = "";
@@ -163,50 +171,95 @@ sub switch_scan_mode
 
 ############ Parser #####################
 
-use vars qw( $string );
+use vars qw( $last_token );
+$last_token = "";
 
-use vars qw( $T_FILE $T_FUNCTION $T_CLASS $T_MEMBERFUNCTION );
+use vars qw( $T_FILE $T_FUNCTION $T_CLASS $T_MEMBERFUNC $T_MEMBERVAR );
 $T_FILE = 0;
 $T_FUNCTION = 1;
 $T_CLASS = 2;
-$T_MEMBERFUNCTION = 3;
+$T_MEMBERFUNC = 3;
+$T_MEMBERVAR = 4;
 
-use subs qw( parse );
+use subs qw( parse next_parser_token );
 
 sub parse_string
 {
 	my $token = shift;
-	$string = $token;
-
-	$string .= $token
-		while(( $token = next_token ), $scan_mode == $S_STRING );
-
+	$token .= next_token while $scan_mode == $S_STRING;
 	$token;
 }
 
 sub parse_comment
 {
 	my $token;
-
 	$token = next_token 
-		while $scan_mode == $S_COMMENT or $scan_mode = $S_LINE_COMMENT;
-
+		while $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT;
 	$token;
 }
 
 sub parse_code
 {
 	my $token; 
-	while(( $token = next_none_ws_token ) ne "" )
+	while(( $token = $last_token ? $last_token : next_none_ws_token ) ne "" )
 	{
+		$last_token = "";
+
 		syntax_err "Unexpected documentation comment." 
 			if $scan_mode == $S_DOC_COMMENT;
 
-		next if    $scan_mode == $S_COMMENT 
-				or $scan_mode == $S_LINE_COMMENT;
+		parse_comment, next
+			if $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT;
 
 		last;
 	}
+	printf STDERR ( "Parser: '%s'\n", $token ) if $opt_debug & $DEB_PARSER;
+	$token;
+}
+
+sub next_parser_token
+{
+	my $token;
+	my $struct = "";
+
+	while(( $token = $last_token ? $last_token : next_none_ws_token ) ne "" )
+	{
+		$last_token = "";
+
+		parse_comment, next
+			if $scan_mode == $S_COMMENT or $scan_mode == $S_LINE_COMMENT;
+
+		if( $scan_mode == $S_CODE )
+		{
+			if( $token =~ /(?:$identifier)/ )
+			{
+				my $debug = $opt_debug;
+				$opt_debug &= ~$DEB_PARSER;
+				
+				$struct .= $token;
+				while(( $token = parse_code ) eq "." )
+				{
+					$struct .= $token;
+					$token = parse_code;
+					syntax_err "Identifier expected" 
+						if $token !~ /(?:$identifier)/;
+					$struct .= $token;
+				}
+				$last_token = $token if not $last_token;
+				$token = $struct;
+
+				$opt_debug = $debug;
+			}
+			last;
+		}
+		elsif( $scan_mode == $S_STRING )
+		{
+			$token = parse_string $token;
+			last;
+		}
+	}
+
+	printf STDERR ( "Parser: '%s'\n", $token ) if $opt_debug & $DEB_PARSER;
 
 	$token;
 }
@@ -216,12 +269,12 @@ sub parse_function
 	my $context = shift;
 	
 	my $name;
-	my $token = next_none_ws_token;
+	my $token = parse_code;
 	if( $token ne "(" )
 	{
 		syntax_err "Function name expected." if( $token !~ /$identifier/ );
 		$name = $token;
-		$token = next_none_ws_token;
+		$token = parse_code;
 	}
 	else
 	{
@@ -238,7 +291,7 @@ sub parse_function
 
 	syntax_err "'(' expected." if( $token ne "(" );
 	$fnContext->{args} = [];
-	while(( $token = next_none_ws_token ) ne ")" )
+	while(( $token = parse_code ) ne ")" )
 	{
 		next if( $token =~ /,/ );
 		syntax_err "Function parameter name expected." 
@@ -246,25 +299,29 @@ sub parse_function
 		push @{$fnContext->{args}}, { name => $token };
 	}
 
-	syntax_err "'{' expected." if(( $token = next_none_ws_token ) ne "{" );
-	$token = parse \$fnContext, $token;
-	syntax_err "EOF found. '}' expected." if not defined $token;
+	syntax_err "'{' expected." if(( $token = parse_code ) ne "{" );
+	$last_token = $token;
+	parse \$fnContext;
 
 	$name;
 }
 
-
 sub parse_prototype
 {
 	my $context = shift;
-	my $token = shift;
-
-	$token =~ /($identifier)/;
-	my $name = $1;
+	my $token;
+	my $name;
+	my $member;
 	
-	syntax_err "Syntax error in prototype definition."
-		if (( $token = next_none_ws_token ) !~ /(?:\.|\=)/ );
-		
+	$_ = shift;
+		/^($identifier)\.prototype\.($identifier)$/
+	||	/^($identifier)\.prototype$/
+	||  syntax_err "prototype definition '".$_."' not supported.";
+	
+	$name = $1;
+	$member = $2;
+	
+	syntax_err "Syntax error in prototype definition." if parse_code ne "=";
 	syntax_err "Prototype assignment, but no constructor of $name."
 		if not exists $$context->{objs}{$name};
 	my $fnContext = $$context->{objs}{$name};
@@ -272,59 +329,51 @@ sub parse_prototype
 	syntax_err "Prototype assignment to invalid type."
 		if $fnContext->{type} != $T_CLASS;
 			
-	if( $token eq "=" )
+	if( $member eq "" )
 	{
-		syntax_err "'new' expected." if next_none_ws_token ne "new";
-		syntax_err "Identifier expected." 
-			if next_none_ws_token !~ /($identifier)/;
-		while(( $token = next_token ) =~ /[ \t()]+/ ) {}
+		syntax_err "'new' expected." if parse_code ne "new";
+		syntax_err "Identifier expected." if parse_code !~ /($identifier)/;
+		while(( $token = parse_code ) =~ /[()]/ ) {}
 		syntax_err "';' expected." if $token ne ";";
 		
 		my $scope = $context;
 		$scope = $$scope->{scope} 
-			while defined $$scope && not exists $$scope->{objs}{$1};
+			while defined $$scope && not exists $$scope->{objs}{$name};
 		if( not defined $$scope )
 		{
-			$$context->{objs}{$1} = { type => $T_CLASS, scope => $$context };
+			$$context->{objs}{$name} = { type => $T_CLASS, scope => $$context };
 			$scope = $context;
 		}
-		$fnContext->{base} = $$scope->{objs}{$1};
+		$fnContext->{base} = $$scope->{objs}{$name};
 	}
 	else
 	{
-		syntax_err "Identifier expected." 
-			if(( $token = next_none_ws_token ) !~ /$identifier/ );
-		$name = $token;
-		syntax_err "'=' expcted." if(( $token = next_none_ws_token ) ne "=" );
-
-		if(( $token = next_none_ws_token ) =~ /$identifier/ )
+		if(( $token = parse_code ) =~ /$identifier/ )
 		{
-			$token = parse_function $context if( $token eq "function" );
+			$token = parse_function $context if $token eq "function";
 			my $scope = $context;
 			$scope = $$scope->{scope} 
 				while defined $$scope && not exists $$scope->{objs}{$token};
 			if( not defined $$scope )
 			{
 				$$context->{objs}{$token} = 
-					{ type => $T_MEMBERFUNCTION, scope => $$context };
+					{ type => $T_MEMBERVAR, scope => $$context };
 				$scope = $context;
 			}
 			$scope = $$context->{objs}{$token};
-			$scope->{type} = $T_MEMBERFUNCTION if $scope->{type} == $T_FUNCTION;
-			syntax_err $token, " is not a member function." 
-				if $scope->{type} != $T_MEMBERFUNCTION;
-			$fnContext->{member_funcs}{$name} = $scope;
+			$scope->{type} = $T_MEMBERFUNC if $scope->{type} == $T_FUNCTION;
+			syntax_err $token, " is not a member." 
+				if    $scope->{type} != $T_MEMBERFUNC 
+				   && $scope->{type} != $T_MEMBERVAR;
+			$fnContext->{members}{$member} = $scope;
+			syntax_err "';' expected." if parse_code ne ";";
 		}
 		else
 		{
-			my $value = $token;
-			if( $scan_mode == $S_STRING )
-			{
-				$value .= $token 
-					while(( $token = next_token ), $scan_mode == $S_STRING );
-
-				$fnContext->{member_vars}{$name} = {};
-			}
+			syntax_err "'".$member."' already defined."
+				if exists $fnContext->{members}{$member};
+			$fnContext->{members}{$member} = { type => $T_MEMBERVAR };
+			while(( $token = parse_code ) ne ";" ) {}
 		}
 	}
 }
@@ -332,20 +381,23 @@ sub parse_prototype
 sub parse_interface
 {
 	my $context = shift;
-	my $token = shift;
+	my $token;
 
-	$token =~ /($identifier)/;
+	$_ = shift;
+	  	/^($identifier)\.fulfills$/
+	||  syntax_err "interface definition '".$_."' not supported.";
+	
 	my $name = $1;
 	
-	syntax_err "'(' expected." if (( $token = next_none_ws_token ) ne "(" );
+	syntax_err "'(' expected." if (( $token = parse_code ) ne "(" );
 	syntax_err "Prototype fulfillment, but no constructor of $name."
 		if not exists $$context->{objs}{$name};
 	my $fnContext = $$context->{objs}{$name};
 	$fnContext->{fulfills} = {};
-	while(( $token = next_none_ws_token ) ne ")" )
+	while(( $token = parse_code ) ne ")" )
 	{
-		next if( $token =~ /,/ );
-		syntax_err "Interface name expected." if( $token !~ /$identifier/ );
+		next if $token eq ",";
+		syntax_err "Interface name expected." if $token !~ /(?:$identifier)/;
 		
 		my $scope = $context;
 		$scope = $$scope->{scope} 
@@ -366,33 +418,26 @@ sub parse_interface
 sub parse
 {
 	my $context = shift;
-	my $token = shift;
 	my $level = 0;
+	my $token;
 
-	TOKEN: until( $token eq "" )
+	PARSE: while(( $token = next_parser_token ) ne "" )
 	{
-		next if    $scan_mode == $S_COMMENT 
-				or $scan_mode == $S_LINE_COMMENT 
-				or $scan_mode == $S_STRING;
-
 		if( $scan_mode == $S_CODE )
 		{
 			for( $token )
 			{
-				/}/ && --$level == 0 	&& last TOKEN;
-				/{/						&& ++$level;
-				/function/				&& parse_function $context;
-				/$prototype/			&& parse_prototype $context, $token;
-				/$interface/			&& parse_interface $context, $token;
+				/(?:})/				&& --$level == 0 && last PARSE;
+				/(?:{)/				&& ++$level;
+				/(?:function)/		&& parse_function $context;
+				/(?:.+\.prototype)/	&& parse_prototype $context, $token;
+				/(?:.+\.fulfills)/	&& parse_interface $context, $token;
 			}
 		}
-	} continue {
-		$token = next_token;
 	}
 
 	syntax_err "Unbalanced '}' found." if $level < 0;
 	syntax_err "EOF found. '}' expected." if $level > 0;
-	$token;
 }
 
 
@@ -442,7 +487,7 @@ $context =
 	scope => undef
 };
 
-parse \$context, next_token;
+parse \$context;
 dump_context \$context, "Main: ";
 
 
@@ -460,9 +505,11 @@ js2doxy - utility to convert JavaScript into something Doxygen can understand
  js2doxy.pl [Options] file.js
 
  Options:
- 	-?		Print usage
- 	--help		Show manual
-	--version	Print version
+
+ -?		Print usage
+ --debug	Debug mode
+ --help		Show manual
+ --version	Print version
 
 =head1 OPTIONS
 
@@ -471,6 +518,14 @@ js2doxy - utility to convert JavaScript into something Doxygen can understand
 =item B<-?>
 
 Prints the usage of the script.
+
+=item B<--debug>
+
+Prints internal states to the error stream. States are triggered by single
+bits:
+
+ Bit 0:	Parser (1)
+ Bit 1:	Scanner	(2)
 
 =item B<--help>
 
