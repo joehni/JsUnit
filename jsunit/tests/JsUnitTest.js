@@ -906,10 +906,11 @@ TestSuiteTest.prototype.testTestAt = TestSuiteTest_testTestAt;
 TestSuiteTest.prototype.testTestCount = TestSuiteTest_testTestCount;
 TestSuiteTest.prototype.testToString = TestSuiteTest_testToString;
 TestSuiteTest.prototype.testWarning = TestSuiteTest_testWarning;
-TestSuiteTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TestSuiteTest.prototype.MyTest = MyTest;
 TestSuiteTest.prototype.MyTest.prototype = new TestCase();
 TestSuiteTest.prototype.MyTest.prototype.testMe = function() {};
 TestSuiteTest.prototype.MyTest.prototype.testMyself = function() {};
@@ -1179,10 +1180,11 @@ BaseTestRunnerTest.prototype.testSetPreference = BaseTestRunnerTest_testSetPrefe
 BaseTestRunnerTest.prototype.testSetPreferences = BaseTestRunnerTest_testSetPreferences;
 BaseTestRunnerTest.prototype.testShowStackRaw = BaseTestRunnerTest_testShowStackRaw;
 BaseTestRunnerTest.prototype.testTruncate = BaseTestRunnerTest_testTruncate;
-BaseTestRunnerTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+BaseTestRunnerTest.prototype.MyTest = MyTest;
 BaseTestRunnerTest.prototype.MyTest.prototype = new TestCase();
 BaseTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 BaseTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
@@ -1248,10 +1250,11 @@ TestRunnerTest.prototype.testAddSuite = TestRunnerTest_testAddSuite;
 TestRunnerTest.prototype.testCountTestCases = TestRunnerTest_testCountTestCases;
 TestRunnerTest.prototype.testRun = TestRunnerTest_testRun;
 TestRunnerTest.prototype.testRunAll = TestRunnerTest_testRunAll;
-TestRunnerTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TestRunnerTest.prototype.MyTest = MyTest;
 TestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
@@ -1445,10 +1448,11 @@ TextTestRunnerTest.prototype.testDoRun = TextTestRunnerTest_testDoRun;
 TextTestRunnerTest.prototype.testMain = TextTestRunnerTest_testMain;
 TextTestRunnerTest.prototype.testSetPrinter = TextTestRunnerTest_testSetPrinter;
 TextTestRunnerTest.prototype.testStart = TextTestRunnerTest_testStart;
-TextTestRunnerTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TextTestRunnerTest.prototype.MyTest = MyTest;
 TextTestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TextTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TextTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
