@@ -29,7 +29,7 @@ and allows the automated reference manual. I may try to return to standard
 JavaScript inheritance one day. I thought I had compatibility problems with
 the BroadVision 5.x platform, but I cannot test this, since I do not have
 access anymore</P>
-\section codeConv Coding Conventions
+\subsection codeConv Coding Conventions
 <P>To create an object in JavaScript you have to use the new operator. Every
 time this operator will call a function that creates automatically the new
 object implicitly. The new object is of the type of the function. This means 
@@ -85,7 +85,7 @@ this.f1 = f1;</PRE></DIV></P>
 \endhtmlonly
 <P>After assigning all functions you may add additional code necessary for
 proper initialization of the object.</P>
-\section writing Writing test cases and test suites
+\subsection writing Writing test cases and test suites
 \dontinclude SimpleTest.js
 <P>Writing unit tests you have to write at first test cases for your classes.
 The programming paradigma of eXtreme Programming demands writing your test
@@ -105,7 +105,7 @@ to assign the methods</P>
 \skip setUp
 \until }
 <P>Any additional initialization code may follow.</P>
-\section application Creating a test application
+\subsection application Creating a test application
 <P>After writing the test cases we need an application to run the
 tests. The application has the responsibility to include all necessary
 sources. Create a TestRunner for reporting the results, add all wanted test
@@ -113,7 +113,7 @@ suites to the runner and perform the test. The TestRunner itself is normally
 also a derived class, that has reporting functions that work perfectly in
 the system environment. See below a sample for the Windows Scripting Host:</P>
 \include AllTests.wsf
-\section examples Examples
+\subsection examples Examples
 <P>The examples are also ports from the originals that accompany JUnit. Please
 note that the last test case of SimpleTest is supposed to fail to demonstrate
 this case.</P>

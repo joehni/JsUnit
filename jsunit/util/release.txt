@@ -1,0 +1,70 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999-2001 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+\page release Release Notes
+<P>31. Aug. 2001: Current release is version 1.1</P>
+\subsection new New Features
+<UL>
+	<LI>Added unit tests for JsUnit library</LI>
+	<LI>Automated test suite generation</LI>
+	<LI>Browser TestSuite for JsUnit checks now JavaScript compatibility</LI>
+</UL>
+\subsection change Design Changes
+<UL>
+	<LI>TestSuite needs now a TextCase object as argument</LI>
+</UL>
+\subsection bug Bug Fixes
+<UL>
+	<LI>Added copyright notice to all files</LI>
+	<LI>Added BerliOS reference to project documentation</LI>
+	<LI>Corrected script tags in HTML files</LI>
+</UL>
+\section todo ToDo List
+<TABLE>
+<TR>
+	<TD><B>Topic</B></TD>
+	<TD><B>Comment</B></TD>
+</TR>
+<TR>
+	<TD>Use normal derivation mechanism of JavaScript</TD>
+	<TD>My current approach supports multiple inheritance. I have to think
+	about a new model supporting at least Java &quot;interfaces&quot; that
+	is more conforming to JavaScript. Unfortunately this implies also a new 
+	script for document generation.</TD>
+</TR>
+<TR>
+	<TD>Integrate with 
+	<A HREF="http://sourceforge.net/projects/jsunit/">JsUnit</A>
+	of Edward Hieatt</TD>
+	<TD>Edward's version of JsUnit is more based on a nice browser
+	frontend. This would be also nice to have to my version. I already
+	asked Edward and the JsUnit mailing list at Yahoo! groups for this
+	kind of migration, but I got no response from anyone. So I opened my
+	own project, although I plan to integrate that JsUnit into mine.</TD>
+</TR>
+</TABLE>
+\section history History of JsUnit
+\subsection v1_0 Version 1.0
+<P>1. Aug. 2000: Completing the library after more than a year more or 
+less ongoing development, the first release of this software is published</P>
+*/

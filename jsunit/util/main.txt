@@ -30,33 +30,48 @@ port is a system that can be invoked by command line exiting with a return code
 to allow automated tests as long as the environment support this scenario.</P>
 \section contents Contents
 <UL>
-	<LI>\ref license</LI>
-	<LI>\ref compatibility
+	<LI>\ref license
 	<UL>
-		<LI>\ref language
-		<UL>
-			<LI>\ref ecma</LI>
-			<LI>\ref javascript</LI>
-			<LI>\ref jscript</LI>
-		</UL></LI>
-		<LI>\ref products</LI>
+		<LI>\ref gnu</LI>
 	</UL></LI>
-	</LI>\ref usage
+	<LI>\ref usage
 	<UL>
 		<LI>\ref codeConv</LI>
 		<LI>\ref writing</LI>
 		<LI>\ref application</LI>
 		<LI>\ref examples</LI>
 	</UL></LI>
-	</LI>\ref internal
+	<LI>\ref release
+	<UL>
+		<LI>\ref new</LI>
+		<LI>\ref change</LI>
+		<LI>\ref bug</LI>
+	</UL></LI>
+	<LI>\ref todo</LI>
+	<LI>\ref history
+	<UL>
+		<LI>\ref v1_0</LI>
+	</UL></LI>
+	<LI>\ref compatibility</LI>
+	<LI>\ref language
+	<UL>
+		<LI>\ref ecma</LI>
+		<LI>\ref javascript</LI>
+		<LI>\ref jscript</LI>
+	</UL></LI>
+	<LI>\ref products</LI>
+	<LI>\ref internal
 	<UL>
 		<LI>\ref docConv</LI>
 		<LI>\ref docGen</LI>
 	</UL></LI>
-	</LI>\ref acknowledge</LI>
+	<LI>\ref acknowledge</LI>
 </UL>
-\section home JsUnit Internet Home
+\section home Internet Home
 <P><A href="http://developer.berlios.de/projects/jsunit">
 <IMG src="berlios.bmp" align="left" width="118" height="52" border="0" alt="BerliOS Logo">
-</A>JsUnit is hosted at BerliOS.</P> 
+</A>JsUnit is hosted at BerliOS.</P>
+\htmlonly
+<BR clear="all">
+\endhtmlonly
 */
