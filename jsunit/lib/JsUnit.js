@@ -352,6 +352,7 @@ function Assert()
 	 * @param cond The condition to evaluate.
 	 * @param msg An optional error message.
 	 * @exception AssertionFailedError Thrown if the evaluation was not true.
+	 * @depricated
 	 */
 	function assert( cond, msg )
 	{
@@ -376,6 +377,23 @@ function Assert()
 		if( expected != actual )
 		{
 			var m = "Expected <" + expected + ">, actual was <" + actual + ">.";
+			this.fail( m, new CallStack());
+		}
+	}
+	/**
+	 * @@method
+	 * Asserts that a condition is false.
+	 * @param cond The condition to evaluate.
+	 * @param msg An optional error message.
+	 * @exception AssertionFailedError Thrown if the evaluation was not false.
+	 */
+	function assertFalse( cond, msg )
+	{
+		if( eval( cond ))
+		{
+			var m = "Condition should have failed \"" + cond + "\"";
+			if( msg != null && msg != "" )
+				m += ": " + msg;
 			this.fail( m, new CallStack());
 		}
 	}
@@ -423,6 +441,23 @@ function Assert()
 	}
 	/**
 	 * @@method
+	 * Asserts that a condition is true.
+	 * @param cond The condition to evaluate.
+	 * @param msg An optional error message.
+	 * @exception AssertionFailedError Thrown if the evaluation was not true.
+	 */
+	function assertTrue( cond, msg )
+	{
+		if( !eval( cond ))
+		{
+			var m = "Condition failed \"" + cond + "\"";
+			if( msg != null && msg != "" )
+				m += ": " + msg;
+			this.fail( m, new CallStack());
+		}
+	}
+	/**
+	 * @@method
 	 * Asserts that an object is undefined.
 	 * @param object The undefined object.
 	 * @exception AssertionFailedError Thrown if the object is not undefined.
@@ -450,9 +485,11 @@ function Assert()
 
 	this.assert = assert;
 	this.assertEquals = assertEquals;
+	this.assertFalse = assertFalse;
 	this.assertNotNull = assertNotNull;
 	this.assertNotUndefined = assertNotUndefined;
 	this.assertNull = assertNull;
+	this.assertTrue = assertTrue;
 	this.assertUndefined = assertUndefined;
 	this.fail = fail;
 }

@@ -296,6 +296,19 @@ function AssertTest( name )
 			this.assertEquals( true, ex instanceof AssertionFailedError );
 		}
 	}
+	function testAssertFalse()
+	{
+		this.mAssert.assertFalse( false, "Should not throw!" );
+		try
+		{
+			this.mAssert.assertFalse( true, "Have to throw!" );
+			throw new Object();
+		}
+		catch( ex )
+		{
+			this.assertEquals( true, ex instanceof AssertionFailedError );
+		}
+	}
 	function testAssertNotNull()
 	{
 		this.mAssert.assertNotNull( 0 );
@@ -339,6 +352,19 @@ function AssertTest( name )
 			this.assertEquals( true, ex instanceof AssertionFailedError );
 		}
 	}
+	function testAssertTrue()
+	{
+		this.mAssert.assertTrue( true, "Should not throw!" );
+		try
+		{
+			this.mAssert.assertTrue( false, "Have to throw!" );
+			throw new Object();
+		}
+		catch( ex )
+		{
+			this.assertEquals( true, ex instanceof AssertionFailedError );
+		}
+	}
 	function testAssertUndefined()
 	{
 		var x;
@@ -370,9 +396,11 @@ function AssertTest( name )
 
 	this.testAssert = testAssert;
 	this.testAssertEquals = testAssertEquals;
+	this.testAssertFalse = testAssertFalse;
 	this.testAssertNotNull = testAssertNotNull;
 	this.testAssertNotUndefined = testAssertNotUndefined;
 	this.testAssertNull = testAssertNull;
+	this.testAssertTrue = testAssertTrue;
 	this.testAssertUndefined = testAssertUndefined;
 	this.testFail = testFail;
 }
