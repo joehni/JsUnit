@@ -39,3 +39,37 @@ function CallStackTest( name )
 	this.testToString = testToString;
 }
 
+function ArrayTest( name )
+{
+	this._super = TestCase
+	this._super( name );
+
+	function testPop()
+	{
+		var a = new Array( 1, 2, 3, 4, 5 );
+		this.assertEquals( 5, a.pop());
+		this.assertEquals( 4, a.length );
+		a[2] = undefined;
+		this.assertEquals( 4, a.pop());
+		this.assertEquals( 3, a.length );
+		this.assertUndefined( a.pop());
+		this.assertEquals( 2, a.pop());
+		this.assertEquals( 1, a.pop());
+		this.assertUndefined( a.pop());
+	}
+	function testPush()
+	{
+		var a = new Array();
+		this.assertEquals( 3, a.push( 1, 2, 3 ));
+		this.assertEquals( 3, a.length );
+		this.assertEquals( 3, a.push());
+		this.assertEquals( 3, a.length );
+		this.assertEquals( 4, a.push( 4 ));
+		this.assertEquals( 4, a.length );
+		this.assertEquals( "1,2,3,4", a.toString());
+	}
+
+	this.testPop = testPop;
+	this.testPush = testPush;
+}
+

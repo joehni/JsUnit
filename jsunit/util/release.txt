@@ -34,6 +34,7 @@ license.
 <UL>
 	<LI>TestSuite supports again strings as name</LI>
 	<LI>CallStack.js has been renamed to JsUtil.js</LI>
+	<LI>Support of Array.push and Array.pop at all systems</LI>
 </UL>
 \subsection bug Bug Fixes
 <UL>

@@ -22,8 +22,10 @@ license.
 
 /**
  * @@file
- * Class for a call stack collector.
- * The CallStack object is mainly used for debug purposes.
+ * Utility classes needed for the JsUnit classes.
+ * JsUnit need several helper classes to work properly. This file conatins
+ * anything that is not related directly to JsUnit, but may be useful in other
+ * environments, too.
  */
 
 /**
@@ -115,4 +117,42 @@ function CallStack(depth)
 		}
 	}
 }
+
+/**
+ * ToDo: The perl script cannot handle currently this programming style.
+ **/
+function Array_pop()
+{
+	var obj;
+	if( this instanceof Array && this.length > 0 )
+	{
+		var last = parseInt( this.length ) - 1;
+		obj = this[last];
+		this.length = last;
+	}
+	return obj;
+}
+
+function Array_push()
+{
+	var i = 0;
+	if( this instanceof Array )
+	{
+		i = this.length;
+		
+		// Preallocation of array
+		if( arguments.length > 0 )
+			this[arguments.length + this.length - 1] = null;
+		
+		for( ; i < this.length; ++i )
+			this[i] = arguments[i - this.length + arguments.length];
+	}		
+	return i;
+}
+
+// MS engine does not implement push and pop until JScript 6.0
+if ( !Array.prototype.pop )
+	Array.prototype.pop = Array_pop;
+if ( !Array.prototype.push ) 
+	Array.prototype.push = Array_push;
 
