@@ -7,10 +7,11 @@ $VERSION = "2.0";
 
 ############ Options ####################
 
-use vars qw( $DEB_NONE $DEB_PARSER $DEB_SCANNER );
+use vars qw( $DEB_NONE $DEB_PARSER $DEB_SCANNER $DEB_DATABASE );
 $DEB_NONE = 0;
-$DEB_PARSER = 1;
-$DEB_SCANNER = 2;
+$DEB_DATABASE = 1;
+$DEB_PARSER = 2;
+$DEB_SCANNER = 4;
 
 use Getopt::Long;
 use Pod::Usage;
@@ -58,8 +59,6 @@ $string_type = "";
 
 use vars qw( $identifier $prototype $interface );
 $identifier = "[a-zA-Z_]\\w*";
-$prototype = $identifier."\\s*\\.\\s*prototype(?!\\w)";
-$interface = $identifier."\\s*\\.\\s*fulfills(?!\\w)";
 
 use vars qw( $cur_line @token_patterns $newline_pattern );
 # lexer 
@@ -73,8 +72,6 @@ $cur_line = "";
     quotemeta("//"),
     "@@",
     "(?:0[xX])?\\d+",
-#    $prototype,
-#    $interface,
     $identifier,
     "\\s+",
     "\\\\.",
@@ -179,12 +176,20 @@ sub switch_scan_mode
 use vars qw( $last_token );
 $last_token = "";
 
-use vars qw( $OT_FILE $OT_FUNCTION $OT_CLASS $OT_MEMBERFUNC $OT_MEMBERVAR );
+use vars qw( 
+	$OT_FILE 
+	$OT_FUNCTION 
+	$OT_CLASS 
+	$OT_INTERFACE 
+	$OT_MEMBERFUNC 
+	$OT_MEMBERVAR 
+);
 $OT_FILE = 0;
 $OT_FUNCTION = 1;
 $OT_CLASS = 2;
-$OT_MEMBERFUNC = 3;
-$OT_MEMBERVAR = 4;
+$OT_INTERFACE = 3;
+$OT_MEMBERFUNC = 4;
+$OT_MEMBERVAR = 5;
 
 use subs qw( parse next_parser_token );
 
@@ -287,6 +292,7 @@ sub parse_function
 
 	$$context->{objs}{$name} = 
 	{ 
+		name => $name,
 		otype => $OT_FUNCTION, 
 		scope => $$context 
 	};
@@ -307,6 +313,30 @@ sub parse_function
 	parse \$fnContext;
 
 	$name;
+}
+
+sub create_base
+{
+	my $context = shift;
+	my $base = shift;
+
+	my $scope = $context;
+	while( defined $$scope && not exists $$scope->{objs}{$base} )
+	{
+		$context = $scope;
+		$scope = \$$scope->{scope};
+	}	
+	if( not defined $$scope )
+	{
+		$$context->{objs}{$base} = 
+		{ 
+			name => $base,
+			otype => $OT_CLASS, 
+			scope => $$context,
+		};
+		$scope = $context;
+	}
+	return $scope;
 }
 
 sub parse_prototype
@@ -335,53 +365,48 @@ sub parse_prototype
 	my $fnContext = $$context->{objs}{$name};
 	$fnContext->{otype} = $OT_CLASS if $fnContext->{otype} == $OT_FUNCTION;
 	syntax_err "Prototype assignment to invalid type."
-		if $fnContext->{otype} != $OT_CLASS;
+		if    $fnContext->{otype} != $OT_CLASS 
+		   && $fnContext->{otype} != $OT_INTERFACE;
 			
 	if( $member eq "" )
 	{
 		syntax_err "'new' expected." if parse_code ne "new";
 		syntax_err "Identifier expected." if parse_code !~ /($identifier)/;
+		my $base = $1;
 		while(( $token = parse_code ) =~ /[()]/ ) {}
 		syntax_err "';' expected." if $token ne ";";
 		
-		my $scope = $context;
-		$scope = $$scope->{scope} 
-			while defined $$scope && not exists $$scope->{objs}{$name};
-		if( not defined $$scope )
-		{
-			$$context->{objs}{$name} = 
-			{ 
-				otype => $OT_CLASS, 
-				scope => $$context 
-			};
-			$scope = $context;
-		}
-		$fnContext->{base} = $$scope->{objs}{$name};
+		my $scope = create_base $context, $base;
+		$fnContext->{base} = $$scope->{objs}{$base};
 	}
 	else
 	{
 		if(( $token = parse_code ) =~ /$identifier/ )
 		{
-			$token = parse_function $context if $token eq "function";
+			my $end = 1;
+			if( $token eq "function" )
+			{
+				$token = parse_function $context;
+				$end = 0;
+			}
 			my $scope = $context;
-			$scope = $$scope->{scope} 
+			$scope = \$$scope->{scope} 
 				while defined $$scope && not exists $$scope->{objs}{$token};
 			if( not defined $$scope )
 			{
-				$$context->{objs}{$token} = 
-				{ 
-					otype => $OT_MEMBERVAR, 
-					scope => $$context 
-				};
-				$scope = $context;
+				warning $token, " is not defined.";
 			}
-			$scope = $$context->{objs}{$token};
-			$scope->{otype} = $OT_MEMBERFUNC if $scope->{otype} == $OT_FUNCTION;
-			syntax_err $token, " is not a member." 
-				if    $scope->{otype} != $OT_MEMBERFUNC 
-				   && $scope->{otype} != $OT_MEMBERVAR;
-			$fnContext->{members}{$member} = $scope;
-			syntax_err "';' expected." if parse_code ne ";";
+			else
+			{
+				$scope = $$context->{objs}{$token};
+				$scope->{otype} = $OT_MEMBERFUNC 
+					if $scope->{otype} == $OT_FUNCTION;
+				syntax_err $token, " is not a member." 
+					if    $scope->{otype} != $OT_MEMBERFUNC 
+					   && $scope->{otype} != $OT_MEMBERVAR;
+				$fnContext->{members}{$member} = $scope;
+				syntax_err "';' expected." if $end && parse_code ne ";";
+			}
 		}
 		else
 		{
@@ -409,30 +434,32 @@ sub parse_interface
 	
 	my $name = $1;
 	
-	syntax_err "'(' expected." if (( $token = parse_code ) ne "(" );
-	syntax_err "Prototype fulfillment, but no constructor of $name."
-		if not exists $$context->{objs}{$name};
+	if(( $token = parse_code ) ne "(" )
+	{
+		warning "'(' expected.";
+		return;
+	}
+	if( not exists $$context->{objs}{$name} )
+	{
+		warning "Prototype fulfillment, but no constructor of $name.";
+		return;
+	}
 	my $fnContext = $$context->{objs}{$name};
 	$fnContext->{fulfills} = {};
 	while(( $token = parse_code ) ne ")" )
 	{
 		next if $token eq ",";
-		syntax_err "Interface name expected." if $token !~ /(?:$identifier)/;
-		
-		my $scope = $context;
-		$scope = $$scope->{scope} 
-			while defined $$scope && not exists $$scope->{objs}{$token};
-		if( not defined $$scope )
+		if( $token !~ /(?:$identifier)/ or $token =~ /(?:new|delete)/ )
 		{
-			$$context->{objs}{$token} = 
-			{ 
-				otype => $OT_CLASS, 
-				scope => $$context 
-			};
-			$scope = $context;
+			warning "Interface name expected.";
+			return;
 		}
-		$scope = $$context->{objs}{$token};
-		syntax_err $token, " is not a class." if $scope->{otype} != $OT_CLASS;
+		
+		my $scope = create_base $context, $token;
+		$scope = $$scope->{objs}{$token};
+		$scope->{otype} = $OT_INTERFACE if $scope->{otype} == $OT_CLASS;
+		syntax_err $token, " is not a class." 
+			if $scope->{otype} != $OT_INTERFACE;
 		
 		$fnContext->{fulfills}{$token} = $scope;
 	}
@@ -510,7 +537,10 @@ sub generate_forward_classes
 	my $pref = shift;
 	for ( keys %$objects )
 	{
-		print $pref, "class ", $_, ";\n" if $objects->{$_}{otype} == $OT_CLASS;
+		print $pref, "class ", $_, ";\n" 
+			if $objects->{$_}{otype} == $OT_CLASS;
+		print $pref, "interface ", $_, ";\n" 
+			if $objects->{$_}{otype} == $OT_INTERFACE;
 	}
 }
 
@@ -537,7 +567,7 @@ sub generate_variable
 	my $name = shift;
 	my $pref = shift;
 	
-	print $pref, "void ", $name, ";\n";
+	print $pref, "int ", $name, ";\n";
 }
 
 sub generate_class
@@ -548,7 +578,12 @@ sub generate_class
 	my $delim = "";
 			
 	print $pref, "class ", $name;
-	print " : " if exists $context->{fulfills};
+	print " : " if exists $context->{fulfills} || exists $context->{base};
+	if( exists $context->{base} )
+	{
+		print "public ", $context->{base}{name};
+		$delim = ", ";
+	}
 	for my $if (keys %{$context->{fulfills}})
 	{
 		print $delim, "public ", $if;
@@ -587,7 +622,7 @@ sub generate
 			{
 				generate_function $context, $name, $pref;
 			};
-		/(?:$OT_CLASS)/ && do
+		/(?:$OT_CLASS|$OT_INTERFACE)/ && do
 			{
 				generate_class $context, $name, $pref;
 			};
@@ -605,7 +640,7 @@ $context =
 };
 
 parse \$context;
-dump_context $context, "Main: ";
+dump_context $context, "Main: " if $opt_debug & $DEB_DATABASE;
 generate $context;
 
 
@@ -642,8 +677,9 @@ Prints the usage of the script.
 Prints internal states to the error stream. States are triggered by single
 bits:
 
- Bit 0:	Parser (1)
- Bit 1:	Scanner	(2)
+ Bit 0:	Database (1)
+ Bit 1:	Parser (2)
+ Bit 2:	Scanner	(4)
 
 =item B<--help>
 
