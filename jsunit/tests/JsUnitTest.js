@@ -124,7 +124,7 @@ function TestResultTest( name )
 	{
 		var result = new TestResult();
 		result.addListener( this.mListener );
-		result.addError( new Test( "Test" ), new Error());
+		result.addError( new Test( "Test" ), new Object());
 		this.assertEquals( 1, result.errorCount());
 		this.assertEquals( 1, this.mListener.mErrors );
 	}
@@ -132,7 +132,7 @@ function TestResultTest( name )
 	{
 		var result = new TestResult();
 		result.addListener( this.mListener );
-		result.addFailure( new Test( "Test" ), new Error());
+		result.addFailure( new Test( "Test" ), new Object());
 		this.assertEquals( 1, result.failureCount());
 		this.assertEquals( 1, this.mListener.mFailures );
 	}
@@ -156,13 +156,13 @@ function TestResultTest( name )
 	function testErrorCount()
 	{
 		var result = new TestResult();
-		result.addError( new Test( "Test" ), new Error());
+		result.addError( new Test( "Test" ), new Object());
 		this.assertEquals( 1, result.errorCount());
 	}
 	function testFailureCount()
 	{
 		var result = new TestResult();
-		result.addFailure( new Test( "Test" ), new Error());
+		result.addFailure( new Test( "Test" ), new Object());
 		this.assertEquals( 1, result.failureCount());
 	}
 	function testRun()
@@ -188,7 +188,7 @@ function TestResultTest( name )
 		this.setUp();
 		test.testAddError = function() 
 		{ 
-			throw new Error(); 
+			throw new Object(); 
 		}
 		result.run( test );
 		this.assertEquals( true, this.mListener.mStarted );
@@ -242,7 +242,7 @@ function TestResultTest( name )
 		result = new TestResult();
 		test.testAddError = function() 
 		{ 
-			throw new Error(); 
+			throw new Object(); 
 		}
 		result.run( test );
 		this.assertEquals( false, result.wasSuccessful());
@@ -276,7 +276,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assert( false, "Have to throw!" );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -289,7 +289,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assertEquals( true, 0 == 1 );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -304,7 +304,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assertNotNull( null );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -319,7 +319,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assertNotUndefined( undefined );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -332,7 +332,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assertNull( 0 );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -348,7 +348,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.assertUndefined( this );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -360,7 +360,7 @@ function AssertTest( name )
 		try
 		{
 			this.mAssert.fail( "Have to throw!", null );
-			throw new Error();
+			throw new Object();
 		}
 		catch( ex )
 		{
@@ -631,7 +631,7 @@ function TextTestRunnerTest( name )
 		this.assertEquals( true, 
 			this.mRunner.mMsg.indexOf( "2 tests successful." ) > 0);
 		var test = new MyTest( "testMe" );
-		test.testMe = function() { throw new Error(); }
+		test.testMe = function() { throw new Object(); }
 		var suite = new TestSuite();
 		suite.addTest( test );
 		this.mRunner.addSuite( suite );
@@ -644,7 +644,7 @@ function TextTestRunnerTest( name )
 		this.mRunner.addSuite( new TestSuite( new MyTest()));
 		this.assertEquals( 0, this.mRunner.start());
 		var test = new MyTest( "testMe" );
-		test.testMe = function() { throw new Error(); }
+		test.testMe = function() { throw new Object(); }
 		var suite = new TestSuite();
 		suite.addTest( test );
 		this.mRunner.addSuite( suite );

@@ -24,13 +24,13 @@ license.
 <head>
 <title>JsUnit Test</title>
 <server>
-function main()
+function main( args )
 {
 	var runner = new NSServerTestRunner();
 	runner.addSuite( new TestSuite( new ArrayTest()));
 	runner.addSuite( new TestSuite( new MoneyTest()));
 	runner.addSuite( new TestSuite( new SimpleTest()));
-	return runner.start( main.arguments );
+	return runner.start( args );
 }
 </server>
 </head>

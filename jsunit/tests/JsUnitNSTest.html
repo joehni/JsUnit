@@ -28,7 +28,7 @@ var hasExceptions = "false";
 var exceptionsWorking = "false";
 function throwEx()
 {
-	throw new Error;
+	throw new Object();
 }
 function testEx()
 {
@@ -39,11 +39,11 @@ function testEx()
 new testEx();
 </server>
 <server>
-function main()
+function main( args )
 {
 	var runner = new NSServerTestRunner();
-	runner.addSuite( new TestSuite( new CallStackTest()));
 	runner.addSuite( new TestSuite( new AssertionFailedErrorTest()));
+	runner.addSuite( new TestSuite( new CallStackTest()));
 	runner.addSuite( new TestSuite( new TestTest()));
 	runner.addSuite( new TestSuite( new TestFailureTest()));
 	runner.addSuite( new TestSuite( new TestResultTest()));
@@ -52,7 +52,7 @@ function main()
 	runner.addSuite( new TestSuite( new TestSuiteTest()));
 	runner.addSuite( new TestSuite( new TestRunnerTest()));
 	runner.addSuite( new TestSuite( new TextTestRunnerTest()));
-	return runner.start( main.arguments );
+	return runner.start( args );
 }
 </server>
 </HEAD>

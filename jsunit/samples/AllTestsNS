@@ -20,7 +20,7 @@
 # classes and functions in their production; they are not affected by this 
 # license.
 
-jsac -v -o AllTestsNS.web AllTestsNS.html \
+jsac -v $* -o AllTestsNS.web AllTestsNS.html \
 	../lib/JsUnit.js ../lib/JsUnitNSServer.js ../lib/CallStack.js \
 	ArrayTest.js \
 	money/AbstractFunctionCalledException.js money/IMoney.js \
