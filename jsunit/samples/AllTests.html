@@ -23,33 +23,21 @@ license.
 <html>
 <head>
 <title>JsUnit Test</title>
-<script language="JavaScript1.4" type="text/javascript" src="../lib/CallStack.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnit.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnitHTML.js"></script>
+<script language="JavaScript1.3" src="../lib/CallStack.js"></script>
+<script language="JavaScript1.3" src="../lib/JsUnit.js"></script>
+<script language="JavaScript1.3" src="../lib/JsUnitHTML.js"></script>
 
-<script language="JavaScript1.4" type="text/javascript" src="ArrayTest.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="money/AbstractFunctionCalledException.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="money/IMoney.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="money/Money.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="money/MoneyBag.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="money/MoneyTest.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="SimpleTest.js"></script>
+<script language="JavaScript1.3" src="ArrayTest.js"></script>
+<script language="JavaScript1.3" src="money/AbstractFunctionCalledException.js"></script>
+<script language="JavaScript1.3" src="money/IMoney.js"></script>
+<script language="JavaScript1.3" src="money/Money.js"></script>
+<script language="JavaScript1.3" src="money/MoneyBag.js"></script>
+<script language="JavaScript1.3" src="money/MoneyTest.js"></script>
+<script language="JavaScript1.3" src="SimpleTest.js"></script>
 
-<script language="JavaScript1.4" type="text/javascript">
-var JavaScript_1_4 = "false";
-</script>
-<script language="JavaScript1.4" type="text/javascript">
-// Proof JavaScript 1.4 capatibility
-// ... fails with Netscape 4 !!
-try { JavaScript_1_4 = "true"; } catch( ex ) { }
-</script>
-<script language="JavaScript1.4" type="text/javascript">
+<script language="JavaScript1.3">
 function main()
 {
-	document.writeln(
-		  "<p>Proof JavaScript 1.4 capability: " 
-		+ JavaScript_1_4 + "</p>");
-
 	var runner = new HTMLTestRunner();
 	runner.addSuite( new TestSuite( new ArrayTest()));
 	runner.addSuite( new TestSuite( new MoneyTest()));
@@ -60,7 +48,7 @@ function main()
 </head>
 <body>
 <h1>JsUnit Test</h1>
-<script language="JavaScript1.4" type="text/javascript">
+<script language="JavaScript1.3">
 main( "all" );
 </script>
 </body>

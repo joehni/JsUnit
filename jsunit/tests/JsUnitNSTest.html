@@ -20,20 +20,27 @@ classes and functions in their production; they are not affected by this
 license.
 -->
 
-<html>
-<head>
-<title>JsUnit Test</title>
+<HTML>
+<HEAD>
+<TITLE>JsUnit Test</TITLE>
 <server>
-var JavaScript_1_4 = "false";
-// Proof JavaScript 1.4 capatibility
-// ... fails with Netscape Communicator 4 !!
-try { JavaScript_1_4 = "true"; } catch( ex ) { }
+var hasExceptions = "false";
+var exceptionsWorking = "false";
+function throwEx()
+{
+	throw new Error;
+}
+function testEx()
+{
+	var me = this;
+	try { hasExceptions = "true"; new throwEx(); } 
+	catch( ex ) { exceptionsWorking = this == me; }
+}
+new testEx();
+</server>
+<server>
 function main()
 {
-	write(
-		  "<p>Proof JavaScript 1.4 capability: " 
-		+ JavaScript_1_4 + "</p>");
-
 	var runner = new NSServerTestRunner();
 	runner.addSuite( new TestSuite( new CallStackTest()));
 	runner.addSuite( new TestSuite( new AssertionFailedErrorTest()));
@@ -48,11 +55,22 @@ function main()
 	return runner.start( main.arguments );
 }
 </server>
-</head>
-<body>
-<h1>JsUnit Test</h1>
+</HEAD>
+<BODY>
+<H1>JsUnit Test</H1>
+<H2>Language Support</H2>
 <server>
-main( "all" );
+write("<P>");
+write("has exceptions: " + hasExceptions + "<BR>");
+write("exceptions working: " + exceptionsWorking + "<BR>");
+write("</P>");
+</server>
+<H2>JsUnit Test Suite</H2>
+<server>
+if( exceptionsWorking )
+	main( "all" );
+else
+	write("<P style='color:red'>Sorry, exceptions not working!</P>");
 </server>
 </body>
 </html>
