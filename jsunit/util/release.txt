@@ -65,6 +65,6 @@ license.
 </TABLE>
 \section history History of JsUnit
 \subsection v1_0 Version 1.0
-<P>1. Aug. 2000: Completing the library after more than a year more or 
+<P>1. Aug. 2001: Completing the library after more than a year more or 
 less ongoing development, the first release of this software is published</P>
 */
