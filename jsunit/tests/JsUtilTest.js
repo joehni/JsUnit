@@ -200,7 +200,7 @@ function FunctionTest( name )
 {
 	this.constructor.call( this, name );
 }
-function FunctionTest_testFullfills()
+function FunctionTest_testFulfills()
 {
 	function MyInterface1()
 	{
@@ -225,20 +225,20 @@ function FunctionTest_testFullfills()
 	}
 	F.prototype.m1 = "member";
 	
-	this.assertNotNull( F.fullfills );
+	this.assertNotNull( F.fulfills );
 	var err = null;
-	try { F.fullfills( 1 ); } catch( ex ) { err = ex; }
+	try { F.fulfills( 1 ); } catch( ex ) { err = ex; }
 	this.assertEquals( "TypeError", err.name );
-	try { F.fullfills( new F()); } catch( ex ) { err = ex; }
+	try { F.fulfills( new F()); } catch( ex ) { err = ex; }
 	this.assertEquals( "TypeError", err.name );
-	try { F.fullfills( F ); } catch( ex ) { err = ex; }
+	try { F.fulfills( F ); } catch( ex ) { err = ex; }
 	this.assertEquals( "InterfaceError", err.name );
-	try { F.fullfills( MyInterface1 ); } catch( ex ) { err = ex; }
+	try { F.fulfills( MyInterface1 ); } catch( ex ) { err = ex; }
 	this.assertEquals( "InterfaceError", err.name );
 	F.prototype.if1 = function() {}
 	F.prototype.if2 = function() {}
-	F.fullfills( MyInterface1 ); 
-	F.fullfills( MyInterface1, MyInterface2 ); 
+	F.fulfills( MyInterface1 ); 
+	F.fulfills( MyInterface1, MyInterface2 ); 
 	
 	function G()
 	{
@@ -246,10 +246,10 @@ function FunctionTest_testFullfills()
 	G.prototype = new F();
 	G.prototype.if3 = function() {}
 
-	G.fullfills( MyInterface1, MyInterface2Ex ); 
+	G.fulfills( MyInterface1, MyInterface2Ex ); 
 }
 FunctionTest.prototype = new TestCase();
-FunctionTest.prototype.testFullfills = FunctionTest_testFullfills;
+FunctionTest.prototype.testFulfills = FunctionTest_testFulfills;
 
 
 function JsUtilTestSuite()

@@ -105,4 +105,4 @@ Money.prototype.negate = Money_negate;
 Money.prototype.subtract = Money_subtract;
 Money.prototype.toString = Money_toString;
 Money.prototype.fAmount = 0.0;
-Money.fullfills( IMoney );
+Money.fulfills( IMoney );

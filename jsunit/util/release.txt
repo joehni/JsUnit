@@ -31,7 +31,7 @@ license.
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
 	time</LI>
 	<LI>Support conforming Error object hierarchy</LI>
-	<LI>Alternativ interface design contract by Function.fullfills</LI>
+	<LI>Alternativ interface design contract by Function.fulfills</LI>
 </UL>
 \subsection change Design Changes
 <UL>

@@ -215,7 +215,7 @@ InterfaceError.prototype = new TypeError();
 InterfaceError.prototype.name = "InterfaceError";
 
 
-function Function_fullfills()
+function Function_fulfills()
 {
 	for( var i = 0; i < arguments.length; ++i )
 	{
@@ -238,4 +238,4 @@ function Function_fullfills()
 		}
 	}
 }
-Function.prototype.fullfills = Function_fullfills;
+Function.prototype.fulfills = Function_fulfills;
