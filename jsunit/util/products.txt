@@ -1,0 +1,111 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+
+\page products Products
+
+This section will give some hints using JsUnit in some of the \ref
+enabledproducts mensioned in the compatibility table.
+
+\section spidermonkey SpiderMonkey
+
+<a href="http://www.mozilla.org/js/spidermonkey">SpiderMoney</a> is the name
+of the JavaScript engine from <a href="www.mozilla.org">mozilla.org</a>
+written completely in C. Depending on the configuration, the engine is even
+capable of compiling the JavaScript.  Since it is Open Source and especially
+designed for usage in other products, you can find nowadays a lot of
+applications using SpiderMonkey as easy scripting environment. Mozilla browser
+itself (and therefore the Netscape browser also) is using this engine in their
+browsers. This engine extremly fast and reliable.
+
+\subsection spidermonkeyshell SpiderMonkey's js / jsshell
+
+The SpiderMonkey sources contain also a shell that is able to execute
+standalone JavaScript sources. You have to optain the sources from the <a
+href="http://www.mozilla.org/cvs.html">CVS</a> or from a defined tarball from
+<a href="ftp://ftp.mozilla.org/pub/js/">ftp://ftp.mozilla.org/pub/js/</a> and
+<a href="http://lxr.mozilla.org/mozilla/source/js/src/README.html">build the
+shell</a> yourself.
+
+Early version built into the iPlanet Web Server did not seem have an Error
+object.
+
+\section rhino Rhino
+
+<a href="http://www.mozilla.org/rhino/index.html">Rhino</a> is the name of the
+JavaScript engine from <a href="www.mozilla.org">mozilla.org</a> written
+completely in Java. Depending on the configuration, the engine is even capable
+of translating the code to Java and compile it automatically. Since it is Open
+Source and especially designed for usage in other products, you can find
+nowadays a lot of applications using Rhino as easy scripting environment.  The
+engine is shipped in the file <i>js.jar</i>. 
+
+The version 1.5RC3 (and possibly earlier versions) has a bug and will throw a
+TypeError if the method toString is called for a class derived from Error. See
+<a href="http://bugzilla.mozilla.org/show_bug.cgi?id=181654">Bug 181654</a>.
+JsUnit is able to compensate this bug.
+
+\subsection rhinoshell Rhino Shell
+
+The distribution of Rhino includes a shell, that can be used as command line
+version to execute standalone scripts. This shell implements some commands not
+available in the JavaScript standard. Concerning JsUnit this is \c print to
+write to the console and \c load to load other JavaScript files. Call the
+engine with
+
+\htmlonly
+<p><div class="fragment"><pre>
+java org.mozilla.javascript.tools.shell.Main <i>&lt;filename&gt;.js</i></pre>
+</div></p>
+\endhtmlonly
+
+Additionally the engine will also throw a TypeError running JsUnit if
+optimization is enabled (greater 0). I have not investigated on this further.
+
+There is also a basic debugger available calling
+
+\htmlonly
+<p><div class="fragment"><pre>
+java org.mozilla.javascript.tools.debugger.Main <i>&lt;filename&gt;.js</i></pre>
+</div></p>
+\endhtmlonly
+
+\subsection winscript Windows Script
+
+Microsoft's JavaScript implementation named JScript is part of the <a
+href="http://msdn.microsoft.com/scripting/">Windows Script</a>ing engine. This
+engine is able to run a lot of languages, JScript is just one among others.
+Microsoft offers in the package JScript and VBScript, other venders offer
+other languages that uses the engine. Any application may use the scripting
+engine and process scripts in any of the registered languages.
+
+The JScript implementation up-to version 5.6 has an incompatible definition of
+the Error class. JsUnit provides a version following ECMA-262 3rd. Early
+versions also miss the Array#push and Array#pop member functions that are
+provided by JsUnit in this case, too.
+
+\subsection cscript Windows Script Command-Line invocation
+
+\subsection iexplore Internet Explorer
+
+*/

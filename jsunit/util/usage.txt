@@ -30,9 +30,10 @@ license.
 time this operator will call a function that creates automatically the new
 object implicitly. The new object is of the type of the function. This means
 the function's code represents the class definition, the
-&quot;constructor&quot; is the function call itself. Since JsUnit 2.0 the
-standard inheritance mechanism described in the JavaScript guide 1.5 for the
-object model is supported and preferred.</P>
+&quot;constructor&quot; is the function call itself. Since JsUnit 1.2 the
+standard inheritance mechanism described in the <A
+HREF="http://developer.netscape.com/docs/manuals/js/core/jsguide15/obj2.html">JavaScript
+guide 1.5 for the object model</A> is supported and preferred.</P>
 
 <P>JsUnit follows the scheme that all member variables are declared within
 this constructor. Afterwards all member functions are declared, using the name

@@ -45,8 +45,7 @@ href="http://www.junit.org">JUnit</a>.</p>
 <p>All downloads are available at the <a
 href="http://developer.berlios.de/project/filelist.php?group_id=158">download
 section</a> of the JsUnit project page. See the \ref release for specific
-information regarding the files. There is also a \ref todo and the \ref
-history available.</p>
+information regarding the files or read about the \ref history.</p>
 
 <p>You can send e-mail to <a href="mailto:joehni@mail.berlios.de">J&ouml;rg
 Schaible</a> for any question, suggestion or problem or join the <a
@@ -54,7 +53,7 @@ href="http://groups.yahoo.com/group/jsunit/join">JsUnit mailing list</a>
 hosted by <a href="http://groups.yahoo.com/">Yahoo! Groups</a>. Please
 recognize that more than one JsUnit project exists.</p>
 
-<p>The \ref usage of JsUnit is described in the follwing sections:
+<p>The \ref usage of JsUnit is described in the following sections:
 <ul>
 	<li>\ref codeConv</li>
 	<li>\ref interface</li>
@@ -64,7 +63,9 @@ recognize that more than one JsUnit project exists.</p>
 </ul></p>
 
 <p>JsUnit supports a number of applications. See \ref compatibility for a
-reference and the different language versions.</p>
+reference and the different language versions and JavaScript engines. In the
+page for \ref products you can read how to use JsUnit in that spefific
+environment.</p>
 
 <p>JsUnit uses a Perl script to support JavaDoc comments for JavaScript. This
 script js2doxy.pl is used by some people on its own. It is linked also at the
@@ -78,9 +79,11 @@ repository</a> of JsUnit.</p>
 \section donations Donations
 
 <p>While JsUnit is and will be freely available, the programming effort eats
-up a lot of my spare time. Although I really enjoy programming, sometimes
-maintaining and developing a framework becomes also a bruden.  Donations might
-be another motivating reason for continuing with this work.</p>
+up a lot of my spare time.  I really enjoy programming, but sometimes
+maintaining and developing a framework becomes also a burden, since it
+prevents me sometimes from investigating in new and other technologies.
+Donations will keep my delight and motivation developing JsUnit at a much
+higher level.</p>
 
 \subsection donationreasons Reasons for Donations
 
