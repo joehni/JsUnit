@@ -132,14 +132,14 @@ sub debug_msg
 
 sub syntax_err
 {
-	print( STDERR "Line $.: Syntax: @_\n" ); 
+	print( STDERR $file->{name}." $.: Syntax: @_\n" ); 
 	dump_struct( $file, "FILE." ) if( $opt_debug & $DEB_DUMP );
 	exit( 3 );
 }
 
 sub warning
 {
-	print( STDERR "Line $.: Warning: @_\n" );
+	print( STDERR $file->{name}." $.: Warning: @_\n" );
 }
 
 
@@ -448,6 +448,18 @@ sub parse_doc_comment
 					$token = next_token();
 					next LOOP;
 				};
+				/^(?:\\|@)docgen$/ && do
+				{
+					my $line;
+					$token = next_token();
+					while( $scan_mode == $S_DOC_COMMENT )
+					{
+						$line .= $token if( $token !~ /$newline_pattern/ );
+						$token = next_token();
+					}
+					$cur_line = $line.$cur_line;
+					last LOOP;
+				};
 			}
 			
 			$doc->{text} .= $_;
@@ -471,7 +483,7 @@ sub parse_doc_comment
 sub parse_code
 {
 	my $token; 
-	while(( $token = (  $#parser_stack > 0
+	while(( $token = (  $#parser_stack >= 0
 					  ? pop( @parser_stack ) 
 					  : next_none_ws_token())) ne "" )
 	{
@@ -496,7 +508,7 @@ sub next_parser_token
 	my $token;
 	my $struct = "";
 
-	while(( $token = (  $#parser_stack > 0
+	while(( $token = (  $#parser_stack >= 0
 					  ? pop( @parser_stack ) 
 					  : next_none_ws_token())) ne "" )
 	{
@@ -524,6 +536,7 @@ sub next_parser_token
 					else
 					{
 						$struct =~ s/^(.*)\.$/\1/;
+						shift( @token_queue );
 						push( @parser_stack, "." );
 						last;
 					}
@@ -759,6 +772,7 @@ sub create_base
 			name => $base,
 			otype => $OT_CLASS, 
 			scope => $context,
+			unknown => 1
 		};
 		$scope = $context;
 		debug_msg( $DEB_DATABASE, "Added missing base class '$base'." );
@@ -1119,21 +1133,20 @@ sub parse
 		{
 			for( $token )
 			{
-				/^}$/ && do
-				{
-					last PARSE if( --$level < 0 );
-				};
-				/^{$/ && do
-				{
-					++$level;
-				};
-				/^var$/				&& $level == 0
-									&& parse_variable( $context );
-				/^this\./			&& parse_this( $context, $token );
-				/^function$/		&& parse_function( $context );
-				/^.+\.prototype/	&& parse_prototype( $context, $token );
+				/^}$/ 				
+					&& do { last PARSE if( --$level < 0 ); };
+				/^{$/				
+					&& do { ++$level; next; };
+				/^var$/	&& $level == 0
+					&& do { parse_variable( $context ); next; };
+				/^this\./			
+					&& do { parse_this( $context, $token ); next; };
+				/^function$/		
+					&& do { parse_function( $context ); next; };
+				/^.+\.prototype/	
+					&& do { parse_prototype( $context, $token ); next; };
 				/^.+\.(?:fulfills|inherits)$/	
-									&& parse_interface( $context, $token );
+					&& do { parse_interface( $context, $token ); next; };
 			}
 		}
 		elsif( $scan_mode == $S_DOC_COMMENT )
@@ -1190,7 +1203,9 @@ sub generate_function
 	my $argtypes = undef;
 	my $doc;
 	my $ctor;
+	my $npref;
 	
+	$npref = $1 if( $name =~ s/^($identifier\::)($identifier)$/\2/ );
 	return if( $name !~ /^$identifier$/ );
 	$doc = $func->{doc} 
 		if(   exists $func->{doc} 
@@ -1207,7 +1222,7 @@ sub generate_function
 		   	   || $func->{otype} == $OT_INTERFACE ));
 	if( $doc )
 	{
-		syntax_err( "Documentation for $name is not for a function." )
+		syntax_err( "Documentation for $npref$name is not for a function." )
 			if(   $doc->{otype} != $func->{otype}
 			   && $doc->{otype} != $OT_UNKNOWN );
 		print( "\n".$doc->{text} );
@@ -1216,7 +1231,7 @@ sub generate_function
 	}
 	if( $ctor )
 	{
-		syntax_err( "Documentation for $name is not for a constructor." )
+		syntax_err( "Documentation for $npref$name is not for a constructor." )
 			if(   $ctor->{otype} != $OT_CONSTRUCTOR
 			   && $ctor->{otype} != $OT_UNKNOWN );
 		print( "\n".$ctor->{text} );
@@ -1224,7 +1239,7 @@ sub generate_function
 		$argtypes = $ctor->{args} if( exists $doc->{args} );
 	}
 	my $virtual = $otype == $OT_INTERFACE ? "virtual " : "";
-	print( $pref.$virtual."$rtype $name(" );
+	print( $pref.$virtual."$rtype $npref$name(" );
 	for my $arg( @{$func->{args}} )
 	{
 		my $argtype = ( $argtypes and ( exists $doc->{args}{$arg->{name}} ))
@@ -1238,73 +1253,91 @@ sub generate_function
 sub generate_variable
 {
 	my ( $var, $name, $pref ) = @_;
+	my $npref;
+
+	$npref = $1 if( $name =~ s/^($identifier\::)($identifier)$/\2/ );
 	return if( $name !~ /^$identifier$/ );
 	my $rtype = "int";
 	if( exists $var->{doc} )
 	{
-		syntax_err( "Documentation for $name is not for a variable." )
+		syntax_err( "Documentation for $npref$name is not for a variable." )
 			if(   $var->{doc}{otype} != $var->{otype}
 			   && $var->{doc}{otype} != $OT_UNKNOWN );
 		print( "\n".$var->{doc}{text} );
 		$rtype = $var->{doc}{rtype} if( exists $var->{doc}{rtype} );
 	}
-	print( $pref."$rtype $name;\n" );
+	print( $pref."$rtype $npref$name;\n" );
 }
 
 sub generate_class
 {
 	my ( $context, $name, $pref ) = @_;
-	my $delim = " : ";
-	my $type = "class ";
 	local $_;
 	
 	return if( $name !~ /^$identifier$/ );
-	$type = "interface " if( $context->{otype} == $OT_INTERFACE );
-	if( exists $context->{doc} )
+	if( exists $context->{unknown} )
 	{
-		syntax_err( "Documentation for $name is not for a $type." )
-			if(   $context->{doc}{otype} != $context->{otype}
-			   && $context->{doc}{otype} != $OT_UNKNOWN );
-		print( "\n".$context->{doc}{text} );
+		for( keys %{$context->{members}} )
+		{
+			my $member = $context->{members}{$_};
+			generate_function( $member, "$name\::$_", $pref, $context->{otype} )
+				if( $member->{otype} == $OT_MEMBERFUNC );
+			generate_variable( $member, "$name\::$_", $pref."static " )
+				if( $member->{otype} == $OT_MEMBERSVAR );
+		}
 	}
-	print( $pref.$type.$name );
-	if( exists $context->{base} )
+	else
 	{
-		print( $delim, "public ", $context->{base}{name} );
-		$delim = ", ";
+		my $delim = " : ";
+		my $type = "class ";
+		
+		$type = "interface " if( $context->{otype} == $OT_INTERFACE );
+		if( exists $context->{doc} )
+		{
+			syntax_err( "Documentation for $name is not for a $type." )
+				if(   $context->{doc}{otype} != $context->{otype}
+			   	   && $context->{doc}{otype} != $OT_UNKNOWN );
+			print( "\n".$context->{doc}{text} );
+		}
+		print( $pref.$type.$name );
+		if( exists $context->{base} )
+		{
+			print( $delim, "public ", $context->{base}{name} );
+			$delim = ", ";
+		}
+		for my $class( keys %{$context->{inherits}} )
+		{
+			print( $delim, "public $class" );
+			$delim = ", ";
+		}
+		for my $if( keys %{$context->{fulfills}} )
+		{
+			print( $delim, "public $if" );
+			$delim = ", ";
+		}
+		print( "\n$pref"."{\n" );
+		print( "$pref"."public:\n" );
+		generate_forward_classes( $context->{objs}, $pref.$indent );
+		for( keys %{$context->{objs}} )
+		{
+			my $obj = $context->{objs}{$_};
+			generate_class( $obj, $_, $pref.$indent )
+				if(   $obj->{otype} == $OT_CLASS 
+			       || $obj->{otype} == $OT_INTERFACE );
+		}
+		generate_function( $context, $name, $pref.$indent, $context->{otype} );
+		for( keys %{$context->{members}} )
+		{
+			my $member = $context->{members}{$_};
+			generate_function( $member, $_, $pref.$indent, $context->{otype} )
+				if( $member->{otype} == $OT_MEMBERFUNC );
+			generate_variable( $member, $_, $pref.$indent )
+				if( $member->{otype} == $OT_MEMBERVAR );
+			generate_variable( $member, $_, $pref.$indent."static " )
+				if( $member->{otype} == $OT_MEMBERSVAR );
+		}
+		print( "$pref};\n\n" );
 	}
-	for my $class( keys %{$context->{inherits}} )
-	{
-		print( $delim, "public $class" );
-		$delim = ", ";
-	}
-	for my $if( keys %{$context->{fulfills}} )
-	{
-		print( $delim, "public $if" );
-		$delim = ", ";
-	}
-	print( "\n$pref"."{\n" );
-	print( "$pref"."public:\n" );
-	generate_forward_classes( $context->{objs}, $pref.$indent );
-	for( keys %{$context->{objs}} )
-	{
-		my $obj = $context->{objs}{$_};
-		generate_class( $obj, $_, $pref.$indent )
-			if(   $obj->{otype} == $OT_CLASS 
-			   || $obj->{otype} == $OT_INTERFACE );
-	}
-	generate_function( $context, $name, $pref.$indent, $context->{otype} );
-	for( keys %{$context->{members}} )
-	{
-		my $member = $context->{members}{$_};
-		generate_function( $member, $_, $pref.$indent, $context->{otype} )
-			if( $member->{otype} == $OT_MEMBERFUNC );
-		generate_variable( $member, $_, $pref.$indent )
-			if( $member->{otype} == $OT_MEMBERVAR );
-		generate_variable( $member, $_, $pref.$indent."static " )
-			if( $member->{otype} == $OT_MEMBERSVAR );
-	}
-	print( "$pref};\n\n" );
 }
 
 sub generate

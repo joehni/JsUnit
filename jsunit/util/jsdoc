@@ -58,7 +58,6 @@ rm -rf .lib/ .doc/ doc/ man/ > /dev/null 2>&1
 mkdir .lib .doc doc man
 cd lib
 for js in *.js; do 
-	#../util/jsd2ccd.pl $js | sed -e 's/\(.*\)/\1/g' > ../.lib/$js
 	../util/js2doxy.pl $js > ../.lib/$js
 done
 

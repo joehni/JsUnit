@@ -21,53 +21,31 @@ license.
 */
 
 /**
- * @@file
+ * @file
  * Test unit classes for browser GUI.
  * This file contains extensions for the test unit framework especially for 
  * the browser GUI.
  */
 
 /**
- * @@class
  * Class to build a test suite from a test HTML page.
  */
 function TestPage( file )
 {
-	this._super = TestSuite;
-	this._super( file );
-
-	
+	this.constructor.call( this, file );
 }
 
+TestPage.prototype = new TestSuite();
+
+
 /**
- * @@class
  * Class for an application running test suites in the browser GUI.
  */
 function BrowserTestRunner( doc )
 {
-	this._super = TestRunner;
-	this._super();
+	this.constructor.call( this );
 
 	this._document = doc;
-
-	function getTestPageContainer()
-	{
-		return this._testPageContainer;
-	}
-	
-	function loadDocument( filename )
-	{
-		var rows = this._testPageContainer.rows;
-		var row = this._testPageContainer.insertRow( rows.length );
-		var td = row.insertCell( 0 );
-		var node = this._document.createTextNode( filename );
-		td.appendChild( node );
-		td = row.insertCell( 1 );
-		node = this._document.createElement( "iframe" );
-		td.appendChild( node );
-		node.src = "file:///" + filename;
-	}
-	
 	this._testPageContainer = null;
 	if( this._document )
 	{
@@ -83,7 +61,28 @@ function BrowserTestRunner( doc )
 		}
 		this._testPageContainer = this._document.getElementById( "JsUnitContainer" );
 	}
-	
-	this.getTestPageContainer = getTestPageContainer;
-	this.loadDocument = loadDocument;
 }
+
+function BrowserTestRunner_getTestPageContainer()
+{
+	return this._testPageContainer;
+}
+
+function BrowserTestRunner_loadDocument( filename )
+{
+	var rows = this._testPageContainer.rows;
+	var row = this._testPageContainer.insertRow( rows.length );
+	var td = row.insertCell( 0 );
+	var node = this._document.createTextNode( filename );
+	td.appendChild( node );
+	td = row.insertCell( 1 );
+	node = this._document.createElement( "iframe" );
+	td.appendChild( node );
+	node.src = "file:///" + filename;
+}
+
+BrowserTestRunner.prototype = new TestRunner();
+BrowserTestRunner.prototype.getTestPageContainer 
+	= BrowserTestRunner_getTestPageContainer;
+BrowserTestRunner.prototype.loadDocument = BrowserTestRunner_loadDocument;
+

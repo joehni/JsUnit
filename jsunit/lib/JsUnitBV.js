@@ -41,6 +41,6 @@ function CtxTestRunner()
  */
 function CtxTestRunner_writeLn( str ) { print( str ); }
 
-CtxTextRunner.prototype = new TextTestRunner();
+CtxTestRunner.prototype = new TextTestRunner();
 CtxTestRunner.prototype.writeLn = CtxTestRunner_writeLn;
 

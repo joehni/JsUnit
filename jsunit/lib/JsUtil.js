@@ -131,6 +131,11 @@ CallStack.prototype.toString = CallStack_toString;
 if( !Array.prototype.pop )
 {
 	/**
+	 * \class Array
+	 * Standard ECMA class.
+	 * \docgen function Array() {}
+	 */
+	/**
 	 * Pops last element from Array.
 	 * The function is an implementation of the Array::pop method described
 	 * in the ECMA standard. It removes the last element of the Array and
@@ -186,6 +191,11 @@ if( !Array.prototype.push )
 
 
 /**
+ * \class String
+ * Standard ECMA class.
+ * \docgen function String() {}
+ */
+/**
  * Trims characters from string.
  * @tparam String chars String with characters to remove.  The character may
  * also be a regular expression character class like "\\s".
@@ -215,6 +225,9 @@ String.prototype.trim = String_trim;
  * The variable is true, if the script is run by the Microsoft JScript engine.
  */
 var isJScript = this.ScriptEngine != null;
+/**
+ * \internal
+ */
 var hasCompatibleErrorClass = 
 	(    this.Error != null 
 	  && (   !isJScript 
@@ -310,6 +323,11 @@ InterfaceError.prototype = new TypeError();
 InterfaceError.prototype.name = "InterfaceError";
 
 
+/**
+ * \class Function
+ * Standard ECMA class.
+ * \docgen function Function() {}
+ */
 /**
  * Ensures that a function fulfills an interface.
  * Since with ECMA 262 (3rd edition) interfaces are not supported yet, this

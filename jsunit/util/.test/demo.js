@@ -90,6 +90,11 @@ function fn2(x)
 }
 
 /**
+ * \class Array
+ * Standard ECMA class.
+ * \docgen function Array() {}
+ */
+ /**
  * Test for emptiness.
  * Expand Array with test for emptiness.
  * @treturn Boolean true or false
@@ -101,5 +106,6 @@ function Array_isEmpty( array )
 Array.prototype.isEmpty = Array_isEmpty;
 Array.prototype.test = x.prototype.CC.prototype.test;
 Array.prototype._toString = Array.prototype.toString;
+Array.prototype.member = 1;
 
 
