@@ -87,8 +87,7 @@ Hieatt's browser GUI.</P>
 \subsection progress Work in Progress
 
 <UL>
-	<LI>New file JsUnitBrowser.js used for Edward's browser GUI</LI>
-	<LI>JsUnit.js has a browser detection</LI>
+	<LI></LI>
 </UL>
 
 \section todo ToDo List
@@ -118,7 +117,8 @@ Hieatt's browser GUI.</P>
 	
 	<TD>Edward's version of JsUnit is more based on a nice browser frontend.
 	This would be also nice to have to my version. Edward and I agreed that I
-	may try to integrate his GUI on top of my engine. Work in progress.</TD>
+	may try to integrate his GUI on top of my engine. Work currently stopped
+	for version 1.2. Will be continued for JsUnit 2.0.</TD>
 	
 </TR>
 </TABLE>

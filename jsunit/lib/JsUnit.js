@@ -1927,22 +1927,3 @@ HTMLTestRunner.prototype.setPrefix = HTMLTestRunner_setPrefix;
 HTMLTestRunner.prototype.setPostfix = HTMLTestRunner_setPostfix;
 HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
 
-
-/*************************************************************/
-if( this.window )
-{
-	function newOnLoadEventForJsUnit() 
-	{
-		window.isJsUnitPageLoaded = true;
-		if( typeof( window.savedOnLoadEventBeforeJsUnit ) == "function" )
-			window.savedOnLoadEventBeforeJsUnit();
-	}
-
-	if( this.name && this.name == "testFrame" )
-	{
-		window.isJsUnitPageLoaded = false;
-		window.savedOnLoadEventBeforeJsUnit = window.onload;
-		window.onload = newOnLoadEventForJsUnit;
-	}
-}
-
