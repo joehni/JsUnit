@@ -1055,29 +1055,29 @@ ExceptionTestCaseTest.prototype = new TestCase();
 ExceptionTestCaseTest.prototype.testRunTest = ExceptionTestCaseTest_testRunTest;
 
 
-function TestRunnerTest( name )
+function BaseTestRunnerTest( name )
 {
 	TestCase.call( this, name );
-	this.mRunner = new TestRunner();
+	this.mRunner = new BaseTestRunner();
 }
-function TestRunnerTest_testAddSuite()
+function BaseTestRunnerTest_testAddSuite()
 {
 	this.assertUndefined( this.mRunner.addSuite( new TestSuite()));
 	this.assertEquals( 0, this.mRunner.countTestCases());
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	this.assertEquals( 2, this.mRunner.countTestCases());
 }
-function TestRunnerTest_testCountTestCases()
+function BaseTestRunnerTest_testCountTestCases()
 {
 	this.assertEquals( 0, this.mRunner.countTestCases());
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	this.assertEquals( 2, this.mRunner.countTestCases());
 }
-function TestRunnerTest_testCreateTestResult()
+function BaseTestRunnerTest_testCreateTestResult()
 {
 	this.assertTrue( this.mRunner.createTestResult() instanceof TestResult );
 }
-function TestRunnerTest_testRun()
+function BaseTestRunnerTest_testRun()
 {
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	var result = new TestResult();
@@ -1089,26 +1089,26 @@ function TestRunnerTest_testRun()
 	this.assertEquals( 0, result.failureCount());
 	this.assertEquals( 1, result.runCount());
 }
-function TestRunnerTest_testRunAll()
+function BaseTestRunnerTest_testRunAll()
 {
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	var result = new TestResult();
 	this.assertUndefined( this.mRunner.runAll( result ));
 	this.assertEquals( 2, result.runCount());
 }
-TestRunnerTest.prototype = new TestCase();
-TestRunnerTest.prototype.testAddSuite = TestRunnerTest_testAddSuite;
-TestRunnerTest.prototype.testCountTestCases = TestRunnerTest_testCountTestCases;
-TestRunnerTest.prototype.testCreateTestResult = TestRunnerTest_testCreateTestResult;
-TestRunnerTest.prototype.testRun = TestRunnerTest_testRun;
-TestRunnerTest.prototype.testRunAll = TestRunnerTest_testRunAll;
-TestRunnerTest.prototype.MyTest = function MyTest( name )
+BaseTestRunnerTest.prototype = new TestCase();
+BaseTestRunnerTest.prototype.testAddSuite = BaseTestRunnerTest_testAddSuite;
+BaseTestRunnerTest.prototype.testCountTestCases = BaseTestRunnerTest_testCountTestCases;
+BaseTestRunnerTest.prototype.testCreateTestResult = BaseTestRunnerTest_testCreateTestResult;
+BaseTestRunnerTest.prototype.testRun = BaseTestRunnerTest_testRun;
+BaseTestRunnerTest.prototype.testRunAll = BaseTestRunnerTest_testRunAll;
+BaseTestRunnerTest.prototype.MyTest = function MyTest( name )
 {
 	TestCase.call( this, name );
 };
-TestRunnerTest.prototype.MyTest.prototype = new TestCase();
-TestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
-TestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
+BaseTestRunnerTest.prototype.MyTest.prototype = new TestCase();
+BaseTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
+BaseTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
 
 
 function TextTestRunnerTest( name )
@@ -1148,7 +1148,7 @@ function TextTestRunnerTest_testPrintHeader()
 	this.mRunner.start();
 	this.assertEquals( 0, 
 		this.mRunner.mMsg.indexOf(
-			"TestRunner(all) (2 test cases available)" ));
+			"BaseTestRunner(all) (2 test cases available)" ));
 }
 function TextTestRunnerTest_testPrintFooter()
 {
@@ -1225,7 +1225,7 @@ function JsUnitTestSuite()
 	this.addTestSuite( TestSetupTest );
 	this.addTestSuite( RepeatedTestTest );
 	this.addTestSuite( ExceptionTestCaseTest );
-	this.addTestSuite( TestRunnerTest );
+	this.addTestSuite( BaseTestRunnerTest );
 	this.addTestSuite( TextTestRunnerTest );
 }
 JsUnitTestSuite.prototype = new TestSuite();

@@ -1253,7 +1253,7 @@ ExceptionTestCase.prototype.runTest = ExceptionTestCase_runTest;
 /**
  * General base class for an application running test suites.
  */
-function TestRunner()
+function BaseTestRunner()
 {
 	this.mSuites = new TestSuite();
 	this.mElapsedTime = 0;
@@ -1262,31 +1262,31 @@ function TestRunner()
  * Add a test suite to the application.
  * @tparam TestSuite suite The suite to add.
  */
-function TestRunner_addSuite( suite ) { this.mSuites.addTest( suite ); }
+function BaseTestRunner_addSuite( suite ) { this.mSuites.addTest( suite ); }
 /**
  * Counts the number of test cases that will be run by this test 
  * application.
  * @treturn Number The number of test cases.
  */
-function TestRunner_countTestCases() { return this.mSuites.countTestCases(); }
+function BaseTestRunner_countTestCases() { return this.mSuites.countTestCases(); }
 /**
  * The milliseconds needed to execute all registered tests of the runner.
  * This number is 0 as long as the test was never started.
  * @treturn Number The milliseconds.
  */
-function TestRunner_countMilliSeconds() { return this.mElapsedTime; }
+function BaseTestRunner_countMilliSeconds() { return this.mElapsedTime; }
 /**
  * Creates an instance of a TestResult.
  * @treturn TestResult Returns the new TestResult instance.
  */
-function TestRunner_createTestResult() { return new TestResult(); }
+function BaseTestRunner_createTestResult() { return new TestResult(); }
 /**
  * Runs all test of all suites and collects their results in a TestResult 
  * instance.
  * @tparam String name The name of the test.
  * @tparam TestResult result The test result to fill.
  */
-function TestRunner_run( name, result )
+function BaseTestRunner_run( name, result )
 {
 	var test = this.mSuites.findTest( name );
 	if( test == null )
@@ -1307,23 +1307,23 @@ function TestRunner_run( name, result )
  * instance.
  * @tparam TestResult result The test result to fill.
  */
-function TestRunner_runAll( result ) 
+function BaseTestRunner_runAll( result ) 
 { 
 	this.mElapsedTime = new Date();
 	this.mSuites.run( result ); 
 	this.mElapsedTime = new Date() - this.mElapsedTime;
 }
-TestRunner.prototype.addError = function( test, except ) {}
-TestRunner.prototype.addFailure = function( test, except ) {}
-TestRunner.prototype.addSuite = TestRunner_addSuite;
-TestRunner.prototype.countTestCases = TestRunner_countTestCases;
-TestRunner.prototype.countMilliSeconds = TestRunner_countMilliSeconds;
-TestRunner.prototype.createTestResult = TestRunner_createTestResult;
-TestRunner.prototype.endTest = function( test ) {}
-TestRunner.prototype.run = TestRunner_run;
-TestRunner.prototype.runAll = TestRunner_runAll;
-TestRunner.prototype.startTest = function( test ) {}
-TestRunner.fulfills( TestListener );
+BaseTestRunner.prototype.addError = function( test, except ) {}
+BaseTestRunner.prototype.addFailure = function( test, except ) {}
+BaseTestRunner.prototype.addSuite = BaseTestRunner_addSuite;
+BaseTestRunner.prototype.countTestCases = BaseTestRunner_countTestCases;
+BaseTestRunner.prototype.countMilliSeconds = BaseTestRunner_countMilliSeconds;
+BaseTestRunner.prototype.createTestResult = BaseTestRunner_createTestResult;
+BaseTestRunner.prototype.endTest = function( test ) {}
+BaseTestRunner.prototype.run = BaseTestRunner_run;
+BaseTestRunner.prototype.runAll = BaseTestRunner_runAll;
+BaseTestRunner.prototype.startTest = function( test ) {}
+BaseTestRunner.fulfills( TestListener );
 
 
 /**
@@ -1331,7 +1331,7 @@ TestRunner.fulfills( TestListener );
  */
 function TextTestRunner()
 {
-	TestRunner.call( this );
+	BaseTestRunner.call( this );
 
 	this.mRunTests = 0;
 	this.mNest = "";
@@ -1385,7 +1385,7 @@ function TextTestRunner_endTest( test )
 function TextTestRunner_printHeader()
 {
 	this.writeLn( 
-		  "TestRunner(" + this.mStartArgs[0] + ") (" 
+		  "BaseTestRunner(" + this.mStartArgs[0] + ") (" 
 		+ this.countTestCases() + " test cases available)" );
 }
 /**
@@ -1458,7 +1458,7 @@ function TextTestRunner_startTest( test )
 		this.mNest += "-";
 	}
 }
-TextTestRunner.prototype = new TestRunner();
+TextTestRunner.prototype = new BaseTestRunner();
 TextTestRunner.prototype.addFailure = TextTestRunner_addFailure;
 TextTestRunner.prototype.addError = TextTestRunner_addError;
 TextTestRunner.prototype.endTest = TextTestRunner_endTest;
