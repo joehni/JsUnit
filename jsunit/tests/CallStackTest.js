@@ -7,7 +7,7 @@ function CallStackTest( name )
 	function testToString()
 	{
 		var cs = new CallStack();
-		var reg = /(.*)\n/;
+		var reg = /(.*)\n*/;
 		reg.exec( cs );
 		this.assertEquals( "1: testToString()", RegExp.$1);
 	}

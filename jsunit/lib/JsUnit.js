@@ -201,7 +201,7 @@ function TestResult()
 	{
 		this.mErrors[this.mErrors.length] = new TestFailure( test, except );
 		for( var i = 0; i < this.mListeners.length; ++i )
-			this.mListeners[i].addErrors( test, except );
+			this.mListeners[i].addError( test, except );
 	}
 	/**
 	 * @@method
@@ -260,9 +260,7 @@ function TestResult()
 		}
 		catch( ex )
 		{
-			// IE vs. BV
-			if( ex.constructor == AssertionFailedError )
-			//if( ex.constructor.toString() == AssertionFailedError.toString())
+			if( ex instanceof AssertionFailedError )
 				this.addFailure( test, ex );
 			else
 				this.addError( test, ex );

@@ -35,12 +35,12 @@ function Money(theAmount, theCurrency) {
 			return false;
 
 		if (this.isNull()) {
-			if (   object.constructor == Money
-			    || object.constructor == MoneyBag)
+			if (   object instanceof Money
+			    || object instanceof MoneyBag)
 				return object.isNull();
 		}
 				
-		if (object.constructor == Money) {
+		if (object instanceof Money) {
 			return    object.currency() == this.currency()
 				   && this.amount() == object.amount();
 		}

@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>JsUnit Test</title>
+<server>
+var JavaScript_1_4 = "false";
+// Proof JavaScript 1.4 capatibility
+// ... fails with Netscape Communicator 4 !!
+try { JavaScript_1_4 = "true"; } catch( ex ) { }
+function main()
+{
+	write(
+		  "<p>Proof JavaScript 1.4 capability: " 
+		+ JavaScript_1_4 + "</p>");
+
+	var runner = new NSServerTestRunner();
+	runner.addSuite( ArrayTest_suite());
+	runner.addSuite( MoneyTest_suite());
+	runner.addSuite( SimpleTest_suite());
+	return runner.start( main.arguments );
+}
+</server>
+</head>
+<body>
+<h1>JsUnit Test</h1>
+<server>
+main( "all" );
+</server>
+</body>
+</html>

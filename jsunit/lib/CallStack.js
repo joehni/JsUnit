@@ -45,31 +45,39 @@ function CallStack(depth)
 
 	// fn is null when called directly from the engine
 	var fn = CallStack.caller;
-	while( fn != null && depth > 0 )
+	var s = new String( fn );
+	if( s == "undefined" || s == "[object Object]" )
 	{
-		var s = new String( fn );
-		--depth;
-
-		// Extract function name and argument list
-		var r = /function (\w+)(.*\))/;
-		r.exec( s );
-		var f = new String( RegExp.$1 );
-		var args = new String( RegExp.$2 );
-		this.mStack[this.mStack.length] = f + args;
-
-		// Retrieve caller function
-		if( fn == fn.caller )
-		{
-			this.mStack[this.mStack.length] = "<JavaScript recursion>";
-			break;
-		}
-		else
-			fn = fn.caller;
+		this.mStack[this.mStack.length] = "[CallStack information not supported]";
 	}
-
-	if( fn == null )
+	else
 	{
-		this.mStack[this.mStack.length] = "<JavaScript engine>";
+		while( fn != null && depth > 0 )
+		{
+			s = new String( fn );
+			--depth;
+	
+			// Extract function name and argument list
+			var r = /function (\w+)([^\{\}]*\))/;
+			r.exec( s );
+			var f = new String( RegExp.$1 );
+			var args = new String( RegExp.$2 );
+			this.mStack[this.mStack.length] = f + args;
+	
+			// Retrieve caller function
+			if( fn == fn.caller )
+			{
+				this.mStack[this.mStack.length] = "[JavaScript recursion]";
+				break;
+			}
+			else
+				fn = fn.caller;
+		}
+	
+		if( fn == null )
+		{
+			this.mStack[this.mStack.length] = "[JavaScript engine]";
+		}
 	}
 }
 

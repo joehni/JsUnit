@@ -60,11 +60,11 @@ function MoneyBag() {
 			return false;
 
 		if (this.isNull())
-			if (   object.constructor == Money
-			    || object.constructor == MoneyBag)
+			if (   object instanceof Money
+			    || object instanceof MoneyBag)
 				return object.isNull();
 
-		if (object.constructor == MoneyBag) {
+		if (object instanceof MoneyBag) {
 			if (object.fMonies.length != this.fMonies.length)
 				return false;
 
@@ -147,10 +147,10 @@ function MoneyBag() {
 	for (var i = 0; i < MoneyBag.arguments.length; ++i) {
 		if (MoneyBag.arguments[i] == null)
 			continue;
-		if (MoneyBag.arguments[i].constructor == Money) {
+		if (MoneyBag.arguments[i] instanceof Money) {
 			this.appendMoney( MoneyBag.arguments[i] );
 		}
-		if (MoneyBag.arguments[i].constructor == MoneyBag) {
+		if (MoneyBag.arguments[i] instanceof MoneyBag) {
 			this.appendBag( MoneyBag.arguments[i] );
 		}
 	}

@@ -1,0 +1,3 @@
+#!/bin/sh
+jsac -v -o JsUnitNSTest.web JsUnitNSTest.html JsUnit.js JsUnitNSServer.js CallStack.js CallStackTest.js
+
