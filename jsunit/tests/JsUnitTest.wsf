@@ -1,7 +1,7 @@
 <Job id="JsUnitTest">
-<Script language="JScript" src="JsUnit.js" />
-<Script language="JScript" src="JsUnitWSH.js" />
-<Script language="JScript" src="CallStack.js" />
+<Script language="JScript" src="../lib/JsUnit.js" />
+<Script language="JScript" src="../lib/JsUnitWSH.js" />
+<Script language="JScript" src="../lib/CallStack.js" />
 <Script language="JScript" src="CallStackTest.js" />
 <Script language="JScript">
 function main()

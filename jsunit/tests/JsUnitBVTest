@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JS="JsUnit.js JsUnitBV.js CallStack.js CallStackTest.js"
+JS="../lib/JsUnit.js ../lib/JsUnitBV.js ../lib/CallStack.js CallStackTest.js"
 CWD=$PWD
 
 rm -rf .ctx/ > /dev/null 2>&1

@@ -1,6 +1,6 @@
 #!/bin/sh
 jsac -v -o AllTestsNS.web AllTestsNS.html \
-	../JsUnit.js ../JsUnitNSServer.js ../CallStack.js \
+	../lib/JsUnit.js ../lib/JsUnitNSServer.js ../lib/CallStack.js \
 	ArrayTest.js \
 	money/AbstractFunctionCalledException.js money/IMoney.js \
 	money/Money.js money/MoneyBag.js money/MoneyTest.js \

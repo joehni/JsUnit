@@ -1,7 +1,7 @@
 <Job id="TestUnitTest">
-<Script language="JScript" src="../CallStack.js" />
-<Script language="JScript" src="../JsUnit.js" />
-<Script language="JScript" src="../JsUnitWSH.js" />
+<Script language="JScript" src="../lib/CallStack.js" />
+<Script language="JScript" src="../lib/JsUnit.js" />
+<Script language="JScript" src="../lib/JsUnitWSH.js" />
 <Script language="JScript" src="ArrayTest.js" />
 <Script language="JScript" src="money/AbstractFunctionCalledException.js" />
 <Script language="JScript" src="money/IMoney.js" />

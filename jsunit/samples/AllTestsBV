@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JS="../JsUnit.js ../JsUnitBV.js ../CallStack.js"
+JS="../lib/JsUnit.js ../lib/JsUnitBV.js ../lib/CallStack.js"
 JS="$JS ArrayTest.js"
 JS="$JS money/AbstractFunctionCalledException.js money/IMoney.js"
 JS="$JS money/Money.js money/MoneyBag.js money/MoneyTest.js"
