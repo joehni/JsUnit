@@ -26,7 +26,7 @@ function CallStackTest( name )
 }
 function CallStackTest_testCtor()
 {
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 	{
 		var cs = this.f0().getStack();
 		cs = this.f12().getStack();
@@ -41,7 +41,7 @@ function CallStackTest_testCtor()
 }
 function CallStackTest_testFill()
 {
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 	{
 		this.f0 = function f0( d ) { this.cs.fill(d); }
 
@@ -54,7 +54,7 @@ function CallStackTest_testFill()
 }
 function CallStackTest_testGetStack()
 {
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 	{
 		var cs = this.f12(13);
 		this.assertEquals( 13, cs.getStack().length );
@@ -64,7 +64,7 @@ function CallStackTest_testGetStack()
 }
 function CallStackTest_testToString()
 {
-	if( JsUtil.prototype.hasCallBackSupport )
+	if( JsUtil.prototype.hasCallStackSupport )
 	{
 		var cs = this.f4().toString().replace( /\n/g, "|" );
 		this.assertTrue( cs.indexOf( "f5" ) == -1 );
@@ -157,7 +157,7 @@ function ErrorTest( name )
 }
 function ErrorTest_testAttributes()
 {
-	if( Error.testable )
+	if( Error.prototype.testable )
 	{
 		var err = new Error( "my message" );
 		this.assertEquals( "Error", err.name );
@@ -166,7 +166,7 @@ function ErrorTest_testAttributes()
 }
 function ErrorTest_testCtorAsFunction()
 {
-	if( Error.testable )
+	if( Error.prototype.testable )
 	{
 		var err = Error( "my message" );
 		this.assertTrue( err instanceof Error );

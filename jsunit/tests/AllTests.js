@@ -22,6 +22,7 @@ license.
 
 var hasExceptions = "false";
 var exceptionsWorking = "false";
+var i;
 
 function throwEx()
 {
@@ -54,7 +55,7 @@ if( !JsUtil.prototype.isBrowser )
 	/*
 	o = this.Environment;
 	print( "Object: " + o );
-	for( var i in o )
+	for( i in o )
 		print( " i is " + i );
 	quit(0);
 	*/
@@ -63,7 +64,7 @@ if( !JsUtil.prototype.isBrowser )
 	writer.println( "\texceptions working: " + exceptionsWorking );
 
 	writer.println( "\nJavaScript engine detection:" );
-	for( var i in JsUtil.prototype )
+	for( i in JsUtil.prototype )
 		if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 			writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
 
@@ -100,7 +101,7 @@ if( JsUtil.prototype.isShell )
 	if( this.WScript )
 	{
 		args = new Array();
-		for( var i = 0; i < WScript.Arguments.Count(); ++i )
+		for( i = 0; i < WScript.Arguments.Count(); ++i )
 			args[i] = WScript.Arguments( i );
 	}
 	else if( this.arguments )

@@ -449,6 +449,13 @@ if( !this.Error )
 	 */
 	Error.prototype.testable = true;
 }
+else 
+{
+	/**
+	 * \internal
+	 */
+	Error.prototype.testable = false;
+}
 
 /**
  * JsUnitError class.

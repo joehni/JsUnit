@@ -74,7 +74,7 @@ function MoneyBag_appendMoney( money )
 	if( sum.isZero()) 
 	{
 		var monies = new Array();
-		for( j = 0; j < this.fMonies.length; ++j ) 
+		for( var j = 0; j < this.fMonies.length; ++j ) 
 		{
 			if( j != i )
 				monies.push( this.fMonies[j] );

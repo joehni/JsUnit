@@ -126,6 +126,11 @@ for( var i in JsUtil.prototype )
 	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 		document.writeln( i + ": " + JsUtil.prototype[i] + "<br>" );
 document.writeln("</p>");
+	var o = ScriptEngine;
+	document.writeln( "Object: " + o + "<br>");
+	for( var i in o )
+		document.writeln( " i is " + i + "<br>");
+document.writeln("</p>");
 // -->
 </script>
 <noscript><p style="color:red">JavaScript seems to be disabled!</p></noscript>
