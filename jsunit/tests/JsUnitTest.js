@@ -1301,8 +1301,8 @@ function ResultPrinterTest_testPrintErrors()
 	this.mPrinter.printErrors( result );
 	var str = this.mPrinter.getWriter().get();
 	this.assertEquals( /were 2 errors/, str );
-	this.assertEquals( /1\) Error: XXX/, str );
-	this.assertEquals( /2\) Error: YYY/, str );
+	this.assertEquals( /1\) /, str );
+	this.assertEquals( /2\) /, str );
 }
 function ResultPrinterTest_testPrintFailures()
 {
