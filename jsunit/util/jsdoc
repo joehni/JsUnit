@@ -46,7 +46,7 @@ OUTPUT_DIRECTORY=.
 VERSION=`cat version.cfg`
 GENERATE_HTML=YES
 GENERATE_MANE=YES
-PERL_PATH=/usr/bin/perl
+PERL_PATH=/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
@@ -72,6 +72,6 @@ for html in *.html; do
 done
 
 cd ..
-rm -rf .lib .doc
+#rm -rf .lib .doc
 cd $CWD
 
