@@ -1,5 +1,381 @@
-/*! \mainpage JsUnit Index
+/*! \mainpage JsUnit Manual
 \htmlonly
-<H2>Hi</H2>
+<H2>Introduction</H2>
+<P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">JUnit</A> written by
+Erich Gamma and Kent Beck. The port's base is JUnit version 3.2 and covers
+only the core system and the examples. Main goal of the port is a
+system that can be invoked by command line exiting with a return code to
+support automated tests as long as the environment support this scenario.</P>
+<H2>License</H2>
+<P>Copyright &copy; 1999-2001 by 
+<A HREF="mailto:joerg.schaible@gmx.de">J&ouml;rg Schaible</A>.</P>
+<P>Permission to use, copy, modify, and distribute this software and its
+documentation under the terms of the GNU General Public License is hereby 
+granted. No representations are made about the suitability of this software 
+for any purpose. It is provided "as is" without express or implied warranty.
+See the 
+<A HREF="http://www.gnu.org/copyleft/gpl.html">
+GNU General Public License</A>
+for more details.</P>
+<P>Applications using JsUnit to perform unit tests are derivative works; they
+are not affected by this license.</P>
+<H2>Compatibility</H2>
+<P>The JsUnit library has to use exceptions. These exceptions were not part of
+the first language draft und therefore not everywhere available. The JsUnit
+scripts are only available on systems that support exceptions. Additionally
+the scripts try to expose the call stack in case of an error. This call stack
+is also subject of compatibility and have changed in various versions of the
+language implementations of the different vendors.</P>
+<H3>The Script Language</H3>
+<H4>ECMAScript</H4>
+<P>ECMAScript is the official name of the language commonly called "JavaScript".
+<a href="http://www.ecma.ch">ECMA</a> is an international, industry
+association and dedicated to the standardization of information and
+communication systems. The language is specified in the ECMA-262 document
+currently in the 3rd edition from 1999. This edition introduced exceptions
+into the language. Unfortunately the standard does not define any
+functionality or properties to retrieve the call stack. Communiqu&eacute; of <A HREF="http://www.daynetwork.com">Day International</A> is the
+only product I am aware of, that has an own implementation of ECMAScript.
+Unfortunately it does do not provide the full standard and exceptions are not
+supported.</P>
+<H4>JavaScript</H4>
+<P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript was
+developed by Netscape and introduced with the Netscape 2.0 browser. Starting
+with JavaScript 1.4 Netscape also implemented the exceptions. Unfortunately
+this version is not included into the 4.x versions of the browser. Despite the
+client-side, the language was available for Server-Side programming and built
+into the Netscape Enterprise Server 4.x, now called iPlanet.</P>
+<H4>JScript</H4>
+<P>JScript is the Microsoft's implementation of ECMAScript. The language supports
+exceptions starting with version 5.0 of JScript. The language is available
+with 
+Internet Explorer starting with version 5.0, Internet Information Server
+5.0 and Windows Scripting Host 2.0.</P>
+<H3>JavaScript enabled products</H3>
+<P>There are a lot of products out there that are able to process a dialect of
+JavaScript. I have listed all products that I am aware of.</P>
+<TABLE BORDER="0">
+<TR>
+	<TH ALIGN="left">Product</TH>
+	<TH ALIGN="left">Vendor</TH>
+	<TH ALIGN="left">JavaScript version</TH>
+	<TH ALIGN="left">JsUnit support</TH>
+</TR>
+<TR>
+	<TD>Communiqu&eacute; 2.x</TD>
+	<TD><A HREF="http://www.daynetwork.com">Day International</A></TD>
+	<TD>ECMAScript 2nd edition</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Enterprise Server 3.x</TD>
+	<TD><A HREF="http://www.sun.com">Netscape</A></TD>
+	<TD>JavaScript 1.2</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Enterprise Server 4.x</TD>
+	<TD>Netscape</TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 4.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 5.x</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Internet Explorer 6.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript ?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Internet Information Server 4.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Internet Information Server 5.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD><A
+	HREF="http://developer.iplanet.com/docs/manuals/enterprise.html">iPlanet</A></TD>
+	<TD>Sun</TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes, but no call stack</TD>
+</TR>
+<TR>
+	<TD>Mozilla 0.8</TD>
+	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>mySAP.com</TD>
+	<TD><A HREF="http://www.sap.com">SAP</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Navigator 4.x</TD>
+	<TD>Netscape</TD>
+	<TD>JavaScript 1.3</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Navigator 6.x</TD>
+	<TD>Netscape</TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Notes 5.x</TD>
+	<TD><A HREF="http://www.lotus.com">Lotus/IBM</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>One-to-One 5.x</TD>
+	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
+	<TD>JavaScript 1.4</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Opera 5.x</TD>
+	<TD><A HREF="http://www.opera.com">Opera</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Tomcat 3.x</TD>
+	<TD><A HREF="http://jakarta.apache.org">Apache Jakarta</A></TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
+	<TD>Visual InterDev 6.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Windows Scripting Host 1.0</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 3.0</TD>
+	<TD>no, no exceptions</TD>
+</TR>
+<TR>
+	<TD>Windows Scripting Host 2.x</TD>
+	<TD>Microsoft</TD>
+	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+</TR>
+</TABLE>
+<H2>Usage</H2>
+<P>If you look at the source code of JsUnit you will detect a lot of source code
+documentation and an unusual JavaScript programming style. The approach
+enables a good porting of the Java code, offers pseudo multiple inheritance
+and allows the automated reference manual.</P>
+<H3>Coding conventions</H3>
+<P>To create an object in JavaScript you have to use the new operator. Every
+time this operator will call a function that creates automatically the new
+object implicitly. The new object is of the type of the function. This means the function's code represents the class definition, the &quot;constructor&quot; is the function call itself. Someone may ask why I did not use the prototype functionality, but I found compatibility issues as well as the mechanism would have prevented multiple inheritance.</P>
+<P>JsUnit follows the scheme that all member functions and variables are declared within this constructor and assigned explicitly at the end of it.
+This prevents naming conflicts in the global namespace and gives the
+impression of a real class definition. The first section within the
+constructor is used for the inheritance. Every base class (i.e.
+function) is assigned the internal member <CODE>_super</CODE> and
+then called with all necessary argumants and using the current object as environment:</P> 
+<P><DIV CLASS="fragment"><PRE>
+this._super = BaseClass1;
+this._super( arg1, arg2 );
+this._super = BaseClass2;
+this._super( arg1, arg2 );</PRE></DIV></P>
+<P>After calling the constuctors you should initialize the member variables by
+assigning them a value:</P>
+<P><DIV CLASS="fragment"><PRE>
+this.mMember1 = 1;
+this.mMember2 = "yes";</PRE></DIV></P>
+<P>Now is the time to define all member functions. Just nest  the function
+declaration into the constructor. Assign all functions at the end of the
+constructor:</P>
+<P><DIV CLASS="fragment"><PRE>
+function f1() {}
+function f2() {}
+
+this.f1 = f1;
+this.f2 = f2;</PRE></DIV></P>
+<P>It is no problem to overload a function that was already assign in a
+constructor of a base class. Unfortunately you have to follow a naming
+convention, if your new function has to call the overloaded function of the base class:</P>
+<P><DIV CLASS="fragment"><PRE>
+function f1() 
+{
+    this.Base1_f1();
+}
+
+this.Base1_f1 = this.f1;
+this.f1 = f1;</PRE></DIV></P>
+<P>After assigning all functions you may add additional code necessary for
+proper initialization of the object.</P>
+<H3>Writing test cases and test suites</H3>
+\endhtmlonly
+* \dontinclude SimpleTest.js
+* Writing unit tests you have to write at first test cases for your classes.
+* The programming paradigma of eXtreme Programming demands writing your test
+* cases first. Then you are able to programm your class against the test case,
+* so you know when you are ready. Anyway, writing a test case means deriving
+* from class TestCase:
+* \skip function
+* \until );
+* Overload the setUp function if necessary:
+* \skip setUp
+* \until }
+* Add your test fixtures:
+* \skip testDivide
+* \until }
+* You may also overload the tearDown utility. To complete the class you have
+* to assign the methods
+* \skip setUp
+* \until }
+* After writing the test case you have to build a test suite. This is done by
+* writing a function with the convention NameOfTestCase_Suite creating a
+* TestSuite and add all fixtures:
+* \skip function
+* \until }
+\htmlonly
+<H3>Creating a test application</H3>
+\endhtmlonly
+* After writing the test cases and suites we need an application to run the
+* tests. The application has the responsibility to include all necessary
+* sources. Create a TestRunner for reporting the results, add all wanted test
+* suites to the runner and perform the test. The TestRunner itself is normally
+* also a derived class, that has reporting functions that work perfectly in
+* the system environment. See below a sample for the Windows Scripting Host:
+* \include AllTests.wsf
+\htmlonly
+<H3>Examples</H3>
+<P>The examples are also ports from the originals that accompany JUnit. Please
+note that the last test case of SimpleTest is supposed to fail to demonstrate
+this case.</P>
+<P>Most supported environments cannot share their test application. Therefore
+are a lot of AllTests*.* files part of the sample package. See the list below
+for all deliveries:</P>
+<TABLE>
+<TR>
+	<TH ALIGN="left">Files</TH>
+	<TH ALIGN="left">Environment</TH>
+</TR>
+<TR>
+	<TD>AllTests.html</TD>
+	<TD>Any browser with a JavaScript implementation capable of exceptions</TD>
+</TR>
+<TR>
+	<TD>AllTests.vup</TD>
+	<TD>Project for Microsoft Visual Interdev</TD>
+</TR>
+<TR>
+	<TD>AllTests.wsf</TD>
+	<TD>Script for Windows Scripting Host. Run best with <EM>cscript</EM></TD>
+</TR>
+<TR>
+	<TD>AllTestsBV<BR>AllTestsBV.jsp</TD>
+	<TD>JavaScript Server Page of BroadVision. Use the script AllTestsBV to
+	start the <EM>ctxdriver</EM> for command line invocation.</TD>
+</TR>
+<TR>
+	<TD>AllTestsNS<BR>AllTestsNS.html<BR>AllTestsNS.web</TD>
+	<TD>Compiled Netscape iPlanet web application. The script compiles the web
+	from the HTML source.</TD>
+</TR>
+</TABLE>
+<H2>Internals</H2>
+<H3>Documentation conventions</H3>
+<P>The documentation of JavaScript code has to follow also very strict
+patterns. See following chapter how to generate the documentation.</P>
+<P>The documentation syntax follows the javadoc conventions, but have special
+JavaScript keywords. Documentation blocks within the code are embedded with:</P>
+<P><DIV CLASS="fragment"><PRE>
+/**
+&nbsp;*
+&nbsp;*&#47;</PRE></DIV></P>
+<P>First element of such a block has to be a meta tag used by the utility script <EM>jsd2ccd.pl</EM>. All meta tags are prepended by two @ characters. The meta tags are</P>
+<UL>
+	<LI>@@attrib <EM>type</EM></LI>
+	<LI>@@class</LI>
+	<LI>@@ctor</LI>
+	<LI>@@file</LI>
+	<LI>@@function [<EM>return type</EM>]</LI>
+	<LI>@@method [<EM>return type</EM>]</LI>
+	<LI>@@struct</LI>
+	<LI>@@var <EM>type</EM></LI>
+</UL>
+<P>Keep in mind that pseude C++ is produced. Therefore are the meta tags context sensitive. <EM>file</EM> can only be used at the
+first documentation block in a file. <EM>class</EM>, <EM>function</EM>,
+<EM>struct</EM>, and <EM>var</EM> are only valid for JavaScript functions at
+global scope. <EM>attrib</EM> and <EM>method</EM> have to be used for
+documentation blocks within a function representing a class. The <EM>ctor</EM>
+tag has to be used within a documentation block for a <EM>class</EM> or a
+<EM>struct</EM> dividing the documentation for the class and the constructor.</P>
+<P>The optional <EM>return type</EM> for <EM>method</EM> and <EM>function</EM>
+is just for documentation, since JavaScript is typeless. Although all
+variables are also typeless, for documentation purpose it is necessary to
+define the <EM>type</EM> of a <EM>var</EM>iable or a class
+<EM>attrib</EM>ute.</P>
+<P>See <EM><A TYPE="text/plain" HREF="../util/jsd2ccd.pl">jsd2ccd.pl</A></EM> for further
+information. You may also use after the JavaScript meta tags any Doxygen meta
+tags.</P>
+<H3>Rebuilding documentation</H3>
+<P>Like everyone I am not very keen on writing documentation. The best way I can
+live with it is the way javadoc supports this. Luckily there are some other
+tools out there that can be used for other languages, but most of these tools
+are only available for object-oriented languages. While JavaScript allows to
+write object.oriented code, most people are not aware of this. Therefore I
+have used a perl script developed by a friend of mine to transform JavaScript
+code that follow the coding conventions above in some kind of pseudo C++ that
+can be used to fool Doxygen, my favorite non-Java source code documentation
+tool.</P>
+<P>The script <EM>jsdoc</EM> to rebuild the documentation is located in the utils directory.
+It depends on a Unix environment including Perl. I use personally <A
+HREF="http://sources.redhat.com/">Cygwin</A> that
+comes nowadays with quite complete Unix packages. Additionally you have to install
+<A HREF="http://www.doxygen.org">Doxygen</A> and <A
+HREF="http://www.research.att.com/sw/tools/graphviz/">Graphviz</A> a
+cross-platform drawing toolkit from AT&amp;T. My script expects both tools
+either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
+mounted my Windows program directory to /opt using Cygwin functionality.</P>
+<P>My script will call the Perl script <EM>jsd2ccd.pl</EM> to generate pseudo C++. Then it calls
+Doxygen to generate the first version of the HTML documentation and the Unix
+man pages. A last sed processing is done to generate this <A CLASS="J">J</A><A
+CLASS="s">s</A><A CLASS="U">U</A>nit color style in the headers.</P>
+<P>BTW: The Perl script just extracts code and comments that follow a special
+scheme. Therefore it is no problem to use it also for JavaScript embedded into HTML.</P>
+<H2>Acknowledgements</H2>
+<P>JsUnit would not have been possible in this form without the work and ideas of
+a lot of other people:</P>
+<UL>
+	<LI>Achim Kraus, author of the Perl script converting the JavaScript code
+	into something Doxygen can understand</LI>
+	<LI>Dimitri van Heesch for his wonderful documentation tool <A
+	HREF="http://www.doxygen.org">Doxygen</A></LI>
+	<LI>People from <A HREF="http://sources.redhat.com/">Cygwin</A> for providing me with the power of the Linux tools in Windows</LI>
+	<LI>Erich Gamma and Kent Beck for developing with <A
+	HREF="http://www.junit.org">JUnit</A> some kind of
+	standard for unit testing</LI>
+	<LI>John Lakos, author of &quot;Large-Scale C++ Software Design&quot;;
+	after reading his book it was my first time writing unit tests</LI>
+</UL>
 \endhtmlonly
 */

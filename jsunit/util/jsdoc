@@ -23,13 +23,14 @@ else
 	HAS_DOT="YES"
 fi
 OUTPUT_DIRECTORY=.
+VERSION=`cat version.cfg`
 GENERATE_HTML=YES
 GENERATE_MANE=YES
 PERL_PATH=/usr/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
-export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH
+export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH VERSION
 
 CWD=$CWD
 cd `dirname $0`/..
@@ -45,10 +46,11 @@ doxygen util/Doxyfile
 mv doc/*.html .doc/
 cd .doc
 for html in *.html; do 
-	#sed -e 's,<[hH]1>JsU\(nit.*\)</[hH]1>,<H1><A class="J">J</A><A class="s">s</A><A class="U">U</A>\1</H1>,g' $html > ../doc/$html; 
-	sed -e 's,JsUnit\([ <]\),<A class="J">J</A><A class="s">s</A><A class="U">U</A>nit\1,g' $html > ../doc/$html; 
+	sed -e 's,<[hH]1>JsU\(nit.*\)</[hH]1>,<H1><A class="J">J</A><A class="s">s</A><A class="U">U</A>\1</H1>,g' $html > ../doc/$html; 
+	#sed -e 's,JsUnit\([ <]\),<A class="J">J</A><A class="s">s</A><A class="U">U</A>nit\1,g' $html > ../doc/$html; 
 done
 
-#rm -rf .lib .doc
+cd ..
+rm -rf .lib .doc
 cd $CWD
 

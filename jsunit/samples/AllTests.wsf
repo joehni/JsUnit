@@ -1,4 +1,4 @@
-<Job id="TestUnitTest">
+<Job id="JsUnitTest">
 <Script language="JScript" src="../lib/CallStack.js" />
 <Script language="JScript" src="../lib/JsUnit.js" />
 <Script language="JScript" src="../lib/JsUnitWSH.js" />

@@ -22,7 +22,7 @@ PROJECT_NAME           = JsUnit
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 1.0
+PROJECT_NUMBER         = $(VERSION)
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -322,7 +322,7 @@ EXCLUDE                =
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude 
 # certain files from those directories. 
 
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */CVS/*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or 
 # directories that contain example code fragments that are included (see 

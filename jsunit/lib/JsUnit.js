@@ -517,9 +517,10 @@ function TestCase( name )
  * @@class
  * A TestSuite is a composition of Tests.
  * It runs a collection of test cases.
- * IN depite of the JUnit implementation, this class has also functionality of
- * TestSetup of the extended JUnit framework. This is because of "recursion
- * limits" of JavaScript.
+ * In depite of the JUnit implementation, this class has also functionality of
+ * TestSetup of the extended JUnit framework. This is because of &quot;recursion
+ * limits&quot; of the JavaScript implementation of BroadVision's One-to-one Server
+ * (an OEM version of Netscape Enterprise Edition).
  * @see Test
  * @@ctor
  * Constructor.
