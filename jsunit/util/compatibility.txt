@@ -77,6 +77,7 @@ have listed all products that I am aware of.</P>
 <TR>
 	<TD>Internet Explorer 4.x</TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
+	<TD>JScript 3.0</TD>
 	<TD>no</TD>
 	<TD>no exceptions in this version</TD>
 </TR>
@@ -125,8 +126,9 @@ have listed all products that I am aware of.</P>
 <TR>
 	<TD><A HREF="http://www.konqueror.org">Konqueror 1.9.8</A></TD>
 	<TD><A HREF="http://www.kde.org">KDE.org</A></TD>
+	<TD>ECMA Script 3</TD>
 	<TD>no</TD>
-	<TD>will not except src attribute in script tag ??</TD>
+	<TD>no support of external script libraries ?</TD>
 </TR>
 <TR>
 	<TD>Mozilla 0.8x</TD>
