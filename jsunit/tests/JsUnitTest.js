@@ -1434,6 +1434,10 @@ function TextTestRunnerTest_testStart()
 	{
 		this.assertEquals( "Usage", ex.name );
 	}
+	this.mRunner.start();
+	this.assertEquals( "AllTests", this.mRunner.mName );
+	this.mRunner.start( "TextTestRunnerTest AssertionFailedErrorTest" );
+	this.assertEquals( "Start", this.mRunner.mName );
 	this.mRunner.start( "--classic TextTestRunnerTest" );
 	this.assertTrue( 
 		this.mRunner.mPrinter instanceof ClassicResultPrinter );

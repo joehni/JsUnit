@@ -424,6 +424,7 @@ if( !this.Error )
 			 * @type String
 			 */
 			this.message = msg || "";
+			return;
 		}
 		else
 		{

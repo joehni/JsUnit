@@ -1936,7 +1936,7 @@ function TextTestRunner_start( args )
 	else if( testCases.length > 1 )
 	{
 		suite = new TestSuite( "Start" );
-		for( var i = 0; i < testCases.length; ++i )
+		for( i = 0; i < testCases.length; ++i )
 			suite.addTestSuite( testCases[i] );
 	}
 	else
