@@ -79,8 +79,9 @@ x.prototype.anonymous = function()
  * This is class O.
  * \ctor
  * Nothing special.
+ * \tparam String s A string.
  */
-x.prototype.O = function () {}
+x.prototype.O = function (s) {}
 x.prototype.O.prototype = new y();
 /**
  * This is static member a.
@@ -100,7 +101,9 @@ x.fulfills( A, B );
  */
 function fn2(x)
 {
-	return "Hi!";
+	var str = '"Hi!"';
+	str = str.replace( /\"/g, "&quot" );
+	return str;
 }
 
 /**

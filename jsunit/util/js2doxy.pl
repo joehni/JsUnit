@@ -273,7 +273,7 @@ sub switch_scan_mode
 		{
 			$scan_mode = $S_LINE_COMMENT;
 		}
-		elsif( $token =~ /[\'\"]/ )
+		elsif( $token =~ /^[\'\"]$/ )
 		{
 			$scan_mode = $S_STRING;
 			$string_type = $&;
@@ -1231,15 +1231,15 @@ sub generate_function
 			if(   $ctor->{otype} != $OT_CONSTRUCTOR
 			   && $ctor->{otype} != $OT_UNKNOWN );
 		print( "\n".$ctor->{text} );
-		$rtype = $ctor->{rtype} if( exists $doc->{rtype} );
-		$argtypes = $ctor->{args} if( exists $doc->{args} );
+		$rtype = "void";
+		$argtypes = $ctor->{args} if( exists $ctor->{args} );
 	}
 	my $virtual = $otype == $OT_INTERFACE ? "virtual " : "";
 	print( $pref.$virtual."$rtype $npref$name(" );
 	for my $arg( @{$func->{args}} )
 	{
-		my $argtype = ( $argtypes and ( exists $doc->{args}{$arg->{name}} ))
-			? $doc->{args}{$arg->{name}} : "void";
+		my $argtype = ( $argtypes and ( exists $argtypes->{$arg->{name}} ))
+			? $argtypes->{$arg->{name}} : "void";
 		print( $delim."$argtype ", $arg->{name} );
 		$delim = ", ";
 	}
