@@ -750,6 +750,7 @@ function TestRunner()
 	this._super();
 
 	this.mSuites = new TestSuite();
+	this.mElapsedTime = 0;
 
 	/**
 	 * @@method
@@ -764,6 +765,13 @@ function TestRunner()
 	 * @return The number of test cases.
 	 */
 	function countTestCases() { return this.mSuites.countTestCases(); }
+	/**
+	 * @@method Number
+	 * The milliseconds needed to execute all registered tests of the runner.
+	 * This number is 0 as long as the test was never started.
+	 * @return The milliseconds.
+	 */
+	function countMilliSeconds() { return this.mElapsedTime; }
 	/**
 	 * @@method TestResult
 	 * Creates an instance of a TestResult.
@@ -786,7 +794,11 @@ function TestRunner()
 			result.addFailure( new Test( name ), ex );
 		}
 		else
+		{
+			this.mElapsedTime = new Date();
 			test.run( result );
+			this.mElapsedTime = new Date() - this.mElapsedTime;
+		}
 	}
 	/**
 	 * @@method
@@ -794,10 +806,16 @@ function TestRunner()
 	 * instance.
 	 * @param result The test result to fill.
 	 */
-	function runAll( result ) { this.mSuites.run( result ); }
+	function runAll( result ) 
+	{ 
+		this.mElapsedTime = new Date();
+		this.mSuites.run( result ); 
+		this.mElapsedTime = new Date() - this.mElapsedTime;
+	}
 
 	this.addSuite = addSuite;
 	this.countTestCases = countTestCases;
+	this.countMilliSeconds = countMilliSeconds;
 	this.createTestResult = createTestResult;
 	this.run = run;
 	this.runAll = runAll;
@@ -869,11 +887,17 @@ function TextTestRunner()
 	function printFooter( result )
 	{
 		if( result.wasSuccessful() == 0 )
+		{
+			var error = result.errorCount() != 1 ? " errors" : " error";
+			var failure = result.failureCount() != 1 ? " failures" : " failure";
 			this.writeLn( 
-				  result.errorCount() + " errors, " 
-				+ result.failureCount() + " failures." );
+				  result.errorCount() + error + ", " 
+				+ result.failureCount() + failure + "." );
+		}
 		else
-			this.writeLn( result.runCount() + " tests successful." );
+			this.writeLn( 
+				  result.runCount() + " tests successful in " 
+				+ ( this.mElapsedTime / 1000 ) + " seconds.");
 	}
 	/**
 	 * @@method Number

@@ -657,7 +657,7 @@ function TextTestRunnerTest( name )
 		this.mRunner.addSuite( new TestSuite( new MyTest()));
 		this.mRunner.start();
 		this.assertEquals( true, 
-			this.mRunner.mMsg.indexOf( "2 tests successful." ) > 0);
+			this.mRunner.mMsg.indexOf( "2 tests successful" ) > 0);
 		var test = new MyTest( "testMe" );
 		test.testMe = function() { throw new Object(); }
 		var suite = new TestSuite();
@@ -665,7 +665,7 @@ function TextTestRunnerTest( name )
 		this.mRunner.addSuite( suite );
 		this.mRunner.start();
 		this.assertEquals( true, 
-			this.mRunner.mMsg.indexOf( "1 errors, 0 failures." ) > 0);
+			this.mRunner.mMsg.indexOf( "1 error, 0 failures." ) > 0);
 	}
 	function testStart()
 	{
