@@ -31,9 +31,16 @@ license.
 /**
  * @@class
  * CallStack object.
- * The object collects the current call stack up to the JavaScript engine.
+ * The object is extremly system dependent, since its functionality is not
+ * within the range of ECMA 262, 3rd edition. It is supported by the
+ * JScript engine and was supported in Netscape Enterprise Server 2.x, but
+ * not in the newer version 4.x.
  * @@ctor
  * Constructor.
+ * The object collects the current call stack up to the JavaScript engine.
+ * Most engines will not support call stack information with a recursion.
+ * Therefore the collection is stopped when the stack has two identical
+ * functions in direct sequence.
  * @param depth Maximum recorded stack depth (defaults to 10).
  **/
 function CallStack(depth)
@@ -150,7 +157,7 @@ function Array_push()
 	return i;
 }
 
-// MS engine does not implement push and pop until JScript 6.0
+// MS engine does not implement Array.push and Array.pop until JScript 6.0
 if ( !Array.prototype.pop )
 	Array.prototype.pop = Array_pop;
 if ( !Array.prototype.push ) 

@@ -27,12 +27,32 @@ function CallStackTest( name )
 
 	function testToString()
 	{
-		var cs = new CallStack();
-		if( cs.toString() != "1: [CallStack information not supported]" )
+		function f0(d) { return new CallStack(d); }
+		function f1(d) { return f0(d); }
+		function f2(d) { return f1(d); }
+		function f3(d) { return f2(d); }
+		function f4(d) { return f3(d); }
+		function f5(d) { return f4(d); }
+		function f6(d) { return f5(d); }
+		function f7(d) { return f6(d); }
+		function f8(d) { return f7(d); }
+		function f9(d) { return f8(d); }
+		function f10(d) { return f9(d); }
+		function f11(d) { return f10(d); }
+		function f12(d) { return f11(d); }
+
+		var cs = f0().toString().replace(/\n/g, "|");
+		if( cs.indexOf( "not supported" ) == -1 )
 		{
-			var reg = /(.*)\n*/;
-			reg.exec( cs );
-			this.assertEquals( "1: testToString()", RegExp.$1);
+			cs = f12().toString().replace(/\n/g, "|");
+			this.assertTrue( cs.indexOf( "f10" ) == -1 );
+			this.assertTrue( cs.indexOf( "f9" ) > 0 );
+			cs = f12(13).toString().replace(/\n/g, "|");
+			this.assertTrue( cs.indexOf( "f12" ) > 0 );
+			cs = f4().toString().replace(/\n/g, "|");
+			this.assertTrue( cs.indexOf( "f5" ) == -1 );
+			this.assertTrue( cs.indexOf( "f4" ) >= 0 );
+			this.assertTrue( cs.indexOf( "testToString" ) >= 0 );
 		}
 	}
 
