@@ -58,6 +58,8 @@ AssertionFailedError.prototype.name = "AssertionFailedError";
 
 /**
  * A test can be run and collect its results.
+ * Despite JUnit 3.7 this is a class, not an interface. The object has always
+ * a name and supports methods to search for or return this name.
  * @ctor
  * A test has always a name.
  * @tparam String testName Name of the test.
@@ -77,7 +79,7 @@ function Test_countTestCases() { return 0; }
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String testName The name of the searched test.
- * @treturn String The instance itself of null.
+ * @treturn Test The test instance itself of null.
  */
 function Test_findTest( testName ) 
 { 
@@ -87,21 +89,36 @@ function Test_findTest( testName )
  * Retrieves the name of the test.
  * @treturn String The name of test cases.
  */
-function Test_name() { return this.mName; }
+function Test_getName() { return this.mName; }
 /**
- * Runs a test and collects its result in a TestResult instance.
- * @tparam TestResult result The test result to fill.
+ * Retrieves the name of the test.
+ * @treturn String The name of test cases.
  */
 function Test_run( result ) {}
+/**
+ * Sets the name of the test.
+ * @tparam String name The new name of test cases.
+ */
+function Test_setName( name ) { this.mName = name; }
 /**
  * Retrieve the test case as string.
  * @treturn String Returns the name of the test case.
  */
-function Test_toString() { return this.mName; }
+function Test_toString() 
+{ 
+	/*
+	var className = new String( this.constructor ); 
+	var regex = /function (\w+)/;
+	regex.exec( className );
+	className = new String( RegExp.$1 );
+	*/
+	return this.mName; // + "(" + className + ")"; 
+}
 Test.prototype.countTestCases = Test_countTestCases;
 Test.prototype.findTest = Test_findTest;
-Test.prototype.name = Test_name;
+Test.prototype.getName = Test_getName;
 Test.prototype.run = Test_run;
+Test.prototype.setName = Test_setName;
 Test.prototype.toString = Test_toString;
 
 
@@ -127,9 +144,10 @@ function TestFailure_failedTest() { return this.mTest; }
  * Retrieve the thrown exception.
  * @treturn Test Returns the thrown exception.
  */
-function TestFailure_thrownException() { return this.mException.toString(); }
+function TestFailure_thrownException() { return this.mException; }
 /**
  * Retrieve failure as string.
+ * Slightly enhanced message format compared to JsUnit 3.7.
  * @treturn String Returns the error message.
  */
 function TestFailure_toString() 
@@ -173,7 +191,7 @@ TestListener.prototype.startTest = function( test ) {}
 
 /**
  * A TestResult collects the results of executing a test case.
- * The test framework distinguishes between failures and errors.
+ * The test framework distinguishes between <i>failures</i> and <i>errors</i>.
  * A failure is anticipated and checked for with assertions. Errors are
  * unanticipated problems like a JavaScript run-time error.
  *
@@ -220,6 +238,17 @@ function TestResult_addListener( listener )
 	this.mListeners.push( listener ); 
 }
 /**
+ * Returns a copy of the listeners.
+ * @treturn Array A copy of the listeners.
+ */
+function TestResult_cloneListeners() 
+{ 
+	var listeners = new Array();
+	for( var i = 0; i < this.mListeners.length; ++i )
+		listeners[i] = this.mListeners[i];
+	return listeners;
+}
+/**
  * A test ended.
  * A test ended, inform the listeners.
  * @tparam Test test The ended test.
@@ -239,6 +268,21 @@ function TestResult_errorCount() { return this.mErrors.length; }
  * @type Number
  */
 function TestResult_failureCount() { return this.mFailures.length; }
+/**
+ * Remove a listener.
+ * @tparam TestListener listener The listener.
+ */
+function TestResult_removeListener( listener ) 
+{ 
+	for( var i = 0; i < this.mListeners.length; ++i )
+	{
+		if( this.mListeners[i] == listener )
+		{
+			this.mListeners.splice( i, 1 );
+			break;
+		}
+	}
+}
 /**
  * Runs a test case.
  * @tparam Test test The test case to run.
@@ -293,12 +337,14 @@ function TestResult_wasSuccessful()
 { 
 	return this.mErrors.length + this.mFailures.length == 0; 
 }
-TestResult.prototype.addListener = TestResult_addListener;
 TestResult.prototype.addError = TestResult_addError;
 TestResult.prototype.addFailure = TestResult_addFailure;
+TestResult.prototype.addListener = TestResult_addListener;
+TestResult.prototype.cloneListeners = TestResult_cloneListeners;
 TestResult.prototype.failureCount = TestResult_failureCount;
 TestResult.prototype.endTest = TestResult_endTest;
 TestResult.prototype.errorCount = TestResult_errorCount;
+TestResult.prototype.removeListener = TestResult_removeListener;
 TestResult.prototype.run = TestResult_run;
 TestResult.prototype.runCount = TestResult_runCount;
 TestResult.prototype.startTest = TestResult_startTest;
@@ -464,32 +510,32 @@ Assert.prototype.fail = Assert_fail;
  *
  * For each test implement a method which interacts
  * with the fixture. Verify the expected results with assertions specified
- * by calling <code>assert</code> with a bool or one of the other assert 
+ * by calling <code>assert</code> with a boolean or one of the other assert 
  * functions.
  *
  * Once the methods are defined you can run them. The framework supports
  * both a static and more generic way to run a test.
  * In the static way you override the runTest method and define the method to
  * be invoked.
- * The generic way uses member function pointer to implement 
- * <code>runTest</code>.
- * It uses a table of function names.
+ * The generic way uses the JavaScript functionality to enumerate a function's
+ * methods to implement <code>runTest</code>. In this case the name of the case
+ * has to correspond to the test method to be run.
  *
- * The tests to be run can be collected into a TestSuite. TestUnit provide
- * a <i>test runner</i> which can run a test suite and collect the results.
- * A test runner expects a function <code>TestCase_suite</code> as the entry
- * point to get a test to run.
+ * The tests to be run can be collected into a TestSuite. JsUnit provides
+ * several <i>test runners</i> which can run a test suite and collect the
+ * results.
+ * A test runner expects a function <code><i>FileName</i>Suite</code> as the 
+ * entry point to get a test to run.
  *
  * @see TestResult
  * @see TestSuite
  * @ctor
- * Constructor.
+ * Constructs a test case with the given name.
  * @tparam String name The name of the test case.
  */
 function TestCase( name )
 {
 	this.constructor.call( this, name );
-	Assert.constructor.call( this );
 }
 /**
  * Counts the number of test cases that will be run by this test.
@@ -497,10 +543,25 @@ function TestCase( name )
  */
 function TestCase_countTestCases() { return 1; }
 /**
- * Runs a test and collects its result in a TestResult instance.
- * @tparam TestResult result The test result to fill.
+ * Creates a default TestResult object.
+ * @treturn TestResult Returns the new object.
  */
-function TestCase_run( result ) { result.run( this ); }
+function TestCase_createResult() { return new TestResult(); }
+/**
+ * Runs a test and collects its result in a TestResult instance.
+ * The function can be called with or without argument. If no argument is
+ * given, the function will create a default result set and return it.
+ * Otherwise the return value can be omitted.
+ * @tparam TestResult result The test result to fill.
+ * @treturn TestResult Returns the test result.
+ */
+function TestCase_run( result )
+{
+	if( !result )
+		result = this.createResult();
+	result.run( this );
+	return result;
+}
 /**
  * \internal
  */
@@ -521,6 +582,7 @@ function TestCase_runBare()
 TestCase.prototype = new Test();
 TestCase.inherits( Assert );
 TestCase.prototype.countTestCases = TestCase_countTestCases;
+TestCase.prototype.createResult = TestCase_createResult;
 TestCase.prototype.run = TestCase_run;
 TestCase.prototype.runBare = TestCase_runBare;
 /**
@@ -823,7 +885,7 @@ function TextTestRunner_endTest( test )
 		this.mNest = this.mNest.substr( 1 );
 		this.writeLn( 
 			  "<" + this.mNest.replace( /-/g, "=" ) 
-			+ " Completed test suite \"" + test.name() + "\"" );
+			+ " Completed test suite \"" + test.getName() + "\"" );
 	}
 }
 /**
@@ -901,7 +963,7 @@ function TextTestRunner_startTest( test )
 	{
 		this.writeLn( 
 			  this.mNest.replace(/-/g, "=") + "> Starting test suite \"" 
-			+ test.name() + "\"" );
+			+ test.getName() + "\"" );
 		this.mNest += "-";
 	}
 }

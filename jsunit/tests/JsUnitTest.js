@@ -48,15 +48,21 @@ function TestTest_testFindTest()
 	this.assertEquals( "Test", test.findTest( "Test" ));
 	this.assertNull( test.findTest( "Any" ));
 }
-function TestTest_testName()
+function TestTest_testGetName()
 {
 	var test = new Test( "Test" );
-	this.assertEquals( "Test", test.name());
+	this.assertEquals( "Test", test.getName());
 }
 function TestTest_testRun()
 {
 	var test = new Test( "Test" );
 	this.assertUndefined( test.run());
+}
+function TestTest_testSetName()
+{
+	var test = new Test( "Non-Conforming Test Name" );
+	test.setName( "Test" );
+	this.assertEquals( "Test", test.getName());
 }
 function TestTest_testToString()
 {
@@ -66,8 +72,9 @@ function TestTest_testToString()
 TestTest.prototype = new TestCase();
 TestTest.prototype.testCountTestCases = TestTest_testCountTestCases;
 TestTest.prototype.testFindTest = TestTest_testFindTest;
-TestTest.prototype.testName = TestTest_testName;
+TestTest.prototype.testGetName = TestTest_testGetName;
 TestTest.prototype.testRun = TestTest_testRun;
+TestTest.prototype.testSetName = TestTest_testSetName;
 TestTest.prototype.testToString = TestTest_testToString;
 
 
@@ -142,6 +149,25 @@ function TestResultTest_testAddListener()
 	this.assertEquals( 0, this.mListener.mErrors );
 	this.assertEquals( 0, this.mListener.mFailures );
 }
+function TestResultTest_testCloneListeners()
+{
+	var result = new TestResult();
+	result.addListener( this.mListener );
+	var listeners = result.cloneListeners();
+	this.assertEquals( 1, listeners.length );
+	this.assertEquals( false, this.mListener.mStarted );
+	this.assertEquals( false, this.mListener.mEnded );
+	this.assertEquals( false, listeners[0].mStarted );
+	this.assertEquals( false, listeners[0].mEnded );
+	result.run( new TestResultTest( "testCloneListeners" ));
+	this.assertEquals( true, this.mListener.mStarted );
+	this.assertEquals( true, this.mListener.mEnded );
+	this.assertEquals( true, listeners[0].mStarted );
+	this.assertEquals( true, listeners[0].mEnded );
+	result.removeListener( this.mListener );
+	this.assertEquals( 1, listeners.length );
+	this.assertEquals( 0, result.cloneListeners().length );
+}
 function TestResultTest_testEndTest()
 {
 	var result = new TestResult();
@@ -160,6 +186,19 @@ function TestResultTest_testFailureCount()
 	var result = new TestResult();
 	result.addFailure( new Test( "Test" ), new Object());
 	this.assertEquals( 1, result.failureCount());
+}
+function TestResultTest_testRemoveListener()
+{
+	var result = new TestResult();
+	result.addListener( this.mListener );
+	result.run( new TestResultTest( "testRemoveError" ));
+	this.assertEquals( true, this.mListener.mStarted );
+	this.assertEquals( true, this.mListener.mEnded );
+	this.setUp();
+	result.removeListener( this.mListener );
+	result.run( new TestResultTest( "testRemoveError" ));
+	this.assertEquals( false, this.mListener.mStarted );
+	this.assertEquals( false, this.mListener.mEnded );
 }
 function TestResultTest_testRun()
 {
@@ -248,9 +287,11 @@ TestResultTest.prototype.setUp = TestResultTest_setUp;
 TestResultTest.prototype.testAddError = TestResultTest_testAddError;
 TestResultTest.prototype.testAddFailure = TestResultTest_testAddFailure;
 TestResultTest.prototype.testAddListener = TestResultTest_testAddListener;
+TestResultTest.prototype.testCloneListeners = TestResultTest_testCloneListeners;
 TestResultTest.prototype.testEndTest = TestResultTest_testEndTest;
 TestResultTest.prototype.testErrorCount = TestResultTest_testErrorCount;
 TestResultTest.prototype.testFailureCount = TestResultTest_testFailureCount;
+TestResultTest.prototype.testRemoveListener = TestResultTest_testRemoveListener;
 TestResultTest.prototype.testRun = TestResultTest_testRun;
 TestResultTest.prototype.testRunCount = TestResultTest_testRunCount;
 TestResultTest.prototype.testShouldStop = TestResultTest_testShouldStop;
@@ -421,24 +462,32 @@ function TestCaseTest_testCountTestCases()
 {
 	this.assertEquals( 1, this.mTestCase.countTestCases());
 }
+function TestCaseTest_testCreateResult()
+{
+	this.assertEquals( true, 
+		this.mTestCase.createResult() instanceof TestResult );
+}
 function TestCaseTest_testRun()
 {
 	var result = new TestResult();
-	this.assertUndefined( this.mTestCase.run( result ));
+	this.mTestCase.run( result );
+	this.assertEquals( true, result.wasSuccessful());
+	result = this.mTestCase.run();
 	this.assertEquals( true, result.wasSuccessful());
 }
 function TestCaseTest_testSetUp()
 {
-	this.assertUndefined( this.mTestCase.run( new TestResult()));
+	this.mTestCase.run( new TestResult());
 	this.assertEquals( true, this.mTestCase.mSetUp );
 }
 function TestCaseTest_testTearDown()
 {
-	this.assertUndefined( this.mTestCase.run( new TestResult()));
+	this.mTestCase.run( new TestResult());
 	this.assertEquals( true, this.mTestCase.mTearDown );
 }
 TestCaseTest.prototype = new TestCase();
 TestCaseTest.prototype.testCountTestCases = TestCaseTest_testCountTestCases;
+TestCaseTest.prototype.testCreateResult = TestCaseTest_testCreateResult;
 TestCaseTest.prototype.testRun = TestCaseTest_testRun;
 TestCaseTest.prototype.testSetUp = TestCaseTest_testSetUp;
 TestCaseTest.prototype.testTearDown = TestCaseTest_testTearDown;
@@ -453,19 +502,19 @@ function TestSuiteTest_testCtor()
 	var undef;
 	var suite = new TestSuite();
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertEquals( "all", suite.name());
+	this.assertEquals( "all", suite.getName());
 	suite = new TestSuite( null );
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertEquals( "all", suite.name());
+	this.assertEquals( "all", suite.getName());
 	suite = new TestSuite( undef );
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertEquals( "all", suite.name());
+	this.assertEquals( "all", suite.getName());
 	suite = new TestSuite( "name" );
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertEquals( "name", suite.name());
+	this.assertEquals( "name", suite.getName());
 	suite = new TestSuite( this.MyTest );
 	this.assertEquals( 2, suite.countTestCases());
-	this.assertEquals( "MyTest", suite.name());
+	this.assertEquals( "MyTest", suite.getName());
 }
 function TestSuiteTest_testAddTest()
 {
@@ -496,7 +545,7 @@ function TestSuiteTest_testFindTest()
 {
 	var suite = new TestSuite( this.MyTest );
 	var test = suite.findTest( "testMe" );
-	this.assertEquals( "testMe", test.name());
+	this.assertEquals( "testMe", test.getName());
 	this.assertNotNull( suite.findTest( "testMyself" ));
 	this.assertNotNull( suite.findTest( "MyTest" ));
 	this.assertNull( suite.findTest( "you" ));
