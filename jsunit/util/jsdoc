@@ -26,22 +26,29 @@ OUTPUT_DIRECTORY=.
 GENERATE_HTML=YES
 GENERATE_MANE=YES
 PERL_PATH=/usr/bin/perl
-if `uname -s | grep -i CYGWIN`; then
+if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
 export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH
 
 CWD=$CWD
 cd `dirname $0`/..
-rm -rf .lib/ > /dev/null 2>&1
-mkdir .lib
+rm -rf .lib/ .doc/ doc/ man/ > /dev/null 2>&1
+mkdir .lib .doc doc man
 cd lib
 for js in *.js; do 
 	../util/jsd2ccd.pl $js | sed -e 's/\(.*\)/\1/g' > ../.lib/$js
 done
 
+cd ..
+doxygen util/Doxyfile
+mv doc/*.html .doc/
+cd .doc
+for html in *.html; do 
+	#sed -e 's,<[hH]1>JsU\(nit.*\)</[hH]1>,<H1><A class="J">J</A><A class="s">s</A><A class="U">U</A>\1</H1>,g' $html > ../doc/$html; 
+	sed -e 's,JsUnit\([ <]\),<A class="J">J</A><A class="s">s</A><A class="U">U</A>nit\1,g' $html > ../doc/$html; 
+done
 
-
-#rm -rf ../.lib
+#rm -rf .lib .doc
 cd $CWD
 
