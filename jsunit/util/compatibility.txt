@@ -143,7 +143,7 @@ have listed all products that I am aware of.</P>
 <TR>
 	<TD>Navigator 4.x</TD>
 	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
-	<TD>JavaScript 1.4 ?</TD>
+	<TD>JavaScript 1.4</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
