@@ -21,50 +21,48 @@ license.
 */
 
 /**
- * @@file
+ * @file
  * Test unit classes for a Netscape Server environment.
  * This file contains extensions for the test unit framework especially for 
  * output of the results at a Netscape Server.
  */
 
 /**
- * @@class
  * Class for an application running test suites with a Netscape Server.
  */
 function NSServerTestRunner()
 {
-	this._super = TextTestRunner;
-	this._super();
-
-	/**
-	 * @@method
-	 * Write a header starting the application.
-	 */
-	function printHeader( result )
-	{
-		write( "<pre>" );
-		this._printHeader( result );
-	}
-	/**
-	 * @@method
-	 * Write a footer at application end with a summary of the tests.
-	 */
-	function printFooter( result )
-	{
-		this._printFooter( result );
-		write( "</pre>" );
-	}
-	/**
-	 * @@method
-     * Write a line of text to the console to the browser window.
-     * @param str The text to print on the line.
-     */
-	function writeLn( str ) { write( str + "\n" ); }
-
-	this._printHeader = this.printHeader;
-	this.printHeader = printHeader;
-	this._printFooter = this.printFooter;
-	this.printFooter = printFooter;
-	this.writeLn = writeLn;
+	this.constructor.call( this );
 }
+/**
+ * Write a header starting the application.
+ */
+function NSServerTestRunner_printHeader()
+{
+	write( "<pre>" );
+	this._printHeader( result );
+}
+/**
+ * Write a footer at application end with a summary of the tests.
+ * @tparam TestResult result The result of the test run.
+ */
+function NSServerTestRunner_printFooter( result )
+{
+	this._printFooter( result );
+	write( "</pre>" );
+}
+/**
+ * Write a line of text to the console to the browser window.
+ * @tparam String str The text to print on the line.
+ */
+function NSServerTestRunner_writeLn( str ) { write( str + "\n" ); }
+
+NSServerTestRunner.prototype = new TextTestRunner();
+NSServerTestRunner.prototype._printHeader = 
+	NSServerTestRunner.prototype.printHeader;
+NSServerTestRunner.prototype.printHeader = NSServerTestRunner_printHeader;
+NSServerTestRunner.prototype._printFooter = 
+	NSServerTestRunner.prototype.printFooter;
+NSServerTestRunner.prototype.printFooter = NSServerTestRunner_printFooter;
+NSServerTestRunner.prototype.writeLn = NSServerTestRunner_writeLn;
 

@@ -55,7 +55,7 @@ function HTMLTestRunner_printFooter( result )
 }
 /**
  * Write a line of text to the browser window.
- * @param str The text to print on the line.
+ * @tparam String str The text to print on the line.
  */
 function HTMLTestRunner_writeLn( str ) 
 { 
