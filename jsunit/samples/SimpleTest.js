@@ -48,10 +48,13 @@ function SimpleTest_testAsserts()
 	this.assertTrue( true );
 	this.assertFalse( false );
 	this.assertEquals( 1, this.fValue2 - this.fValue1 );
-	this.assertNotNull( this.fValue1 );
 	this.assertNull( null );
+	this.assertNotNull( this.fValue1 );
 	this.assertUndefined();
 	this.assertNotUndefined( true );
+	this.assertSame( this, this );
+	this.assertNotSame( 
+		new Number( this.fValue1 ), new Number( this.fValue1 ));
 }
 SimpleTest.prototype = new TestCase();
 SimpleTest.prototype.setUp = SimpleTest_setUp;

@@ -42,9 +42,9 @@ IMoney.prototype.addMoney = function ( money ) {};
  */
 IMoney.prototype.addMoneyBag = function ( moneyBag ) {};
 /**
- * Tests whether this money is null
+ * Tests whether this money is zero
  */
-IMoney.prototype.isNull = function () {};
+IMoney.prototype.isZero = function () {};
 /**
  * Multiplies a money by the given factor.
  */
@@ -57,4 +57,8 @@ IMoney.prototype.negate = function () {};
  * Subtracts a money from this money.
  */
 IMoney.prototype.subtract = function ( iMoney ) {};
+/**
+ * Append this to a MoneyBag m.
+ */
+IMoney.prototype.appendTo = function ( moneyBag ) {};
 

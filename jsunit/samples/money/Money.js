@@ -41,7 +41,7 @@ function Money_addMoney( money )
 {
 	if( money.currency() == this.currency())
 		return new Money( this.amount() + money.amount(), this.currency());
-	return new MoneyBag( this, money );
+	return new MoneyBag.prototype.create( this, money );
 }
 function Money_addMoneyBag( moneyBag ) 
 {
@@ -58,7 +58,7 @@ function Money_currency()
 function Money_equals( object ) 
 {
 	if( object instanceof MoneyBag )
-		return this.isNull() && object.isNull();
+		return this.isZero() && object.isZero();
 
 	if( object instanceof Money ) 
 	{
@@ -73,7 +73,7 @@ public Money_int hashCode()
 	return fCurrency.hashCode()+fAmount;
 } 
 */
-function Money_isNull() 
+function Money_isZero() 
 {
 	return this.amount() == 0;
 }
@@ -93,16 +93,22 @@ function Money_toString()
 {
 	return "[" + this.amount() + " " + this.currency() + "]";
 }
+function Money_appendTo( m ) 
+{
+	m.appendMoney( this );
+}
 Money.prototype.add = Money_add;
 Money.prototype.addMoney = Money_addMoney;
 Money.prototype.addMoneyBag = Money_addMoneyBag;
 Money.prototype.amount = Money_amount;
 Money.prototype.currency = Money_currency;
 Money.prototype.equals = Money_equals;
-Money.prototype.isNull = Money_isNull;
+Money.prototype.isZero = Money_isZero;
 Money.prototype.multiply = Money_multiply;
 Money.prototype.negate = Money_negate;
 Money.prototype.subtract = Money_subtract;
 Money.prototype.toString = Money_toString;
+Money.prototype.appendTo = Money_appendTo;
 Money.prototype.fAmount = 0.0;
 Money.fulfills( IMoney );
+
