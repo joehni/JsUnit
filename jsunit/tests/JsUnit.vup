@@ -85,25 +85,31 @@ SOURCE=..\lib\CallStack.js
 # End Source File
 # Begin Source File
 
-SOURCE=..\lib\JsUnit.js
-# PROP BASE Deployment_Mode 1
-# PROP Deployment_Mode 1
-# End Source File
-# Begin Source File
-
-SOURCE=..\lib\JsUnitBrowser.js
-# PROP BASE Deployment_Mode 1
-# PROP Deployment_Mode 1
-# End Source File
-# Begin Source File
-
 SOURCE=..\CallStackTest.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1
 # End Source File
 # Begin Source File
 
+SOURCE=..\lib\JsUnit.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=..\lib\JsUnitHTML.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
 SOURCE=.\JsUnitTest.html
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\JsUnitTest.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1
 # End Source File

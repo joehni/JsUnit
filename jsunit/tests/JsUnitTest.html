@@ -2,10 +2,11 @@
 <head>
 <title>JsUnit Test</title>
 <script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnit.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnitBrowser.js"></script>
+<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnitHTML.js"></script>
 
 <script language="JavaScript1.4" type="text/javascript" src="../lib/CallStack.js"></script>
 <script language="JavaScript1.4" type="text/javascript" src="CallStackTest.js"></script>
+<script language="JavaScript1.4" type="text/javascript" src="JsUnitTest.js"></script>
 
 <script language="JavaScript1.4" type="text/javascript">
 var JavaScript_1_4 = "false";
@@ -22,8 +23,17 @@ function main()
 		  "<p>Proof JavaScript 1.4 capability: " 
 		+ JavaScript_1_4 + "</p>");
 
-	var runner = new BrowserTestRunner();
+	var runner = new HTMLTestRunner();
 	runner.addSuite( new TestSuite( new CallStackTest()));
+	runner.addSuite( new TestSuite( new AssertionFailedErrorTest()));
+	runner.addSuite( new TestSuite( new TestTest()));
+	runner.addSuite( new TestSuite( new TestFailureTest()));
+	runner.addSuite( new TestSuite( new TestResultTest()));
+	runner.addSuite( new TestSuite( new AssertTest()));
+	runner.addSuite( new TestSuite( new TestCaseTest()));
+	runner.addSuite( new TestSuite( new TestSuiteTest()));
+	runner.addSuite( new TestSuite( new TestRunnerTest()));
+	runner.addSuite( new TestSuite( new TextTestRunnerTest()));
 	return runner.start( main.arguments );
 }
 </script>
