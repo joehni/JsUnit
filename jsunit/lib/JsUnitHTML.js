@@ -21,54 +21,53 @@ license.
 */
 
 /**
- * @@file
+ * @file
  * Test unit classes for HTML output.
  * This file contains extensions for the test unit framework especially for 
  * output of the results in HTML.
  */
 
 /**
- * @@class
  * Class for an application running test suites reporting in HTML.
  */
 function HTMLTestRunner()
 {
-	this._super = TextTestRunner;
-	this._super();
-
-	/**
-	 * @@method
-	 * Write a header starting the application.
-	 */
-	function printHeader( result )
-	{
-		document.writeln( "<pre>" );
-		this._printHeader( result );
-	}
-	/**
-	 * @@method
-	 * Write a footer at application end with a summary of the tests.
-	 */
-	function printFooter( result )
-	{
-		this._printFooter( result );
-		document.writeln( "</pre>" );
-	}
-	/**
-	 * @@method
-     * Write a line of text to the browser window.
-     * @param str The text to print on the line.
-     */
-	function writeLn( str ) 
-	{ 
-		str = str.toString();
-		document.writeln( str.replace( /</g, "&lt;" )); 
-	}
-
-	this._printHeader = this.printHeader;
-	this.printHeader = printHeader;
-	this._printFooter = this.printFooter;
-	this.printFooter = printFooter;
-	this.writeLn = writeLn;
+	this.constructor.call( this );
 }
+/**
+ * Write a header starting the application.
+ * The function will print a \<pre\> tag before calling the inherited function.
+ */
+function HTMLTestRunner_printHeader()
+{
+	document.writeln( "<pre>" );
+	this._printHeader();
+}
+/**
+ * Write a footer at application end with a summary of the tests.
+ * @tparam TestResult result The result of the test run.
+ * The function will print a \</pre\> tag before calling the inherited function.
+ */
+function HTMLTestRunner_printFooter( result )
+{
+	this._printFooter( result );
+	document.writeln( "</pre>" );
+}
+/**
+ * Write a line of text to the browser window.
+ * @param str The text to print on the line.
+ */
+function HTMLTestRunner_writeLn( str ) 
+{ 
+	str = str.toString();
+	document.writeln( str.replace( /</g, "&lt;" )); 
+}
+
+HTMLTestRunner.prototype = new TextTestRunner();
+HTMLTestRunner.prototype._printHeader = HTMLTestRunner.prototype.printHeader;
+HTMLTestRunner.prototype.printHeader = HTMLTestRunner_printHeader;
+HTMLTestRunner.prototype._printFooter = HTMLTestRunner.prototype.printFooter;
+HTMLTestRunner.prototype.printFooter = HTMLTestRunner_printFooter;
+HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
+
 

@@ -602,7 +602,7 @@ sub parse_prototype
 	$_ = shift;
 	    s/^($identifier)\.prototype$//
 	 or s/^($identifier)\.prototype\.(.*)$/\2/
-	 or syntax_err "No a valid identifier '$1' for prototype definition.";
+	 or syntax_err( "No a valid identifier '$1' for prototype definition." );
 	
 	$name = $1;
 	
@@ -647,8 +647,8 @@ sub parse_prototype
 		};
 	!/^$identifier$/ and $_ and do
 		{
-			warning "Unknown code construction '$_'"
-				." in prototype definition of '$name'.";
+			warning( "Unknown code construction '$_'"
+				." in prototype definition of '$name'." );
 			while(( $token = parse_code()) ne ";" ) {}
 			$last_doc = undef;
 			return;
@@ -759,16 +759,18 @@ sub parse_interface
 	local $_;
 
 	$_ = shift;
-	  	/^($identifier)\.fulfills$/
+	  	/^($identifier)\.(fulfills|inherits)$/
 	 or do
 		{
-			warning "Interface definition '$_' not supported.";
+			warning(( $2 eq "fulfills" ? "Interface" : "Inheritance")
+				." definition '$_' not supported." );
 			while(( $token = parse_code()) ne ";" ) {}
 			$last_doc = undef;
 			return;
 		};
 	
 	my $name = $1;
+	my $type = $2;
 	
 	if(( $token = parse_code()) ne "(" )
 	{
@@ -777,32 +779,38 @@ sub parse_interface
 	}
 	if( not exists $context->{objs}{$name} )
 	{
-		warning( "Prototype fulfillment, but no constructor of $name." );
+		warning( "Prototype fulfillment or inheritance, "
+			."but no constructor of $name." );
 		return;
 	}
 	my $fnContext = $context->{objs}{$name};
-	$fnContext->{fulfills} = {};
+	$fnContext->{$type} = {};
 	while(( $token = parse_code()) ne ")" )
 	{
 		next if( $token eq "," );
 		if( $token !~ /^$identifier$/ or $token =~ /^(?:new|delete)$/ )
 		{
-			warning( "Interface name expected, found '$token'." );
+			warning(( $type eq "fulfills" ? "Interface" : "Class" )
+				." name expected, found '$token'." );
 			return;
 		}
 		
 		my $scope = create_base( $context, $token );
 		$scope = $scope->{objs}{$token};
-		$scope->{otype} = $OT_INTERFACE if( $scope->{otype} == $OT_CLASS );
+		$scope->{otype} = $OT_INTERFACE 
+			if( $type eq "fulfills" && $scope->{otype} == $OT_CLASS );
 		syntax_err( "$token is a '"
 				.$object_type_names[$scope->{otype}]."', but not a class." )
-			if( $scope->{otype} != $OT_INTERFACE );
+			if(   ( $type eq "fulfills" && $scope->{otype} != $OT_INTERFACE )
+			   || ( $type eq "inherits" && $scope->{otype} != $OT_CLASS ));
 		print( STDERR "Database: '$token' is an interface.\n" ) 
-			if( $opt_debug & $DEB_DATABASE );
+			if( $type eq "fulfills" && ( $opt_debug & $DEB_DATABASE ));
 		
-		$fnContext->{fulfills}{$token} = $scope;
+		$fnContext->{$type}{$token} = $scope;
 		print( STDERR "Database: '$name' implements '$token'.\n" ) 
-			if( $opt_debug & $DEB_DATABASE );
+			if( $type eq "fulfills" && ( $opt_debug & $DEB_DATABASE ));
+		print( STDERR "Database: '$name' is inherited by '$token'.\n" ) 
+			if( $type eq "inherits" && ( $opt_debug & $DEB_DATABASE ));
 	}
 }
 
@@ -840,7 +848,8 @@ sub parse
 				/^var$/				&& parse_variable( $context );
 				/^function$/		&& parse_function( $context );
 				/^.+\.prototype/	&& parse_prototype( $context, $token );
-				/^.+\.fulfills$/	&& parse_interface( $context, $token );
+				/^.+\.(?:fulfills|inherits)$/	
+									&& parse_interface( $context, $token );
 			}
 		}
 		elsif( $scan_mode == $S_DOC_COMMENT )
@@ -1030,6 +1039,11 @@ sub generate_class
 	if( exists $context->{base} )
 	{
 		print( $delim, "public ", $context->{base}{name} );
+		$delim = ", ";
+	}
+	for my $class( keys %{$context->{inherits}} )
+	{
+		print( $delim, "public $class" );
 		$delim = ", ";
 	}
 	for my $if( keys %{$context->{fulfills}} )

@@ -135,7 +135,7 @@ function MoneyBag_int hashCode()
 	int hash= 0;
     for( Enumeration e= fMonies.elements(); e.hasMoreElements(); ) 
 	{
-        Object m= e.nextElement();
+        Object m = e.nextElement();
 		hash ^= m.hashCode();
 	}
     return hash;

@@ -22,9 +22,9 @@ license.
 -->
 
 <job id="JsUnitTest">
+<script language="JScript" src="../lib/JsUtil.js" />
 <script language="JScript" src="../lib/JsUnit.js" />
 <script language="JScript" src="../lib/JsUnitWSH.js" />
-<script language="JScript" src="../lib/JsUtil.js" />
 <script language="JScript" src="JsUtilTest.js" />
 <script language="JScript" src="JsUnitTest.js" />
 <script language="JScript">

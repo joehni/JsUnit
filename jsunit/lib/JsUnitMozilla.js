@@ -21,7 +21,7 @@ license.
 */
 
 /**
- * @@file
+ * @file
  * Test unit classes for the Mozilla.org's shell environments.
  * This file contains extensions for the test unit framework especially for
  * the Mozilla.org's implemenations of JavaScript shells. This is the shell
@@ -29,21 +29,19 @@ license.
  */
 
 /**
- * @@class
  * Class for an application running test suites with the Rhino and SpiderMonkey
  * shell.
  */
 function MozillaTestRunner()
 {
-	this._super = TextTestRunner;
-	this._super();
-
-	/**
-	 * @@method
-     * Write a line of text to the shell.
-     * @param str The text to print on the line.
-     */
-	function writeLn( str ) { print( str ); }
-
-	this.writeLn = writeLn;
+	this.constructor.call( this );
 }
+/**
+ * Write a line of text to the shell.
+ * @tparam String str The text to print on the line.
+ */
+function MozillaTestRunner_writeLn( str ) { print( str ); }
+
+MozillaTestRunner.prototype = new TextTestRunner();
+MozillaTestRunner.prototype.writeLn = MozillaTestRunner_writeLn;
+

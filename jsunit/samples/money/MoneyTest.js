@@ -90,7 +90,8 @@ function MoneyTest_testMoneyBagEquals()
 	this.assertFalse( this.f12CHF.equals( this.fMB1 ));
 	this.assertFalse( this.fMB1.equals( this.fMB2 ));
 }
-/* function MoneyTest_testMoneyBagHash()
+/* 
+function MoneyTest_testMoneyBagHash()
 {
 	var equal = new MoneyBag( new Money( 12, "CHF" ), new Money( 7, "USD" ));
 	this.assertEquals( this.fMB1.hashCode(), equal.hashCode());

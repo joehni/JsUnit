@@ -26,56 +26,35 @@ license.
 function IMoney() 
 {
 }
+
 /**
  * Adds a money to this money.
  */
-function IMoney_add( money ) 
-{ 
-}
+IMoney.prototype.add = function ( money ) {};
 /**
  * Adds a simple Money to this money. This is a helper method for
  * implementing double dispatch
  */
-function IMoney_addMoney( money ) 
-{
-}
+IMoney.prototype.addMoney = function ( money ) {};
 /**
  * Adds a MoneyBag to this money. This is a helper method for
  * implementing double dispatch
  */
-function IMoney_addMoneyBag( moneyBag ) 
-{
-}
+IMoney.prototype.addMoneyBag = function ( moneyBag ) {};
 /**
  * Tests whether this money is null
  */
-function IMoney_isNull() 
-{
-}
+IMoney.prototype.isNull = function () {};
 /**
  * Multiplies a money by the given factor.
  */
-function IMoney_multiply( factor ) 
-{
-}
+IMoney.prototype.multiply = function ( factor ) {};
 /**
  * Negates this money.
  */
-function IMoney_negate() 
-{
-}
+IMoney.prototype.negate = function () {};
 /**
  * Subtracts a money from this money.
  */
-function IMoney_subtract( iMoney ) 
-{
-}
-
-IMoney.prototype.add = IMoney_add;
-IMoney.prototype.addMoney = IMoney_addMoney;
-IMoney.prototype.addMoneyBag = IMoney_addMoneyBag;
-IMoney.prototype.isNull = IMoney_isNull;
-IMoney.prototype.multiply = IMoney_multiply;
-IMoney.prototype.negate = IMoney_negate;
-IMoney.prototype.subtract = IMoney_subtract;
+IMoney.prototype.subtract = function ( iMoney ) {};
 

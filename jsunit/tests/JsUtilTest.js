@@ -202,27 +202,19 @@ function FunctionTest( name )
 }
 function FunctionTest_testFulfills()
 {
-	function MyInterface1()
-	{
-	}
+	function MyInterface1()	{}
 	MyInterface1.prototype = new Function();
 	MyInterface1.prototype.if1 = function() {}
 
-	function MyInterface2()
-	{
-	}
+	function MyInterface2()	{}
 	MyInterface2.prototype = new Function();
 	MyInterface2.prototype.if2 = function() {}
 	
-	function MyInterface2Ex()
-	{
-	}
+	function MyInterface2Ex() {}
 	MyInterface2Ex.prototype = new MyInterface2();
 	MyInterface2Ex.prototype.if3 = function() {}
 	
-	function F()
-	{
-	}
+	function F() {}
 	F.prototype.m1 = "member";
 	
 	this.assertNotNull( F.fulfills );
@@ -240,16 +232,43 @@ function FunctionTest_testFulfills()
 	F.fulfills( MyInterface1 ); 
 	F.fulfills( MyInterface1, MyInterface2 ); 
 	
-	function G()
-	{
-	}
+	function G() {}
 	G.prototype = new F();
 	G.prototype.if3 = function() {}
 
 	G.fulfills( MyInterface1, MyInterface2Ex ); 
 }
+function FunctionTest_testInherits()
+{
+	function F() {}
+	F.prototype.m1 = "member";
+	
+	function Class1() {}
+	Class1.prototype.c1m = "Class 1 member"
+	
+	function Class2() {}
+	Class2.prototype.c2m = "Class 2 member"
+	
+	function Class3() {}
+	Class3.prototype.c3m = "Class 3 member"
+	
+	this.assertNotNull( F.inherits );
+	var err = null;
+	try { F.inherits( 1 ); } catch( ex ) { err = ex; }
+	this.assertEquals( "TypeError", err.name );
+	try { F.inherits( new F()); } catch( ex ) { err = ex; }
+	this.assertEquals( "TypeError", err.name );
+	F.inherits( Class1 );
+	this.assertNotUndefined( F.prototype.c1m );
+	F.inherits( Class2, Class3 );
+	this.assertNotUndefined( F.prototype.c2m );
+	this.assertNotUndefined( F.prototype.c3m );
+	try { F.inherits( Class1 ); } catch( ex ) { err = ex; }
+	this.assertEquals( "Error", err.name );
+}
 FunctionTest.prototype = new TestCase();
 FunctionTest.prototype.testFulfills = FunctionTest_testFulfills;
+FunctionTest.prototype.testInherits = FunctionTest_testInherits;
 
 
 function JsUtilTestSuite()

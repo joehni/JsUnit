@@ -27,7 +27,7 @@ function AssertionFailedErrorTest( name )
 function AssertionFailedErrorTest_testToString()
 {
 	var afe = new AssertionFailedError( "The Message", null );
-	this.assertEquals( "The Message", afe );
+	this.assertEquals( "AssertionFailedError: The Message", afe );
 }
 AssertionFailedErrorTest.prototype = new TestCase();
 AssertionFailedErrorTest.prototype.testToString = AssertionFailedErrorTest_testToString;
@@ -88,7 +88,8 @@ function TestFailureTest_testThrownException()
 function TestFailureTest_testToString()
 {
 	var ft = new TestFailure( this.mTest, this.mException );
-	this.assertEquals( "Test testFunction failed: Message", ft );
+	this.assertEquals( 
+		"Test testFunction failed: AssertionFailedError: Message", ft );
 }
 TestFailureTest.prototype = new TestCase();
 TestFailureTest.prototype.mException = new AssertionFailedError( "Message", null );
@@ -446,27 +447,17 @@ TestCaseTest.prototype.testTearDown = TestCaseTest_testTearDown;
 function TestSuiteTest( name )
 {
 	this.constructor.call( this, name );
-	
-	function MyTestOldStyle( name )
-	{
-		this._super = TestCase;
-		this._super( name );
-
-		this.testMe = function() { }
-		this.testMyself = function() { }
-	}
-	this.MyTestOldStyle = MyTestOldStyle;
 }
 function TestSuiteTest_testCtor()
 {
-	var undefined;
+	var undef;
 	var suite = new TestSuite();
 	this.assertEquals( 0, suite.countTestCases());
 	this.assertEquals( "all", suite.name());
 	suite = new TestSuite( null );
 	this.assertEquals( 0, suite.countTestCases());
 	this.assertEquals( "all", suite.name());
-	suite = new TestSuite( undefined );
+	suite = new TestSuite( undef );
 	this.assertEquals( 0, suite.countTestCases());
 	this.assertEquals( "all", suite.name());
 	suite = new TestSuite( "name" );
@@ -475,9 +466,6 @@ function TestSuiteTest_testCtor()
 	suite = new TestSuite( this.MyTest );
 	this.assertEquals( 2, suite.countTestCases());
 	this.assertEquals( "MyTest", suite.name());
-	suite = new TestSuite( new this.MyTestOldStyle());
-	this.assertEquals( 2, suite.countTestCases());
-	this.assertEquals( "MyTestOldStyle", suite.name());
 }
 function TestSuiteTest_testAddTest()
 {

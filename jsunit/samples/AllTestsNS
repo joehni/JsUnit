@@ -21,7 +21,7 @@
 # license.
 
 jsac -v $* -o AllTestsNS.web AllTestsNS.html \
-	../lib/JsUnit.js ../lib/JsUnitNSServer.js ../lib/JsUtil.js \
+	../lib/JsUtil.js ../lib/JsUnit.js ../lib/JsUnitNSServer.js \
 	ArrayTest.js \
 	money/IMoney.js money/Money.js money/MoneyBag.js money/MoneyTest.js \
 	SimpleTest.js
