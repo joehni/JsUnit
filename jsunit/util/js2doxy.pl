@@ -32,8 +32,13 @@ pod2usage( 1 ) if( $opt_usage or ( $#ARGV < 0 && -t ));
 
 sub syntax_err
 {
-	print STDERR $., ": Syntax: ", @_;
+	print STDERR "Line ", $., ": Syntax: ", @_, "\n";
 	exit( 3 );
+}
+
+sub warning
+{
+	print STDERR "Line ", $., ": Warning: ", @_, "\n";
 }
 
 
@@ -174,12 +179,12 @@ sub switch_scan_mode
 use vars qw( $last_token );
 $last_token = "";
 
-use vars qw( $T_FILE $T_FUNCTION $T_CLASS $T_MEMBERFUNC $T_MEMBERVAR );
-$T_FILE = 0;
-$T_FUNCTION = 1;
-$T_CLASS = 2;
-$T_MEMBERFUNC = 3;
-$T_MEMBERVAR = 4;
+use vars qw( $OT_FILE $OT_FUNCTION $OT_CLASS $OT_MEMBERFUNC $OT_MEMBERVAR );
+$OT_FILE = 0;
+$OT_FUNCTION = 1;
+$OT_CLASS = 2;
+$OT_MEMBERFUNC = 3;
+$OT_MEMBERVAR = 4;
 
 use subs qw( parse next_parser_token );
 
@@ -258,9 +263,7 @@ sub next_parser_token
 			last;
 		}
 	}
-
 	printf STDERR ( "Parser: '%s'\n", $token ) if $opt_debug & $DEB_PARSER;
-
 	$token;
 }
 
@@ -278,24 +281,24 @@ sub parse_function
 	}
 	else
 	{
-		if( not exists $$context->{anonymous} )
-		{
-			$$context->{anonymous} = 0;
-		}
-		$name = "?".$$context->{anonymous};
-		++$$context->{anonymous};
+		$$context->{anonymous} = 0 if not exists $$context->{anonymous};
+		$name = "?".($$context->{anonymous}++);
 	}
 
-	$$context->{objs}{$name} = { type => $T_FUNCTION, scope => $$context };
+	$$context->{objs}{$name} = 
+	{ 
+		otype => $OT_FUNCTION, 
+		scope => $$context 
+	};
 	my $fnContext = $$context->{objs}{$name};
 
 	syntax_err "'(' expected." if( $token ne "(" );
 	$fnContext->{args} = [];
 	while(( $token = parse_code ) ne ")" )
 	{
-		next if( $token =~ /,/ );
+		next if $token eq ",";
 		syntax_err "Function parameter name expected." 
-			if( $token !~ /$identifier/ );
+			if $token !~ /$identifier/;
 		push @{$fnContext->{args}}, { name => $token };
 	}
 
@@ -316,7 +319,12 @@ sub parse_prototype
 	$_ = shift;
 		/^($identifier)\.prototype\.($identifier)$/
 	||	/^($identifier)\.prototype$/
-	||  syntax_err "prototype definition '".$_."' not supported.";
+	||  do 
+		{
+			warning "prototype definition '".$_."' not supported.";
+			while(( $token = parse_code ) ne ";" ) {}
+			return;
+		};
 	
 	$name = $1;
 	$member = $2;
@@ -325,9 +333,9 @@ sub parse_prototype
 	syntax_err "Prototype assignment, but no constructor of $name."
 		if not exists $$context->{objs}{$name};
 	my $fnContext = $$context->{objs}{$name};
-	$fnContext->{type} = $T_CLASS if $fnContext->{type} == $T_FUNCTION;
+	$fnContext->{otype} = $OT_CLASS if $fnContext->{otype} == $OT_FUNCTION;
 	syntax_err "Prototype assignment to invalid type."
-		if $fnContext->{type} != $T_CLASS;
+		if $fnContext->{otype} != $OT_CLASS;
 			
 	if( $member eq "" )
 	{
@@ -341,7 +349,11 @@ sub parse_prototype
 			while defined $$scope && not exists $$scope->{objs}{$name};
 		if( not defined $$scope )
 		{
-			$$context->{objs}{$name} = { type => $T_CLASS, scope => $$context };
+			$$context->{objs}{$name} = 
+			{ 
+				otype => $OT_CLASS, 
+				scope => $$context 
+			};
 			$scope = $context;
 		}
 		$fnContext->{base} = $$scope->{objs}{$name};
@@ -357,14 +369,17 @@ sub parse_prototype
 			if( not defined $$scope )
 			{
 				$$context->{objs}{$token} = 
-					{ type => $T_MEMBERVAR, scope => $$context };
+				{ 
+					otype => $OT_MEMBERVAR, 
+					scope => $$context 
+				};
 				$scope = $context;
 			}
 			$scope = $$context->{objs}{$token};
-			$scope->{type} = $T_MEMBERFUNC if $scope->{type} == $T_FUNCTION;
+			$scope->{otype} = $OT_MEMBERFUNC if $scope->{otype} == $OT_FUNCTION;
 			syntax_err $token, " is not a member." 
-				if    $scope->{type} != $T_MEMBERFUNC 
-				   && $scope->{type} != $T_MEMBERVAR;
+				if    $scope->{otype} != $OT_MEMBERFUNC 
+				   && $scope->{otype} != $OT_MEMBERVAR;
 			$fnContext->{members}{$member} = $scope;
 			syntax_err "';' expected." if parse_code ne ";";
 		}
@@ -372,7 +387,7 @@ sub parse_prototype
 		{
 			syntax_err "'".$member."' already defined."
 				if exists $fnContext->{members}{$member};
-			$fnContext->{members}{$member} = { type => $T_MEMBERVAR };
+			$fnContext->{members}{$member} = { otype => $OT_MEMBERVAR };
 			while(( $token = parse_code ) ne ";" ) {}
 		}
 	}
@@ -385,7 +400,12 @@ sub parse_interface
 
 	$_ = shift;
 	  	/^($identifier)\.fulfills$/
-	||  syntax_err "interface definition '".$_."' not supported.";
+	||  do
+		{
+			warning "interface definition '".$_."' not supported.";
+			while(( $token = parse_code ) ne ";" ) {}
+			return;
+		};
 	
 	my $name = $1;
 	
@@ -405,11 +425,14 @@ sub parse_interface
 		if( not defined $$scope )
 		{
 			$$context->{objs}{$token} = 
-				{ type => $T_CLASS, scope => $$context };
+			{ 
+				otype => $OT_CLASS, 
+				scope => $$context 
+			};
 			$scope = $context;
 		}
 		$scope = $$context->{objs}{$token};
-		syntax_err $token, " is not a class." if $scope->{type} != $T_CLASS;
+		syntax_err $token, " is not a class." if $scope->{otype} != $OT_CLASS;
 		
 		$fnContext->{fulfills}{$token} = $scope;
 	}
@@ -448,32 +471,126 @@ sub dump_context
 	my $context = shift;
 	my $prefix = shift;
 
-	if( ref $$context eq "HASH" )
+	if( ref $context eq "HASH" )
 	{
-		foreach my $key ( keys %$$context )
+		foreach my $key ( keys %$context )
 		{
-			my $value = $$context->{$key};
+			my $value = $context->{$key};
 			print $prefix, $key, ": ", $value, "\n";
 			next if $key =~ /(?:scope|base)/;
 			for( ref $value )
 			{
-				/HASH/ 	&& dump_context( \$value, $prefix.$key."." );
-				/ARRAY/ && dump_context( \$value, $prefix.$key );
+				/HASH/ 	&& dump_context( $value, $prefix.$key."." );
+				/ARRAY/ && dump_context( $value, $prefix.$key );
 			}
 		}
 	}
-	elsif( ref $$context eq "ARRAY" )
+	elsif( ref $context eq "ARRAY" )
 	{
-		foreach my $i ( 0 .. $#$$context )
+		foreach my $i ( 0 .. $#$context )
 		{
-			my $value = $$context->[$i];
+			my $value = $context->[$i];
 			print $prefix, "[", $i, "]: ", $value, "\n";
 			for( ref $value )
 			{
-				/HASH/	&& dump_context( \$value, $prefix."[".$i."]." );
-				/ARRAY/	&& dump_context( \$value, $prefix."[".$i."]" );
+				/HASH/	&& dump_context( $value, $prefix."[".$i."]." );
+				/ARRAY/	&& dump_context( $value, $prefix."[".$i."]" );
 			}
 		}
+	}
+}
+
+############ output #####################
+
+my $indent = "\t";
+
+sub generate_forward_classes
+{
+	my $objects = shift;
+	my $pref = shift;
+	for ( keys %$objects )
+	{
+		print $pref, "class ", $_, ";\n" if $objects->{$_}{otype} == $OT_CLASS;
+	}
+}
+
+sub generate_function
+{
+	my $func = shift;
+	my $name = shift;
+	my $pref = shift;
+	my $delim = "";
+	
+	return if $name !~ /$identifier/;
+	print $pref, "void ", $name, "(";
+	for my $arg (@{$func->{args}})
+	{
+		print $delim, "void ", $arg->{name};
+		$delim = ",";
+	}
+	print ");\n";
+}
+
+sub generate_variable
+{
+	my $var = shift;
+	my $name = shift;
+	my $pref = shift;
+	
+	print $pref, "void ", $name, ";\n";
+}
+
+sub generate_class
+{
+	my $context = shift;
+	my $name = shift;
+	my $pref = shift;
+	my $delim = "";
+			
+	print $pref, "class ", $name;
+	print " : " if exists $context->{fulfills};
+	for my $if (keys %{$context->{fulfills}})
+	{
+		print $delim, "public ", $if;
+		$delim = ", ";
+	}
+	print "\n", $pref, "{\n", $pref, "public:\n";
+	generate_forward_classes $context->{objs}, $pref.$indent;
+	generate_function $context, $name, $pref.$indent;
+	for ( keys %{$context->{members}} )
+	{
+		generate_function $context, $_, $pref.$indent
+			if $context->{members}{$_}{otype} == $OT_MEMBERFUNC;
+		generate_variable $context, $_, $pref.$indent
+			if $context->{members}{$_}{otype} == $OT_MEMBERVAR;
+	}
+	print $pref, "};\n"
+}
+
+sub generate
+{
+	sub generate;
+
+	my $context = shift;
+	my $name = shift;
+	my $pref = shift;
+	
+	for( $context->{otype} )
+	{
+		/(?:$OT_FILE)/ && do
+			{
+				generate_forward_classes $context->{objs}, "";
+				generate $context->{objs}{$_}, $_, ""
+					for ( keys %{$context->{objs}} );
+			};
+		/(?:$OT_FUNCTION)/ && do
+			{
+				generate_function $context, $name, $pref;
+			};
+		/(?:$OT_CLASS)/ && do
+			{
+				generate_class $context, $name, $pref;
+			};
 	}
 }
 
@@ -483,12 +600,13 @@ use vars qw( $context );
 
 $context = 
 { 
-	type => $T_FILE,
+	otype => $OT_FILE,
 	scope => undef
 };
 
 parse \$context;
-dump_context \$context, "Main: ";
+dump_context $context, "Main: ";
+generate $context;
 
 
 ############ Manual #####################
