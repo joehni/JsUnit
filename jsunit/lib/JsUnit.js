@@ -493,8 +493,11 @@ function Assert_assertEquals( msg, expected, actual )
 		msg = null;
 	}
 	if( expected != actual )
-		this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
-			, new CallStack(), msg );
+		if( typeof( expected ) == "string" && typeof( actual ) == "string" )
+			throw new ComparisonFailure( msg, expected, actual, new CallStack());
+		else
+			this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+				, new CallStack(), msg );
 }
 /**
  * Asserts that a condition is false.

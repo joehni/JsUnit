@@ -374,6 +374,16 @@ function AssertTest_testAssertEquals()
 		this.assertTrue( ex instanceof AssertionFailedError );
 		this.assertTrue( ex.toString().indexOf( "0 is not 1" ) > 0 );
 	}
+	try
+	{
+		this.mAssert.assertEquals( "This is 1", "This is 0" );
+		this.fail( "'assertEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof ComparisonFailure );
+		this.assertTrue( ex.toString().indexOf( "...1>" ) > 0 );
+	}
 }
 function AssertTest_testAssertFalse()
 {
