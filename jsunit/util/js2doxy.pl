@@ -189,7 +189,7 @@ sub next_token
 	{
 		$cur_line = <>;
 		$cur_line =~ s/\r//g; # Bug of Perl 5.6.1 for Cygwin on text mounts
-		return if eof;
+		return if(( not $cur_line ) and eof );
 	}
 	
 	if( $cur_line ne "" )
