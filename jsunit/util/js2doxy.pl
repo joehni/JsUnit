@@ -49,10 +49,6 @@ $DEB_SCANNER = 16;
 	$DEB_PARSER => "Parser",
 	$DEB_SCANNER => "Scanner"
 );
-#$debug_names{$DEB_DATABASE} = "Database";
-#$debug_names{$DEB_DETECTOR} = "Detector";
-#$debug_names{$DEB_PARSER} = "Parser";
-#$debug_names{$DEB_SCANNER} = "Scanner";
 
 
 use Getopt::Long;
@@ -301,8 +297,9 @@ use vars qw(
 	FUNCTION 
 	CLASS 
 	INTERFACE 
-	MEMBER_FUNCTION 
 	MEMBER_VARIABLE 
+	STATIC_MEMBER_VARIABLE 
+	MEMBER_FUNCTION 
 	CONSTRUCTOR
 );
 $object_type_names[-1] = "UNDEF";
@@ -796,9 +793,11 @@ sub create_base
 sub create_static_var
 {
 	my ( $context, $member ) = @_;
-	syntax_err( "'$member' already defined." )
+	syntax_err( "Static '$member' already defined as type '"
+			.$object_type_names[$context->{members}{$member}{otype}]."'." )
 		if(   exists $context->{members}{$member}
-	   	   &&    $context->{members}{$member}{otype} != $OT_MEMBERVAR );
+	   	   && $context->{members}{$member}{otype} != $OT_MEMBERVAR
+	   	   && $context->{members}{$member}{otype} != $OT_MEMBERSVAR );
 	$context->{members}{$member} = { otype => $OT_MEMBERSVAR };
 	debug_msg( $DEB_DATABASE, "Added static member variable '$member'." );
 }

@@ -65,19 +65,16 @@ function x(a,b)
  * We can describe x also with a long text.
  */
 x.prototype = new y();
-/**
- * This is static member a.
- * \type long
- * Long description of a.
- */
-x.prototype.a = 1;
-x.prototype.xxx = 0;
 x.prototype.fn = B.prototype.memfun;
 /**
  * Member function.
  * \type "char *"
  */
-x.prototype.anonymous = function() { return "Hello"; }
+x.prototype.anonymous = function()
+{ 
+	x.prototype.a = 2; 
+	return "Hello"; 
+}
 /**
  * This is class O.
  * \ctor
@@ -85,6 +82,13 @@ x.prototype.anonymous = function() { return "Hello"; }
  */
 x.prototype.O = function () {}
 x.prototype.O.prototype = new y();
+/**
+ * This is static member a.
+ * \type long
+ * Long description of a.
+ */
+x.prototype.a = 1;
+x.prototype.xxx = 0;
 x.fulfills( A, B );
 
 /**
