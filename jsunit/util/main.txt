@@ -46,6 +46,7 @@ to allow automated tests as long as the environment support this scenario.</P>
 	<UL>
 		<LI>\ref new</LI>
 		<LI>\ref change</LI>
+		<LI>\ref progress</LI>
 		<LI>\ref bug</LI>
 	</UL></LI>
 	<LI>\ref todo</LI>
@@ -71,16 +72,8 @@ to allow automated tests as long as the environment support this scenario.</P>
 \section downloads Downloads
 <P>
 \htmlonly
-<SCRIPT language="JavaScript"><!--
-// Reference BerliOS if viewed in the web.
-if( document.URL.indexOf( "http:", 0 ) >= 0 )
-{
-	var img = new Image();
-	img.src = "http://developer.berlios.de/sflogo.php?group_id=158&type=1";
-}
---></SCRIPT>
-<A href="http://developer.berlios.de/projects/jsunit">
-<IMG src="berlios.bmp" align="left" width="118" height="52" border="0" alt="BerliOS Logo">
+<A href="http://developer.berlios.de">
+<IMG name="BerliOS" src="javascript:document.BerliOS.src=img.src" align="left" width="118" height="52" border="0" alt="BerliOS Logo">
 </A>
 \endhtmlonly
 </P>

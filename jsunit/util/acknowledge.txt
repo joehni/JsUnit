@@ -25,6 +25,8 @@ license.
 <P>JsUnit would not have been possible in this form without the work and ideas
 of a lot of other people:</P>
 <UL>
+	<LI>Edward Hieatt, author of another JsUnit framework writing
+	a great GUI</LI>
 	<LI>Achim Kraus, author of the Perl script converting the JavaScript code
 	into something Doxygen can understand</LI>
 	<LI>Dimitri van Heesch for his wonderful documentation tool <A
