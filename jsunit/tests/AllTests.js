@@ -51,6 +51,13 @@ if( !this.JsUtil )
 if( !JsUtil.prototype.isBrowser )
 {
 	var writer = JsUtil.prototype.getSystemWriter();
+	/*
+	o = this.Environment;
+	print( "Object: " + o );
+	for( var i in o )
+		print( " i is " + i );
+	quit(0);
+	*/
 	writer.println( "\nJavaScript compatibility:" );
 	writer.println( "\thas exceptions: " + hasExceptions );
 	writer.println( "\texceptions working: " + exceptionsWorking );

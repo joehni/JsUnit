@@ -167,12 +167,28 @@ have listed all products that I am aware of.</p>
 	<td>&nbsp;</td>
 </tr>
 <tr>
+	<td><a href="http://www.digitalmars.com/dscript/">DMDScript</a></td>
+	<td><a href="http://www.digitalmars.com/">Digital Mars</a></td>
+	<td>ECMA-262, v3</td>
+	<td>own</td>
+	<td>?</td>
+	<td>?</td>
+</tr>
+<tr>
 	<td>Enterprise Server 3.x</td>
 	<td><a href="http://www.iplanet.com">Netscape</a></td>
 	<td>JavaScript 1.2</td>
 	<td>Netscape</td>
 	<td>-</td>
 	<td>no exceptions</td>
+</tr>
+<tr>
+	<td><a href="http://home.worldcom.ch/jmlugrin/fesi/">FESI</a></td>
+	<td>Jean-Marc Lugrin</td>
+	<td>ECMA 262, v2</td>
+	<td>own</td>
+	<td>- ?</td>
+	<td>?</td>
 </tr>
 <tr>
 	<td>Flash 5.x</td>
@@ -253,6 +269,14 @@ have listed all products that I am aware of.</p>
 	<td>Netscape</td>
 	<td>1.0</td>
 	<td>no call stack</td>
+</tr>
+<tr>
+	<td><a href="http://janet-js.sourceforge.net/">JANET</a></td>
+	<td>Steve Newman</td>
+	<td>JavaScript 1.4</td>
+	<td>own</td>
+	<td>?</td>
+	<td>JavaScript for .NET</td>
 </tr>
 <tr>
 	<td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
@@ -421,6 +445,14 @@ have listed all products that I am aware of.</p>
 	<td>?</td>
 	<td>?</td>
 	<td>&nbsp;</td>
+</tr>
+<tr>
+	<td><a href="http://www.nombas.com/us/desktop/index.htm">ScriptEase Desktop</a></td>
+	<td><a href="http://www.nombas.com/">Nombas</a></td>
+	<td>ECMA 262, v3</td>
+	<td>ScriptEase</td>
+	<td>?</td>
+	<td>?</td>
 </tr>
 <tr>
 	<td><a href="http://www.mozilla.org/js/spidermonkey">SpiderMonkey 1.5</a></td>

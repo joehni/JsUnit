@@ -49,58 +49,53 @@ namespace. The first section within the constructor is used for the
 inheritance. Call a base class by using the call method of its
 constructor:</p> 
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 function ClassName( arg1, arg2 )
 {
     BaseClass.call( this, arg1, arg2 );
-}</pre></div></p>
-\endhtmlonly
+}
+\endcode
 
 <p>After calling the constuctor you should initialize the member variables by
 assigning them a value:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 this.mMember1 = 1;
-this.mMember2 = "yes";</pre></div></p>
-\endhtmlonly
+this.mMember2 = "yes";
+\endcode
 
 <p>After writing the constructor it is the time to define all member
 functions.  Declare the function using the class name as prefix. Assign all
 functions afterwards to the prototype:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 function ClassName_f1() {}
 function ClassName_f2() {}
 
 ClassName.prototype = new BaseClass();
 ClassName.prototype.f1 = ClassName_f1;
-ClassName.prototype.f2 = ClassName_f2;</pre></div></p>
-\endhtmlonly
+ClassName.prototype.f2 = ClassName_f2;
+\endcode
 
 <p>It is no problem to overload a function that was already assigned in a the
 base class. Call the overloaded function using its apply or call method in the
 prototype of the constructor:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 function ClassName_f1() 
 {
     BaseClass.prototype.f1.apply( this, arguments );
 }
 //...
-ClassName.prototype.f1 = ClassName_f1;</pre></div></p>
-\endhtmlonly
+ClassName.prototype.f1 = ClassName_f1;
+\endcode
 
 <p>You may also define static member variables using a prototype
 definition:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
-ClassName.prototype.v1 = 1;</pre></div></p>
-\endhtmlonly
+\code
+ClassName.prototype.v1 = 1;
+\endcode
 
 \subsection altSyntax Alternative Syntax
 
@@ -109,8 +104,7 @@ Reference Guide. A convension always imply you may use an alternative coding
 style, the Perl script \ref docScript "js2doxy.pl" will understand even
 this:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 function ClassName( arg1, arg2 )
 {
     BaseClass.call( this, arg1, arg2 );
@@ -125,8 +119,7 @@ ClassName.prototype.f2 = function()
     BaseClass.prototype.f2.apply( this, arguments );
 }
 ClassName.prototype.v1 = 1;
-</pre></div></p>
-\endhtmlonly
+\endcode
 
 <p>The advantage of method <code>f2</code> definition is, that the code is
 quite compact and keeps the global namespace clean. The disadvantage is that
@@ -141,27 +134,25 @@ number of functions, the system implements a new member function \a fulfills of
 the class Function that perfoms this action. Since the functions of an
 interface are never called, they can be implemented quite minimalistic:</p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 function InterfaceName() {}
 InterfaceName.prototype.f1 = function() {}
-InterfaceName.prototype.f2 = function( a, b ) {}</pre></div></p>
-\endhtmlonly
+InterfaceName.prototype.f2 = function( a, b ) {}
+\endcode
 
 <p>An interface definition may only define member functions, but no member
 variables. To ensure that a class fulfills this interface you call its
 function \a fulfills </p>
 
-\htmlonly
-<p><div class="fragment"><pre>
+\code
 ClassName()
 {
 }
 //...
 ClassName.prototype.f1 = ClassName_f1;
 ClassName.prototype.f2 = ClassName_f2;
-ClassName.fulfills( InterfaceName );</pre></div></p>
-\endhtmlonly
+ClassName.fulfills( InterfaceName );
+\endcode
 
 \subsection writing Writing test cases and test suites
 
@@ -214,7 +205,12 @@ this case.</p>
 
 <p>Most supported environments cannot share their test application. Therefore
 are a lot of AllTests*.* files part of the sample package. See the list below
-for all deliveries:</p>
+for all deliveries. Individual execution od the examples is available in the
+product specific documentation.</p>
+
+<ul>
+	<li>\ref scriptengines</li>
+</ul>
 
 <table>
 <tr>
@@ -240,15 +236,16 @@ for all deliveries:</p>
 
 	<td>AllTests.wsf</td>
 	
-	<td>Script for Windows Scripting Host. Run best with <em>cscript</em></td>
+	<td>Script for Windows Script Host. Run best with <em>cscript</em></td>
 	
 </tr>
 <tr>
 
 	<td>AllTestsBV<br>AllTestsBV.jsp</td>
 	
-	<td>JavaScript Server Page of BroadVision. Use the script AllTestsBV to
-	start the <em>ctxdriver</em> for command line invocation.</td>
+	<td>JavaScript Server Page of BroadVision's One-2-one server. Use the
+	script AllTestsBV to start the <em>ctxdriver</em> for command line
+	invocation.</td>
 	
 </tr>
 <tr>

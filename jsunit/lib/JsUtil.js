@@ -138,6 +138,14 @@ JsUtil.prototype.isJScript = this.ScriptEngine != null;
  */
 JsUtil.prototype.isWSH = this.WScript != null;
 /**
+ * Flag for Microsoft IIS.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft JScript engine.
+ */
+JsUtil.prototype.isIIS = 
+	   JsUtil.prototype.isJScript
+	&& this.Server != null;
+/**
  * Flag for Netscape Enterprise Server (iPlanet) engine.
  * @type Boolean
  * The member is true, if the script runs in the iPlanet as SSJS.
@@ -694,6 +702,12 @@ function SystemWriter__flush( str )
 			function SystemWriter__flush( str ) 
 			{ 
 				WScript.Echo( str.substring( 0, str.length - 1 )); 
+			}
+	else if( JsUtil.prototype.isIIS )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				Response.write( str ); 
 			}
 	/*
 	else if( JsUtil.prototype.isNSServer )
