@@ -30,18 +30,22 @@ license.
 	<LI>Assert has new functions assertTrue and asserFalse</LI>
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
 	time</LI>
+	<LI>Support conforming Error object hierarchy</LI>
+	<LI>Alternativ interface design contract by Function.fullfills</LI>
 </UL>
 \subsection change Design Changes
 <UL>
 	<LI>TestSuite supports again strings as name</LI>
 	<LI>CallStack.js has been renamed to JsUtil.js</LI>
 	<LI>Support of Array.push and Array.pop at all systems</LI>
-	<LI>System tests already rewritten using standard object model</LI>
+	<LI>System tests and samples already rewritten using standard object model</LI>
+	<LI>TestSuites for complete test files provided</LI>
 </UL>
 \subsection bug Bug Fixes
 <UL>
 	<LI>Added BerliOS reference to project documentation</LI>
 	<LI>Added test code for constructors</LI>
+	<LI>HTML output of exceptions</LI>
 </UL>
 \subsection progress Work in Progress
 <UL>

@@ -23,7 +23,7 @@ license.
 /*!
 \page license License
 <P>Copyright &copy; 1999-2001 by 
-<A HREF="mailto:joerg.schaible@gmx.de">J&ouml;rg Schaible</A>.</P>
+<A HREF="mailto:joehni@mail.berlios.de">J&ouml;rg Schaible</A>.</P>
 <P>%Test suites built with JsUnit are derivative works derived from tested 
 classes and functions in their production; they are not affected by this 
 license.</P>
