@@ -33,7 +33,7 @@ license.
  */
 function CtxTestRunner()
 {
-	this.constructor.call( this );
+	TextTestRunner.call( this );
 }
 /**
  * Write a line of text to the browser window.
