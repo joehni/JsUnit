@@ -1,3 +1,4 @@
+<?XML version="1.0" standalone="yes" ?>
 <!--
 JsUnit - a JUnit port for JavaScript
 Copyright (C) 1999-2001 Joerg Schaible
@@ -20,26 +21,32 @@ classes and functions in their production; they are not affected by this
 license.
 -->
 
-<Job id="JsUnitTest">
-<Script language="JScript" src="../lib/CallStack.js" />
-<Script language="JScript" src="../lib/JsUnit.js" />
-<Script language="JScript" src="../lib/JsUnitWSH.js" />
-<Script language="JScript" src="ArrayTest.js" />
-<Script language="JScript" src="money/AbstractFunctionCalledException.js" />
-<Script language="JScript" src="money/IMoney.js" />
-<Script language="JScript" src="money/Money.js" />
-<Script language="JScript" src="money/MoneyBag.js" />
-<Script language="JScript" src="money/MoneyTest.js" />
-<Script language="JScript" src="SimpleTest.js" />
-<Script language="JScript">
-function main()
+<job id="JsUnitTest">
+<script language="JScript" src="../lib/CallStack.js" />
+<script language="JScript" src="../lib/JsUnit.js" />
+<script language="JScript" src="../lib/JsUnitWSH.js" />
+<script language="JScript" src="ArrayTest.js" />
+<script language="JScript" src="money/AbstractFunctionCalledException.js" />
+<script language="JScript" src="money/IMoney.js" />
+<script language="JScript" src="money/Money.js" />
+<script language="JScript" src="money/MoneyBag.js" />
+<script language="JScript" src="money/MoneyTest.js" />
+<script language="JScript" src="SimpleTest.js" />
+<script language="JScript">
+<![CDATA[
+function main( test )
 {
 	var runner = new WshTestRunner();
 	runner.addSuite( new TestSuite( new ArrayTest()));
 	runner.addSuite( new TestSuite( new MoneyTest()));
 	runner.addSuite( new TestSuite( new SimpleTest()));
-	return runner.start( main.arguments );
+	return runner.start( test );
 }
-main();
-</Script>
-</Job>
+
+var arg;
+if( WScript.Arguments.Count())
+	arg = WScript.Arguments(0);
+WScript.Quit( main( arg ));
+]]>
+</script>
+</job>
