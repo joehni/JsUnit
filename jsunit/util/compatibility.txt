@@ -63,9 +63,9 @@ have listed all products that I am aware of.</P>
 <TR>
 	<TD><A HREF=":http://www.day.com/en/product/communiqu.html">Communiqu&eacute; 2.x</A></TD>
 	<TD><A HREF="http://www.day.com">Day International</A></TD>
-	<TD>ECMAScript 3</TD>
+	<TD>ECMAScript 1</TD>
 	<TD>no</TD>
-	<TD>exceptions not implemented</TD>
+	<TD>no exceptions in this version</TD>
 </TR>
 <TR>
 	<TD>Enterprise Server 3.x</TD>
@@ -92,7 +92,7 @@ have listed all products that I am aware of.</P>
 	<TD>Internet Explorer 6.x</TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 6.0</TD>
-	<TD>?</TD>
+	<TD>yes</TD>
 	<TD></TD>
 </TR>
 <TR>
