@@ -60,19 +60,20 @@ fi
 
 CWD=$PWD
 cd `dirname $0`/..
+JSUNIT_HOME=$PWD
 rm -rf .lib/ .docs/ docs/ > /dev/null 2>&1
 mkdir .lib .docs 
 PAGER=cat perldoc -t util/js2doxy.pl > .lib/js2doxy.man
-cd lib
+cd $JSUNIT_HOME/lib
 for js in *.js; do 
 	../util/js2doxy.pl $js > ../.lib/$js
 done
 
-cd ..
+cd $JSUNIT_HOME
 doxygen util/Doxyfile
 cp util/*.png docs/
 mv docs/*.html .docs/
-cd .docs
+cd $JSUNIT_HOME/.docs
 for html in *.html; do 
 	sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../docs/$html
 #	if test "$html" = "index.html" -o -f ../util/`basename $html .html`.txt; then
@@ -81,11 +82,10 @@ for html in *.html; do
 #	fi	
 done
 
-cd ..
-cd docs
+cd $JSUNIT_HOME/docs
 chmod 644 *
 
-cd ../..
+cd $JSUNIT_HOME
 if test $KEEP -eq 0; then 
 	rm -rf .lib .docs
 fi
