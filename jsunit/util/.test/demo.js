@@ -54,7 +54,6 @@ function x(a,b)
  * We can describe x also with a long text.
  */
 x.prototype = new y();
-x.inherits( C );
 /**
  * This is static member a.
  * \type long
