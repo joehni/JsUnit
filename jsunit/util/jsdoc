@@ -60,7 +60,7 @@ else
 	KEEP=0
 fi
 
-CWD=$CWD
+CWD=$PWD
 cd `dirname $0`/..
 rm -rf .lib/ .doc/ doc/ man/ > /dev/null 2>&1
 mkdir .lib .doc doc man
@@ -72,7 +72,7 @@ done
 
 cd ..
 doxygen util/Doxyfile
-cp util/*.bmp doc/
+cp util/*.png doc/
 mv doc/*.html .doc/
 cd .doc
 for html in *.html; do 

@@ -111,7 +111,7 @@ past JsUnit development.</p>
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="joehni@mail.berlios.de">
 <input type="hidden" name="item_name" value="JsUnit">
-<input type="image" src="PayPal.bmp" border="0" name="submit" alt="Make a donation using PayPal">
+<input type="image" src="PayPal.png" border="0" name="submit" alt="Make a donation using PayPal">
 </form></p>
 
 \endhtmlonly
