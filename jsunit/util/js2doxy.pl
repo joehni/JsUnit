@@ -1167,6 +1167,17 @@ sub parse
 	syntax_err( "Unbalanced '}' found." ) if( $level < -1 );
 	syntax_err( "EOF found. '}' expected." ) 
 		if( $level >= 0 && $context->{otype} != $OT_FILE );
+
+	for( $context->{otype} )
+	{
+		/^$OT_FUNCTION$/ && do
+		{
+			$context->{otype} = $OT_CLASS 
+				if(   ( exists $context->{ctor} ) 
+				   || (   ( exists $context->{doc} )
+					   && ( exists $context->{doc}{ctor} )));
+		}
+	}
 }
 
 

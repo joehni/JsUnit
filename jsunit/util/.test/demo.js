@@ -136,3 +136,16 @@ Array.prototype.isTest =
 	   Array.prototype.isTest1
 	|| Array.prototype.isTest2;
 
+/**
+ * @ctor
+ * This is a ctor of a struct
+ */
+function struct()
+{
+	/**
+	 * A variable.
+	 * \type Number
+	 */
+	this.x = 0;
+}
+
