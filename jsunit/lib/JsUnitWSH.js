@@ -24,7 +24,7 @@ license.
  * @@file
  * Test unit classes for Windows Scripting Host environment.
  * This file contains extensions for the test unit framework especially for
- * the Windows Scriptinh Host.
+ * the Windows Scripting Host.
  */
 
 /**
