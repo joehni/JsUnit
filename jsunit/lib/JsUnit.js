@@ -131,6 +131,18 @@ TestFailure.prototype.toString = TestFailure_toString;
 
 
 /**
+ * A protectable can be run and throw an Error.
+ */
+function Protectable()
+{
+}
+/**
+ * Runs a test.
+ * @tparam Test test The test to run.
+ */
+Protectable.prototype.protect = function( test ) {}
+
+/**
  * A listener for test progress.
  */
 function TestListener()
@@ -260,10 +272,32 @@ function TestResult_removeListener( listener )
  */
 function TestResult_run( test )
 {
+	this.startTest( test );
+
+	function OnTheFly() {}
+	OnTheFly.prototype.protect = function( test ) {	test.runBare();	}
+	OnTheFly.fulfills( Protectable );
+	
+	this.runProtected( test, new OnTheFly());
+	this.endTest( test );
+}
+/**
+ * Retrieve the number of run tests.
+ * @type Number
+ */
+function TestResult_runCount() { return this.mRunTests; }
+/**
+ * Runs a test case protected.
+ * @tparam Test test The test case to run.
+ * @tparam Protectable p The protectable block running the test.
+ * To implement your own protected block that logs thrown exceptions, 
+ * pass a Protectable to TestResult.runProtected().
+ */
+function TestResult_runProtected( test, p )
+{
 	try
 	{
-		this.startTest( test );
-		test.runBare();
+		p.protect( test );
 	}
 	catch( ex )
 	{
@@ -272,13 +306,7 @@ function TestResult_run( test )
 		else
 			this.addError( test, ex );
 	}
-	this.endTest( test );
 }
-/**
- * Retrieve the number of run tests.
- * @type Number
- */
-function TestResult_runCount() { return this.mRunTests; }
 /**
  * Checks whether the test run should stop.
  * @type Boolean
@@ -318,6 +346,7 @@ TestResult.prototype.errorCount = TestResult_errorCount;
 TestResult.prototype.removeListener = TestResult_removeListener;
 TestResult.prototype.run = TestResult_run;
 TestResult.prototype.runCount = TestResult_runCount;
+TestResult.prototype.runProtected = TestResult_runProtected;
 TestResult.prototype.startTest = TestResult_startTest;
 TestResult.prototype.shouldStop = TestResult_shouldStop;
 TestResult.prototype.stop = TestResult_stop;

@@ -68,15 +68,15 @@ function TestResultTest( name )
 	this.mListener = new TestListener();
 	this.mListener.addError = function() { this.mErrors++; };
 	this.mListener.addFailure = function() { this.mFailures++; };
-	this.mListener.startTest = function() { this.mStarted = true; };
-	this.mListener.endTest = function() { this.mEnded = true; };
+	this.mListener.startTest = function() { this.mStarted++; };
+	this.mListener.endTest = function() { this.mEnded++; };
 }
 function TestResultTest_setUp()
 {
 	this.mListener.mErrors = 0;
 	this.mListener.mFailures = 0;
-	this.mListener.mStarted = false;
-	this.mListener.mEnded = false;
+	this.mListener.mStarted = 0;
+	this.mListener.mEnded = 0;
 }
 function TestResultTest_testAddError()
 {
@@ -99,8 +99,8 @@ function TestResultTest_testAddListener()
 	var result = new TestResult();
 	result.addListener( this.mListener );
 	result.run( new TestResultTest( "testAddError" ));
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
+	this.assertEquals( 1, this.mListener.mStarted );
+	this.assertEquals( 1, this.mListener.mEnded );
 	this.assertEquals( 0, this.mListener.mErrors );
 	this.assertEquals( 0, this.mListener.mFailures );
 }
@@ -110,15 +110,15 @@ function TestResultTest_testCloneListeners()
 	result.addListener( this.mListener );
 	var listeners = result.cloneListeners();
 	this.assertEquals( 1, listeners.length );
-	this.assertEquals( false, this.mListener.mStarted );
-	this.assertEquals( false, this.mListener.mEnded );
-	this.assertEquals( false, listeners[0].mStarted );
-	this.assertEquals( false, listeners[0].mEnded );
+	this.assertEquals( 0, this.mListener.mStarted );
+	this.assertEquals( 0, this.mListener.mEnded );
+	this.assertEquals( 0, listeners[0].mStarted );
+	this.assertEquals( 0, listeners[0].mEnded );
 	result.run( new TestResultTest( "testCloneListeners" ));
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
-	this.assertEquals( true, listeners[0].mStarted );
-	this.assertEquals( true, listeners[0].mEnded );
+	this.assertEquals( 1, this.mListener.mStarted );
+	this.assertEquals( 1, this.mListener.mEnded );
+	this.assertEquals( 1, listeners[0].mStarted );
+	this.assertEquals( 1, listeners[0].mEnded );
 	result.removeListener( this.mListener );
 	this.assertEquals( 1, listeners.length );
 	this.assertEquals( 0, result.cloneListeners().length );
@@ -128,7 +128,7 @@ function TestResultTest_testEndTest()
 	var result = new TestResult();
 	result.addListener( this.mListener );
 	result.endTest( new Test( "Test" ));
-	this.assertEquals( true, this.mListener.mEnded );
+	this.assertEquals( 1, this.mListener.mEnded );
 }
 function TestResultTest_testErrorCount()
 {
@@ -147,49 +147,27 @@ function TestResultTest_testRemoveListener()
 	var result = new TestResult();
 	result.addListener( this.mListener );
 	result.run( new TestResultTest( "testRemoveError" ));
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
+	this.assertEquals( 1, this.mListener.mStarted );
+	this.assertEquals( 1, this.mListener.mEnded );
 	this.setUp();
 	result.removeListener( this.mListener );
 	result.run( new TestResultTest( "testRemoveError" ));
-	this.assertEquals( false, this.mListener.mStarted );
-	this.assertEquals( false, this.mListener.mEnded );
+	this.assertEquals( 0, this.mListener.mStarted );
+	this.assertEquals( 0, this.mListener.mEnded );
 }
 function TestResultTest_testRun()
 {
 	var result = new TestResult();
 	result.addListener( this.mListener );
-	var test = new TestResultTest( "testAddError" )
+	var test = new TestResultTest( "testAddError" );
 	result.run( test );
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
-	this.assertEquals( 0, this.mListener.mErrors );
-	this.assertEquals( 0, this.mListener.mFailures );
-	this.setUp();
-	test.testAddError = function() 
-	{ 
-		throw new AssertionFailedError( "Message", null ); 
-	}
-	result.run( test );
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
-	this.assertEquals( 0, this.mListener.mErrors );
-	this.assertEquals( 1, this.mListener.mFailures );
-	this.setUp();
-	test.testAddError = function() 
-	{ 
-		throw new Object(); 
-	}
-	result.run( test );
-	this.assertEquals( true, this.mListener.mStarted );
-	this.assertEquals( true, this.mListener.mEnded );
-	this.assertEquals( 1, this.mListener.mErrors );
-	this.assertEquals( 0, this.mListener.mFailures );
+	this.assertEquals( 1, this.mListener.mStarted );
+	this.assertEquals( 1, this.mListener.mEnded );
 }
 function TestResultTest_testRunCount()
 {
 	var result = new TestResult();
-	var test = new TestResultTest( "testAddError" )
+	var test = new TestResultTest( "testAddError" );
 	result.run( test );
 	test.testAddError = function() 
 	{ 
@@ -197,6 +175,53 @@ function TestResultTest_testRunCount()
 	}
 	result.run( test );
 	this.assertEquals( 2, result.runCount());
+}
+function TestResultTest_testRunProtected()
+{
+	function OnTheFly() { this.mThrown = null; }
+	OnTheFly.prototype.protect = function( test )
+	{	
+		try
+		{
+			test.runBare();	
+		}
+		catch( ex )
+		{
+			this.mThrown = ex;
+			throw ex;
+		}
+	}
+	OnTheFly.fulfills( Protectable );
+	
+	var result = new TestResult();
+	var test = new TestResultTest( "testAddError" );
+	this.assertEquals( 0, result.errorCount());
+	this.assertEquals( 0, result.failureCount());
+	var fly = new OnTheFly();
+	result.runProtected( test, fly );
+	this.assertEquals( 0, result.errorCount());
+	this.assertEquals( 0, result.failureCount());
+	this.assertNull( fly.mThrown );
+	this.setUp();
+	test.testAddError = function() 
+	{ 
+		throw new AssertionFailedError( "Message", null ); 
+	}
+	fly = new OnTheFly();
+	result.runProtected( test, fly );
+	this.assertEquals( 0, result.errorCount());
+	this.assertEquals( 1, result.failureCount());
+	this.assertNotNull( fly.mThrown );
+	this.setUp();
+	test.testAddError = function() 
+	{ 
+		throw new Object(); 
+	}
+	fly = new OnTheFly();
+	result.runProtected( test, fly );
+	this.assertEquals( 1, result.errorCount());
+	this.assertEquals( 1, result.failureCount());
+	this.assertNotNull( fly.mThrown );
 }
 function TestResultTest_testShouldStop()
 {
@@ -209,7 +234,7 @@ function TestResultTest_testStartTest()
 	var result = new TestResult();
 	result.addListener( this.mListener );
 	result.startTest( new Test( "Test" ));
-	this.assertEquals( true, this.mListener.mStarted );
+	this.assertEquals( 1, this.mListener.mStarted );
 }
 function TestResultTest_testStop()
 {
@@ -249,6 +274,7 @@ TestResultTest.prototype.testFailureCount = TestResultTest_testFailureCount;
 TestResultTest.prototype.testRemoveListener = TestResultTest_testRemoveListener;
 TestResultTest.prototype.testRun = TestResultTest_testRun;
 TestResultTest.prototype.testRunCount = TestResultTest_testRunCount;
+TestResultTest.prototype.testRunProtected = TestResultTest_testRunProtected;
 TestResultTest.prototype.testShouldStop = TestResultTest_testShouldStop;
 TestResultTest.prototype.testStartTest = TestResultTest_testStartTest;
 TestResultTest.prototype.testStop = TestResultTest_testStop;

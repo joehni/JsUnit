@@ -37,9 +37,11 @@ have really defined.</P>
 <UL>
 	<LI>TestSuite supports object class definitions</LI>
 	<LI>TestSuite has now also function addTestSuite</LI>
+	<LI>TestResult has now also function removeListener and runProtected</LI>
 	<LI>Assert has new functions assertTrue and assertFalse</LI>
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
 	time</LI>
+	<LI>Interface Protectable supported</LI>
 	<LI>Test is an interface now (conforming JUnit), TestCase and TestSuite
 	implement this interface</LI>
 	<LI>Support conforming Error object hierarchy</LI>
