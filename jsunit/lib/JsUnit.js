@@ -25,6 +25,10 @@ license.
  * Test unit classes for JavaScript.
  * This file contains a port of the JUnit Java package of Kent Beck and 
  * Erich Gamma for JavaScript.
+ *
+ * If this file is loaded within a browser, an onLoad event handler is set.
+ * This event handler will set the global variable isJsUnitPageLoaded to true.
+ * Any previously set onLoad event handler is restored and called.
  */
 
 /**
@@ -598,12 +602,13 @@ function TestCase( name )
  * Constructor.
  * The constructor collects all test methods of the given object and adds them
  * to the array of tests.
- * @param obj instance of the test object with the fixtures.
+ * @param obj if obj is an instance of a TestCase, the suite is filled with the
+ * fixtures automatically. Otherwise obj's string value is treated as name.
  */
 function TestSuite( obj )
 {
 	var name = "all";
-	if( obj != null )
+ 	if( obj != null && obj.constructor )
 	{
 		/* RegExp not fully supported by Opera 5.0's ECMA implementation
 		var r = /function (\w+)Test/;
@@ -615,6 +620,12 @@ function TestSuite( obj )
 		while( name.indexOf( " " ) == 0 )
 			name = name.substr( 1 );
 	}
+	else if( typeof( obj ) == "string" )
+		name = obj;
+	else if( typeof( obj ) == "undefined" || obj == null )
+		;
+	else 
+		name = obj.toString();
 
 	this._super = Test;
 	this._super( name );
@@ -718,7 +729,7 @@ function TestSuite( obj )
 	this.testCount = testCount;
 
 	// collect all testXXX methods
-	if( obj != null )
+ 	if( obj != null && obj.constructor )
 	{
 		for( member in obj )
 		{
@@ -867,17 +878,17 @@ function TextTestRunner()
 	/**
 	 * @@method Number
 	 * Start the test functionality of the application.
-	 * @param args Argument list
+	 * @param args list of test names in an array or a single test name
 	 * @returns 0 if no test fails, otherwise -1
 	 */
 	function start( args )
 	{
-		if( args == undefined )
+		if( typeof( args ) == "undefined" )
 			args = new Array();
+		else if( typeof( args ) == "string" )
+			args = new Array( args );
 		if( args.length == 0 )
 			args[0] = "all";
-		if( typeof args == "String" || typeof args == "string" )
-			args = new Array( args );
 		this.mStartArgs = args;
 
 		var result = this.createTestResult();
@@ -934,5 +945,21 @@ function TextTestRunner()
 	this.start = start;
 	this.startTest = startTest;
 	this.writeLn = writeLn;
+}
+
+
+/*************************************************************/
+if( this.window )
+{
+	function newOnLoadEventForJsUnit() 
+	{
+		if( typeof( window.savedOnLoadEventBeforeJsUnit ) == "function" )
+			window.savedOnLoadEventBeforeJsUnit();
+		window.isJsUnitPageLoaded = true;
+	}
+
+	window.isJsUnitPageLoaded = false;
+	window.savedOnLoadEventBeforeJsUnit = window.onload;
+	window.onload = newOnLoadEventForJsUnit;
 }
 
