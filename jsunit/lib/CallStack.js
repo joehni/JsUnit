@@ -20,6 +20,19 @@ function CallStack(depth)
 	 */
 	this.mStack = new Array();
 
+	/** @@method Function
+	 *  Retrieve the caller of a function.
+	 *  @return The caller as Function.
+	 **/
+	function getCaller( fn )
+	{
+		if( fn.caller !== undefined )
+			return fn.caller;
+		if( fn.arguments !== undefined && fn.arguments.caller !== undefined )
+			return fn.arguments.caller;
+			
+		return undefined;
+	}
 	/**
 	 * @@method String
      * Retrieve call stack as string.
@@ -37,18 +50,18 @@ function CallStack(depth)
 		return s;
 	}
 
+	this.getCaller = getCaller;
 	this.toString = toString;
 
 	// set stack depth to default
 	if( depth == null )
 		depth = 10;
 
-	// fn is null when called directly from the engine
-	var fn = CallStack.caller;
-	var s = new String( fn );
-	if( s == "undefined" || s == "[object Object]" )
+	var fn = this.getCaller( CallStack );
+	if( fn === undefined )
 	{
-		this.mStack[this.mStack.length] = "[CallStack information not supported]";
+		this.mStack[this.mStack.length] = 
+			"[CallStack information not supported]";
 	}
 	else
 	{
@@ -65,13 +78,13 @@ function CallStack(depth)
 			this.mStack[this.mStack.length] = f + args;
 	
 			// Retrieve caller function
-			if( fn == fn.caller )
+			if( fn == this.getCaller( fn ))
 			{
 				this.mStack[this.mStack.length] = "[JavaScript recursion]";
 				break;
 			}
 			else
-				fn = fn.caller;
+				fn = this.getCaller( fn );
 		}
 	
 		if( fn == null )

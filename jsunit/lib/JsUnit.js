@@ -365,7 +365,7 @@ function Assert()
 	 */
 	function assertNotNull( object )
 	{
-		if( object == null )
+		if( object === null )
 		{
 			var m = "Object was null.";
 			this.fail( m, new CallStack());
@@ -373,13 +373,27 @@ function Assert()
 	}
 	/**
 	 * @@method
+	 * Asserts that an object is not undefined.
+	 * @param object The defined object.
+	 * @exception AssertionFailedError Thrown if the object is undefined.
+	 */
+	function assertNotUndefined( object )
+	{
+		if( object === undefined )
+		{
+			var m = "Object <" + object + "> was undefined.";
+			this.fail( m, new CallStack());
+		}
+	}
+	/**
+	 * @@method
 	 * Asserts that an object is null.
 	 * @param object The null object.
-	 * @exception AssertionFailedError Thrown if the object is null.
+	 * @exception AssertionFailedError Thrown if the object is not null.
 	 */
 	function assertNull( object )
 	{
-		if( object != null )
+		if( object !== null )
 		{
 			var m = "Object <" + object + "> was not null.";
 			this.fail( m, new CallStack());
@@ -387,18 +401,15 @@ function Assert()
 	}
 	/**
 	 * @@method
-	 * Asserts that two objects are identical.
-	 * @param expected The expected object.
-	 * @param actual The actual object.
-	 * @exception AssertionFailedError Thrown if the two objects are not 
-	 * identical.
+	 * Asserts that an object is undefined.
+	 * @param object The undefined object.
+	 * @exception AssertionFailedError Thrown if the object is not undefined.
 	 */
-	function assertSame( expected, actual )
+	function assertUndefined( object )
 	{
-		if( expected === actual )
+		if( object !== undefined )
 		{
-			var m = "Expected object <" + expected + "> is " +
-					"not identical to actual object <" + actual + ">.";
+			var m = "Object <" + object + "> was not undefined.";
 			this.fail( m, new CallStack());
 		}
 	}
@@ -418,8 +429,9 @@ function Assert()
 	this.assert = assert;
 	this.assertEquals = assertEquals;
 	this.assertNotNull = assertNotNull;
+	this.assertNotUndefined = assertNotUndefined;
 	this.assertNull = assertNull;
-	this.assertSame = assertSame;
+	this.assertUndefined = assertUndefined;
 	this.fail = fail;
 }
 
@@ -488,6 +500,7 @@ function TestCase( name )
 			var fn = eval( "this." + this.mName );
 			this._func = fn;
 			this._func();
+			this.tearDown();
 		}
 		catch( ex )
 		{
@@ -519,13 +532,13 @@ function TestCase( name )
  * It runs a collection of test cases.
  * In depite of the JUnit implementation, this class has also functionality of
  * TestSetup of the extended JUnit framework. This is because of &quot;recursion
- * limits&quot; of the JavaScript implementation of BroadVision's One-to-one Server
- * (an OEM version of Netscape Enterprise Edition).
+ * limits&quot; of the JavaScript implementation of BroadVision's One-to-one
+ * Server (an OEM version of Netscape Enterprise Edition).
  * @see Test
  * @@ctor
  * Constructor.
- * The constructor collects all test methods of the given object and adds them to
- * the array of tests.
+ * The constructor collects all test methods of the given object and adds them
+ * to the array of tests.
  * @param obj instance of the test object with the fixtures.
  */
 function TestSuite( obj )
@@ -533,9 +546,15 @@ function TestSuite( obj )
 	var name = "all";
 	if( obj != null )
 	{
+		/* RegExp not fully supported by Opera 5.0's ECMA implementation
 		var r = /function (\w+)Test/;
 		r.exec( obj.constructor );
 		name = RegExp.$1;
+		*/
+		var str = new String( obj.constructor );
+		name = str.substring( str.indexOf( " " ), str.indexOf( "Test(" ));
+		while( name.indexOf( " " ) == 0 )
+			name = name.substr( 1 );
 	}
 
 	this._super = Test;
@@ -644,10 +663,8 @@ function TestSuite( obj )
 	{
 		for( member in obj )
 		{
-			var r = /test(\w+)/;
-			if( r.exec( member ))
-				this.addTest( 
-					eval( "new " + name + "Test( \"" + member + "\" )"));
+			if( member.indexOf( "test" ) == 0 )
+				this.addTest( new obj.constructor( member ));
 		}
 		obj = null;
 	}
@@ -761,7 +778,7 @@ function TextTestRunner()
 		{
 			this.mNest = this.mNest.substr( 1 );
 			this.writeLn( 
-				  "<" + this.mNest.replace(/-/, "=") 
+				  "<" + this.mNest.replace(/-/g, "=") 
 				+ " Completed test suite \"" + test.name() + "\"" );
 		}
 	}
@@ -796,8 +813,12 @@ function TextTestRunner()
 	 */
 	function start( args )
 	{
+		if( args == undefined )
+			args = new Array();
 		if( args.length == 0 )
 			args[0] = "all";
+		if( typeof args == "String" || typeof args == "string" )
+			args = new Array( args );
 		this.mStartArgs = args;
 
 		var result = this.createTestResult();
@@ -832,7 +853,7 @@ function TextTestRunner()
 		else
 		{
 			this.writeLn( 
-				  this.mNest.replace(/-/, "=") + "> Starting test suite \"" 
+				  this.mNest.replace(/-/g, "=") + "> Starting test suite \"" 
 				+ test.name() + "\"" );
 			this.mNest += "-";
 		}

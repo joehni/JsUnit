@@ -1,15 +1,15 @@
 /**
  * @@file
- * Test unit classes for an Internet Browser environment.
+ * Test unit classes for HTML output.
  * This file contains extensions for the test unit framework especially for 
- * output of the results at an Internet browser.
+ * output of the results in HTML.
  */
 
 /**
  * @@class
- * Class for an application running test suites with a browser.
+ * Class for an application running test suites reporting in HTML.
  */
-function BrowserTestRunner()
+function HTMLTestRunner()
 {
 	this._super = TextTestRunner;
 	this._super();
