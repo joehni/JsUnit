@@ -179,7 +179,7 @@ function TestResultTest_testRunCount()
 function TestResultTest_testRunProtected()
 {
 	function OnTheFly() { this.mThrown = null; }
-	OnTheFly.prototype.protect = function( test )
+	OnTheFly.prototype.protect = function()
 	{	
 		try
 		{
@@ -287,10 +287,21 @@ function AssertTest( name )
 }
 function AssertTest_testAssert()
 {
-	this.mAssert.assert( true, "Should not throw!" );
+	this.mAssert.assert( "Should not throw!", true );
+	this.mAssert.assert( true );
 	try
 	{
-		this.mAssert.assert( false, "Have to throw!" );
+		this.mAssert.assert( "Have to throw!", false );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		this.mAssert.assert( false );
 		throw new Object();
 	}
 	catch( ex )
@@ -300,23 +311,45 @@ function AssertTest_testAssert()
 }
 function AssertTest_testAssertEquals()
 {
-	this.mAssert.assertTrue(1 == 1 );
+	this.mAssert.assertTrue( 1 == 1 );
+	this.mAssert.assertTrue( "1 is 1", 1 == 1 );
 	try
 	{
-		this.mAssert.assertTrue(0 == 1 );
+		this.mAssert.assertTrue( 0 == 1 );
 		throw new Object();
 	}
 	catch( ex )
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
 	}
+	try
+	{
+		this.mAssert.assertTrue( "0 is not 1", 0 == 1 );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "0 is not 1" ) > 0 );
+	}
 }
 function AssertTest_testAssertFalse()
 {
-	this.mAssert.assertFalse( false, "Should not throw!" );
+	this.mAssert.assertFalse( "Should not throw!", false );
+	this.mAssert.assertFalse( false );
 	try
 	{
-		this.mAssert.assertFalse( true, "Have to throw!" );
+		this.mAssert.assertFalse( "Have to throw!", true );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		this.mAssert.assertFalse( true );
 		throw new Object();
 	}
 	catch( ex )
@@ -326,8 +359,11 @@ function AssertTest_testAssertFalse()
 }
 function AssertTest_testAssertNotNull()
 {
+	this.mAssert.assertNotNull( "Is null!", 0 );
 	this.mAssert.assertNotNull( 0 );
+	this.mAssert.assertNotNull( "Is null!", 1 );
 	this.mAssert.assertNotNull( 1 );
+	this.mAssert.assertNotNull( "Is null!", "Hi!" );
 	this.mAssert.assertNotNull( "Hi!" );
 	try
 	{
@@ -338,24 +374,50 @@ function AssertTest_testAssertNotNull()
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
 	}
+	try
+	{
+		this.mAssert.assertNotNull( "Is null!", null );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Is null!" ) > 0 );
+	}
 }
 function AssertTest_testAssertNotUndefined()
 {
+	this.mAssert.assertNotUndefined( "Is undefined!", 0 );
 	this.mAssert.assertNotUndefined( 0 );
+	this.mAssert.assertNotUndefined( "Is undefined!", false );
 	this.mAssert.assertNotUndefined( false );
+	this.mAssert.assertNotUndefined( "Is undefined!", "Hi!" );
 	this.mAssert.assertNotUndefined( "Hi!" );
 	try
 	{
-		this.mAssert.assertNotUndefined( undefined );
+		var undefdVar;
+		this.mAssert.assertNotUndefined( undefdVar );
 		throw new Object();
 	}
 	catch( ex )
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
 	}
+	try
+	{
+		var undefdVar;
+		this.mAssert.assertNotUndefined( "Is undefined!", undefdVar );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Is undefined!" ) > 0 );
+	}
 }
 function AssertTest_testAssertNull()
 {
+	this.mAssert.assertNull( "Is not null!", null );
 	this.mAssert.assertNull( null );
 	try
 	{
@@ -366,13 +428,61 @@ function AssertTest_testAssertNull()
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
 	}
+	try
+	{
+		this.mAssert.assertNull( "Is not null!", 0 );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Is not null!" ) > 0 );
+	}
+}
+function AssertTest_testAssertSame()
+{
+	var me = this;
+	this.mAssert.assertSame( "Should not throw!", this, me );
+	this.mAssert.assertSame( this, me );
+	try
+	{
+		var one = "1";
+		this.mAssert.assertSame( "Have to throw!", one, 1 );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		var one = "1";
+		this.mAssert.assertSame( one, 1 );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
 }
 function AssertTest_testAssertTrue()
 {
-	this.mAssert.assertTrue( true, "Should not throw!" );
+	this.mAssert.assertTrue( "Should not throw!", true );
+	this.mAssert.assertTrue( true );
 	try
 	{
-		this.mAssert.assertTrue( false, "Have to throw!" );
+		this.mAssert.assertTrue( "Have to throw!", false );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		this.mAssert.assertTrue( false );
 		throw new Object();
 	}
 	catch( ex )
@@ -382,10 +492,14 @@ function AssertTest_testAssertTrue()
 }
 function AssertTest_testAssertUndefined()
 {
+	function fn() {}
 	var x;
+	this.mAssert.assertUndefined( "Not undefined!", undefined );
 	this.mAssert.assertUndefined( undefined );
+	this.mAssert.assertUndefined( "Not undefined!", x );
 	this.mAssert.assertUndefined( x );
-	this.mAssert.assertUndefined( Assert());
+	this.mAssert.assertUndefined( "Not undefined!", fn());
+	this.mAssert.assertUndefined( fn());
 	try
 	{
 		this.mAssert.assertUndefined( this );
@@ -394,6 +508,16 @@ function AssertTest_testAssertUndefined()
 	catch( ex )
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+	try
+	{
+		this.mAssert.assertUndefined( "Not undefined!", this );
+		throw new Object();
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Not undefined!" ) > 0 );
 	}
 }
 function AssertTest_testFail()
@@ -406,6 +530,7 @@ function AssertTest_testFail()
 	catch( ex )
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
 	}
 }
 AssertTest.prototype = new TestCase();
@@ -416,6 +541,7 @@ AssertTest.prototype.testAssertFalse = AssertTest_testAssertFalse;
 AssertTest.prototype.testAssertNotNull = AssertTest_testAssertNotNull;
 AssertTest.prototype.testAssertNotUndefined = AssertTest_testAssertNotUndefined;
 AssertTest.prototype.testAssertNull = AssertTest_testAssertNull;
+AssertTest.prototype.testAssertSame = AssertTest_testAssertSame;
 AssertTest.prototype.testAssertTrue = AssertTest_testAssertTrue;
 AssertTest.prototype.testAssertUndefined = AssertTest_testAssertUndefined;
 AssertTest.prototype.testFail = AssertTest_testFail;
@@ -696,6 +822,104 @@ TestSuiteTest.prototype.MyTest.prototype.testMe = function() {};
 TestSuiteTest.prototype.MyTest.prototype.testMyself = function() {};
 
 
+function TestDecoratorTest( name )
+{
+	TestCase.call( this, name );
+}
+function TestDecoratorTest_setUp()
+{
+	function OnTheFly( name ) { TestCase.call( this, name ); }
+	OnTheFly.prototype = new TestCase();
+	OnTheFly.prototype.testMe = function() {}
+	OnTheFly.prototype.testMyself = function() {}
+	
+	this.mTest = new TestSuite( OnTheFly );
+	this.mTest.runTest = function() { this.mCalled = true; }
+}
+function TestDecoratorTest_testBasicRun()
+{
+	var decorator = new TestDecorator( this.mTest );
+	decorator.basicRun( new TestResult());
+	this.assertTrue( this.mTest.mCalled );
+}
+function TestDecoratorTest_testCountTestCases()
+{
+	var decorator = new TestDecorator( this.mTest );
+	this.assertEquals( 2, decorator.countTestCases());
+}
+function TestDecoratorTest_testFindTest()
+{
+	var decorator = new TestDecorator( this.mTest );
+	this.assertNotNull( decorator.findTest( "testMyself" ));
+}
+function TestDecoratorTest_testGetName()
+{
+	var decorator = new TestDecorator( this.mTest );
+	this.assertEquals( "OnTheFly", decorator.getName());
+}
+function TestDecoratorTest_testGetTest()
+{
+	var decorator = new TestDecorator( this.mTest );
+	this.assertSame( this.mTest, decorator.getTest());
+}
+function TestDecoratorTest_testRun()
+{
+	var decorator = new TestDecorator( this.mTest );
+	decorator.run( new TestResult());
+	this.assertTrue( this.mTest.mCalled );
+}
+function TestDecoratorTest_testSetName()
+{
+	var decorator = new TestDecorator( this.mTest );
+	decorator.setName( "FlyAlone" );
+	this.assertEquals( "FlyAlone", this.mTest.getName());
+}
+function TestDecoratorTest_testToString()
+{
+	var decorator = new TestDecorator( this.mTest );
+	this.assertTrue( decorator.toString().indexOf( "'OnTheFly'" ) > 0 );
+}
+TestDecoratorTest.prototype = new TestCase();
+TestDecoratorTest.prototype.setUp = TestDecoratorTest_setUp;
+TestDecoratorTest.prototype.testBasicRun = TestDecoratorTest_testBasicRun;
+TestDecoratorTest.prototype.testCountTestCases = TestDecoratorTest_testCountTestCases;
+TestDecoratorTest.prototype.testFindTest = TestDecoratorTest_testFindTest;
+TestDecoratorTest.prototype.testGetName = TestDecoratorTest_testGetName;
+TestDecoratorTest.prototype.testGetTest = TestDecoratorTest_testGetTest;
+TestDecoratorTest.prototype.testRun = TestDecoratorTest_testRun;
+TestDecoratorTest.prototype.testSetName = TestDecoratorTest_testSetName;
+TestDecoratorTest.prototype.testToString = TestDecoratorTest_testToString;
+
+
+function TestSetupTest( name )
+{
+	TestCase.call( this, name );
+}
+function TestSetupTest_setUp()
+{
+	function OnTheFly( name ) { TestCase.call( this, name ); }
+	OnTheFly.prototype = new TestCase();
+	OnTheFly.prototype.testMe = function() {}
+	OnTheFly.prototype.testMyself = function() {}
+	
+	this.mTest = new TestSuite( OnTheFly );
+}
+function TestSetupTest_testRun()
+{
+/*
+	var test = new TestSetup( new Test());
+	test.setUp = function() { this.mSetUp = true; }
+	test.tearDown = function() { this.mTearDown = true; }
+	test.run( new TestResult());
+	this.assertTrue( test.mSetUp );
+	this.assertTrue( test.mtearDown );
+*/	
+}
+TestSetupTest.prototype = new TestCase();
+TestSetupTest.prototype.setUp = TestSetupTest_setUp;
+TestSetupTest.prototype.testRun = TestSetupTest_testRun;
+
+
 function TestRunnerTest( name )
 {
 	TestCase.call( this, name );
@@ -716,8 +940,7 @@ function TestRunnerTest_testCountTestCases()
 }
 function TestRunnerTest_testCreateTestResult()
 {
-	this.assertTrue(
-		this.mRunner.createTestResult() instanceof TestResult );
+	this.assertTrue( this.mRunner.createTestResult() instanceof TestResult );
 }
 function TestRunnerTest_testRun()
 {
@@ -862,6 +1085,8 @@ function JsUnitTestSuite()
 	this.addTestSuite( AssertTest );
 	this.addTestSuite( TestCaseTest );
 	this.addTestSuite( TestSuiteTest );
+	this.addTestSuite( TestDecoratorTest );
+	this.addTestSuite( TestSetupTest );
 	this.addTestSuite( TestRunnerTest );
 	this.addTestSuite( TextTestRunnerTest );
 }

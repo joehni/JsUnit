@@ -32,6 +32,10 @@ license.
  */
 
 
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// JUnit framework classes
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 /**
  * Thrown, when a test assertion fails.
  * @ctor
@@ -60,7 +64,7 @@ AssertionFailedError.prototype.name = "AssertionFailedError";
 /**
  * A test can be run and collect its results.
  * @note Additional to JsUnit 3.7 the test has always a name. The interface
- * requires a getter and a method to search for tests.
+ * requires a getter and a setter and a method to search for tests.
  */
 function Test()
 {
@@ -82,7 +86,7 @@ Test.prototype.findTest = function( testName ) {}
 /**
  * Retrieves the name of the test.
  * @note This is an enhancement to JUnit 3.7
- * @treturn String The name of test cases.
+ * @treturn String The name of test.
  */
 Test.prototype.getName = function() {}
 /**
@@ -91,6 +95,12 @@ Test.prototype.getName = function() {}
  * @treturn TestResult The result of test cases.
  */
 Test.prototype.run = function( result ) {}
+/**
+ * Sets the name of the test.
+ * @note This is an enhancement to JUnit 3.7
+ * @tparam String testName The new name of the test.
+ */
+Test.prototype.setName = function( testName ) {}
 
 
 /**
@@ -275,7 +285,7 @@ function TestResult_run( test )
 	this.startTest( test );
 
 	function OnTheFly() {}
-	OnTheFly.prototype.protect = function( test ) {	test.runBare();	}
+	OnTheFly.prototype.protect = function() { test.runBare(); }
 	OnTheFly.fulfills( Protectable );
 	
 	this.runProtected( test, new OnTheFly());
@@ -297,7 +307,7 @@ function TestResult_runProtected( test, p )
 {
 	try
 	{
-		p.protect( test );
+		p.protect();
 	}
 	catch( ex )
 	{
@@ -362,118 +372,190 @@ function Assert()
 }
 /**
  * Asserts that a condition is true.
- * @tparam String cond The condition to evaluate.
  * @tparam String msg An optional error message.
+ * @tparam String cond The condition to evaluate.
  * @exception AssertionFailedError Thrown if the evaluation was not true.
  * @depricated
  */
-function Assert_assert( cond, msg )
+function Assert_assert( msg, cond )
 {
+	if( arguments.length == 1 )
+	{
+		cond = msg;
+		msg = null;
+	}
 	if( !eval( cond ))
 	{
-		var m = "Condition failed \"" + cond + "\"";
-		if( msg != null && msg != "" )
-			m += ": " + msg;
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Condition failed \"" + cond + "\"";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that two values are equal.
+ * @tparam String msg An optional error message.
  * @tparam Object expected The expected value.
  * @tparam Object actual The actual value.
  * @exception AssertionFailedError Thrown if the expected value is not the 
  * actual one.
  */
-function Assert_assertEquals( expected, actual )
+function Assert_assertEquals( msg, expected, actual )
 {
+	if( arguments.length == 2 )
+	{
+		actual = expected;
+		expected = msg;
+		msg = null;
+	}
 	if( expected != actual )
 	{
-		var m = "Expected <" + expected + ">, actual was <" + actual + ">.";
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Expected:<" + expected + ">, but was:<" + actual + ">";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that a condition is false.
  * @note Not part of JUnit 3.7, but already in development branch.
- * @tparam String cond The condition to evaluate.
  * @tparam String msg An optional error message.
+ * @tparam String cond The condition to evaluate.
  * @exception AssertionFailedError Thrown if the evaluation was not false.
  */
-function Assert_assertFalse( cond, msg )
+function Assert_assertFalse( msg, cond )
 {
+	if( arguments.length == 1 )
+	{
+		cond = msg;
+		msg = null;
+	}
 	if( eval( cond ))
 	{
-		var m = "Condition should have failed \"" + cond + "\"";
-		if( msg != null && msg != "" )
-			m += ": " + msg;
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Condition should have failed \"" + cond + "\"";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that an object is not null.
+ * @tparam String msg An optional error message.
  * @tparam Object object The valid object.
  * @exception AssertionFailedError Thrown if the object is not null.
  */
-function Assert_assertNotNull( object )
+function Assert_assertNotNull( msg, object )
 {
+	if( arguments.length == 1 )
+	{
+		object = msg;
+		msg = null;
+	}
 	if( object === null )
 	{
-		var m = "Object was null.";
+		var m = ( msg ? ( msg + " " ) : "" ) + "Object was null.";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that an object is not undefined.
+ * @tparam String msg An optional error message.
  * @tparam Object object The defined object.
  * @exception AssertionFailedError Thrown if the object is undefined.
  */
-function Assert_assertNotUndefined( object )
+function Assert_assertNotUndefined( msg, object )
 {
+	if( arguments.length == 1 )
+	{
+		object = msg;
+		msg = null;
+	}
 	if( object === undefined )
 	{
-		var m = "Object <" + object + "> was undefined.";
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Object <" + object + "> was undefined.";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that an object is null.
+ * @tparam String msg An optional error message.
  * @tparam Object object The null object.
  * @exception AssertionFailedError Thrown if the object is not null.
  */
-function Assert_assertNull( object )
+function Assert_assertNull( msg, object )
 {
+	if( arguments.length == 1 )
+	{
+		object = msg;
+		msg = null;
+	}
 	if( object !== null )
 	{
-		var m = "Object <" + object + "> was not null.";
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Object <" + object + "> was not null.";
+		this.fail( m, new CallStack());
+	}
+}
+/**
+ * Asserts that two values are the same.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @exception AssertionFailedError Thrown if the expected value is not the 
+ * actual one.
+ */
+function Assert_assertSame( msg, expected, actual )
+{
+	if( arguments.length == 2 )
+	{
+		actual = expected;
+		expected = msg;
+		msg = null;
+	}
+	if( expected === actual )
+		return;
+	else
+	{
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Same expected:<" + expected + ">, but was:<" + actual + ">";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that a condition is true.
- * @tparam String cond The condition to evaluate.
  * @tparam String msg An optional error message.
+ * @tparam String cond The condition to evaluate.
  * @exception AssertionFailedError Thrown if the evaluation was not true.
  */
-function Assert_assertTrue( cond, msg )
+function Assert_assertTrue( msg, cond )
 {
+	if( arguments.length == 1 )
+	{
+		cond = msg;
+		msg = null;
+	}
 	if( !eval( cond ))
 	{
-		var m = "Condition failed \"" + cond + "\"";
-		if( msg != null && msg != "" )
-			m += ": " + msg;
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Condition failed \"" + cond + "\"";
 		this.fail( m, new CallStack());
 	}
 }
 /**
  * Asserts that an object is undefined.
+ * @tparam String msg An optional error message.
  * @tparam Object object The undefined object.
  * @exception AssertionFailedError Thrown if the object is not undefined.
  */
-function Assert_assertUndefined( object )
+function Assert_assertUndefined( msg, object )
 {
+	if( arguments.length == 1 )
+	{
+		object = msg;
+		msg = null;
+	}
 	if( object !== undefined )
 	{
-		var m = "Object <" + object + "> was not undefined.";
+		var m = ( msg ? ( msg + " " ) : "" ) 
+			+ "Object <" + object + "> was not undefined.";
 		this.fail( m, new CallStack());
 	}
 }
@@ -494,6 +576,7 @@ Assert.prototype.assertFalse = Assert_assertFalse;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
 Assert.prototype.assertNotUndefined = Assert_assertNotUndefined;
 Assert.prototype.assertNull = Assert_assertNull;
+Assert.prototype.assertSame = Assert_assertSame;
 Assert.prototype.assertTrue = Assert_assertTrue;
 Assert.prototype.assertUndefined = Assert_assertUndefined;
 Assert.prototype.fail = Assert_fail;
@@ -811,7 +894,7 @@ function TestSuite_setUp() {}
 function TestSuite_tearDown() {}
 /**
  * Runs the test at the given index.
- * @tparam int index The index.
+ * @tparam Number index The index.
  * @type Test
  */
 function TestSuite_testAt( index )
@@ -861,6 +944,129 @@ TestSuite.prototype.toString = TestSuite_toString;
 TestSuite.prototype.warning = TestSuite_warning;
 TestSuite.fulfills( Test );
 
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// JUnit extension classes
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/**
+ * A Decorator for Tests. Use TestDecorator as the base class
+ * for defining new test decorators. Test decorator subclasses
+ * can be introduced to add behaviour before or after a test
+ * is run.
+ * @see Test
+ * @ctor
+ * Constructor.
+ * The constructore saves the test.
+ * @tparam Test test The test to decorate.
+ */
+function TestDecorator( test )
+{
+	Assert.call( this );
+	this.mTest = test;
+}
+/**
+ * The basic run behaviour. The function calls the run method of the decorated
+ * test.
+ * @tparam TestResult result The test result.
+ */
+function TestDecorator_basicRun( result ) { this.mTest.run( result ); }
+/**
+ * Returns the number of the test cases.
+ * @type Number.
+ */
+function TestDecorator_countTestCases() { return this.mTest.countTestCases(); }
+/** 
+ * Returns the test if it matches the name. 
+ * @tparam String name The searched test name.
+ * @type Test
+ */
+function TestDecorator_findTest( name ) { return this.mTest.findTest( name ); }
+/** 
+ * Returns name of the test.
+ * @type String
+ */
+function TestDecorator_getName() { return this.mTest.getName(); }
+/** 
+ * Returns name the decorated test.
+ * @type Test
+ */
+function TestDecorator_getTest() { return this.mTest; }
+/**
+ * Run the test.
+ * @tparam TestResult result The test result.
+ */
+function TestDecorator_run( result ) { this.basicRun( result ); }
+/** 
+ * Sets name of the test.
+ * @tparam String name The new name of the test.
+ */
+function TestDecorator_setName( name ) { this.mTest.setName( name ); }
+/** 
+ * Returns the test as string. 
+ * @type String
+ */
+function TestDecorator_toString() { return this.mTest.toString(); }
+TestDecorator.prototype = new Assert();
+TestDecorator.prototype.basicRun = TestDecorator_basicRun;
+TestDecorator.prototype.countTestCases = TestDecorator_countTestCases;
+TestDecorator.prototype.findTest = TestDecorator_findTest;
+TestDecorator.prototype.getName = TestDecorator_getName;
+TestDecorator.prototype.getTest = TestDecorator_getTest;
+TestDecorator.prototype.run = TestDecorator_run;
+TestDecorator.prototype.setName = TestDecorator_setName;
+TestDecorator.prototype.toString = TestDecorator_toString;
+TestDecorator.fulfills( Test );
+
+
+/**
+ * A Decorator to set up and tear down additional fixture state.
+ * Subclass TestSetup and insert it into your tests when you want
+ * to set up additional state once before the tests are run.
+ * @see TestCase
+ * @ctor
+ * Constructor.
+ * The constructore saves the test.
+ * @tparam Test test The test to decorate.
+ */
+function TestSetup( test )
+{
+	TestDecorator.call( this, test );
+}
+/**
+ * Runs a test case with additional set up and tear down.
+ * @tparam TestResult result The result set.
+ */
+function TestSetup_run( result )
+{
+	function OnTheFly() {}
+	OnTheFly.prototype.protect = function fly()
+	{	
+		test.setUp();
+		test.basicRun( result );
+		test.tearDown();
+	}
+	OnTheFly.fulfills( Protectable );
+	
+	result.runProtected( test, new OnTheFly());
+}
+TestSetup.prototype = new TestDecorator();
+TestSetup.prototype.run = TestSetup_run;
+/**
+ * Sets up the fixture. Override to set up additional fixture
+ * state.
+ */
+TestSetup.prototype.setUp = function() {}
+/**
+ * Tears down the fixture. Override to tear down the additional
+ * fixture state.
+ */
+TestSetup.prototype.tearDown = function() {}
+
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// JUnit runner classes
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /**
  * General base class for an application running test suites.
