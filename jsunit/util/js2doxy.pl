@@ -1013,17 +1013,21 @@ sub parse_prototype
 							.$object_type_names[$scope->{otype}]
 							."' and not a member." )
 						if(   ( $scope->{otype} != $OT_MEMBERFUNC )
-						   && ( $scope->{otype} != $OT_MEMBERSVAR ));
+						   && ( $scope->{otype} != $OT_MEMBERSVAR )
+						   && ( $fnContext->{base} != $scope ));
 				}
-				debug_msg( $DEB_DATABASE, "'$member' is a "
-				   .(  $scope->{otype} == $OT_MEMBERSVAR
-					 ? "static " 
-					 : "")."member "
-				   .(  $scope->{otype} == $OT_MEMBERFUNC 
-					 ? "function" 
-					 : "variable")." with global name '"
-				   .$scope->{name}."'." );
-				$fnContext->{members}{$member} = $scope;
+				if( $fnContext->{base} != $scope )
+				{
+					debug_msg( $DEB_DATABASE, "'$member' is a "
+					   .(  $scope->{otype} == $OT_MEMBERSVAR
+						 ? "static " 
+						 : "")."member "
+					   .(  $scope->{otype} == $OT_MEMBERFUNC 
+						 ? "function" 
+						 : "variable")." with global name '"
+					   .$scope->{name}."'." );
+					$fnContext->{members}{$member} = $scope;
+				}
 				syntax_err( "';' expected, found '$token'." )
 					if( $end and ( $token = parse_code()) ne ";" );
 			}
@@ -1447,6 +1451,8 @@ Any unattached comment is placed into file scope.
 
 The program will accept some additional help commands to produce better C++:
 
+=over 8
+
 =item B<\ctor>
 
 This command starts the description of the constructor.
@@ -1475,6 +1481,8 @@ command supported by this program.
 
 This command sets the type of a variable or the return type of a function.
 It may not be the first command in a documentation comment.
+
+=back
 
 =head1 LIMITATIONS
 
