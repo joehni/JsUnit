@@ -1,5 +1,36 @@
 #!/bin/sh
 
+_DOXYGEN=`type doxygen > /dev/null 2>&1`
+if test -z "$_DOXYGEN"; then
+	if test -d /opt/doxygen/bin; then
+		PATH=$PATH:/opt/doxygen/bin
+		_DOXYGEN=YES
+	fi
+fi
+if test -z "$_DOXYGEN"; then
+	echo "doxygen not available!"
+	exit 1
+fi
+_DOT=`type dot > /dev/null 2>&1`
+if test -z "$_DOT"; then
+	if test -d /opt/graphviz/bin; then
+		HAS_DOT="YES"
+		PATH=$PATH:/opt/graphviz/bin
+	else
+		HAS_DOT="NO"
+	fi
+else
+	HAS_DOT="YES"
+fi
+OUTPUT_DIRECTORY=.
+GENERATE_HTML=YES
+GENERATE_MANE=YES
+PERL_PATH=/usr/bin/perl
+if `uname -s | grep -i CYGWIN`; then
+	PERL_PATH=`cygpath -aw $PERL_PATH`
+fi
+export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH
+
 CWD=$CWD
 cd `dirname $0`/..
 rm -rf .lib/ > /dev/null 2>&1
@@ -8,6 +39,9 @@ cd lib
 for js in *.js; do 
 	../util/jsd2ccd.pl $js | sed -e 's/\(.*\)/\1/g' > ../.lib/$js
 done
+
+
+
 #rm -rf ../.lib
 cd $CWD
 
