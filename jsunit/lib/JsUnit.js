@@ -593,7 +593,7 @@ function TestCase( name )
  * @@class
  * A TestSuite is a composition of Tests.
  * It runs a collection of test cases.
- * In depite of the JUnit implementation, this class has also functionality of
+ * In despite of the JUnit implementation, this class has also functionality of
  * TestSetup of the extended JUnit framework. This is because of &quot;recursion
  * limits&quot; of the JavaScript implementation of BroadVision's One-to-one
  * Server (an OEM version of Netscape Enterprise Edition).
@@ -607,23 +607,23 @@ function TestCase( name )
  */
 function TestSuite( obj )
 {
-	var name = "all";
- 	if( obj != null && obj.constructor )
+	var name;
+ 	if( !obj )
+		name = "all";
+	else if( typeof( obj ) == "object" )
 	{
 		/* RegExp not fully supported by Opera 5.0's ECMA implementation
-		var r = /function (\w+)Test/;
+		var r = /function (\w+Test)/;
 		r.exec( obj.constructor );
 		name = RegExp.$1;
 		*/
 		var str = new String( obj.constructor );
-		name = str.substring( str.indexOf( " " ), str.indexOf( "Test(" ));
+		name = str.substring( str.indexOf( " " ), str.indexOf( "(" ));
 		while( name.indexOf( " " ) == 0 )
 			name = name.substr( 1 );
 	}
 	else if( typeof( obj ) == "string" )
 		name = obj;
-	else if( typeof( obj ) == "undefined" || obj == null )
-		;
 	else 
 		name = obj.toString();
 
@@ -640,6 +640,17 @@ function TestSuite( obj )
 	function addTest( test ) 
 	{ 
 		this.mTests[this.mTests.length] = test; 
+	}
+	/**
+	 * @@method
+	 * Add a test suite to the current suite.
+	 * All fixtures of the test case will be collected in a suite which
+	 * will be added.
+	 * @param testCase The TestCase object to add.
+	 */
+	function addTestSuite( testCase ) 
+	{ 
+		this.addTest( new TestSuite( testCase )); 
 	}
 	/**
 	 * @@method Number
@@ -721,6 +732,7 @@ function TestSuite( obj )
 	function testCount() { return this.mTests.length; }
 
 	this.addTest = addTest;
+	this.addTestSuite = addTestSuite;
 	this.countTestCases = countTestCases;
 	this.findTest = findTest;
 	this.run = run;
@@ -729,7 +741,7 @@ function TestSuite( obj )
 	this.testCount = testCount;
 
 	// collect all testXXX methods
- 	if( obj != null && obj.constructor )
+ 	if( obj && typeof( obj ) == "object" )
 	{
 		for( member in obj )
 		{
@@ -977,13 +989,16 @@ if( this.window )
 {
 	function newOnLoadEventForJsUnit() 
 	{
+		window.isJsUnitPageLoaded = true;
 		if( typeof( window.savedOnLoadEventBeforeJsUnit ) == "function" )
 			window.savedOnLoadEventBeforeJsUnit();
-		window.isJsUnitPageLoaded = true;
 	}
 
-	window.isJsUnitPageLoaded = false;
-	window.savedOnLoadEventBeforeJsUnit = window.onload;
-	window.onload = newOnLoadEventForJsUnit;
+	if( this.name && this.name == "testFrame" )
+	{
+		window.isJsUnitPageLoaded = false;
+		window.savedOnLoadEventBeforeJsUnit = window.onload;
+		window.onload = newOnLoadEventForJsUnit;
+	}
 }
 

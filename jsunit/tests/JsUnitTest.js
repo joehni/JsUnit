@@ -464,12 +464,38 @@ function TestSuiteTest( name )
 		this.testMyself = function() { }
 	}
 
+	function testCtor()
+	{
+		var undefined;
+		var suite = new TestSuite();
+		this.assertEquals( 0, suite.countTestCases());
+		this.assertEquals( "all", suite.name());
+		suite = new TestSuite( null );
+		this.assertEquals( 0, suite.countTestCases());
+		this.assertEquals( "all", suite.name());
+		suite = new TestSuite( undefined );
+		this.assertEquals( 0, suite.countTestCases());
+		this.assertEquals( "all", suite.name());
+		suite = new TestSuite( "name" );
+		this.assertEquals( 0, suite.countTestCases());
+		this.assertEquals( "name", suite.name());
+		suite = new TestSuite( new MyTest());
+		this.assertEquals( 2, suite.countTestCases());
+		this.assertEquals( "MyTest", suite.name());
+	}
 	function testAddTest()
 	{
 		var suite = new TestSuite();
 		this.assertEquals( 0, suite.countTestCases());
 		this.assertUndefined( suite.addTest( new MyTest( "testMe" )));
 		this.assertEquals( 1, suite.countTestCases());
+	}
+	function testAddTestSuite()
+	{
+		var suite = new TestSuite();
+		this.assertEquals( 0, suite.countTestCases());
+		this.assertUndefined( suite.addTestSuite( new MyTest()));
+		this.assertEquals( 2, suite.countTestCases());
 	}
 	function testCountTestCases()
 	{
@@ -488,7 +514,7 @@ function TestSuiteTest( name )
 		var test = suite.findTest( "testMe" );
 		this.assertEquals( "testMe", test.name());
 		this.assertNotNull( suite.findTest( "testMyself" ));
-		this.assertNotNull( suite.findTest( "My" ));
+		this.assertNotNull( suite.findTest( "MyTest" ));
 		this.assertNull( suite.findTest( "you" ));
 		this.assertNull( suite.findTest());
 	}
@@ -534,7 +560,9 @@ function TestSuiteTest( name )
 		this.assertEquals( 2, suite.countTestCases());
 	}
 
+	this.testCtor = testCtor;
 	this.testAddTest = testAddTest;
+	this.testAddTestSuite = testAddTestSuite;
 	this.testCountTestCases = testCountTestCases;
 	this.testFindTest = testFindTest;
 	this.testRun = testRun;
