@@ -3,7 +3,7 @@
 function main( args )
 {
 	var runner = new CtxTestRunner();
-	runner.addSuite( CallStackTest_suite());
+	runner.addSuite( new TestSuite( new CallStackTest()));
 
 	return runner.start( main.arguments );
 }

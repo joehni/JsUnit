@@ -524,10 +524,20 @@ function TestCase( name )
  * @see Test
  * @@ctor
  * Constructor.
- * @param name Name of the test suite.
+ * The constructor collects all test methods of the given object and adds them to
+ * the array of tests.
+ * @param obj instance of the test object with the fixtures.
  */
-function TestSuite( name )
+function TestSuite( obj )
 {
+	var name = "all";
+	if( obj != null )
+	{
+		var r = /function (\w+)Test/;
+		r.exec( obj.constructor );
+		name = RegExp.$1;
+	}
+
 	this._super = Test;
 	this._super( name );
 
@@ -628,6 +638,19 @@ function TestSuite( name )
 	this.setUp = setUp;
 	this.tearDown = tearDown;
 	this.testCount = testCount;
+
+	// collect all testXXX methods
+	if( obj != null )
+	{
+		for( member in obj )
+		{
+			var r = /test(\w+)/;
+			if( r.exec( member ))
+				this.addTest( 
+					eval( "new " + name + "Test( \"" + member + "\" )"));
+		}
+		obj = null;
+	}
 }
 
 /**
@@ -639,7 +662,7 @@ function TestRunner()
 	this._super = TestListener;
 	this._super();
 
-	this.mSuites = new TestSuite( "all" );
+	this.mSuites = new TestSuite();
 
 	/**
 	 * @@method

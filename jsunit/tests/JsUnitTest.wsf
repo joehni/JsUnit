@@ -7,7 +7,7 @@
 function main()
 {
 	var runner = new WshTestRunner();
-	runner.addSuite( CallStackTest_suite());
+	runner.addSuite( new TestSuite( new CallStackTest()));
 	return runner.start( main.arguments );
 }
 main();

@@ -23,7 +23,7 @@ function main()
 		+ JavaScript_1_4 + "</p>");
 
 	var runner = new BrowserTestRunner();
-	runner.addSuite( CallStackTest_suite());
+	runner.addSuite( new TestSuite( new CallStackTest()));
 	return runner.start( main.arguments );
 }
 </script>

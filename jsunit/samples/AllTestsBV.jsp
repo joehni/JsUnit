@@ -3,9 +3,9 @@
 function main( args )
 {
 	var runner = new CtxTestRunner();
-	runner.addSuite( ArrayTest_suite());
-	runner.addSuite( MoneyTest_suite());
-	runner.addSuite( SimpleTest_suite());
+	runner.addSuite( new TestSuite( new ArrayTest()));
+	runner.addSuite( new TestSuite( new MoneyTest()));
+	runner.addSuite( new TestSuite( new SimpleTest()));
 
 	return runner.start( main.arguments );
 }

@@ -54,16 +54,3 @@ function ArrayTest(name) {
 	this.testSort = testSort;
 }
 
-function ArrayTest_suite()
-{
-	var suite = new TestSuite( "Array" );
-	suite.addTest( new ArrayTest( "testCapacity" ));
-	suite.addTest( new ArrayTest( "testConcat" ));
-	suite.addTest( new ArrayTest( "testJoin" ));
-	suite.addTest( new ArrayTest( "testReverse" ));
-	suite.addTest( new ArrayTest( "testSlice" ));
-	suite.addTest( new ArrayTest( "testSort" ));
-
-	return suite;
-}
-

@@ -15,11 +15,3 @@ function CallStackTest( name )
 	this.testToString = testToString;
 }
 
-function CallStackTest_suite()
-{
-	var suite = new TestSuite( "CallStack" );
-	suite.addTest( new CallStackTest( "testToString" ));
-
-	return suite;
-}
-

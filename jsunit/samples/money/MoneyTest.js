@@ -162,28 +162,3 @@ function MoneyTest(name) {
 	this.testSimpleSubtract = testSimpleSubtract;
 }
 
-function MoneyTest_suite()
-{
-	var suite = new TestSuite( "Money" );
-	suite.addTest( new MoneyTest( "testBagMultiply" ));
-	suite.addTest( new MoneyTest( "testBagNegate" ));
-	suite.addTest( new MoneyTest( "testBagSimpleAdd" ));
-	suite.addTest( new MoneyTest( "testBagSubtract" ));
-	suite.addTest( new MoneyTest( "testBagSumAdd" ));
-	suite.addTest( new MoneyTest( "testIsNull" ));
-	suite.addTest( new MoneyTest( "testMixedSimpleAdd" ));
-	suite.addTest( new MoneyTest( "testMoneyBagEquals" ));
-	suite.addTest( new MoneyTest( "testMoneyEquals" ));
-	// suite.addTest( new MoneyTest( "testMoneyHash" ));
-	suite.addTest( new MoneyTest( "testNormalize" ));
-	suite.addTest( new MoneyTest( "testNormalize2" ));
-	suite.addTest( new MoneyTest( "testNormalize3" ));
-	suite.addTest( new MoneyTest( "testNormalize4" ));
-	suite.addTest( new MoneyTest( "testPrint" ));
-	suite.addTest( new MoneyTest( "testSimpleAdd" ));
-	suite.addTest( new MoneyTest( "testSimpleBagAdd" ));
-	suite.addTest( new MoneyTest( "testSimpleNegate" ));
-	suite.addTest( new MoneyTest( "testSimpleSubtract" ));
-
-	return suite;
-}
