@@ -41,11 +41,9 @@ functionality or properties to retrieve the call stack.</P>
 \subsection javascript JavaScript
 <P>JavaScript is the ECMAScript version of Netscape. To be honest, JavaScript
 was developed by Netscape and introduced with the Netscape 2.0 browser. Starting
-with JavaScript 1.4 Netscape also implemented the exceptions. Unfortunately
-this version was first time  included into the 4.72 version of the browser. 
-Despite the client-side, the language was available for Server-Side 
-programming and built into the Netscape Enterprise Server 4.x, now called 
-iPlanet.</P>
+with JavaScript 1.4 Netscape also implemented the exceptions. Today Mozilla.org
+is developing in accordance with ECMA a new version 2.0 of JavaScript, that
+will implement the features of an upcoming 4th edition of the ECMA standard.</P>
 \subsection jscript JScript
 <P>JScript is the Microsoft's implementation of ECMAScript. The language 
 supports exceptions starting with version 5.0 of JScript. The language is 
@@ -62,8 +60,8 @@ have listed all products that I am aware of.</P>
 	<TD><B>JsUnit support</B></TD>
 </TR>
 <TR>
-	<TD>Communiqu&eacute; 2.x</TD>
-	<TD><A HREF="http://www.daynetwork.com">Day International</A></TD>
+	<TD><A HREF=":http://www.day.com/en/product/communiqu.html">Communiqu&eacute; 2.x</A></TD>
+	<TD><A HREF="http://www.day.com">Day International</A></TD>
 	<TD>ECMAScript 3 (not complete)</TD>
 	<TD>no, no exceptions</TD>
 </TR>
@@ -74,47 +72,46 @@ have listed all products that I am aware of.</P>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
-	<TD>Enterprise Server 4.x</TD>
-	<TD>Netscape</TD>
-	<TD>JavaScript 1.4</TD>
-	<TD>yes</TD>
-</TR>
-<TR>
 	<TD>Internet Explorer 4.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
-	<TD>Internet Explorer 5.x</TD>
+	<TD><A HREF="http://www.microsoft.com/windows/ie/previous/default.asp">Internet Explorer 5.x</A></TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 5.0</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
 	<TD>Internet Explorer 6.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 6.0</TD>
 	<TD>?</TD>
 </TR>
 <TR>
 	<TD>Internet Information Server 4.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
 	<TD>Internet Information Server 5.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 5.0</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD><A
-	HREF="http://developer.iplanet.com/docs/manuals/enterprise.html">iPlanet</A></TD>
-	<TD>Sun</TD>
-	<TD>JavaScript 1.5</TD>
+	<TD><A HREF="http://www.iplanet.com/products/iplanet_web_enterprise/home_2_1_1m.html">iPlanet Web Server, Enterprise Edition 4.x</A></TD>
+	<TD><A HREF="http://www.iplanet.com">Sun</A></TD>
+	<TD>JavaScript 1.4</TD>
 	<TD>yes, but no call stack</TD>
+</TR>
+<TR>
+	<TD>iPlanet Web Server, Enterprise Edition 6.x</TD>
+	<TD><A HREF="http://www.iplanet.com">Sun</A></TD>
+	<TD>-</TD>
+	<TD><A HREF="http://docs.iplanet.com/docs/manuals/enterprise/50/rn60.html#37413">no, JavaScript support dropped</A></TD>
 </TR>
 <TR>
 	<TD>Konqueror ?</TD>
@@ -129,37 +126,39 @@ have listed all products that I am aware of.</P>
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>Mozilla 0.9x</TD>
-	<TD>Mozilla.org</TD>
+	<TD><A HREF="http://www.mozilla.org/releases/">Mozilla 0.9x</A></TD>
+	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
-	<TD>mySAP.com ?</TD>
+	<TD><A HREF="http://www.sap.com/solutions/technology/web_app_server.htm">SAP Web Application Server</A></TD>
 	<TD><A HREF="http://www.sap.com">SAP</A></TD>
 	<TD>?</TD>
 	<TD>?</TD>
 </TR>
 <TR>
-	<TD>Navigator 4.x</TD>
+	<TD><A HREF="http://home.netscape.com/download/index.html?cp=dju1">Navigator 4.x</A></TD>
 	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
 	<TD>JavaScript 1.4</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
-	<TD>Navigator 6.x</TD>
-	<TD>Netscape</TD>
+	<TD><A HREF="http://home.netscape.com/download/index.html?cp=dju1">Navigator 6.x</A></TD>
+	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
 	<TD>Notes 5.x</TD>
-	<TD><A HREF="http://www.lotus.com">Lotus/IBM</A></TD>
+	<TD><A HREF="http://www.lotus.com">Lotus</A></TD>
 	<TD>?</TD>
 	<TD>?</TD>
 </TR>
 <TR>
-	<TD>One-to-One 5.x</TD>
+	<TD><A
+	HREF="http://www.broadvision.com/OneToOne/SessionMgr/products/products_main.jsp">One-to-One
+	5.x</A></TD>
 	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
 	<TD>JavaScript 1.4</TD>
 	<TD>yes</TD>
@@ -171,32 +170,38 @@ have listed all products that I am aware of.</P>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
-	<TD>Opera 5.x</TD>
+	<TD><A HREF="http://www.opera.com/download/">Opera 5.x</A></TD>
 	<TD><A HREF="http://www.opera.com">Opera</A></TD>
 	<TD>ECMAScript 3 (not complete)</TD>
-	<TD>no, exceptions too buggy<BR>no callstack</TD>
+	<TD>no, exceptions too buggy<BR>no call stack</TD>
 </TR>
 <TR>
-	<TD>Tomcat 3.x</TD>
-	<TD><A HREF="http://jakarta.apache.org">Apache Jakarta</A></TD>
-	<TD>?</TD>
+	<TD><A HREF="http://www.mozilla.org/rhino/index.html">Rhino 1.5</A></TD>
+	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes, but no call stack</TD>
+</TR>
+<TR>
+	<TD><A HREF="http://www.mozilla.org/js/spidermonkey">SpiderMonkey 1.5</A></TD>
+	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
+	<TD>JavaScript 1.5</TD>
 	<TD>?</TD>
 </TR>
 <TR>
-	<TD>Visual InterDev 6.0</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://msdn.microsoft.com/vinterdev/">Visual InterDev 6.0</A></TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 5.0</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
 	<TD>Windows Scripting Host 1.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 3.0</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
-	<TD>Windows Scripting Host 2.x</TD>
-	<TD>Microsoft</TD>
+	<TD><A HREF="http://msdn.microsoft.com/scripting/">Windows Scripting Host 2.x</A></TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 5.0</TD>
 	<TD>yes</TD>
 </TR>

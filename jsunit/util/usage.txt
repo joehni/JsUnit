@@ -144,8 +144,15 @@ for all deliveries:</P>
 </TR>
 <TR>
 	<TD>AllTestsNS<BR>AllTestsNS.html</TD>
-	<TD>Shell script using <EM>jsac</EM> to compile a Netscape iPlanet web 
-	application. The script compiles the web from the HTML source.</TD>
+	<TD>Netscape SSJS application. The shell script uses <EM>jsac</EM> to 
+	compile the web application. The script generates a web file from the 
+	HTML source and the other used files.</TD>
+</TR>
+<TR>
+	<TD>AllTestsMozilla.js</TD>
+	<TD>JavaScript to use with the JavaScript shells of Mozilla.org. Use 
+	<EM>java js.jar</EM> to run it with the Java version of the interpreter
+	or use <EM>jsshell</EM> to run it with the C version.</TD>
 </TR>
 </TABLE>
 */

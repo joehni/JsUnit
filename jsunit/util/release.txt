@@ -22,12 +22,13 @@ license.
 
 /*!
 \page release Release Notes
-<P>31. Aug. 2001: Current release is version 1.1</P>
+<P>2001-09-04: Current release is version 1.1</P>
 \subsection new New Features
 <UL>
 	<LI>Added unit tests for JsUnit library</LI>
 	<LI>Automated test suite generation</LI>
 	<LI>Browser TestSuite for JsUnit checks now JavaScript compatibility</LI>
+	<LI>Support of Rhino and SpiderMonkey shells from Mozilla.org</LI>
 </UL>
 \subsection change Design Changes
 <UL>
@@ -38,6 +39,7 @@ license.
 	<LI>Added copyright notice to all files</LI>
 	<LI>Added BerliOS reference to project documentation</LI>
 	<LI>Corrected script tags in HTML files</LI>
+	<LI>tearDown method was not called in case of an exception</LI>
 </UL>
 \section todo ToDo List
 <TABLE>
@@ -65,6 +67,6 @@ license.
 </TABLE>
 \section history History of JsUnit
 \subsection v1_0 Version 1.0
-<P>1. Aug. 2001: Completing the library after more than a year more or 
+<P>2001-08-01: Completing the library after more than a year more or 
 less ongoing development, the first release of this software is published</P>
 */
