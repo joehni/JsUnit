@@ -34,57 +34,50 @@ access anymore</P>
 time this operator will call a function that creates automatically the new
 object implicitly. The new object is of the type of the function. This means 
 the function's code represents the class definition, the 
-&quot;constructor&quot; is the function call itself. Someone may ask why I did 
-not use the prototype functionality, but I found compatibility issues as well 
-as the mechanism would have prevented multiple inheritance.</P>
-<P>JsUnit follows the scheme that all member functions and variables are 
-declared within this constructor and assigned explicitly at the end of it.
-This prevents naming conflicts in the global namespace and gives the
-impression of a real class definition. The first section within the constructor
-is used for the inheritance. Every base class (i.e. function) is assigned the 
-internal member <CODE>_super</CODE> and then called with all necessary 
-arguments and using the current object as environment:</P> 
+&quot;constructor&quot; is the function call itself. Since version 2.0 the
+standard inheritance mechanism described in the JavaScript guide 1.5 for the
+object model is supported and preferred.</P>
+<P>JsUnit follows the scheme that all member variables are declared within 
+this constructor. Afterwards all member functions are declared, using the 
+name schema classname_memberfunctionname. All member functions are then added
+to the prototype of the class. This prevents naming conflicts in the global 
+namespace. The first section within the constructor is used for the 
+inheritance. Call a base class by using the call method of its constructor:</P> 
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-this._super = BaseClass1;
-this._super( arg1, arg2 );
-this._super = BaseClass2;
-this._super( arg1, arg2 );</PRE></DIV></P>
+this.constructor.call( this, arg1, arg2 );</PRE></DIV></P>
 \endhtmlonly
-<P>After calling the constuctors you should initialize the member variables by
+<P>After calling the constuctor you should initialize the member variables by
 assigning them a value:</P>
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
 this.mMember1 = 1;
 this.mMember2 = "yes";</PRE></DIV></P>
 \endhtmlonly
-<P>Now is the time to define all member functions. Just nest  the function
-declaration into the constructor. Assign all functions at the end of the
-constructor:</P>
+<P>After writing the constructor it is the time to define all member functions.
+Declare the function using the class name as prefix. Assign all functions
+afterwards to the prototype:</P>
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-function f1() {}
-function f2() {}
+function ClassName_f1() {}
+function ClassName_f2() {}
 
-this.f1 = f1;
-this.f2 = f2;</PRE></DIV></P>
+ClassName.prototype = new BaseClass();
+ClassName.prototype.f1 = ClassName_f1;
+ClassName.prototype.f2 = ClassName_f2;</PRE></DIV></P>
 \endhtmlonly
-<P>It is no problem to overload a function that was already assign in a
-constructor of a base class. Unfortunately you have to follow a naming
-convention, if your new function has to call the overloaded function of the 
-base class:</P>
+<P>It is no problem to overload a function that was already assigned in a
+the base class. Call the overloaded function using its apply or call method 
+in the prototype of the constructor:</P>
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-function f1() 
+function ClassName_f1() 
 {
-    this.Base1_f1();
+    this.constructor.prototype.f1.apply( this, arguments );
 }
-
-this.Base1_f1 = this.f1;
-this.f1 = f1;</PRE></DIV></P>
+//...
+ClassName.prototype.f1 = ClassName_f1;</PRE></DIV></P>
 \endhtmlonly
-<P>After assigning all functions you may add additional code necessary for
-proper initialization of the object.</P>
 \subsection writing Writing test cases and test suites
 \dontinclude SimpleTest.js
 <P>Writing unit tests you have to write at first test cases for your classes.
@@ -104,7 +97,6 @@ from class TestCase:</P>
 to assign the methods</P>
 \skip setUp
 \until }
-<P>Any additional initialization code may follow.</P>
 \subsection application Creating a test application
 <P>After writing the test cases we need an application to run the
 tests. The application has the responsibility to include all necessary

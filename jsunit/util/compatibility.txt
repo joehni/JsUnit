@@ -46,9 +46,11 @@ is developing in accordance with ECMA a new version 2.0 of JavaScript, that
 will implement the features of an upcoming 4th edition of the ECMA standard.</P>
 \subsection jscript JScript
 <P>JScript is the Microsoft's implementation of ECMAScript. The language 
-supports exceptions starting with version 5.0 of JScript. The language is 
+supports exceptions starting with version 5.0 of JScript. The language was 
 available with Internet Explorer starting with version 5.0, Internet 
-Information Server 5.0 and Windows Scripting Host 2.0.</P>
+Information Server 5.0 and Windows Scripting Host 2.0. Older versions of
+the internet explorer or the IIS can be upgraded to a newer JScript engine
+by upgrading the Windows Script engine (formerly called WSH).</P>
 \section products JavaScript enabled products
 <P>There are a lot of products that are able to process a JavaScript flavor. I 
 have listed all products that I am aware of.</P>
@@ -196,6 +198,13 @@ have listed all products that I am aware of.</P>
 	<TD>exceptions too buggy and no call stack</TD>
 </TR>
 <TR>
+	<TD><A HREF="http://www.opera.com/download/">Opera 6.x</A></TD>
+	<TD><A HREF="http://www.opera.com">Opera</A></TD>
+	<TD>ECMAScript 3</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+</TR>
+<TR>
 	<TD><A HREF="http://www.mozilla.org/rhino/index.html">Rhino 1.5</A></TD>
 	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
 	<TD>JavaScript 1.5</TD>
@@ -213,6 +222,13 @@ have listed all products that I am aware of.</P>
 	<TD><A HREF="http://msdn.microsoft.com/vinterdev/">Visual InterDev 6.0</A></TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 5.0</TD>
+	<TD>yes</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD><A HREF="http://msdn.microsoft.com/scripting/">Windows Script 5.x</A></TD>
+	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
+	<TD>JScript 5.x</TD>
 	<TD>yes</TD>
 	<TD></TD>
 </TR>

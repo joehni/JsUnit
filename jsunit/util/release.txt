@@ -25,6 +25,7 @@ license.
 <P>2001-10-26: Current release is version 2.0.alpha.2</P>
 \subsection new New Features
 <UL>
+	<LI>TestSuite supports object class definitions</LI>
 	<LI>TestSuite has now also function addTestSuite</LI>
 	<LI>Assert has new functions assertTrue and asserFalse</LI>
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
@@ -35,6 +36,7 @@ license.
 	<LI>TestSuite supports again strings as name</LI>
 	<LI>CallStack.js has been renamed to JsUtil.js</LI>
 	<LI>Support of Array.push and Array.pop at all systems</LI>
+	<LI>System tests already rewritten using standard object model</LI>
 </UL>
 \subsection bug Bug Fixes
 <UL>
@@ -45,6 +47,7 @@ license.
 <UL>
 	<LI>new file JsUnitBrowser.js used for Edward's browser GUI</LI>
 	<LI>JsUnit.js has a browser detection</LI>
+	<LI>Switch to standard object model not only for system test</LI>
 </UL>
 \section todo ToDo List
 <TABLE>
@@ -63,7 +66,7 @@ license.
 	<TD>My current approach supports multiple inheritance. I have to think
 	about a new model supporting at least Java &quot;interfaces&quot; that
 	is more conforming to JavaScript. Unfortunately this implies also a new 
-	script for document generation.</TD>
+	script for document generation. Work in progress.</TD>
 </TR>
 <TR>
 	<TD>Integrate with 

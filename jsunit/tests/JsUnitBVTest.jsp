@@ -25,18 +25,18 @@ license.
 function main( args )
 {
 	var runner = new CtxTestRunner();
-	runner.addSuite( new TestSuite( new CallStackTest()));
-	runner.addSuite( new TestSuite( new ArrayTest()));
-	runner.addSuite( new TestSuite( new StringTest()));
-	runner.addSuite( new TestSuite( new AssertionFailedErrorTest()));
-	runner.addSuite( new TestSuite( new TestTest()));
-	runner.addSuite( new TestSuite( new TestFailureTest()));
-	runner.addSuite( new TestSuite( new TestResultTest()));
-	runner.addSuite( new TestSuite( new AssertTest()));
-	runner.addSuite( new TestSuite( new TestCaseTest()));
-	runner.addSuite( new TestSuite( new TestSuiteTest()));
-	runner.addSuite( new TestSuite( new TestRunnerTest()));
-	runner.addSuite( new TestSuite( new TextTestRunnerTest()));
+	runner.addSuite( new TestSuite( CallStackTest ));
+	runner.addSuite( new TestSuite( ArrayTest ));
+	runner.addSuite( new TestSuite( StringTest ));
+	runner.addSuite( new TestSuite( AssertionFailedErrorTest ));
+	runner.addSuite( new TestSuite( TestTest ));
+	runner.addSuite( new TestSuite( TestFailureTest ));
+	runner.addSuite( new TestSuite( TestResultTest ));
+	runner.addSuite( new TestSuite( AssertTest ));
+	runner.addSuite( new TestSuite( TestCaseTest ));
+	runner.addSuite( new TestSuite( TestSuiteTest ));
+	runner.addSuite( new TestSuite( TestRunnerTest ));
+	runner.addSuite( new TestSuite( TextTestRunnerTest ));
 
 	return runner.start( main.arguments );
 }

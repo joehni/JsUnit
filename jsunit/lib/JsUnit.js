@@ -585,8 +585,10 @@ function TestCase( name )
 	this.countTestCases = countTestCases;
 	this.run = run;
 	this.runBare = runBare;
-	this.setUp = setUp;
-	this.tearDown = tearDown;
+	if( !this.setUp )
+		this.setUp = setUp;
+	if( !this.tearDown )
+		this.tearDown = tearDown;
 }
 
 /**
@@ -607,25 +609,27 @@ function TestCase( name )
  */
 function TestSuite( obj )
 {
-	var name;
- 	if( !obj )
-		name = "all";
-	else if( typeof( obj ) == "object" )
+	var name, str;
+	switch( typeof obj )
 	{
-		/* RegExp not fully supported by Opera 5.0's ECMA implementation
-		var r = /function (\w+Test)/;
-		r.exec( obj.constructor );
-		name = RegExp.$1;
-		*/
-		var str = new String( obj.constructor );
-		name = str.substring( str.indexOf( " " ), str.indexOf( "(" ));
-		while( name.indexOf( " " ) == 0 )
-			name = name.substr( 1 );
+		case "undefined": name = "all"; break;
+		case "object":
+			if( !obj )
+			{
+				name = "all";
+				break;
+			}
+			str = new String( obj.constructor );
+		case "function":
+			if( !str )
+				str = new String( obj );
+			name = str.substring( str.indexOf( " " ) + 1, str.indexOf( "(" ));
+			if( name == "(" )
+				name = "[anonymous]";
+			break;
+		case "string": name = obj; break;
+		default: name = obj.toString(); break;
 	}
-	else if( typeof( obj ) == "string" )
-		name = obj;
-	else 
-		name = obj.toString();
 
 	this._super = Test;
 	this._super( name );
@@ -741,9 +745,17 @@ function TestSuite( obj )
 	this.testCount = testCount;
 
 	// collect all testXXX methods
- 	if( obj && typeof( obj ) == "object" )
+	if( typeof( obj ) == "function" )
 	{
-		for( member in obj )
+		for( var member in obj.prototype )
+		{
+			if( member.indexOf( "test" ) == 0 )
+				this.addTest( new ( obj )( member ));
+		}
+	}
+ 	else if( typeof( obj ) == "object" )
+	{
+		for( var member in obj )
 		{
 			if( member.indexOf( "test" ) == 0 )
 				this.addTest( new obj.constructor( member ));

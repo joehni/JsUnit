@@ -23,6 +23,8 @@ license.
 /*!
 \page internal Internals
 \subsection docConv Document Conventions
+\warning This will be change soon, since the code will be written in JsUnit 2.0
+followinf the JavaScript guide for the object model.
 <P>The documentation of JavaScript code has to follow also very strict
 patterns. See following chapter how to generate the documentation.</P>
 <P>The documentation syntax follows the javadoc conventions, but have special

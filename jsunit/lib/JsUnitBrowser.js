@@ -43,12 +43,47 @@ function TestPage( file )
  * @@class
  * Class for an application running test suites in the browser GUI.
  */
-function BrowserTestRunner()
+function BrowserTestRunner( doc )
 {
 	this._super = TestRunner;
 	this._super();
 
+	this._document = doc;
+
+	function getTestPageContainer()
+	{
+		return this._testPageContainer;
+	}
 	
+	function loadDocument( filename )
+	{
+		var rows = this._testPageContainer.rows;
+		var row = this._testPageContainer.insertRow( rows.length );
+		var td = row.insertCell( 0 );
+		var node = this._document.createTextNode( filename );
+		td.appendChild( node );
+		td = row.insertCell( 1 );
+		node = this._document.createElement( "iframe" );
+		td.appendChild( node );
+		node.src = "file:///" + filename;
+	}
+	
+	this._testPageContainer = null;
+	if( this._document )
+	{
+		this._testPageContainer = this._document.getElementById( "JsUnitContainer" );
+		if( !this._testPageContainer )
+		{
+			var body = this._document.getElementsByTagName("body")[0];
+			var id = this._document.createAttribute("id");
+			id.nodeValue = "JsUnitContainer";
+			var table = this._document.createElement("table");
+			table.setAttributeNode(id);
+			body.appendChild(table);
+		}
+		this._testPageContainer = this._document.getElementById( "JsUnitContainer" );
+	}
+	
+	this.getTestPageContainer = getTestPageContainer;
+	this.loadDocument = loadDocument;
 }
-
-
