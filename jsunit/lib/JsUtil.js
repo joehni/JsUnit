@@ -163,7 +163,6 @@ if( !Array.prototype.push )
 	 *
 	 * The function is active if the ECMA implementation does not implement
 	 * it (like Microsoft JScript engine up to version 5.5).
-	 * @type Number
 	 * @treturn Object Number of added elements
 	 */
 	function Array_push()
