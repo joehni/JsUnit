@@ -793,6 +793,16 @@ sub create_base
 	return $scope;
 }
 
+sub create_static_var
+{
+	my ( $context, $member ) = @_;
+	syntax_err( "'$member' already defined." )
+		if(   exists $context->{members}{$member}
+	   	   &&    $context->{members}{$member}{otype} != $OT_MEMBERVAR );
+	$context->{members}{$member} = { otype => $OT_MEMBERSVAR };
+	debug_msg( $DEB_DATABASE, "Added static member variable '$member'." );
+}
+
 sub find_member
 {
 	my ( $context, $member ) = @_;
@@ -973,8 +983,9 @@ sub parse_prototype
 					/^$identifier$/	&& $token =~ /\.prototype\.$/ 
 									&& !/^prototype$/
 									&& ( $token .= $_, next );
-					syntax_err( "Unexpected tokens '$token' and '$_'"
-						." in prototype assignment" );
+					$base = "???";
+					#syntax_err( "Unexpected tokens '$token' and '$_'"
+					#	." in prototype assignment" );
 				}
 			}
 			my $scope = $context;
@@ -982,7 +993,8 @@ sub parse_prototype
 				while( $scope and ( not exists $scope->{objs}{$base} ));
 			if( not $scope )
 			{
-				warning( "'$base' is not defined." );
+				create_static_var( $fnContext, $member );
+				$end and ( $token = parse_code()) ne ";";
 			}
 			else
 			{
@@ -1019,12 +1031,7 @@ sub parse_prototype
 		}
 		else
 		{
-			syntax_err( "'$member' already defined." )
-				if(   exists $fnContext->{members}{$member}
-				   && $fnContext->{members}{$member}{otype} != $OT_MEMBERVAR );
-			$fnContext->{members}{$member} = { otype => $OT_MEMBERSVAR };
-			debug_msg( $DEB_DATABASE, 
-				"Added static member variable '$member'." );
+			create_static_var( $fnContext, $member );
 			while( parse_code() ne ";" ) {}
 		}
 		

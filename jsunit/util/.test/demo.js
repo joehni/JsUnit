@@ -11,6 +11,10 @@ C.prototype.memvar = 1;
 
 if( true )
 {
+	/**
+	 * This is CC_test.
+	 * @treturn String It returns String.
+	 */
 	function CC_test() {}
 	C.prototype.CC = function () {}
 	C.prototype.CC.prototype.test = CC_test;
@@ -41,6 +45,8 @@ function x(a,b)
 	{
 		this.xxx = 1;
 	}
+	this.aa = a;
+	this.bb = this.xx;
 
 	function N()
 	{
@@ -48,6 +54,8 @@ function x(a,b)
 	}
 
 	N.prototype = new M();
+	N.prototype.v = this;
+	N.prototype.w = this.xxx;
 }
 /**
  * This is class x.
@@ -103,8 +111,18 @@ function Array_isEmpty( array )
 	return array.length() == 0;
 }
 Array.prototype.isEmpty = Array_isEmpty;
-Array.prototype.test = x.prototype.CC.prototype.test;
+Array.prototype.test = C.prototype.CC.prototype.test;
+/** 
+ * Equivalent for toString.
+ * \treturn String Returns array as String.
+ */
 Array.prototype._toString = Array.prototype.toString;
+Array.prototype._isEmpty = Array.prototype.isEmpty;
 Array.prototype.member = 1;
-
+Array.prototype.func = C.prototype.CC;
+Array.prototype.isTest1 = this.window != null;
+Array.prototype.isTest2 = this.window == null;
+Array.prototype.isTest =
+	   Array.prototype.isTest1
+	|| Array.prototype.isTest2;
 
