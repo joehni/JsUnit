@@ -1251,6 +1251,57 @@ ExceptionTestCase.prototype.runTest = ExceptionTestCase_runTest;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /**
+ * A listener interface for observing the execution of a test run.
+ */
+function TestRunListener()
+{
+}
+/**
+ * Status for an error.
+ * @type Number
+ */
+TestRunListener.prototype.STATUS_ERROR = 1;
+/**
+ * Status for a failure.
+ * @type Number
+ */
+TestRunListener.prototype.STATUS_FAILURE = 2;
+/**
+ * A test run was started.
+ * @tparam String suiteName The name of the test suite.
+ * @tparam Number testCount The number of tests in the suite.
+ */
+TestRunListener.prototype.testRunStarted = function( suiteName, testCount ) {}
+/**
+ * A test run was ended.
+ * @tparam Number elapsedTime The number of elapsed milliseconds.
+ */
+TestRunListener.prototype.testRunEnded = function( elapsedTime ) {}
+/**
+ * A test run was stopped.
+ * @tparam Number elapsedTime The number of elapsed milliseconds.
+ */
+TestRunListener.prototype.testRunStopped = function( elapsedTime ) {}
+/**
+ * A test started.
+ * @tparam String testName The name of the started test.
+ */
+TestRunListener.prototype.testStarted = function( testName ) {}
+/**
+ * A test ended.
+ * @tparam String testName The name of the ended test.
+ */
+TestRunListener.prototype.testEnded = function( testName ) {}
+/**
+ * A test failed.
+ * @tparam Number status The status of the test.
+ * @tparam String testName The name of the failed test.
+ * @tparam String trace The stack trace as String.
+ */
+TestRunListener.prototype.testFailed = function( status, testName, trace ) {}
+
+
+/**
  * General base class for an application running test suites.
  */
 function TestRunner()
