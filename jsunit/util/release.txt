@@ -24,14 +24,14 @@ license.
 
 \page release Release Notes
 
-<P>2002-09-20: Current release is version 1.2.beta.1</P>
+<P>2002-11-09: Current release is version 1.2.beta.1</P>
 
-<P>A lot of internal work has already be done. Most changes of JUnit 3.8.1
+<P>A lot of internal work has be done. The changes of JUnit 3.8.1
 have been integrated and JsUnit is running quite smoothly for JScript,
 SpiderMonkey and Rhino. Also the new documentation script works fine.</P>
 
 <P>Since the current state of the framework is now quite stable regading
-the mensioned JavaScript engines I will release an intermediate version 1.2
+the mensioned JavaScript engines I released an intermediate version 1.2
 before version 2.0, that was proposed to have an integration with Edward
 Hieatt's browser GUI.</P>
 
@@ -91,7 +91,7 @@ Hieatt's browser GUI.</P>
 \subsection progress Work in Progress
 
 <UL>
-	<LI></LI>
+	<LI>Compatibility tests</LI>
 </UL>
 
 \section todo ToDo List
