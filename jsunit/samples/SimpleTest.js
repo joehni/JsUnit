@@ -24,7 +24,8 @@ function SimpleTest(name) {
 		this.assertEquals(1, this.fValue2 - this.fValue1);
 		this.assertNotNull(this.fValue1);
 		this.assertNull(null);
-//		this.assertSame(this.fValue1,this.fValue1);
+		this.assertUndefined();
+		this.assertNotUndefined( true );
 	}
 	
 	this.setUp = setUp;

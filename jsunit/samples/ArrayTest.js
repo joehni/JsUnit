@@ -27,8 +27,6 @@ function ArrayTest(name) {
 	}
 	function testJoin() {
 		this.assertEquals("1-2-3", this.fFull.join("-"));
-		// Interesting: Following test fails!
-		//this.assertEquals("123", this.fFull.join());
 	}
 	function testReverse() {
 		this.assertEquals("3,2,1", this.fFull.reverse());

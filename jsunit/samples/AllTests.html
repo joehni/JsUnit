@@ -3,7 +3,7 @@
 <title>JsUnit Test</title>
 <script language="JavaScript1.4" type="text/javascript" src="../lib/CallStack.js"></script>
 <script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnit.js"></script>
-<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnitBrowser.js"></script>
+<script language="JavaScript1.4" type="text/javascript" src="../lib/JsUnitHTML.js"></script>
 
 <script language="JavaScript1.4" type="text/javascript" src="ArrayTest.js"></script>
 <script language="JavaScript1.4" type="text/javascript" src="money/AbstractFunctionCalledException.js"></script>
@@ -28,7 +28,7 @@ function main()
 		  "<p>Proof JavaScript 1.4 capability: " 
 		+ JavaScript_1_4 + "</p>");
 
-	var runner = new BrowserTestRunner();
+	var runner = new HTMLTestRunner();
 	runner.addSuite( new TestSuite( new ArrayTest()));
 	runner.addSuite( new TestSuite( new MoneyTest()));
 	runner.addSuite( new TestSuite( new SimpleTest()));
