@@ -26,7 +26,7 @@ license.
 <P>JsUnit is a ported JavaScript version of <A HREF="http://www.junit.org">
 JUnit</A> written by Erich Gamma and Kent Beck. The port's base is JUnit 
 version 3.2 and covers only the core system and the examples. Main goal of the 
-port is a system that can be invoked by command line exiting with a return code
+port is a system that can be invoked by command line retunring en exit code
 to allow automated tests as long as the environment support this scenario.</P>
 \section contents Contents
 <UL>

@@ -179,7 +179,7 @@ have listed all products that I am aware of.</P>
 	<TD><A HREF="http://www.broadvision.com">BroadVision</A></TD>
 	<TD>JavaScript 1.4</TD>
 	<TD>yes</TD>
-	<TD>OEM version Netscape</TD>
+	<TD>OEM version of Netscape</TD>
 </TR>
 <TR>
 	<TD>Opera 4.x</TD>

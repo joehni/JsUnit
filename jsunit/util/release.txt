@@ -34,6 +34,7 @@ license.
 \subsection change Design Changes
 <UL>
 	<LI>TestSuite needs now a TextCase object as argument</LI>
+	<LI>BrwoserTestRunner renamed to HTMLTestRunner</LI>
 </UL>
 \subsection bug Bug Fixes
 <UL>
