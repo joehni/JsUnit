@@ -22,7 +22,6 @@ license.
 
 /**
  * Some simple tests.
- *
  */
 function SimpleTest(name)
 {
@@ -55,10 +54,10 @@ function SimpleTest_testAsserts()
 	this.assertNotUndefined( true );
 }
 SimpleTest.prototype = new TestCase();
-SimpleTest.prototype.setUp = SimpleTest_setUp
-SimpleTest.prototype.testAdd = SimpleTest_testAdd
-SimpleTest.prototype.testDivideByZero = SimpleTest_testDivideByZero
-SimpleTest.prototype.testAsserts = SimpleTest_testAsserts
+SimpleTest.prototype.setUp = SimpleTest_setUp;
+SimpleTest.prototype.testAdd = SimpleTest_testAdd;
+SimpleTest.prototype.testDivideByZero = SimpleTest_testDivideByZero;
+SimpleTest.prototype.testAsserts = SimpleTest_testAsserts;
 
 
 function SimpleTestSuite()
