@@ -38,6 +38,9 @@ applications using SpiderMonkey as easy scripting environment. Mozilla browser
 itself (and therefore the Netscape browser also) is using this engine in their
 browsers. This engine extremly fast and reliable.
 
+Early version built into the iPlanet Web Server did not seem have an Error
+object.
+
 \subsection spidermonkeyshell SpiderMonkey's js / jsshell
 
 The SpiderMonkey sources contain also a shell that is able to execute
@@ -46,9 +49,6 @@ href="http://www.mozilla.org/cvs.html">CVS</a> or from a defined tarball from
 <a href="ftp://ftp.mozilla.org/pub/js/">ftp://ftp.mozilla.org/pub/js/</a> and
 <a href="http://lxr.mozilla.org/mozilla/source/js/src/README.html">build the
 shell</a> yourself.
-
-Early version built into the iPlanet Web Server did not seem have an Error
-object.
 
 \section rhino Rhino
 
@@ -74,9 +74,9 @@ write to the console and \c load to load other JavaScript files. Call the
 engine with
 
 \htmlonly
-<p><div class="fragment"><pre>
+<div class="fragment"><pre>
 java org.mozilla.javascript.tools.shell.Main <i>&lt;filename&gt;.js</i></pre>
-</div></p>
+</div>
 \endhtmlonly
 
 Additionally the engine will also throw a TypeError running JsUnit if
@@ -85,27 +85,66 @@ optimization is enabled (greater 0). I have not investigated on this further.
 There is also a basic debugger available calling
 
 \htmlonly
-<p><div class="fragment"><pre>
+<div class="fragment"><pre>
 java org.mozilla.javascript.tools.debugger.Main <i>&lt;filename&gt;.js</i></pre>
-</div></p>
+</div>
 \endhtmlonly
 
-\subsection winscript Windows Script
+\image html rhinodebugger.png
+
+\section winscript Windows Script
 
 Microsoft's JavaScript implementation named JScript is part of the <a
-href="http://msdn.microsoft.com/scripting/">Windows Script</a>ing engine. This
-engine is able to run a lot of languages, JScript is just one among others.
-Microsoft offers in the package JScript and VBScript, other venders offer
-other languages that uses the engine. Any application may use the scripting
-engine and process scripts in any of the registered languages.
+href="http://msdn.microsoft.com/scripting/">Windows Script</a> engine (also
+coming with the Operating System). This engine is able to run a lot of
+languages, JScript is just one among others.  Microsoft offers in the package
+JScript and VBScript, other venders offer other languages that uses the
+engine. Any application may use the scripting engine and process scripts in
+any of the registered languages.
 
 The JScript implementation up-to version 5.6 has an incompatible definition of
-the Error class. JsUnit provides a version following ECMA-262 3rd. Early
-versions also miss the Array#push and Array#pop member functions that are
-provided by JsUnit in this case, too.
+the Error class, they do not provide the Error#name and Error#message members.
+Early versions also miss the Array#push and Array#pop member functions that
+are in this case provided by JsUnit.
 
-\subsection cscript Windows Script Command-Line invocation
+\subsection cscript Windows Script Host
+
+The Windows Script host has two utilities running scripts from command-line:
+cscript and wscript. Both utilities recognize the file extension and will run
+JScript files directly. wscript will execute them in a GUI environment, while
+cscript is a console application running the script in the console.
+
+JScript code can be within normal .js files or the JScript files can be
+included using a Windows Script Host (.wsh) file. JsUnit delivers a sample for
+both variants. See description to \ref wsdebug for debugging. Alternativly you
+can use Visual InterDev.
 
 \subsection iexplore Internet Explorer
+
+The Internet Explorer's JScript capabilitites are inherited from the installed
+\ref cscript. Therefore even an Internet Explorer 3.x may be able to run
+JsUnit, if the engine was updated seperatly. The Internet Explorer adds DOM
+objects to the JScript. The DOM is differrent between the various Internet
+explorer versions.
+
+Use the HTML include tag to add JsUnit to your scripts. See the delivered
+examples. You might debug every script also using the \ref wsdebug or advanced
+development tools from Microsoft.
+
+\subsection wsdebug Windows Script Debugger
+
+The Microsoft Script Debugger is also available at <a
+href="http://msdn.microsoft.com/downloads/default.asp?URL=/downloads/sample.asp?url=/msdn-files/027/001/733/msdncompositedoc.xml">MSDN
+for download</a>. It can be used to debug scripts embedded in HTML documents
+or for single JavaScript files. To debug a script from command-line use
+the command-line interpreters with the /X option:
+
+\htmlonly
+<div class="fragment"><pre>
+cscript /X <i>&lt;filename&gt;.js</i></pre>
+</div>
+\endhtmlonly
+
+\image html msscriptdebugger.png
 
 */

@@ -32,9 +32,9 @@ also subject of compatibility and have changed in various versions of the
 language implementations of the different vendors. Unfortunately the ECMA
 definition does not have any concept.</P>
 
-<P>The JsUtil collection adds also standard objects and methods like push and pop
-for Arrays or an Error class if the implementation of the interpreter lacks
-it.</P>
+<P>The JsUtil collection adds also standard objects and methods like push and
+pop for Arrays or an Error class if the implementation of the interpreter
+lacks it.</P>
 
 \section language The Script language
 
@@ -101,7 +101,8 @@ have listed all products that I am aware of.</P>
 	<TD>no exceptions</TD>
 </TR>
 <TR>
-	<TD><A HREF="http://www.day.com/en/product.html">Communiqu&eacute; Unify (3.x)</A></TD>
+	<TD><A HREF="http://www.day.com/en/product.html">Communiqu&eacute; 
+	Unify (3.x)</A></TD>
 	<TD><A HREF="http://www.day.com">Day International</A></TD>
 	<TD>JavaScript 1.5</TD>
 	<TD>Rhino</TD>
@@ -397,7 +398,7 @@ have listed all products that I am aware of.</P>
 	<TD>&nbsp;</TD>
 </TR>
 <TR>
-	<TD>Windows Scripting Host 1.x</TD>
+	<TD>Windows Script Host 1.x</TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
 	<TD>JScript 3.0</TD>
 	<TD>JScript</TD>
@@ -405,9 +406,9 @@ have listed all products that I am aware of.</P>
 	<TD>no exceptions</TD>
 </TR>
 <TR>
-	<TD><A HREF="http://msdn.microsoft.com/scripting/">Windows Scripting Host 2.x</A></TD>
+	<TD>Windows Script Host 2.x</TD>
 	<TD><A HREF="http://www.microsoft.com">Microsoft</A></TD>
-	<TD>JScript 5.0</TD>
+	<TD>JScript 5.0/5.5</TD>
 	<TD>JScript</TD>
 	<TD>1.0, 1.1, 1.2</TD>
 	<TD>&nbsp;</TD>
