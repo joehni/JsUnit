@@ -27,7 +27,7 @@ $VERSION = "2.0";
 
 ############ Options ####################
 
-use vars qw( $DEB_NONE $DEB_PARSER $DEB_SCANNER $DEB_DATABASE $DEB_DUMP );
+use vars qw( $DEB_NONE $DEB_PARSER $DEB_SCANNER $DEB_DATABASE $DEB_DUMP $file );
 $DEB_NONE = 0;
 $DEB_DUMP = 1;
 $DEB_DATABASE = 2;
@@ -54,7 +54,10 @@ pod2usage( 1 ) if( $opt_usage or ( $#ARGV < 0 && -t ));
 
 sub syntax_err
 {
+	sub dump_struct;
+	
 	print( STDERR "Line $.: Syntax: @_\n" ); 
+	dump_struct( $file, "FILE." ) if( $opt_debug & $DEB_DUMP );
 	exit( 3 );
 }
 
@@ -98,7 +101,7 @@ $cur_line = "";
     "\\s+",
     ".",
 );
-$newline_pattern = "[\\n\\r\\f]";
+$newline_pattern = "[\\n\\f]";
 
 use subs qw( switch_scan_mode );
 
@@ -109,7 +112,12 @@ sub next_token
 	my ( $token, $token_pattern, $pattern );
 	local $_;
 
-	$cur_line = <> if( $cur_line eq "" );
+	while( $cur_line eq "" )
+	{
+		$cur_line = <>;
+		$cur_line =~ s/\r//g; # Bug of Perl 5.6.1 for Cygwin on text mounts
+		return if eof;
+	}
 	
 	if( $cur_line ne "" )
 	{
@@ -128,7 +136,6 @@ sub next_token
 		{
 			$_ = $token; 
 			s/\n/\\n/go; 
-			s/\r//go;
 			print( STDERR "Scanner: '$_' ~ '$pattern' "
 				.$scan_mode_names[$scan_mode]."\n" );
 		}
@@ -204,7 +211,7 @@ sub switch_scan_mode
 
 ############ Parser #####################
 
-use vars qw( $last_token $last_doc @object_type_names $file );
+use vars qw( $last_token $last_doc @object_type_names );
 $last_token = "";
 @object_type_names = qw( 
 	FILE 
@@ -238,7 +245,7 @@ $OT_MEMBERVAR = 5;
 $OT_MEMBERFUNC = 6;
 $OT_CONSTRUCTOR = 7;
 
-use subs qw( parse next_parser_token );
+use subs qw( parse next_parser_token parse_interface );
 
 sub parse_string
 {
@@ -277,7 +284,7 @@ sub parse_doc_comment
 				$doc->{otype} = $OT_VARIABLE if( /^\\var$/ );
 				if( /^\\ctor$/ )
 				{
-					$doc->{text} =~ s/^(.+[\r\n]+)[^\r\n]+$/\1/s;
+					$doc->{text} =~ s/^(.+[\n]+)[^\n]+$/\1/s;
 					$doc->{otype} = $OT_CONSTRUCTOR;
 					skip_line();
 					$token = next_token();
@@ -288,7 +295,7 @@ sub parse_doc_comment
 			{
 				/^\\type$/ && do
 				{
-					$doc->{text} =~ s/^(.+[\r\n]+)[^\r\n]+$/\1/s;
+					$doc->{text} =~ s/^(.+[\n]+)[^\n]+$/\1/s;
 					$doc->{rtype} = next_none_ws_token();
 					syntax_err( "Identifier expected" )
 						if( $doc->{rtype} !~ /^(?:$identifier)$/ );
@@ -412,18 +419,18 @@ sub parse_variable
 	my $context = shift;
 	my $token = parse_code();
 
-	if( $$context->{otype} == $OT_FILE )
+	if( $context->{otype} == $OT_FILE )
 	{
 		syntax_err( "Variable name expected, found '$token'." )
 			if( $token !~ /^(?:$identifier)$/ );
 
-		$$context->{objs}{$token} = 
+		$context->{objs}{$token} = 
 		{ 
 			name => $token,
 			otype => $OT_VARIABLE, 
-			scope => $$context 
+			scope => $context 
 		};
-		my $varContext = $$context->{objs}{$token};
+		my $varContext = $context->{objs}{$token};
 		print( STDERR "Database: Variable '$token'.\n" ) 
 			if( $opt_debug & $DEB_DATABASE );
 		if( $last_doc )
@@ -465,17 +472,17 @@ sub parse_function
 	}
 	else
 	{
-		$$context->{anonymous} = 0 if( not exists $$context->{anonymous} );
-		$name = "?".($$context->{anonymous}++);
+		$context->{anonymous} = 0 if( not exists $context->{anonymous} );
+		$name = "?".($context->{anonymous}++);
 	}
 
-	$$context->{objs}{$name} = 
+	$context->{objs}{$name} = 
 	{ 
 		name => $name,
 		otype => $OT_FUNCTION, 
-		scope => $$context 
+		scope => $context 
 	};
-	my $fnContext = $$context->{objs}{$name};
+	my $fnContext = $context->{objs}{$name};
 	print( STDERR "Database: Added "
 			.($name =~ /^\?/ ? "anonymous " : "")."function '$name'.\n" ) 
 		if( $opt_debug & $DEB_DATABASE );
@@ -524,7 +531,7 @@ sub parse_function
 	syntax_err( "'{' expected, found '$token'." )
 		if(( $token = parse_code ) ne "{" );
 	$last_token = $token;
-	parse( \$fnContext );
+	parse( $fnContext );
 
 	$name;
 }
@@ -533,18 +540,18 @@ sub create_base
 {
 	my ( $context, $base ) = @_;
 	my $scope = $context;
-	while( defined $$scope && not exists $$scope->{objs}{$base} )
+	while( $scope && not exists $scope->{objs}{$base} )
 	{
 		$context = $scope;
-		$scope = \$$scope->{scope};
+		$scope = $scope->{scope};
 	}	
-	if( not defined $$scope )
+	if( not $scope )
 	{
-		$$context->{objs}{$base} = 
+		$context->{objs}{$base} = 
 		{ 
 			name => $base,
 			otype => $OT_CLASS, 
-			scope => $$context,
+			scope => $context,
 		};
 		$scope = $context;
 		print( STDERR "Database: Added missing base class '$base'.\n" ) 
@@ -562,25 +569,27 @@ sub parse_prototype
 	local $_;
 	
 	$_ = shift;
-		/^($identifier)\.prototype\.($identifier)$/
-	 or /^($identifier)\.prototype$/
-	 or do 
-		{
-			warning( "prototype definition '$_' not supported." );
-			while(( $token = parse_code()) ne ";" ) {}
-			$last_doc = undef;
-			return;
-		};
+	    s/^($identifier)\.prototype$//
+	 or s/^($identifier)\.prototype\.(.*)$/\2/
+	 or syntax_err "No a valid identifier '$1' for prototype definition.";
 	
 	$name = $1;
-	$member = $2;
 	
-	syntax_err( "Syntax error in prototype definition."
-			." '=' expected, found '$token'" )
-		if( parse_code() ne "=" );
-	syntax_err( "Prototype assignment, but no constructor of $name." )
-		if( not exists $$context->{objs}{$name} );
-	my $fnContext = $$context->{objs}{$name};
+	if(    not exists $context->{objs}{$name}
+	   and exists $context->{members}{$name} )
+	{
+		syntax_err( "Wrong prototype assignment to '$name' of type "
+				.$object_type_names[$context->{members}{$name}{otype}]."." )
+			if( $context->{members}{$name}{otype} != $OT_MEMBERFUNC );
+		$context->{objs}{$name} = $context->{members}{$name};
+		delete $context->{members}{$name};
+		$context->{objs}{$name}{otype} = $OT_CLASS;
+		print( STDERR "Database: '$name' is a nested class.\n" ) 
+			if( $opt_debug & $DEB_DATABASE );
+	}
+	syntax_err( "Prototype assignment, but no constructor of '$name'." )
+		if( not exists $context->{objs}{$name} );
+	my $fnContext = $context->{objs}{$name};
 	$fnContext->{otype} = $OT_CLASS if( $fnContext->{otype} == $OT_FUNCTION );
 	syntax_err( "Prototype assignment to invalid type '"
 			.$object_type_names[$fnContext->{otype}]."'." )
@@ -588,6 +597,30 @@ sub parse_prototype
 		   && $fnContext->{otype} != $OT_INTERFACE );
 	print( STDERR "Database: '$name' is a class.\n" ) 
 		if( $opt_debug & $DEB_DATABASE );
+
+	/^(?:.+\.prototype)/ && do
+		{
+			parse_prototype( $fnContext, $_ );
+			return;
+		};
+	/^(?:.+\.fulfills)$/ && do
+		{
+			parse_interface( $fnContext, $_ );
+			return;
+		};
+	!/^(?:$identifier)$/ and $_ and do
+		{
+			warning "Unknown code construction '$_'"
+				." in prototype definition of '$name'.";
+			while(( $token = parse_code()) ne ";" ) {}
+			$last_doc = undef;
+			return;
+		};
+	
+	$member = $_;
+	syntax_err( "Syntax error in prototype definition."
+			." '=' expected, found '$token'" )
+		if( parse_code() ne "=" );
 			
 	if( $member eq "" )
 	{
@@ -600,7 +633,7 @@ sub parse_prototype
 		syntax_err( "';' expected, found '$token'." ) if( $token ne ";" );
 		
 		my $scope = create_base( $context, $base );
-		$fnContext->{base} = $$scope->{objs}{$base};
+		$fnContext->{base} = $scope->{objs}{$base};
 		if( $last_doc )
 		{
 			if( exists $fnContext->{doc} )
@@ -630,15 +663,15 @@ sub parse_prototype
 				$end = 0;
 			}
 			my $scope = $context;
-			$scope = \$$scope->{scope} 
-				while( defined $$scope && not exists $$scope->{objs}{$token} );
-			if( not defined $$scope )
+			$scope = $scope->{scope} 
+				while( $scope && not exists $scope->{objs}{$token} );
+			if( not $scope )
 			{
-				warning( "$token is not defined." );
+				warning( "'$token' is not defined." );
 			}
 			else
 			{
-				$scope = $$context->{objs}{$token};
+				$scope = $context->{objs}{$token};
 				$scope->{otype} = $OT_MEMBERFUNC 
 					if( $scope->{otype} == $OT_FUNCTION );
 				syntax_err( "$token is not a member." )
@@ -692,7 +725,7 @@ sub parse_interface
 	  	/^($identifier)\.fulfills$/
 	 or do
 		{
-			warning "interface definition '$_' not supported.";
+			warning "Interface definition '$_' not supported.";
 			while(( $token = parse_code()) ne ";" ) {}
 			$last_doc = undef;
 			return;
@@ -705,12 +738,12 @@ sub parse_interface
 		warning( "'(' expected, found '$token'." );
 		return;
 	}
-	if( not exists $$context->{objs}{$name} )
+	if( not exists $context->{objs}{$name} )
 	{
 		warning( "Prototype fulfillment, but no constructor of $name." );
 		return;
 	}
-	my $fnContext = $$context->{objs}{$name};
+	my $fnContext = $context->{objs}{$name};
 	$fnContext->{fulfills} = {};
 	while(( $token = parse_code()) ne ")" )
 	{
@@ -722,7 +755,7 @@ sub parse_interface
 		}
 		
 		my $scope = create_base( $context, $token );
-		$scope = $$scope->{objs}{$token};
+		$scope = $scope->{objs}{$token};
 		$scope->{otype} = $OT_INTERFACE if( $scope->{otype} == $OT_CLASS );
 		syntax_err( "$token is a '"
 				.$object_type_names[$scope->{otype}]."', but not a class." )
@@ -749,8 +782,24 @@ sub parse
 		{
 			for( $token )
 			{
-				/^(?:})$/				&& --$level == 0 && last PARSE;
-				/^(?:{)$/				&& ++$level;
+				/^(?:})$/ && do
+				{
+					delete $context->{objs};
+					--$level == 0;
+					$context->{objs} = pop( @{$context->{symbols}} );
+					last PARSE if $context->{otype} != $OT_FILE;
+				};
+				/^(?:{)$/ && do
+				{
+					my $objs = $context->{objs};
+					push( @{$context->{symbols}}, $objs );
+					delete $context->{objs};
+					foreach my $key ( keys %$objs )
+					{
+						$context->{objs}{$key} = $objs->{$key};
+					}
+					++$level;
+				};
 				/^(?:var)$/				&& parse_variable( $context );
 				/^(?:function)$/		&& parse_function( $context );
 				/^(?:.+\.prototype)/	&& parse_prototype( $context, $token );
@@ -760,10 +809,10 @@ sub parse
 		elsif( $scan_mode == $S_DOC_COMMENT )
 		{
 			parse_doc_comment();
-			if(    $last_doc->{otype} == $OT_FILE 
-				or $last_doc->{otype} == $OT_CLASS
-				or $last_doc->{otype} == $OT_INTERFACE
-				or $last_doc->{otype} == $OT_VARIABLE )
+			if(   $last_doc->{otype} == $OT_FILE 
+			   || $last_doc->{otype} == $OT_CLASS
+			   || $last_doc->{otype} == $OT_INTERFACE
+			   || $last_doc->{otype} == $OT_VARIABLE )
 			{
 				$file->{doc} = [] if( not exists $file->{doc} );
 				push( @{$file->{doc}}, $last_doc->{text} );
@@ -773,7 +822,8 @@ sub parse
 	}
 
 	syntax_err( "Unbalanced '}' found." ) if( $level < 0 );
-	syntax_err( "EOF found. '}' expected." ) if( $level > 0 );
+	syntax_err( "EOF found. '}' expected." ) 
+		if( $level > 0 && $context->{otype} != $OT_FILE );
 }
 
 
@@ -787,37 +837,46 @@ sub dump_struct
 	{
 		my ( $prefix, $value ) = @_;
 		$value =~ s/\n/\\n/go;
-		$value =~ s/\r/\\r/go;
-		print( $prefix, "$value\n" );
+		print( STDERR $prefix, "$value\n" );
 	}
-
+	
+	$prefix =~ /^(.*)\.$/ || $prefix =~ /^(.*)$/;
+	dump_value( $1.": ", $struct );
+	
 	if( ref $struct eq "HASH" )
 	{
-		foreach my $key ( keys %$struct )
+		KEY: foreach my $key ( keys %$struct )
 		{
 			my $value = $struct->{$key};
-			dump_value( $prefix.$key.": ", $value );
-			next if( $key =~ /^(?:scope|base)$/ );
+			if( $key =~ /^(?:scope|base)$/ )
+			{
+				$value .= " ==> ".
+					(exists $value->{name} ? $value->{name} : "undef");
+				dump_value( $prefix.$key.": ", $value );
+				next;
+			}
 			for( ref $value )
 			{
-				/HASH/ 	&& dump_struct( $value, $prefix.$key."." );
-				/ARRAY/ && dump_struct( $value, $prefix.$key );
+				/HASH/ 	&& dump_struct( $value, $prefix.$key."." ) && next KEY;
+				/ARRAY/ && dump_struct( $value, $prefix.$key ) && next KEY;
+				/.*/ 	&& dump_value( $prefix.$key.": ", $value ) && next KEY;
 			}
 		}
 	}
 	elsif( ref $struct eq "ARRAY" )
 	{
-		foreach my $i ( 0 .. $#$struct )
+		I: foreach my $i ( 0 .. $#$struct )
 		{
 			my $value = $struct->[$i];
-			dump_value( $prefix."[$i]: ", $value );
 			for( ref $value )
 			{
-				/HASH/	&& dump_struct( $value, $prefix."[$i]." );
-				/ARRAY/	&& dump_struct( $value, $prefix."[$i]" );
+				/HASH/	&& dump_struct( $value, $prefix."[$i]." ) && next I;
+				/ARRAY/	&& dump_struct( $value, $prefix."[$i]" ) && next I;
+				/.*/ 	&& dump_value( $prefix."[$i]: ", $value ) && next I;
 			}
 		}
 	}
+	1;
 }
 
 ############ output #####################
@@ -837,12 +896,12 @@ sub generate_forward_classes
 	local $_;
 	for( keys %$objects )
 	{
+		next if( !/^(?:$identifier)$/ );
 		print( $pref."class $_;\n" )
 			if( $objects->{$_}{otype} == $OT_CLASS );
 		print( $pref."interface $_;\n" )
 			if( $objects->{$_}{otype} == $OT_INTERFACE );
 	}
-	print( "\n" );
 }
 
 sub generate_function
@@ -880,8 +939,8 @@ sub generate_function
 	if( $ctor )
 	{
 		syntax_err( "Documentation for $name is not for a constructor." )
-			if(    $ctor->{otype} != $OT_CONSTRUCTOR
-			   and $ctor->{otype} != $OT_UNKNOWN );
+			if(   $ctor->{otype} != $OT_CONSTRUCTOR
+			   && $ctor->{otype} != $OT_UNKNOWN );
 		print( "\n".$ctor->{text} );
 		$rtype = $ctor->{rtype} if( exists $doc->{rtype} );
 		$argtypes = $ctor->{args} if( exists $doc->{args} );
@@ -901,12 +960,13 @@ sub generate_function
 sub generate_variable
 {
 	my ( $var, $name, $pref ) = @_;
+	return if( $name !~ /^(?:$identifier)$/ );
 	my $rtype = "int";
 	if( exists $var->{doc} )
 	{
 		syntax_err( "Documentation for $name is not for a variable." )
-			if( 	$var->{doc}{otype} != $var->{otype}
-				and $var->{doc}{otype} != $OT_UNKNOWN );
+			if(   $var->{doc}{otype} != $var->{otype}
+			   && $var->{doc}{otype} != $OT_UNKNOWN );
 		print( "\n".$var->{doc}{text} );
 		$rtype = $var->{doc}{rtype} if( exists $var->{doc}{rtype} );
 	}
@@ -920,6 +980,7 @@ sub generate_class
 	my $type = "class ";
 	local $_;
 	
+	return if( $name !~ /^(?:$identifier)$/ );
 	$type = "interface " if( $context->{otype} == $OT_INTERFACE );
 	if( exists $context->{doc} )
 	{
@@ -939,9 +1000,16 @@ sub generate_class
 		print( $delim, "public $if" );
 		$delim = ", ";
 	}
-	print( "\n$pref"."{\n$pref"."private:\n" );
-	generate_forward_classes( $context->{objs}, $pref.$indent );
+	print( "\n$pref"."{\n" );
 	print( "$pref"."public:\n" );
+	generate_forward_classes( $context->{objs}, $pref.$indent );
+	for( keys %{$context->{objs}} )
+	{
+		my $obj = $context->{objs}{$_};
+		generate_class( $obj, $_, $pref.$indent )
+			if(   $obj->{otype} == $OT_CLASS 
+			   || $obj->{otype} == $OT_INTERFACE );
+	}
 	generate_function( $context, $name, $pref.$indent, $context->{otype} );
 	for( keys %{$context->{members}} )
 	{
@@ -993,13 +1061,14 @@ use vars qw( $context );
 
 $context = 
 { 
+	name => $ARGV[0],
 	otype => $OT_FILE,
 	scope => undef
 };
 $file = $context;
 
-parse( \$context );
-dump_struct( $context, "Main: " ) if( $opt_debug & $DEB_DUMP );
+parse( $context );
+dump_struct( $context, "FILE." ) if( $opt_debug & $DEB_DUMP );
 generate( $context );
 
 
