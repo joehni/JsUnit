@@ -854,7 +854,12 @@ function TextTestRunner()
 	 */
 	function addError( test, except )
 	{
-		this.writeLn( "ERROR in " + test + ": " + except );
+		var str;
+		if( except instanceof Error )
+			str = except.message || except.description || "Unknown";
+		else
+			str = except;
+		this.writeLn( "ERROR in " + test + ": " + str );
 	}
 	/**
 	 * @@method

@@ -156,3 +156,14 @@ if ( !Array.prototype.pop )
 if ( !Array.prototype.push ) 
 	Array.prototype.push = Array_push;
 
+function String_trim( chars )
+{
+	if( !chars )
+		chars = "\\s";
+	var re = new RegExp("^[" + chars + "]*(.*?)[" + chars + "]*$");
+	var s = this.replace( re, "$1");
+	return s;
+}
+
+String.prototype.trim = String_trim;
+

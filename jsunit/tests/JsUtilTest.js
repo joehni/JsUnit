@@ -73,3 +73,26 @@ function ArrayTest( name )
 	this.testPush = testPush;
 }
 
+function StringTest( name )
+{
+	this._super = TestCase
+	this._super( name );
+
+	function testTrim()
+	{
+		var s = new String( "abc" );
+		this.assertEquals( "abc", s.trim());
+		s = " abc \t ";
+		this.assertEquals( "abc", s.trim());
+		this.assertEquals( " abc \t ", s );
+		s = "123abc456";
+		this.assertEquals( "abc", s.trim( "0123456789" ));
+		this.assertEquals( "123abc456", s );
+		s = "bbbabcbbb";
+		this.assertEquals( "abc", s.trim( "b" ));
+		this.assertEquals( "bbbabcbbb", s );
+	}
+
+	this.testTrim = testTrim;
+}
+

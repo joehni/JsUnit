@@ -40,6 +40,7 @@ function main( args )
 	var runner = new MozillaTestRunner();
 	runner.addSuite( new TestSuite( new CallStackTest()));
 	runner.addSuite( new TestSuite( new ArrayTest()));
+	runner.addSuite( new TestSuite( new StringTest()));
 	runner.addSuite( new TestSuite( new AssertionFailedErrorTest()));
 	runner.addSuite( new TestSuite( new TestTest()));
 	runner.addSuite( new TestSuite( new TestFailureTest()));
