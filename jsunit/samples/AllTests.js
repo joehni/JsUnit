@@ -39,23 +39,31 @@ eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
 eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
 eval( JsUtil.prototype.include( "SimpleTest.js" ));
 
-function main( test )
+function AllTests()
 {
-	var runner = new TextTestRunner();
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-	return runner.start( test );
+	TestSuite.call( this, "AllTests" );
 }
+function AllTests_suite()
+{
+	var suite = new AllTests();
+	suite.addTest( ArrayTestSuite.prototype.suite());
+	suite.addTest( MoneyTestSuite.prototype.suite());
+	suite.addTest( SimpleTestSuite.prototype.suite());
+	return suite;
+}
+AllTests.prototype = new TestSuite();
+AllTests.prototype.suite = AllTests_suite;
 
 var args;
 if( this.WScript )
 {
-	if( WScript.Arguments.Count())
-		args = WScript.Arguments( 0 );
+	args = new Array();
+	for( var i = 0; i < WScript.Arguments.Count(); ++i )
+		args[i] = WScript.Arguments( i );
 }
 else 
 	args = arguments;
 		
-JsUtil.prototype.quit( main( args ));
+var result = TextTestRunner.prototype.main( args );
+JsUtil.prototype.quit( result );
 

@@ -69,4 +69,5 @@ function SimpleTestSuite()
 	this.addTestSuite( SimpleTest );
 }
 SimpleTestSuite.prototype = new TestSuite();
+SimpleTestSuite.prototype.suite = function () { return new SimpleTestSuite(); }
 

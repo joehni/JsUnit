@@ -83,4 +83,5 @@ function ArrayTestSuite()
 	this.addTestSuite( ArrayTest );
 }
 ArrayTestSuite.prototype = new TestSuite();
+ArrayTestSuite.prototype.suite = function () { return new ArrayTestSuite(); }
 

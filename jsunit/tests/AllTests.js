@@ -56,14 +56,6 @@ for( var i in JsUtil.prototype )
 	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 		writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
 
-function main( args )
-{
-	var runner = new TextTestRunner();
-	runner.addSuite( new JsUtilTestSuite());
-	runner.addSuite( new JsUnitTestSuite());
-	return runner.start( args );
-}
-
 writer.println( "\nJsUnit Test Suite:\n" );
 if( exceptionsWorking )
 {
@@ -71,16 +63,32 @@ if( exceptionsWorking )
 	eval( JsUtil.prototype.include( "JsUtilTest.js" ));
 	eval( JsUtil.prototype.include( "JsUnitTest.js" ));
 
+	function AllTests()
+	{
+		TestSuite.call( this, "AllTests" );
+	}
+	function AllTests_suite()
+	{
+		var suite = new AllTests();
+		suite.addTest( JsUtilTestSuite.prototype.suite());
+		suite.addTest( JsUnitTestSuite.prototype.suite());
+		return suite;
+	}
+	AllTests.prototype = new TestSuite();
+	AllTests.prototype.suite = AllTests_suite;
+
 	var args;
 	if( this.WScript )
 	{
-		if( WScript.Arguments.Count())
-			args = WScript.Arguments( 0 );
+		args = new Array();
+		for( var i = 0; i < WScript.Arguments.Count(); ++i )
+			args[i] = WScript.Arguments( i );
 	}
 	else 
 		args = arguments;
 		
-	JsUtil.prototype.quit( main( args ));
+	var result = TextTestRunner.prototype.main( args );
+	JsUtil.prototype.quit( result );
 }
 else
 {

@@ -218,4 +218,5 @@ function MoneyTestSuite()
 	this.addTestSuite( MoneyTest );
 }
 MoneyTestSuite.prototype = new TestSuite();
+MoneyTestSuite.prototype.suite = function () { return new MoneyTestSuite(); }
 

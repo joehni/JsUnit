@@ -412,4 +412,5 @@ function JsUtilTestSuite()
 	this.addTestSuite( StringWriterTest );
 }
 JsUtilTestSuite.prototype = new TestSuite();
+JsUtilTestSuite.prototype.suite = function (){ return new JsUtilTestSuite(); }
 

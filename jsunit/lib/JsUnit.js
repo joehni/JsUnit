@@ -883,7 +883,7 @@ function TestSuite( obj )
 	this.setName( name );
 
 	// collect all testXXX methods
-	if( typeof( obj ) == "function" )
+	if( typeof( obj ) == "function" && obj.prototype )
 	{
 		for( var member in obj.prototype )
 		{
@@ -1338,7 +1338,6 @@ TestRunListener.prototype.testFailed = function( status, testName, trace ) {}
  */
 function BaseTestRunner()
 {
-	this.mSuites = new TestSuite();
 	this.mElapsedTime = 0;
 }
 /**
@@ -1362,27 +1361,11 @@ function BaseTestRunner_addFailure( test, afe )
 		test.toString(), afe.toString()); 
 }
 /**
- * Add a test suite to the application.
- * @tparam TestSuite suite The suite to add.
- */
-function BaseTestRunner_addSuite( suite ) { this.mSuites.addTest( suite ); }
-/**
- * Counts the number of test cases that will be run by this test 
- * application.
- * @treturn Number The number of test cases.
- */
-function BaseTestRunner_countTestCases() { return this.mSuites.countTestCases(); }
-/**
  * The milliseconds needed to execute all registered tests of the runner.
  * This number is 0 as long as the test was never started.
  * @treturn Number The milliseconds.
  */
 function BaseTestRunner_countMilliSeconds() { return this.mElapsedTime; }
-/**
- * Creates an instance of a TestResult.
- * @treturn TestResult Returns the new TestResult instance.
- */
-function BaseTestRunner_createTestResult() { return new TestResult(); }
 /**
  * Implementation of TestListener.
  * @tparam Test test The ended test.
@@ -1413,37 +1396,36 @@ function BaseTestRunner_getPreferences()
 	return BaseTestRunner.prototype.mPreferences; 
 }
 /**
- * Runs all test of all suites and collects their results in a TestResult 
- * instance.
+ * Returns the Test corresponding to the given suite.
  * @tparam String name The name of the test.
- * @tparam TestResult result The test result to fill.
+ * This is a template method, subclasses override runFailed(), 
+ * clearStatus().
  */
-function BaseTestRunner_run( name, result )
-{
-	var test = this.mSuites.findTest( name );
-	if( test == null )
+function BaseTestRunner_getTest( name ) 
+{ 
+	if( typeof( name ) != "string" )
 	{
-		var ex = new AssertionFailedError( 
-			"Test \"" + name + "\" not found.", new CallStack());
-		result.addFailure( new Test( name ), ex );
+		this.clearStatus();
+		return null;
+	}
+	var test;
+	var testFunc = eval( name );
+	if(   ( testFunc instanceof Function ) 
+	   && testFunc.prototype
+	   && testFunc.prototype.suite )
+	{
+		test = new testFunc.prototype.suite();
+	}
+	if( !( test instanceof TestSuite ))
+	{
+		this.runFailed( "Test not found \"" + name + "\"" );
+		return null;
 	}
 	else
 	{
-		this.mElapsedTime = new Date();
-		test.run( result );
-		this.mElapsedTime = new Date() - this.mElapsedTime;
+		this.clearStatus();
+		return test;
 	}
-}
-/**
- * Runs all test of all suites and collects their results in a TestResult 
- * instance.
- * @tparam TestResult result The test result to fill.
- */
-function BaseTestRunner_runAll( result ) 
-{ 
-	this.mElapsedTime = new Date();
-	this.mSuites.run( result ); 
-	this.mElapsedTime = new Date() - this.mElapsedTime;
 }
 /**
  * Set a global preference.
@@ -1493,15 +1475,13 @@ function BaseTestRunner_truncate( str )
 BaseTestRunner.prototype.mPreferences = new Object();
 BaseTestRunner.prototype.addError = BaseTestRunner_addError;
 BaseTestRunner.prototype.addFailure = BaseTestRunner_addFailure;
-BaseTestRunner.prototype.addSuite = BaseTestRunner_addSuite;
-BaseTestRunner.prototype.countTestCases = BaseTestRunner_countTestCases;
+BaseTestRunner.prototype.clearStatus = function() {}
 BaseTestRunner.prototype.countMilliSeconds = BaseTestRunner_countMilliSeconds;
-BaseTestRunner.prototype.createTestResult = BaseTestRunner_createTestResult;
 BaseTestRunner.prototype.endTest = BaseTestRunner_endTest;
 BaseTestRunner.prototype.getPreference = BaseTestRunner_getPreference;
 BaseTestRunner.prototype.getPreferences = BaseTestRunner_getPreferences;
-BaseTestRunner.prototype.run = BaseTestRunner_run;
-BaseTestRunner.prototype.runAll = BaseTestRunner_runAll;
+BaseTestRunner.prototype.getTest = BaseTestRunner_getTest;
+BaseTestRunner.prototype.runFailed = function( msg ) {}
 BaseTestRunner.prototype.setPreference = BaseTestRunner_setPreference;
 BaseTestRunner.prototype.setPreferences = BaseTestRunner_setPreferences;
 BaseTestRunner.prototype.showStackRaw = BaseTestRunner_showStackRaw;
@@ -1513,6 +1493,72 @@ BaseTestRunner.prototype.truncate = BaseTestRunner_truncate;
 BaseTestRunner.fulfills( TestListener );
 BaseTestRunner.prototype.setPreference( "filterStack", true );
 BaseTestRunner.prototype.setPreference( "maxMessageLength", 500 );
+
+
+/**
+ * TestRunner of JsUnit 1.1
+ * @deprecated
+ */
+function TestRunner()
+{
+	BaseTestRunner.call( this );
+	this.mSuites = new TestSuite();
+}
+/**
+ * Add a test suite to the application.
+ * @tparam TestSuite suite The suite to add.
+ */
+function TestRunner_addSuite( suite ) 
+{ 
+	this.mSuites.addTest( suite ); 
+}
+/**
+ * Counts the number of test cases that will be run by this test 
+ * application.
+ * @treturn Number The number of test cases.
+ */
+function TestRunner_countTestCases() 
+{ 
+	return this.mSuites.countTestCases(); 
+}
+/**
+ * Runs all test of all suites and collects their results in a TestResult 
+ * instance.
+ * @tparam String name The name of the test.
+ * @tparam TestResult result The test result to fill.
+ */
+function TestRunner_run( name, result )
+{
+	var test = this.mSuites.findTest( name );
+	if( test == null )
+	{
+		var ex = new AssertionFailedError( 
+			"Test \"" + name + "\" not found.", new CallStack());
+		result.addFailure( new Test( name ), ex );
+	}
+	else
+	{
+		this.mElapsedTime = new Date();
+		test.run( result );
+		this.mElapsedTime = new Date() - this.mElapsedTime;
+	}
+}
+/**
+ * Runs all test of all suites and collects their results in a TestResult 
+ * instance.
+ * @tparam TestResult result The test result to fill.
+ */
+function TestRunner_runAll( result ) 
+{ 
+	this.mElapsedTime = new Date();
+	this.mSuites.run( result ); 
+	this.mElapsedTime = new Date() - this.mElapsedTime;
+}
+TestRunner.prototype = new BaseTestRunner();
+TestRunner.prototype.addSuite = TestRunner_addSuite;
+TestRunner.prototype.countTestCases = TestRunner_countTestCases;
+TestRunner.prototype.run = TestRunner_run;
+TestRunner.prototype.runAll = TestRunner_runAll;
 
 
 /**
@@ -1591,6 +1637,7 @@ function ResultPrinter_printDefect( defect, count )
 {
 	this.printDefectHeader( defect, count );
 	this.printDefectTrace( defect );
+	this.getWriter().println();
 }
 /**
  * \internal
@@ -1707,22 +1754,211 @@ ResultPrinter.fulfills( TestListener );
 
 
 /**
- * Class for an application running test suites with a test based status report.
+ * Class for an application running test suites with a test based status 
+ * report.
+ * @ctor
+ * The constructor.
+ * @tparam Object outdev Output device
+ * The TestRunner is initialized with the given output device. This may be an
+ * instance of a ResultPrinter, a PrinterWriter or undefined. For a 
+ * PrinterWriter the constructor creates a new instance of a standard 
+ * ResultPrinter with this PrinterWriter. If \a outdev is undefined it creates
+ * a ResultPrinter with the SystemWriter.
  */
-function TextTestRunner( printer )
+function TextTestRunner( outdev )
 {
 	BaseTestRunner.call( this );
+	this.setPrinter( outdev );
+}
+/**
+ * Creates an instance of a TestResult to be used for the test run.
+ * @treturn TestResult Returns the new TestResult instance.
+ */
+function TextTestRunner_createTestResult() 
+{
+	return new TestResult(); 
+}
+/**
+ * Executes a test run with the given test.
+ * @tparam Test test The test.
+ * @treturn TestResult The result of the test.
+ */
+function TextTestRunner_doRun( test ) 
+{
+	var result = this.createTestResult();
+	result.addListener( this.mPrinter );
+	var startTime = new Date();
+	test.run( result );
+	var endTime = new Date();
+	this.mPrinter.print( result, endTime - startTime );
+	return result;
+}
+/**
+ * Runs a single test or a suite extracted from a TestCase subclass.
+ * @tparam Object test The class to test or a test.
+ * This static method can be used to start a test run from your program.
+ * @treturn TestResult The result of the test.
+ */
+function TextTestRunner_run( test )
+{
+	if( test instanceof Function )
+		test = new TestSuite( test );
+	var runner = new TextTestRunner();
+	return runner.doRun( test );
+}
+/**
+ * Program entry point.
+ * @tparam Array<String> args Program arguments.
+ * The function will exit the program with an error code indicating the type
+ * of success.
+ */
+function TextTestRunner_main( args )
+{
+	var ex;
+	var runner = new TextTestRunner();
+	try
+	{
+		var result = runner.start( args );
+		JsUtil.prototype.quit( 
+			  result.wasSuccessful() 
+			? TextTestRunner.prototype.SUCCESS_EXIT
+			: TextTestRunner.prototype.FAILURE_EXIT );
+	}
+	catch( ex )
+	{
+		TextTestRunner.prototype.runFailed( ex.toString());
+	}
+}
+/**
+ * Run failed.
+ * @tparam String msg The failure message.
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ */
+function TextTestRunner_runFailed( msg )
+{
+	JsUtil.prototype.getSystemWriter().println( msg );
+	JsUtil.prototype.quit( TextTestRunner.prototype.EXCEPTION_EXIT );
+}
+/**
+ * Set printer.
+ * @tparam Object outdev Output device
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ */
+function TextTestRunner_setPrinter( outdev )
+{
+	if( typeof( outdev ) == "object" )
+	{
+		if( outdev instanceof PrinterWriter )
+			outdev = new ResultPrinter( outdev );
+		if( !( outdev instanceof ResultPrinter ))
+			outdev = new ResultPrinter();
+	}
+	else
+		outdev = new ResultPrinter();
 
-	this.mRunTests = 0;
+	this.mPrinter = outdev;
+}
+/**
+ * Starts a test run.
+ * @tparam Object args The (optional) arguments as Array or String
+ * @type TestResult
+ * Analyzes the command line arguments and runs the given test suite. If
+ * no argument was given, the function tries to run AllTests.suite().
+ */
+function TextTestRunner_start( args )
+{
+	function Usage()
+	{
+		//Error.call( this, msg );
+		this.message = 
+			"[JavaScript engine] [TestScript] TestName [TestName2]";
+	}
+	Usage.prototype = new Error();
+	Usage.prototype.name = "Usage";
+
+	var testCases = new Array();
+	
+	if( typeof( args ) == "undefined" )
+		args = new Array();
+	else if( typeof( args ) == "string" )
+		args = args.split( / ,;/ );
+
+	var optionsPossible = true;
+	for( var i = 0; i < args.length; ++i )
+	{
+		if( args[i].match( /^-/ ))
+		{
+			if( args[i] == "--" || !optionsPossible )
+			{
+				optionsPossible = false;
+				continue;
+			}
+			switch( args[i] )
+			{
+				case "--classic" :
+					this.setPrinter( new ClassicResultPrinter());
+					continue;
+					
+				default:
+					JsUtil.prototype.getSystemWriter().println( 
+						"Unknown option \"" + args[i] + "\"" );
+				case "-?" :
+					throw new Usage();
+			}
+		}
+		testCases.push( args[i] );
+	}
+
+	var suite;
+	if( testCases.length == 0 )
+		suite = this.getTest( "AllTests" );
+	else if( testCases.length > 1 )
+	{
+		suite = new TestSuite( "Start" );
+		for( var i = 0; i < testCases.length; ++i )
+			suite.addTestSuite( testCases[i] );
+	}
+	else
+		suite = this.getTest( testCases[0] );
+
+	return this.doRun( suite );
+}
+TextTestRunner.prototype = new BaseTestRunner();
+TextTestRunner.prototype.createTestResult = TextTestRunner_createTestResult;
+TextTestRunner.prototype.doRun = TextTestRunner_doRun;
+TextTestRunner.prototype.main = TextTestRunner_main;
+TextTestRunner.prototype.run = TextTestRunner_run;
+TextTestRunner.prototype.runFailed = TextTestRunner_runFailed;
+TextTestRunner.prototype.setPrinter = TextTestRunner_setPrinter;
+TextTestRunner.prototype.start = TextTestRunner_start;
+/**
+ * Exit code, when all tests succeed
+ * @type Number
+ */
+TextTestRunner.prototype.SUCCESS_EXIT = 0;
+/**
+ * Exit code, when at least one test fails with a failure.
+ * @type Number
+ */
+TextTestRunner.prototype.FAILURE_EXIT = 1;
+/**
+ * Exit code, when at least one test fails with an error.
+ * @type Number
+ */
+TextTestRunner.prototype.EXCEPTION_EXIT = 2;
+
+
+function ClassicResultPrinter( writer )
+{
+	ResultPrinter.call( this, writer );
 	this.mNest = "";
-	this.mStartArgs = new Array();
 }
 /**
  * An occured error was added.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
-function TextTestRunner_addError( test, except )
+function ClassicResultPrinter_addError( test, except )
 {
 	var str = "";
 	if( except.message || except.description )
@@ -1740,7 +1976,7 @@ function TextTestRunner_addError( test, except )
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
-function TextTestRunner_addFailure( test, except )
+function ClassicResultPrinter_addFailure( test, except )
 {
 	this.writeLn( "FAILURE in " + test + ": " + except );
 	if( except.mCallStack )
@@ -1750,9 +1986,9 @@ function TextTestRunner_addFailure( test, except )
  * A test ended
  * @tparam Test test The ended test.
  */
-function TextTestRunner_endTest( test )
+function ClassicResultPrinter_endTest( test )
 {
-	if( test.testCount != null )
+	if( test instanceof TestSuite )
 	{
 		this.mNest = this.mNest.substr( 1 );
 		this.writeLn( 
@@ -1761,19 +1997,32 @@ function TextTestRunner_endTest( test )
 	}
 }
 /**
- * Write a header starting the application.
+ * Print the complete test result.
+ * @tparam TestResult result The complete test result.
+ * @tparam Number runTime The elapsed time in ms.
+ * Overloaded, because only the footer is needed.
  */
-function TextTestRunner_printHeader()
+function ClassicResultPrinter_print( result, runTime )
 {
+	this.printFooter( result, runTime );
+}
+/**
+ * Write a header starting the application.
+ * @tparam Test test The top level test.
+ */
+function ClassicResultPrinter_printHeader( test )
+{
+	this.mRunTests = 0;
+	this.mInReport = true;
 	this.writeLn( 
-		  "BaseTestRunner(" + this.mStartArgs[0] + ") (" 
-		+ this.countTestCases() + " test cases available)" );
+		  "TestRun (" + test.countTestCases() + " test cases available)" );
 }
 /**
  * Write a footer at application end with a summary of the tests.
  * @tparam TestResult result The result of the test run.
+ * @tparam Number runTime The elapsed time in ms.
  */
-function TextTestRunner_printFooter( result )
+function ClassicResultPrinter_printFooter( result, runTime )
 {
 	if( result.wasSuccessful() == 0 )
 	{
@@ -1786,45 +2035,18 @@ function TextTestRunner_printFooter( result )
 	else
 		this.writeLn( 
 			  result.runCount() + " tests successful in " 
-			+ ( this.mElapsedTime / 1000 ) + " seconds." );
-}
-/**
- * Start the test functionality of the application.
- * @param args list of test names in an array or a single test name
- * @treturn Number 0 if no test fails, otherwise -1
- */
-function TextTestRunner_start( args )
-{
-	if( typeof( args ) == "undefined" )
-		args = new Array();
-	else if( typeof( args ) == "string" )
-		args = new Array( args );
-	if( args.length == 0 )
-		args[0] = "all";
-	this.mStartArgs = args;
-
-	var result = this.createTestResult();
-	result.addListener( this );
-
-	this.printHeader();
-	if( args[0] == "all" )
-		this.runAll( result );
-	else
-	{
-		for( var i = 0; i < args.length; ++ i )
-			this.run( args[i], result );
-	}
-	this.printFooter( result );
-
-	return result.wasSuccessful() ? 0 : -1;
+			+ this.elapsedTimeAsString( runTime ) + " seconds." );
+	this.mInReport = false;
 }
 /**
  * A test started
  * @tparam Test test The started test.
  */
-function TextTestRunner_startTest( test )
+function ClassicResultPrinter_startTest( test )
 {
-	if( test.testCount == null )
+	if( !this.mInReport )
+		this.printHeader( test );
+	if( !( test instanceof TestSuite ))
 	{
 		++this.mRunTests;
 		this.writeLn( 
@@ -1839,14 +2061,6 @@ function TextTestRunner_startTest( test )
 		this.mNest += "-";
 	}
 }
-TextTestRunner.prototype = new BaseTestRunner();
-TextTestRunner.prototype.addFailure = TextTestRunner_addFailure;
-TextTestRunner.prototype.addError = TextTestRunner_addError;
-TextTestRunner.prototype.endTest = TextTestRunner_endTest;
-TextTestRunner.prototype.printHeader = TextTestRunner_printHeader;
-TextTestRunner.prototype.printFooter = TextTestRunner_printFooter;
-TextTestRunner.prototype.start = TextTestRunner_start;
-TextTestRunner.prototype.startTest = TextTestRunner_startTest;
 /**
  * Write a line of text.
  * @tparam String str The text to print on the line.
@@ -1854,10 +2068,19 @@ TextTestRunner.prototype.startTest = TextTestRunner_startTest;
  * overloaded with a proper version, that knows how to print a line,
  * if the script engine cannot be detected (yet).
  */
-TextTestRunner.prototype.writeLn = function ( str )
+function ClassicResultPrinter_writeLn( str )
 {
 	JsUtil.prototype.getSystemWriter().println( str );
-};
+}
+ClassicResultPrinter.prototype = new ResultPrinter();
+ClassicResultPrinter.prototype.addError = ClassicResultPrinter_addError;
+ClassicResultPrinter.prototype.addFailure = ClassicResultPrinter_addFailure;
+ClassicResultPrinter.prototype.endTest = ClassicResultPrinter_endTest;
+ClassicResultPrinter.prototype.print = ClassicResultPrinter_print;
+ClassicResultPrinter.prototype.printHeader = ClassicResultPrinter_printHeader;
+ClassicResultPrinter.prototype.printFooter = ClassicResultPrinter_printFooter;
+ClassicResultPrinter.prototype.writeLn = ClassicResultPrinter_writeLn;
+ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
 
 
 /**
