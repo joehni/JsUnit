@@ -81,6 +81,10 @@ for html in *.html; do
 done
 
 cd ..
+cd doc
+chmod 444 *
+
+cd ..
 if test $KEEP -eq 0; then 
 	rm -rf .lib .doc
 fi
