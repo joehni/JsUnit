@@ -74,7 +74,7 @@ function CallStack(depth)
 		var s = new String();
 		for( var i = 1; i <= this.mStack.length; ++i )
 		{
-			if (s.length != 0)
+			if( s.length != 0 )
 				s += "\n";
 			s += i.toString() + ": " + this.mStack[i-1];
 		}
@@ -125,52 +125,117 @@ function CallStack(depth)
 	}
 }
 
-/**
- * ToDo: The perl script cannot handle currently this programming style.
- **/
-function Array_pop()
+
+// MS engine does not implement Array.push and Array.pop until JScript 5.6
+if( !Array.prototype.pop )
 {
-	var obj;
-	if( this instanceof Array && this.length > 0 )
+	function Array_pop()
 	{
-		var last = parseInt( this.length ) - 1;
-		obj = this[last];
-		this.length = last;
+		var obj;
+		if( this instanceof Array && this.length > 0 )
+		{
+			var last = parseInt( this.length ) - 1;
+			obj = this[last];
+			this.length = last;
+		}
+		return obj;
 	}
-	return obj;
-}
-
-function Array_push()
-{
-	var i = 0;
-	if( this instanceof Array )
-	{
-		i = this.length;
-		
-		// Preallocation of array
-		if( arguments.length > 0 )
-			this[arguments.length + this.length - 1] = null;
-		
-		for( ; i < this.length; ++i )
-			this[i] = arguments[i - this.length + arguments.length];
-	}		
-	return i;
-}
-
-// MS engine does not implement Array.push and Array.pop until JScript 6.0
-if ( !Array.prototype.pop )
 	Array.prototype.pop = Array_pop;
-if ( !Array.prototype.push ) 
+}	
+if( !Array.prototype.push )
+{
+	function Array_push()
+	{
+		var i = 0;
+		if( this instanceof Array )
+		{
+			i = this.length;
+			
+			// Preallocation of array
+			if( arguments.length > 0 )
+				this[arguments.length + this.length - 1] = null;
+			
+			for( ; i < this.length; ++i )
+				this[i] = arguments[i - this.length + arguments.length];
+		}		
+		return i;
+	}
 	Array.prototype.push = Array_push;
+}
+
 
 function String_trim( chars )
 {
 	if( !chars )
 		chars = "\\s";
-	var re = new RegExp("^[" + chars + "]*(.*?)[" + chars + "]*$");
+	var re = new RegExp( "^[" + chars + "]*(.*?)[" + chars + "]*$" );
 	var s = this.replace( re, "$1");
 	return s;
 }
-
 String.prototype.trim = String_trim;
 
+
+var isJScript = this.ScriptEngine != null;
+var hasCompatibleErrorClass = ( this.Error != null && ( !isJScript || ( isJScript && ( this.ScriptEngineMajorVersion() >= 6 ))));
+
+if( !this.Error || !hasCompatibleErrorClass )
+{
+	function Error( msg )
+	{
+		this.message = msg || "";
+	}
+	function Error_toString()
+	{
+		var msg = this.message;
+		return this.name + ": " + msg;
+	}
+	Error.prototype = new Object();
+	Error.prototype.toString = Error_toString;
+	Error.prototype.name = "Error";
+	Error.prototype.message = "";
+}
+
+
+if( !this.TypeError || !hasCompatibleErrorClass )
+{
+	function TypeError( msg )
+	{
+		this.message = msg || "";
+	}
+	TypeError.prototype = new Error();
+	TypeError.prototype.name = "TypeError";
+}
+
+
+function InterfaceError( msg )
+{
+	this.message = msg || "";
+}
+InterfaceError.prototype = new TypeError();
+InterfaceError.prototype.name = "InterfaceError";
+
+
+function Function_fullfills()
+{
+	for( var i = 0; i < arguments.length; ++i )
+	{
+		var I = arguments[i];
+		if( typeof I != "function" || !I.prototype )
+			throw new TypeError( I.toString() + " is not an Interface" );
+		if( !this.prototype )
+			throw new TypeError( "Current instance is not a Function definition" );
+		for( var f in I.prototype )
+		{
+			if( typeof I.prototype[f] != "function" )
+				throw new InterfaceError( f.toString() + " is not a method in Interface " + I.toString());
+			if( typeof this.prototype[f] != "function" && typeof this[f] != "function" )
+			{
+				if( typeof this.prototype[f] == "undefined" && typeof this[f] == "undefined" )
+					throw new InterfaceError( f.toString() + " is not defined" );
+				else
+					throw new InterfaceError( f.toString() + " is not a function" );
+			}
+		}
+	}
+}
+Function.prototype.fullfills = Function_fullfills;

@@ -56,10 +56,14 @@ function HTMLTestRunner()
 	}
 	/**
 	 * @@method
-     * Write a line of text to the console to the browser window.
+     * Write a line of text to the browser window.
      * @param str The text to print on the line.
      */
-	function writeLn( str ) { document.writeln( str ); }
+	function writeLn( str ) 
+	{ 
+		str = str.toString();
+		document.writeln( str.replace( /</g, "&lt;" )); 
+	}
 
 	this._printHeader = this.printHeader;
 	this.printHeader = printHeader;

@@ -560,9 +560,7 @@ function TestCase( name )
 		this.setUp();
 		try
 		{
-			var fn = eval( "this." + this.mName );
-			this._func = fn;
-			this._func();
+			this[this.mName].call( this );
 			this.tearDown();
 		}
 		catch( ex )
@@ -866,9 +864,13 @@ function TextTestRunner()
 	 */
 	function addError( test, except )
 	{
-		var str;
-		if( except instanceof Error )
-			str = except.message || except.description || "Unknown";
+		var str = "";
+		if( except.message || except.description )
+		{
+			if( except.name )
+				str = except.name + ": ";
+			str += except.message || except.description;
+		}
 		else
 			str = except;
 		this.writeLn( "ERROR in " + test + ": " + str );
@@ -895,7 +897,7 @@ function TextTestRunner()
 		{
 			this.mNest = this.mNest.substr( 1 );
 			this.writeLn( 
-				  "<" + this.mNest.replace(/-/g, "=") 
+				  "<" + this.mNest.replace( /-/g, "=" ) 
 				+ " Completed test suite \"" + test.name() + "\"" );
 		}
 	}
