@@ -25,19 +25,8 @@ license.
 function main( args )
 {
 	var runner = new CtxTestRunner();
-	runner.addSuite( new TestSuite( CallStackTest ));
-	runner.addSuite( new TestSuite( ArrayTest ));
-	runner.addSuite( new TestSuite( StringTest ));
-	runner.addSuite( new TestSuite( AssertionFailedErrorTest ));
-	runner.addSuite( new TestSuite( TestTest ));
-	runner.addSuite( new TestSuite( TestFailureTest ));
-	runner.addSuite( new TestSuite( TestResultTest ));
-	runner.addSuite( new TestSuite( AssertTest ));
-	runner.addSuite( new TestSuite( TestCaseTest ));
-	runner.addSuite( new TestSuite( TestSuiteTest ));
-	runner.addSuite( new TestSuite( TestRunnerTest ));
-	runner.addSuite( new TestSuite( TextTestRunnerTest ));
-
+	runner.addSuite( new JsUtilTestSuite());
+	runner.addSuite( new JsUnitTestSuite());
 	return runner.start( main.arguments );
 }
 

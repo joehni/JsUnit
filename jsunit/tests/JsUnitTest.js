@@ -630,6 +630,7 @@ TestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
 
+
 function TextTestRunnerTest( name )
 {
 	this.constructor.call( this, name );
@@ -730,4 +731,20 @@ TextTestRunnerTest.prototype.MyTest = function MyTest( name )
 TextTestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TextTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TextTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
+
+
+function JsUnitTestSuite()
+{
+	this.mName = "JsUnitTest";
+	this.addTestSuite( AssertionFailedErrorTest );
+	this.addTestSuite( TestTest );
+	this.addTestSuite( TestFailureTest );
+	this.addTestSuite( TestResultTest );
+	this.addTestSuite( AssertTest );
+	this.addTestSuite( TestCaseTest );
+	this.addTestSuite( TestSuiteTest );
+	this.addTestSuite( TestRunnerTest );
+	this.addTestSuite( TextTestRunnerTest );
+}
+JsUnitTestSuite.prototype = new TestSuite();
 

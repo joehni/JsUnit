@@ -91,6 +91,7 @@ ArrayTest.prototype = new TestCase();
 ArrayTest.prototype.testPop = ArrayTest_testPop;
 ArrayTest.prototype.testPush = ArrayTest_testPush;
 
+
 function StringTest( name )
 {
 	this.constructor.call( this, name );
@@ -112,3 +113,155 @@ function StringTest_testTrim()
 }
 StringTest.prototype = new TestCase();
 StringTest.prototype.testTrim = StringTest_testTrim;
+
+
+function ErrorTest( name )
+{
+	this.constructor.call( this, name );
+}
+function ErrorTest_testAttributes()
+{
+	var err = new Error( "my message" );
+	this.assertEquals( "Error", err.name );
+	this.assertEquals( "my message", err.message );
+	if( isJScript && !hasCompatibleErrorClass )
+	{
+		this.assertEquals( "JScript", ScriptEngine());
+		err = null;
+		var z = 0;
+		try
+		{
+			eval( "this = 5" );
+		}
+		catch( ex )
+		{
+			z = parseInt( ex.number );
+		}
+		this.assertTrue( z != 0 );
+	}
+}
+function ErrorTest_testToString()
+{
+	var err = new Error( "my message" );
+	this.assertTrue( err.toString().indexOf( "Error" ) >= 0 );
+	this.assertTrue( err.toString().indexOf( "my message" ) >= 0 );
+}
+ErrorTest.prototype = new TestCase();
+ErrorTest.prototype.testAttributes = ErrorTest_testAttributes;
+ErrorTest.prototype.testToString = ErrorTest_testToString;
+
+
+function TypeErrorTest( name )
+{
+	this.constructor.call( this, name );
+}
+function TypeErrorTest_testAttributes()
+{
+	var err = new TypeError( "my message" );
+	this.assertEquals( "TypeError", err.name );
+	this.assertEquals( "my message", err.message );
+	if( isJScript && !hasCompatibleErrorClass )
+	{
+		this.assertEquals( "JScript", ScriptEngine());
+		err = null;
+		var z = 0;
+		try
+		{
+			var x = new ClassThatDoesNotExist();
+		}
+		catch( ex )
+		{
+			z = parseInt( ex.number );
+			err = ex;
+		}
+		this.assertTrue( z != 0 );
+		this.assertEquals( "TypeError", err.name );
+	}
+}
+TypeErrorTest.prototype = new TestCase();
+TypeErrorTest.prototype.testAttributes = TypeErrorTest_testAttributes;
+
+
+function InterfaceErrorTest( name )
+{
+	this.constructor.call( this, name );
+}
+function InterfaceErrorTest_testAttributes()
+{
+	var err = new InterfaceError( "my message" );
+	this.assertEquals( "InterfaceError", err.name );
+	this.assertEquals( "my message", err.message );
+}
+InterfaceErrorTest.prototype = new TestCase();
+InterfaceErrorTest.prototype.testAttributes = InterfaceErrorTest_testAttributes;
+
+
+function FunctionTest( name )
+{
+	this.constructor.call( this, name );
+}
+function FunctionTest_testFullfills()
+{
+	function MyInterface1()
+	{
+	}
+	MyInterface1.prototype = new Function();
+	MyInterface1.prototype.if1 = function() {}
+
+	function MyInterface2()
+	{
+	}
+	MyInterface2.prototype = new Function();
+	MyInterface2.prototype.if2 = function() {}
+	
+	function MyInterface2Ex()
+	{
+	}
+	MyInterface2Ex.prototype = new MyInterface2();
+	MyInterface2Ex.prototype.if3 = function() {}
+	
+	function F()
+	{
+	}
+	F.prototype.m1 = "member";
+	
+	this.assertNotNull( F.fullfills );
+	var err = null;
+	try { F.fullfills( 1 ); } catch( ex ) { err = ex; }
+	this.assertEquals( "TypeError", err.name );
+	try { F.fullfills( new F()); } catch( ex ) { err = ex; }
+	this.assertEquals( "TypeError", err.name );
+	try { F.fullfills( F ); } catch( ex ) { err = ex; }
+	this.assertEquals( "InterfaceError", err.name );
+	try { F.fullfills( MyInterface1 ); } catch( ex ) { err = ex; }
+	this.assertEquals( "InterfaceError", err.name );
+	F.prototype.if1 = function() {}
+	F.prototype.if2 = function() {}
+	F.fullfills( MyInterface1 ); 
+	F.fullfills( MyInterface1, MyInterface2 ); 
+	
+	function G()
+	{
+	}
+	G.prototype = new F();
+	G.prototype.if3 = function() {}
+
+	G.fullfills( MyInterface1, MyInterface2Ex ); 
+}
+FunctionTest.prototype = new TestCase();
+FunctionTest.prototype.testFullfills = FunctionTest_testFullfills;
+
+
+function JsUtilTestSuite()
+{
+	this.mName = "JsUtilTest";
+	this.addTestSuite( CallStackTest );
+	this.addTestSuite( ArrayTest );
+	this.addTestSuite( StringTest );
+	this.addTestSuite( ErrorTest );
+	this.addTestSuite( TypeErrorTest );
+	this.addTestSuite( InterfaceErrorTest );
+	this.addTestSuite( FunctionTest );
+}
+JsUtilTestSuite.prototype = new TestSuite();
+
