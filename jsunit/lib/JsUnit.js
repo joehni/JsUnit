@@ -587,7 +587,7 @@ function TestCase_runBare()
 	this.setUp();
 	try
 	{
-		this[this.mName].call( this );
+		this.runTest();
 		this.tearDown();
 	}
 	catch( ex )
@@ -595,6 +595,17 @@ function TestCase_runBare()
 		this.tearDown();
 		throw ex;
 	}
+}
+/**
+ * Override to run the test and assert its state.
+ */
+function TestCase_runTest()
+{
+	var method = this[this.mName];
+	if( method )
+		method.call( this );
+	else
+		this.fail( "Method '" + this.mName + "' not found!" );
 }
 /**
  * Sets the name of the test case.
@@ -622,6 +633,7 @@ TestCase.prototype.findTest = TestCase_findTest;
 TestCase.prototype.getName = TestCase_getName;
 TestCase.prototype.run = TestCase_run;
 TestCase.prototype.runBare = TestCase_runBare;
+TestCase.prototype.runTest = TestCase_runTest;
 TestCase.prototype.setName = TestCase_setName;
 TestCase.prototype.toString = TestCase_toString;
 TestCase.fulfills( Test );
@@ -653,10 +665,11 @@ TestCase.prototype.tearDown = function() {};
  */
 function TestSuite( obj )
 {
+	this.mTests = new Array();
+
 	var name, str;
 	switch( typeof obj )
 	{
-		case "undefined": name = "all"; break;
 		case "function":
 			if( !str )
 				str = new String( obj );
@@ -665,11 +678,19 @@ function TestSuite( obj )
 				name = "[anonymous]";
 			break;
 		case "string": name = obj; break;
-		default: name = obj ? obj.toString() : "(null)"; break;
+		case "object": 
+			if( obj !== null )
+			{
+				this.addTest( 
+					this.warning( "Cannot instantiate test class for " 
+						+ "object '" + obj + "'" ));
+			}
+			// fall through
+		case "undefined": 	// fall through
+		default: name = null; break;
 	}
 
 	this.mName = name;
-	this.mTests = new Array();
 
 	// collect all testXXX methods
 	if( typeof( obj ) == "function" )
@@ -737,7 +758,7 @@ function TestSuite_findTest( name )
  */
 function TestSuite_getName() { return this.mName; }
 /**
- * Runs a test and collects its result in a TestResult instance.
+ * Runs the tests and collects their result in a TestResult instance.
  * @tparam TestResult result The test result to fill.
  */
 function TestSuite_run( result )
@@ -751,7 +772,8 @@ function TestSuite_run( result )
 	{
 		if( result.shouldStop())
 			break;
-		this.mTests[i].run( result );
+		var test = this.mTests[i];
+		this.runTest( test, result );
 	}
 
 	this.tearDown();
@@ -766,6 +788,20 @@ function TestSuite_run( result )
 	result.endTest( this );
 }
 /**
+ * Runs a single test test and collect its result in a TestResult instance.
+ * @tparam Test test The test to run.
+ * @tparam TestResult result The test result to fill.
+ */
+function TestSuite_runTest( test, result )
+{
+	test.run( result );
+}
+/**
+ * Sets the name of the suite.
+ * @tparam String name The name to set.
+ */
+function TestSuite_setName( name ) { this.mName = name }
+/**
  * Set up the environment of the test suite.
  */
 function TestSuite_setUp() {}
@@ -773,6 +809,15 @@ function TestSuite_setUp() {}
  * Clear up the environment of the test suite.
  */
 function TestSuite_tearDown() {}
+/**
+ * Runs the test at the given index.
+ * @tparam int index The index.
+ * @type Test
+ */
+function TestSuite_testAt( index )
+{
+	return this.mTests[index];
+}
 /**
  * Returns the number of tests in this suite.
  * @type Number
@@ -786,16 +831,34 @@ function TestSuite_toString()
 { 
 	return "Suite '" + this.mName + "'";
 }
+/**
+ * Returns a test which will fail and log a warning message.
+ * @tparam String message The warning message.
+ * @type Test
+ */
+function TestSuite_warning( message )
+{
+	function Warning() { TestCase.call( this, "warning" ); }
+	Warning.prototype = new TestCase();
+	Warning.prototype.runTest = function() { this.fail( this.mMessage ); }
+	Warning.prototype.mMessage = message;
+
+	return new Warning();
+}
 TestSuite.prototype.addTest = TestSuite_addTest;
 TestSuite.prototype.addTestSuite = TestSuite_addTestSuite;
 TestSuite.prototype.countTestCases = TestSuite_countTestCases;
 TestSuite.prototype.findTest = TestSuite_findTest;
 TestSuite.prototype.getName = TestSuite_getName;
 TestSuite.prototype.run = TestSuite_run;
+TestSuite.prototype.runTest = TestSuite_runTest;
+TestSuite.prototype.setName = TestSuite_setName;
 TestSuite.prototype.setUp = TestSuite_setUp;
 TestSuite.prototype.tearDown = TestSuite_tearDown;
+TestSuite.prototype.testAt = TestSuite_testAt;
 TestSuite.prototype.testCount = TestSuite_testCount;
 TestSuite.prototype.toString = TestSuite_toString;
+TestSuite.prototype.warning = TestSuite_warning;
 TestSuite.fulfills( Test );
 
 
