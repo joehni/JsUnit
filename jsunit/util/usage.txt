@@ -44,7 +44,7 @@ constructor:</P>
 
 \htmlonly
 <P><DIV CLASS="fragment"><PRE>
-this.constructor.call( this, arg1, arg2 );</PRE></DIV></P>
+BaseClass.call( this, arg1, arg2 );</PRE></DIV></P>
 \endhtmlonly
 
 <P>After calling the constuctor you should initialize the member variables by
@@ -78,7 +78,7 @@ prototype of the constructor:</P>
 <P><DIV CLASS="fragment"><PRE>
 function ClassName_f1() 
 {
-    this.constructor.prototype.f1.apply( this, arguments );
+    BaseClass.prototype.f1.apply( this, arguments );
 }
 //...
 ClassName.prototype.f1 = ClassName_f1;</PRE></DIV></P>

@@ -33,9 +33,6 @@ license.
  */
 function MoneyBag() 
 {
-	this._super = IMoney;
-	this._super();
-	
 	this.fMonies = new Array();
 
 	for( var i = 0; i < arguments.length; ++i ) 
@@ -194,3 +191,4 @@ MoneyBag.prototype.negate = MoneyBag_negate;
 MoneyBag.prototype.simplify = MoneyBag_simplify;
 MoneyBag.prototype.subtract = MoneyBag_subtract;
 MoneyBag.prototype.toString = MoneyBag_toString;
+MoneyBag.fulfills( IMoney );

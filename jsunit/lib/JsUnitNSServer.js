@@ -32,7 +32,7 @@ license.
  */
 function NSServerTestRunner()
 {
-	this.constructor.call( this );
+	TextTestRunner.call( this );
 }
 /**
  * Write a header starting the application.
@@ -40,7 +40,7 @@ function NSServerTestRunner()
 function NSServerTestRunner_printHeader()
 {
 	write( "<pre>" );
-	this._printHeader( result );
+	TextTestRunner.prototype.printHeader.call( this );
 }
 /**
  * Write a footer at application end with a summary of the tests.
@@ -48,7 +48,7 @@ function NSServerTestRunner_printHeader()
  */
 function NSServerTestRunner_printFooter( result )
 {
-	this._printFooter( result );
+	TextTestRunner.prototype.printFooter.call( this, result );
 	write( "</pre>" );
 }
 /**
@@ -58,11 +58,7 @@ function NSServerTestRunner_printFooter( result )
 function NSServerTestRunner_writeLn( str ) { write( str + "\n" ); }
 
 NSServerTestRunner.prototype = new TextTestRunner();
-NSServerTestRunner.prototype._printHeader = 
-	NSServerTestRunner.prototype.printHeader;
 NSServerTestRunner.prototype.printHeader = NSServerTestRunner_printHeader;
-NSServerTestRunner.prototype._printFooter = 
-	NSServerTestRunner.prototype.printFooter;
 NSServerTestRunner.prototype.printFooter = NSServerTestRunner_printFooter;
 NSServerTestRunner.prototype.writeLn = NSServerTestRunner_writeLn;
 

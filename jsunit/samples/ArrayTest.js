@@ -26,7 +26,7 @@ license.
  */
 function ArrayTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function ArrayTest_setUp()
 {
@@ -79,6 +79,7 @@ ArrayTest.prototype.testSort = ArrayTest_testSort;
 
 function ArrayTestSuite()
 {
+	TestSuite.call( this, "ArrayTestSuite" );
 	this.addTestSuite( ArrayTest );
 }
 ArrayTestSuite.prototype = new TestSuite();

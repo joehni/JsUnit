@@ -24,7 +24,7 @@ license.
 
 \page release Release Notes
 
-<P>2002-06-10: Current release is version 2.0.alpha.2</P>
+<P>2002-06-25: Current release is version 2.0.alpha.3</P>
 
 <P>While it seems not to be too much work to change the object model to
 standard ECMA script, the real work was done writing the new Perl script
@@ -40,6 +40,8 @@ have really defined.</P>
 	<LI>Assert has new functions assertTrue and assertFalse</LI>
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
 	time</LI>
+	<LI>Test is an interface now (conforming JUnit), TestCase and TestSuite
+	implement this interface</LI>
 	<LI>Support conforming Error object hierarchy</LI>
 	<LI>Alternative interface design contract by Function.fulfills</LI>
 	<LI>New script for document generation recognizes functions and classes
@@ -54,6 +56,7 @@ have really defined.</P>
 	<LI>CallStack.js has been renamed to JsUtil.js</LI>
 	<LI>Support of Array.push and Array.pop at all systems</LI>
 	<LI>TestSuites for complete test files provided</LI>
+	<LI>Call base class always with explicit name</LI>
 </UL>
 
 \subsection bug Bug Fixes
@@ -62,12 +65,15 @@ have really defined.</P>
 	<LI>Added BerliOS reference to project documentation</LI>
 	<LI>Added test code for constructors</LI>
 	<LI>HTML output of exceptions</LI>
+	<LI>Expression 'this.constructor' does not refer direct base class</LI>
+	<LI>TestSuite constructor cannot create test fixture from object</LI>
 </UL>
 
 \subsection progress Work in Progress
 
 <UL>
-	<LI>new file JsUnitBrowser.js used for Edward's browser GUI</LI>
+	<LI>Port of JsUnit 3.7</LI>
+	<LI>New file JsUnitBrowser.js used for Edward's browser GUI</LI>
 	<LI>JsUnit.js has a browser detection</LI>
 </UL>
 
@@ -80,11 +86,14 @@ have really defined.</P>
 </TR>
 <TR>
 
-	<TD>Port current version 3.7 of JUnit</TD>
+	<TD>Update compatibility list</TD>
 	
-	<TD>JsUnit was designed very close to the JUnit structure. Despite some
-	special Java constructs it could be done with not too much effort. It
-	depends more on my available time.</TD>
+	<TD>Meanwhile I am aware of a lot more applications supporting JavaScript.
+	Since most of the applications share the same JavaScript engine, I will
+	introduce a grouping in the compatibility section of the documentation.
+	Additionally I have to test the new JsUnit version for the supported
+	platforms again and a compatibility check with the version 1.1 test cases
+	should be done.</TD>
 	
 </TR>
 <TR>

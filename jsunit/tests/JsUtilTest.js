@@ -22,7 +22,7 @@ license.
 
 function CallStackTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function CallStackTest_testToString()
 {
@@ -43,12 +43,12 @@ function CallStackTest_testToString()
 	var cs = f0().toString().replace(/\n/g, "|");
 	if( cs.indexOf( "not supported" ) == -1 )
 	{
-		cs = f12().toString().replace(/\n/g, "|");
+		cs = f12().toString().replace( /\n/g, "|" );
 		this.assertTrue( cs.indexOf( "f10" ) == -1 );
 		this.assertTrue( cs.indexOf( "f9" ) > 0 );
-		cs = f12(13).toString().replace(/\n/g, "|");
+		cs = f12(13).toString().replace( /\n/g, "|" );
 		this.assertTrue( cs.indexOf( "f12" ) > 0 );
-		cs = f4().toString().replace(/\n/g, "|");
+		cs = f4().toString().replace( /\n/g, "|" );
 		this.assertTrue( cs.indexOf( "f5" ) == -1 );
 		this.assertTrue( cs.indexOf( "f4" ) >= 0 );
 		this.assertTrue( cs.indexOf( "testToString" ) >= 0 );
@@ -59,7 +59,7 @@ CallStackTest.prototype.testToString = CallStackTest_testToString;
 
 function ArrayTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function ArrayTest_testPop()
 {
@@ -94,7 +94,7 @@ ArrayTest.prototype.testPush = ArrayTest_testPush;
 
 function StringTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function StringTest_testTrim()
 {
@@ -117,7 +117,7 @@ StringTest.prototype.testTrim = StringTest_testTrim;
 
 function ErrorTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function ErrorTest_testAttributes()
 {
@@ -153,7 +153,7 @@ ErrorTest.prototype.testToString = ErrorTest_testToString;
 
 function TypeErrorTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function TypeErrorTest_testAttributes()
 {
@@ -184,7 +184,7 @@ TypeErrorTest.prototype.testAttributes = TypeErrorTest_testAttributes;
 
 function InterfaceErrorTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function InterfaceErrorTest_testAttributes()
 {
@@ -198,7 +198,7 @@ InterfaceErrorTest.prototype.testAttributes = InterfaceErrorTest_testAttributes;
 
 function FunctionTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function FunctionTest_testFulfills()
 {
@@ -273,7 +273,7 @@ FunctionTest.prototype.testInherits = FunctionTest_testInherits;
 
 function JsUtilTestSuite()
 {
-	this.mName = "JsUtilTest";
+	TestSuite.call( this, "JsUtilTest" );
 	this.addTestSuite( CallStackTest );
 	this.addTestSuite( ArrayTest );
 	this.addTestSuite( StringTest );

@@ -33,7 +33,7 @@ license.
  */
 function WshTestRunner()
 {
-	this.constructor.call( this );
+	TextTestRunner.call( this );
 }
 /**
  * Write a line of text to the console via the Windows Scripting Host.

@@ -22,7 +22,7 @@ license.
 
 function MoneyTest( name )
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }	
 function MoneyTest_setUp()
 {
@@ -212,6 +212,7 @@ MoneyTest.prototype.testSimpleSubtract = MoneyTest_testSimpleSubtract
 
 function MoneyTestSuite()
 {
+	TestSuite.call( this, "MoneyTestSuite" );
 	this.addTestSuite( MoneyTest );
 }
 MoneyTestSuite.prototype = new TestSuite();

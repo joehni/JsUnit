@@ -32,7 +32,7 @@ license.
  */
 function TestPage( file )
 {
-	this.constructor.call( this, file );
+	TestSuite.call( this, file );
 }
 
 TestPage.prototype = new TestSuite();
@@ -43,7 +43,7 @@ TestPage.prototype = new TestSuite();
  */
 function BrowserTestRunner( doc )
 {
-	this.constructor.call( this );
+	TestRunner.call( this );
 
 	this._document = doc;
 	this._testPageContainer = null;

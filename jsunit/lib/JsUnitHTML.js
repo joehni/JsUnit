@@ -32,7 +32,7 @@ license.
  */
 function HTMLTestRunner()
 {
-	this.constructor.call( this );
+	TextTestRunner.call( this );
 }
 /**
  * Write a header starting the application.
@@ -41,7 +41,7 @@ function HTMLTestRunner()
 function HTMLTestRunner_printHeader()
 {
 	document.writeln( "<pre>" );
-	this._printHeader();
+	TextTestRunner.prototype.printHeader.call( this );
 }
 /**
  * Write a footer at application end with a summary of the tests.
@@ -50,7 +50,7 @@ function HTMLTestRunner_printHeader()
  */
 function HTMLTestRunner_printFooter( result )
 {
-	this._printFooter( result );
+	TextTestRunner.prototype.printFooter.call( this, result );
 	document.writeln( "</pre>" );
 }
 /**
@@ -64,10 +64,7 @@ function HTMLTestRunner_writeLn( str )
 }
 
 HTMLTestRunner.prototype = new TextTestRunner();
-HTMLTestRunner.prototype._printHeader = HTMLTestRunner.prototype.printHeader;
 HTMLTestRunner.prototype.printHeader = HTMLTestRunner_printHeader;
-HTMLTestRunner.prototype._printFooter = HTMLTestRunner.prototype.printFooter;
 HTMLTestRunner.prototype.printFooter = HTMLTestRunner_printFooter;
 HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
-
 

@@ -25,7 +25,7 @@ license.
  */
 function SimpleTest(name)
 {
-	this.constructor.call( this, name );
+	TestCase.call( this, name );
 }
 function SimpleTest_setUp()
 {
@@ -62,6 +62,7 @@ SimpleTest.prototype.testAsserts = SimpleTest_testAsserts;
 
 function SimpleTestSuite()
 {
+	TestSuite.call( this, "SimpleTestSuite" );
 	this.addTestSuite( SimpleTest );
 }
 SimpleTestSuite.prototype = new TestSuite();

@@ -42,7 +42,8 @@ license.
  */
 function AssertionFailedError( msg, stack )
 {
-	this.message = msg || "";
+	// Error.call( this, msg );
+	this.message = msg;
 	/**
 	 * The call stack for the message.
 	 */
@@ -52,74 +53,44 @@ AssertionFailedError.prototype = new Error();
 /**
  * The name of the TypeError class as String.
  * @type String
- **/
+ */
 AssertionFailedError.prototype.name = "AssertionFailedError";
 
 
 /**
  * A test can be run and collect its results.
- * Despite JUnit 3.7 this is a class, not an interface. The object has always
- * a name and supports methods to search for or return this name.
- * @ctor
- * A test has always a name.
- * @tparam String testName Name of the test.
- * @see TestResult
+ * @note Additional to JsUnit 3.7 the test has always a name. The interface
+ * requires a getter and a method to search for tests.
  */
-function Test( testName )
+function Test()
 {
-	this.mName = testName;
 }
 /**
  * Counts the number of test cases that will be run by this test.
  * @treturn Number The number of test cases.
  */
-function Test_countTestCases() { return 0; }
+Test.prototype.countTestCases = function() {}
 /**
  * Search a test by name.
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
+ * @note This is an enhancement to JUnit 3.7
  * @tparam String testName The name of the searched test.
  * @treturn Test The test instance itself of null.
  */
-function Test_findTest( testName ) 
-{ 
-	return testName == this.mName ? this : null; 
-}
+Test.prototype.findTest = function( testName ) {}
 /**
  * Retrieves the name of the test.
+ * @note This is an enhancement to JUnit 3.7
  * @treturn String The name of test cases.
  */
-function Test_getName() { return this.mName; }
+Test.prototype.getName = function() {}
 /**
- * Retrieves the name of the test.
- * @treturn String The name of test cases.
+ * Runs the test.
+ * @tparam TestResult result The result to fill.
+ * @treturn TestResult The result of test cases.
  */
-function Test_run( result ) {}
-/**
- * Sets the name of the test.
- * @tparam String name The new name of test cases.
- */
-function Test_setName( name ) { this.mName = name; }
-/**
- * Retrieve the test case as string.
- * @treturn String Returns the name of the test case.
- */
-function Test_toString() 
-{ 
-	/*
-	var className = new String( this.constructor ); 
-	var regex = /function (\w+)/;
-	regex.exec( className );
-	className = new String( RegExp.$1 );
-	*/
-	return this.mName; // + "(" + className + ")"; 
-}
-Test.prototype.countTestCases = Test_countTestCases;
-Test.prototype.findTest = Test_findTest;
-Test.prototype.getName = Test_getName;
-Test.prototype.run = Test_run;
-Test.prototype.setName = Test_setName;
-Test.prototype.toString = Test_toString;
+Test.prototype.run = function( result ) {}
 
 
 /**
@@ -394,6 +365,7 @@ function Assert_assertEquals( expected, actual )
 }
 /**
  * Asserts that a condition is false.
+ * @note Not part of JUnit 3.7, but already in development branch.
  * @tparam String cond The condition to evaluate.
  * @tparam String msg An optional error message.
  * @exception AssertionFailedError Thrown if the evaluation was not false.
@@ -535,7 +507,8 @@ Assert.prototype.fail = Assert_fail;
  */
 function TestCase( name )
 {
-	this.constructor.call( this, name );
+	Assert.call( this );
+	this.mName = name;
 }
 /**
  * Counts the number of test cases that will be run by this test.
@@ -547,6 +520,21 @@ function TestCase_countTestCases() { return 1; }
  * @treturn TestResult Returns the new object.
  */
 function TestCase_createResult() { return new TestResult(); }
+/**
+ * Find a test by name.
+ * @note This is an enhancement to JUnit 3.7
+ * @tparam String testName The name of the searched test.
+ * @treturn Test Returns this if the test's name matches or null.
+ */
+function TestCase_findTest( testName ) 
+{ 
+	return testName == this.mName ? this : null; 
+}
+/**
+ * Retrieves the name of the test.
+ * @treturn String The name of test cases.
+ */
+function TestCase_getName() { return this.mName; }
 /**
  * Runs a test and collects its result in a TestResult instance.
  * The function can be called with or without argument. If no argument is
@@ -579,12 +567,35 @@ function TestCase_runBare()
 		throw ex;
 	}
 }
-TestCase.prototype = new Test();
-TestCase.inherits( Assert );
+/**
+ * Sets the name of the test case.
+ * @tparam String name The new name of test cases.
+ */
+function TestCase_setName( name ) { this.mName = name; }
+/**
+ * Retrieve the test case as string.
+ * @treturn String Returns the name of the test case.
+ */
+function TestCase_toString() 
+{ 
+	/*
+	var className = new String( this.constructor ); 
+	var regex = /function (\w+)/;
+	regex.exec( className );
+	className = new String( RegExp.$1 );
+	*/
+	return this.mName; // + "(" + className + ")"; 
+}
+TestCase.prototype = new Assert();
 TestCase.prototype.countTestCases = TestCase_countTestCases;
 TestCase.prototype.createResult = TestCase_createResult;
+TestCase.prototype.findTest = TestCase_findTest;
+TestCase.prototype.getName = TestCase_getName;
 TestCase.prototype.run = TestCase_run;
 TestCase.prototype.runBare = TestCase_runBare;
+TestCase.prototype.setName = TestCase_setName;
+TestCase.prototype.toString = TestCase_toString;
+TestCase.fulfills( Test );
 /**
  * Set up the environment of the fixture.
  */
@@ -617,13 +628,6 @@ function TestSuite( obj )
 	switch( typeof obj )
 	{
 		case "undefined": name = "all"; break;
-		case "object":
-			if( !obj )
-			{
-				name = "all";
-				break;
-			}
-			str = new String( obj.constructor );
 		case "function":
 			if( !str )
 				str = new String( obj );
@@ -632,10 +636,10 @@ function TestSuite( obj )
 				name = "[anonymous]";
 			break;
 		case "string": name = obj; break;
-		default: name = obj.toString(); break;
+		default: name = obj ? obj.toString() : "(null)"; break;
 	}
 
-	this.constructor.call( this, name );
+	this.mName = name;
 	this.mTests = new Array();
 
 	// collect all testXXX methods
@@ -646,15 +650,6 @@ function TestSuite( obj )
 			if( member.indexOf( "test" ) == 0 )
 				this.addTest( new ( obj )( member ));
 		}
-	}
- 	else if( typeof( obj ) == "object" )
-	{
-		for( var member in obj )
-		{
-			if( member.indexOf( "test" ) == 0 )
-				this.addTest( new obj.constructor( member ));
-		}
-		obj = null;
 	}
 }
 /**
@@ -688,6 +683,7 @@ function TestSuite_countTestCases()
 }
 /**
  * Search a test by name.
+ * @note This is an enhancement to JUnit 3.7
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String name The name of the searched test.
@@ -706,6 +702,11 @@ function TestSuite_findTest( name )
 	}
 	return null;
 }
+/**
+ * Retrieves the name of the test suite.
+ * @treturn String The name of test suite.
+ */
+function TestSuite_getName() { return this.mName; }
 /**
  * Runs a test and collects its result in a TestResult instance.
  * @tparam TestResult result The test result to fill.
@@ -748,15 +749,25 @@ function TestSuite_tearDown() {}
  * @type Number
  */
 function TestSuite_testCount() { return this.mTests.length; }
-TestSuite.prototype = new Test();
+/**
+ * Retrieve the test suite as string.
+ * @treturn String Returns the name of the test case.
+ */
+function TestSuite_toString() 
+{ 
+	return "Suite '" + this.mName + "'";
+}
 TestSuite.prototype.addTest = TestSuite_addTest;
 TestSuite.prototype.addTestSuite = TestSuite_addTestSuite;
 TestSuite.prototype.countTestCases = TestSuite_countTestCases;
 TestSuite.prototype.findTest = TestSuite_findTest;
+TestSuite.prototype.getName = TestSuite_getName;
 TestSuite.prototype.run = TestSuite_run;
 TestSuite.prototype.setUp = TestSuite_setUp;
 TestSuite.prototype.tearDown = TestSuite_tearDown;
 TestSuite.prototype.testCount = TestSuite_testCount;
+TestSuite.prototype.toString = TestSuite_toString;
+TestSuite.fulfills( Test );
 
 
 /**
@@ -840,7 +851,7 @@ TestRunner.fulfills( TestListener );
  */
 function TextTestRunner()
 {
-	this.constructor.call( this );
+	TestRunner.call( this );
 
 	this.mRunTests = 0;
 	this.mNest = "";

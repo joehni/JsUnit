@@ -165,6 +165,13 @@ have listed all products that I am aware of.</P>
 	<TD>no support of external script libraries ?</TD>
 </TR>
 <TR>
+	<TD><A HREF="http://www.metamerge.com/product.html">Metamerge Integrator</A></TD>
+	<TD><A HREF="http://www.metamerge.com">Metamerge</A></TD>
+	<TD>JavaScript 1.5</TD>
+	<TD>yes</TD>
+	<TD>uses Rhino</TD>
+</TR>
+<TR>
 	<TD>Mozilla 0.8x</TD>
 	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
 	<TD>JavaScript 1.5</TD>

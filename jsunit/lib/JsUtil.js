@@ -265,6 +265,7 @@ if( !this.Error || !hasCompatibleErrorClass )
 		var msg = this.message;
 		return this.name + ": " + msg;
 	}
+	Error.prototype = new Object();
 	Error.prototype.toString = Error_toString;
 	/**
 	 * The name of the Error class as String.
@@ -289,7 +290,7 @@ if( !this.TypeError || !hasCompatibleErrorClass )
 	 **/
 	function TypeError( msg )
 	{
-		this.message = msg || "";
+		Error.call( this, msg );
 	}
 	TypeError.prototype = new Error();
 	/**
@@ -314,7 +315,8 @@ if( !this.TypeError || !hasCompatibleErrorClass )
  **/
 function InterfaceError( msg )
 {
-	this.message = msg || "";
+	// TypeError.call( this, msg );
+	this.message = msg;
 }
 InterfaceError.prototype = new TypeError();
 /**
