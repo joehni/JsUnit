@@ -66,7 +66,7 @@ AssertionFailedError.prototype.name = "AssertionFailedError";
  * @ctor
  * Constructor.
  * An AssertionFailedMessage needs a message and a call stack for construction.
- * @tparam String msg Failure message.
+ * @tparam String msg Failure message (optional).
  * @tparam String expected The expected string value.
  * @tparam String actual The actual string value.
  * @tparam CallStack stack The call stack of the assertion.
@@ -1951,7 +1951,6 @@ TextTestRunner.prototype.EXCEPTION_EXIT = 2;
 function ClassicResultPrinter( writer )
 {
 	ResultPrinter.call( this, writer );
-	this.mNest = "";
 }
 /**
  * An occured error was added.
@@ -1961,11 +1960,11 @@ function ClassicResultPrinter( writer )
 function ClassicResultPrinter_addError( test, except )
 {
 	var str = "";
-	if( except.message || except.description )
+	if( except.description )
 	{
 		if( except.name )
 			str = except.name + ": ";
-		str += except.message || except.description;
+		str += except.description;
 	}
 	else
 		str = except;
@@ -2014,8 +2013,9 @@ function ClassicResultPrinter_printHeader( test )
 {
 	this.mRunTests = 0;
 	this.mInReport = true;
+	this.mNest = "";
 	this.writeLn( 
-		  "TestRun (" + test.countTestCases() + " test cases available)" );
+		  "TestRunner (" + test.countTestCases() + " test cases available)" );
 }
 /**
  * Write a footer at application end with a summary of the tests.
@@ -2070,7 +2070,7 @@ function ClassicResultPrinter_startTest( test )
  */
 function ClassicResultPrinter_writeLn( str )
 {
-	JsUtil.prototype.getSystemWriter().println( str );
+	this.getWriter().println( str );
 }
 ClassicResultPrinter.prototype = new ResultPrinter();
 ClassicResultPrinter.prototype.addError = ClassicResultPrinter_addError;
