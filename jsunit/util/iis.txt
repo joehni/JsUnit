@@ -55,7 +55,7 @@ the server-side script tags &lt;% and %&gt;.</p>
 \until Header
 
 <p>To include the JsUnit library
-files you have to run the <code>genasp</code> shell script. It will add these
+files you have to run the <em>genasp</em> shell script. It will add these
 tags to the beginning and end of the files and write them to the given target
 directory preserving JsUnit's directory structure.</p>
 
@@ -63,7 +63,7 @@ directory preserving JsUnit's directory structure.</p>
 $ /usr/lib/jsunit> util/genasp conf/ASP
 \endcode
 
-<p>Personally I use Cygwin to have a Unix shell environment.</p>
+<p>On Windows I personally use Cygwin to have a Unix shell environment.</p>
 
 <ul>
 	<li><a href="http://www.cygwin.com">Cygwin</a></li>
@@ -71,8 +71,21 @@ $ /usr/lib/jsunit> util/genasp conf/ASP
 
 \subsection setupiis Seting up IIS for the examples
 
-<p>
-</p>
+<p>To run the ASP samples of JsUnit you can start the Internet Information
+Server (the Personal Web Server should also be capable) and add a virtual
+folder names <em>JsUnit</em>. Set the root of your JsUnit location as root of
+this virtual location. Allow the execution of scripts and add to the supported
+default documents <em>index.asp</em>.</p>
+
+\image html iis.png
+
+<p>Run the web application and you should be able to run the examples of
+JsUnit in ASP pages at the server-side:</p>
+
+<ul>
+	<li><a
+	href="http://localhost/JsUnit/conf/ASP/">http://localhost/JsUnit/conf/ASP/</a></li>
+</ul>
 
 \htmlonly
 

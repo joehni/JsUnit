@@ -30,6 +30,8 @@ license.
 
 \page windowsscript Microsoft Windows Script
 
+\section jsript JScript in General
+
 <p>Microsoft's JavaScript implementation named JScript is part of the Windows
 Script. This is a service offered by the Operating System. This contains a
 generic engine that is able to run a lot of languages, JScript is just one
@@ -58,7 +60,7 @@ functions that are in this case provided by JsUnit.</p>
 		<ul>
 			<li>\ref cscript</li>
 			<li>\ref iexplore</li>
-			<li>Internet Information Server (ASP)</li>
+			<li>\ref iis (ASP)</li>
 		</ul>
 	</li>
 	<li>Development and Debugging
@@ -110,9 +112,7 @@ used to debug scripts embedded in HTML documents or for single JavaScript
 files.</p>
 
 <ul>
-	<li><a
-	href="http://msdn.microsoft.com/downloads/default.asp?URL=/downloads/sample.asp?url=/msdn-files/027/001/733/msdncompositedoc.xml">Windows
-	Script Debugger</a></li>
+	<li><a href="http://msdn.microsoft.com/library/default.asp?url=/downloads/list/webdev.asp">Windows Script Debugger</a></li>
 </ul>
 
 <p>To debug a script from command-line use the command-line interpreters with

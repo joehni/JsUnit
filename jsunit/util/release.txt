@@ -24,6 +24,8 @@ license.
 
 \page release Release Notes
 
+\section currentrelease Release
+
 <p>2002-11-09: Current release is version 1.2.beta.1</p>
 
 <p>A lot of internal work has be done. The changes of JUnit 3.8.1

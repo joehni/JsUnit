@@ -30,6 +30,8 @@ license.
 
 \page spidermonkey SpiderMonkey
 
+\section mozspidermonkey Mozilla.org's SpiderMonkey
+
 <p>SpiderMoney is the name of the JavaScript engine from mozilla.org written
 completely in C. Depending on the configuration, the engine is even capable of
 compiling the JavaScript.  Since it is Open Source and especially designed for
@@ -43,6 +45,7 @@ This engine extremly fast and reliable.</p>
 	<li><a href="http://www.mozilla.org/js/spidermonkey/apidoc/jsguide.html">Embedder's Guide</a></li>
 	<li><a href="http://www.mozilla.org">Mozilla</a></li>
 	<li><a href="http://channels.netscape.com/ns/browsers/default.jsp">Netscape Navigator</a></li>
+	<li><a href="http://www.obtree.com">IXOS-Obtree C4</a></li>
 </ul>
 
 <p>Early version built into the iPlanet Web Server does not seem to have an

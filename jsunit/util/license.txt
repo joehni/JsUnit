@@ -24,6 +24,8 @@ license.
 
 \page license License
 
+\section jsunitlicense JsUnit License
+
 <p>Copyright &copy; 1999, 2000, 2001, 2002 by <a
 href="mailto:joehni@mail.berlios.de">J&ouml;rg Schaible</a>.</p>
 

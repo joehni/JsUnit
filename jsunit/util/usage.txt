@@ -30,6 +30,8 @@ license.
 
 \page usage Usage
 
+\section generalusage General Usage
+
 \subsection codeConv Coding Conventions
 
 <p>To create an object in JavaScript you have to use the new operator. Every

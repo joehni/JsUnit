@@ -30,6 +30,8 @@ license.
 
 \page rhino Rhino
 
+\section mozrhino Mozilla.org's Rhino
+
 <p>Rhino is the name of the JavaScript engine from mozilla.org written
 completely in Java. Depending on the configuration, the engine is even capable
 of translating the code to Java and compile it automatically. Since it is Open

@@ -22,22 +22,28 @@ license.
 
 /*!
 \page internal Internals
+
+\section developer Internal Developer's Guide
+
 \subsection docConv Document Conventions
 
 <p>The documentation of JavaScript code follows the JavaDoc conventions. The
 generation is done using a Perl script generating Pseudo C++ code with the
-comments that is processed afterwards with <a
-href="http://www.doxygen.org">DoxyGen</a>. A lot of the features of DoxyGen
-are supported including the QT style of the comments.  See following chapter
-how to generate the documentation.</p>
+comments that is processed afterwards with DoxyGen. A lot of the features of
+DoxyGen are supported including the QT style of the comments.  See following
+chapter how to generate the documentation.</p>
+
+<ul>
+	<li><a href="http://www.doxygen.org">Doxygen</a></li>
+</ul>
 
 <p>Documentation blocks within the code are embedded with:</p>
 
 \htmlonly
-<p><div class="fragment"><pre>
+<div class="fragment"><pre>
 &#47;**
 &nbsp;*
-&nbsp;*&#47;</pre></div></p>
+&nbsp;*&#47;</pre></div>
 \endhtmlonly
 
 <p>First element of such a block has to be a tag identifying the documented
@@ -67,14 +73,14 @@ pseudo code:</p>
 
 <ul>
 
-	<li><em>\@tparam TYPE PARAM COMMENT</em><br>This command sets the type of a
-	parameter.  It is replaced in the documentation comment with the
+	<li><em>\@tparam TYPE PARAM COMMENT</em><br>This command sets the type of
+	a parameter.  It is replaced in the documentation comment with the
 	<em>\@param PARAM COMMENT</em> command (without the <em>TYPE</em>).</li>
 
 	<li><em>\@tparam TYPE COMMENT</em><br>This command sets the return type of
 	a function.  It is replaced in the documentation comment with the
-	<em>\@return COMMENT</em> command (without the <em>TYPE</em>).  This comand
-	is a short cut of the normal <em>\@return</em> command and the
+	<em>\@return COMMENT</em> command (without the <em>TYPE</em>).  This
+	comand is a short cut of the normal <em>\@return</em> command and the
 	<em>\@type</em> command supported by this program.</li>
 
 	<li><em>\@type TYPE</em><br>This command sets the type of a variable or the
@@ -104,19 +110,24 @@ coding conventions above in some kind of pseudo C++ that can be used to fool
 Doxygen, my favorite non-Java source code documentation tool.</p>
 
 <p>Use the script <em>jsdoc</em> to rebuild the documentation. It is located
-in the utils directory. It depends on a Unix environment including Perl.
-Personally I use <a href="http://sources.redhat.com/">Cygwin</a> that comes
-nowadays with quite complete Unix packages. Additionally you have to install
-<a href="http://www.doxygen.org">Doxygen</a> and <a
-href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a> a
+in the utils directory. It depends on a Unix environment including Perl.  In
+Windows I personally use Cygwin that comes nowadays with quite complete Unix
+packages. Additionally you have to install Doxygen and Graphviz a
 cross-platform drawing toolkit from AT&amp;T. My script expects both tools
 either in the PATH or at /opt/doxygen and /opt/graphviz. In Windows I have
-mounted my Windows program directory to /opt using Cygwin functionality.</p>
+mounted my Windows program files folder to /opt using Cygwin functionality.
+(Nowadays Cygwin offers also doxygen as prebuild package, but it is quite
+outdated and works only at binary mounts.)</p>
+
+<ul>
+	<li><a href="http://www.cygwin.com">Cygwin</a></li>
+	<li><a href="http://www.doxygen.org">Doxygen</a></li>
+	<li><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a></li>
+</ul>
 
 <p>My script will call the Perl script <em>js2doxy.pl</em> to generate pseudo
 C++. Then it calls Doxygen to generate the first version of the HTML
-documentation and the Unix man pages. A last sed processing is done to
-generate this <a class="J">J</a><a class="s">s</a><a class="U">U</a>nit color
-style in the headers.</p>
+documentation. At last text processing is done with <em>sed</em> to generate
+the JsUnit color style in the headers.</p>
 
 */

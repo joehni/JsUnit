@@ -183,7 +183,7 @@ have listed all products that I am aware of.</p>
 	<td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://home.worldcom.ch/jmlugrin/fesi/">FESI</a></td>
+	<td><a href="http://www.lugrin.ch/fesi/index.html">FESI</a></td>
 	<td>Jean-Marc Lugrin</td>
 	<td>ECMA 262, v2</td>
 	<td>own</td>

@@ -35,29 +35,27 @@ of a lot of other people:</p>
 
 <ul>
 
-	<li>Dimitri van Heesch for his wonderful documentation tool <a
-	href="http://www.doxygen.org">Doxygen</a></li>
+	<li>Niklaus Haldimann for his help and contribution for 
+	<a href="www.obtree.com">Obtree</a> support</li>
 	
 	<li><a href="http://www.berlios.de">BerliOS</a> for hosting this
 	project</li>
 	
-	<li>Niklaus Haldimann for his help and contribution for Obtree
-	support</li>
-	
 	<li>Achim Kraus, author of the first Perl script converting the
 	JavaScript code into something Doxygen can understand</li>
+	
+	<li>Dimitri van Heesch for his wonderful documentation tool
+	<a href="http://www.doxygen.org">Doxygen</a></li>
 	
 	<li>People from <a href="http://sources.redhat.com/">Cygwin</a> for
 	providing me with the power of the Linux tools in Windows</li>
 	
-	<li>Erich Gamma and Kent Beck for developing with <a
-	href="http://www.junit.org">JUnit</a> some kind of standard for unit
+	<li>Erich Gamma and Kent Beck for developing with 
+	<a href="http://www.junit.org">JUnit</a> some kind of standard for unit
 	testing</li>
 	
-	<li>John Lakos, author of <a
-	href="http://www.amazon.com/exec/obidos/tg/detail/-/0201633620/qid=1049317504/sr=8-1/ref=sr_8_1/102-0653728-9333704?v=glance&s=books&n=507846">Large-Scale
-	C++ Software Design</a>; after reading his book it was my first time
-	writing unit tests</li>
+	<li>John Lakos, author of <a href="http://www.amazon.com/exec/obidos/tg/detail/-/0201633620/qid=1049317504/sr=8-1/ref=sr_8_1/102-0653728-9333704?v=glance&s=books&n=507846">Large-Scale C++ Software Design</a>; after reading his 
+	book it was my first time writing unit tests</li>
 	
 </ul>
 
