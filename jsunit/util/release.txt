@@ -38,7 +38,7 @@ have really defined.</P>
 	<LI>TestSuite supports object class definitions</LI>
 	<LI>TestSuite has now also function addTestSuite</LI>
 	<LI>TestResult has now also function removeListener and runProtected</LI>
-	<LI>Assert has new functions assertTrue and assertFalse</LI>
+	<LI>Assert has new functions assertSame, assertTrue and assertFalse</LI>
 	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
 	time</LI>
 	<LI>Interface Protectable supported</LI>
@@ -48,6 +48,7 @@ have really defined.</P>
 	<LI>Alternative interface design contract by Function.fulfills</LI>
 	<LI>New script for document generation recognizes functions and classes
 	directly</LI>
+	<LI>Support of the JUnit 3.7 extension classes</LI>
 </UL>
 
 \subsection change Design Changes
@@ -58,6 +59,7 @@ have really defined.</P>
 	<LI>CallStack.js has been renamed to JsUtil.js</LI>
 	<LI>Support of Array.push and Array.pop at all systems</LI>
 	<LI>TestSuites for complete test files provided</LI>
+	<LI>TestSuite needs now a TextCase object as argument</LI>
 	<LI>Call base class always with explicit name</LI>
 </UL>
 
@@ -130,7 +132,7 @@ have really defined.</P>
 <H5>Design Changes</H5>
 
 <UL>
-	<LI>TestSuite needs now a TextCase object as argument</LI>
+	<LI>TestSuite has no methods setUp and tearDown anymore</LI>
 	<LI>BrowserTestRunner renamed to HTMLTestRunner</LI>
 </UL>
 

@@ -285,7 +285,8 @@ function TestResult_run( test )
 	this.startTest( test );
 
 	function OnTheFly() {}
-	OnTheFly.prototype.protect = function() { test.runBare(); }
+	OnTheFly.prototype.protect = function() { this.mTest.runBare(); }
+	OnTheFly.prototype.mTest = test;
 	OnTheFly.fulfills( Protectable );
 	
 	this.runProtected( test, new OnTheFly());
@@ -842,14 +843,14 @@ function TestSuite_findTest( name )
 function TestSuite_getName() { return this.mName; }
 /**
  * Runs the tests and collects their result in a TestResult instance.
+ * @note As an enhancement to JUnit 3.7 the method calls also startTest
+ * and endTest of the TestResult.
  * @tparam TestResult result The test result to fill.
  */
 function TestSuite_run( result )
 {
 	--result.mRunTests;
 	result.startTest( this );
-
-	this.setUp();
 
 	for( var i = 0; i < this.testCount(); ++i )
 	{
@@ -858,8 +859,6 @@ function TestSuite_run( result )
 		var test = this.mTests[i];
 		this.runTest( test, result );
 	}
-
-	this.tearDown();
 
 	if( i == 0 )
 	{
@@ -884,14 +883,6 @@ function TestSuite_runTest( test, result )
  * @tparam String name The name to set.
  */
 function TestSuite_setName( name ) { this.mName = name }
-/**
- * Set up the environment of the test suite.
- */
-function TestSuite_setUp() {}
-/**
- * Clear up the environment of the test suite.
- */
-function TestSuite_tearDown() {}
 /**
  * Runs the test at the given index.
  * @tparam Number index The index.
@@ -936,8 +927,6 @@ TestSuite.prototype.getName = TestSuite_getName;
 TestSuite.prototype.run = TestSuite_run;
 TestSuite.prototype.runTest = TestSuite_runTest;
 TestSuite.prototype.setName = TestSuite_setName;
-TestSuite.prototype.setUp = TestSuite_setUp;
-TestSuite.prototype.tearDown = TestSuite_tearDown;
 TestSuite.prototype.testAt = TestSuite_testAt;
 TestSuite.prototype.testCount = TestSuite_testCount;
 TestSuite.prototype.toString = TestSuite_toString;
@@ -1040,15 +1029,17 @@ function TestSetup( test )
 function TestSetup_run( result )
 {
 	function OnTheFly() {}
-	OnTheFly.prototype.protect = function fly()
+	OnTheFly.prototype.protect = function()
 	{	
-		test.setUp();
-		test.basicRun( result );
-		test.tearDown();
+		this.mTestSetup.setUp();
+		this.mTestSetup.basicRun( this.result );
+		this.mTestSetup.tearDown();
 	}
+	OnTheFly.prototype.result = result;
+	OnTheFly.prototype.mTestSetup = this;
 	OnTheFly.fulfills( Protectable );
 	
-	result.runProtected( test, new OnTheFly());
+	result.runProtected( this.mTest, new OnTheFly());
 }
 TestSetup.prototype = new TestDecorator();
 TestSetup.prototype.run = TestSetup_run;
@@ -1062,6 +1053,105 @@ TestSetup.prototype.setUp = function() {}
  * fixture state.
  */
 TestSetup.prototype.tearDown = function() {}
+
+
+/**
+ * A Decorator that runs a test repeatedly.
+ * @ctor
+ * Constructor.
+ * @tparam Test test The test to repeat.
+ * @tparam Number repeat The number of repeats.
+ */
+function RepeatedTest( test, repeat )
+{
+	TestDecorator.call( this, test );
+	this.mTimesRepeat = repeat;
+}
+function RepeatedTest_countTestCases()
+{
+	var tests = TestDecorator.prototype.countTestCases.call( this );
+	return tests * this.mTimesRepeat;
+}
+/**
+ * Runs a test case with additional set up and tear down.
+ * @tparam TestResult result The result set.
+ */
+function RepeatedTest_run( result )
+{
+	for( var i = 0; i < this.mTimesRepeat; i++ )
+	{
+		if( result.shouldStop())
+			break;
+		TestDecorator.prototype.run.call( this, result );
+	}
+}
+function RepeatedTest_toString()
+{
+	return TestDecorator.prototype.toString.call( this ) + " (repeated)";
+}
+RepeatedTest.prototype = new TestDecorator();
+RepeatedTest.prototype.countTestCases = RepeatedTest_countTestCases;
+RepeatedTest.prototype.run = RepeatedTest_run;
+RepeatedTest.prototype.toString = RepeatedTest_toString;
+
+
+/**
+ * A TestCase that expects an exception of class mClass to be thrown.
+ * The other way to check that an expected exception is thrown is:
+ * <pre>
+ * try {
+ *   this.shouldThrow();
+ * }
+ * catch (ex) {
+ *   if (ex instanceof SpecialException)
+ *   	return;
+ *   else
+ *      throw ex;
+ * }
+ * this.fail("Expected SpecialException");
+ * </pre>
+ *
+ * To use ExceptionTestCase, create a TestCase like:
+ * <pre>
+ * new ExceptionTestCase("testShouldThrow", SpecialException);
+ * </pre>
+ * @ctor
+ * Constructor.
+ * The constructor is initialized with the name of the test and the expected
+ * class to be thrown.
+ * @tparam String name The name of the test case.
+ * @tparam Function clazz The class to be thrown.
+ */
+function ExceptionTestCase( name, clazz )
+{
+	TestCase.call( this, name )
+	/**
+	 * Save the class.
+	 * @type Function
+	 */
+	this.mClass = clazz;
+}
+/**
+ * Execute the test method expecting that an exception of
+ * class mClass or one of its subclasses will be thrown
+ */
+function ExceptionTestCase_runTest()
+{
+	try
+	{
+		TestCase.prototype.runTest.call( this );
+	}
+	catch( ex )
+	{
+		if( ex instanceof this.mClass )
+			return;
+		else
+			throw ex;
+	}
+	this.fail( "Expected exception " + this.mClass.toString());
+}
+ExceptionTestCase.prototype = new TestCase();
+ExceptionTestCase.prototype.runTest = ExceptionTestCase_runTest;
 
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
