@@ -144,14 +144,19 @@ function MoneyBag() {
 	this.subtract = subtract;
 	this.toString = toString;
 
-	for (var i = 0; i < MoneyBag.arguments.length; ++i) {
-		if (MoneyBag.arguments[i] == null)
+	var args;
+	if( MoneyBag.arguments !== undefined )
+		args = MoneyBag.arguments;
+	else
+		args = arguments;
+	for (var i = 0; i < args.length; ++i) {
+		if (args[i] == null)
 			continue;
-		if (MoneyBag.arguments[i] instanceof Money) {
-			this.appendMoney( MoneyBag.arguments[i] );
+		if (args[i] instanceof Money) {
+			this.appendMoney( args[i] );
 		}
-		if (MoneyBag.arguments[i] instanceof MoneyBag) {
-			this.appendBag( MoneyBag.arguments[i] );
+		if (args[i] instanceof MoneyBag) {
+			this.appendBag( arguments[i] );
 		}
 	}
 }
