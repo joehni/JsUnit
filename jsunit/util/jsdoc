@@ -34,26 +34,26 @@ fi
 _DOT=`type dot > /dev/null 2>&1`
 if test -z "$_DOT"; then
 	if test -d /opt/graphviz/bin; then
-		HAS_DOT="YES"
+		HAVE_DOT="YES"
 		PATH=$PATH:/opt/graphviz/bin
 	elif test -d /opt/ATT/Graphviz/bin; then
-		HAS_DOT="YES"
+		HAVE_DOT="YES"
 		PATH=$PATH:/opt/ATT/Graphviz/bin
 	else
-		HAS_DOT="NO"
+		HAVE_DOT="NO"
 	fi
 else
-	HAS_DOT="YES"
+	HAVE_DOT="YES"
 fi
 OUTPUT_DIRECTORY=.
 VERSION=`cat version.cfg`
 GENERATE_HTML=YES
-GENERATE_MANE=YES
+GENERATE_MAN=YES
 PERL_PATH=/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
 	PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
-export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAS_DOT PERL_PATH VERSION
+export GENERATE_HTML GENERATE_MAN OUTPUT_DIRECTORY HAVE_DOT PERL_PATH VERSION
 if test "$1" = "--keep-temp"; then
 	KEEP=1
 else
