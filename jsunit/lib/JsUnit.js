@@ -848,7 +848,7 @@ function TestSuite( obj )
 			if( !str )
 				str = new String( obj );
 			name = str.substring( str.indexOf( " " ) + 1, str.indexOf( "(" ));
-			if( name == "(" )
+			if( name == "" )
 				name = "[anonymous]";
 			break;
 		case "string": name = obj; break;

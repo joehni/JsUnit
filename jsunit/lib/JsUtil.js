@@ -220,7 +220,7 @@ function CallStack__fill( depth )
 	var fn = JsUtil.prototype.getCaller( CallStack__fill );
 	while( fn != null && depth > 0 )
 	{
-		s = new String( fn );
+		var s = new String( fn );
 		--depth;
 
 		// Extract function name and argument list
