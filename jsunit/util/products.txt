@@ -282,7 +282,7 @@ have listed all products that I am aware of.</p>
 	<td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
 	<td><a href="http://www.kde.org">KDE.org</a></td>
 	<td>?</td>
-	<td>KHTML</td>
+	<td>KJS</td>
 	<td>1.2 ?</td>
 	<td>&nbsp;</td>
 </tr>
