@@ -52,8 +52,7 @@ with
 Internet Explorer starting with version 5.0, Internet Information Server
 5.0 and Windows Scripting Host 2.0.</P>
 <H3>JavaScript enabled products</H3>
-<P>There are a lot of products out there that are able to process a dialect of
-JavaScript. I have listed all products that I am aware of.</P>
+<P>There are a lot of products that are able to process a JavaScript flavor. I have listed all products that I am aware of.</P>
 <TABLE BORDER="0">
 <TR>
 	<TH ALIGN="left">Product</TH>
@@ -117,9 +116,15 @@ JavaScript. I have listed all products that I am aware of.</P>
 	<TD>yes, but no call stack</TD>
 </TR>
 <TR>
-	<TD>Mozilla 0.8</TD>
+	<TD>Mozilla 0.8x</TD>
 	<TD><A HREF="http://www.mozilla.org">Mozilla.org</A></TD>
-	<TD>JavaScript 1.4</TD>
+	<TD>JavaScript 1.4 ?</TD>
+	<TD>yes</TD>
+</TR>
+<TR>
+	<TD>Mozilla 0.9x</TD>
+	<TD>Mozilla.org</TD>
+	<TD>JavaScript 1.4 ?</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
@@ -130,14 +135,14 @@ JavaScript. I have listed all products that I am aware of.</P>
 </TR>
 <TR>
 	<TD>Navigator 4.x</TD>
-	<TD>Netscape</TD>
-	<TD>JavaScript 1.3</TD>
+	<TD><A HREF="http://www.netscape.com">Netscape</A></TD>
+	<TD>JavaScript 1.4 ?</TD>
 	<TD>no, no exceptions</TD>
 </TR>
 <TR>
 	<TD>Navigator 6.x</TD>
 	<TD>Netscape</TD>
-	<TD>JavaScript 1.4</TD>
+	<TD>JavaScript 1.4 ?</TD>
 	<TD>yes</TD>
 </TR>
 <TR>
@@ -155,8 +160,8 @@ JavaScript. I have listed all products that I am aware of.</P>
 <TR>
 	<TD>Opera 5.x</TD>
 	<TD><A HREF="http://www.opera.com">Opera</A></TD>
-	<TD>?</TD>
-	<TD>?</TD>
+	<TD>JavaScript 1.4 ?</TD>
+	<TD>no, no exceptions</TD>
 </TR>
 <TR>
 	<TD>Tomcat 3.x</TD>
@@ -250,15 +255,11 @@ proper initialization of the object.</P>
 * to assign the methods
 * \skip setUp
 * \until }
-* After writing the test case you have to build a test suite. This is done by
-* writing a function with the convention NameOfTestCase_Suite creating a
-* TestSuite and add all fixtures:
-* \skip function
-* \until }
+* Any additional initialization code may follow.
 \htmlonly
 <H3>Creating a test application</H3>
 \endhtmlonly
-* After writing the test cases and suites we need an application to run the
+* After writing the test cases we need an application to run the
 * tests. The application has the responsibility to include all necessary
 * sources. Create a TestRunner for reporting the results, add all wanted test
 * suites to the runner and perform the test. The TestRunner itself is normally
@@ -296,9 +297,9 @@ for all deliveries:</P>
 	start the <EM>ctxdriver</EM> for command line invocation.</TD>
 </TR>
 <TR>
-	<TD>AllTestsNS<BR>AllTestsNS.html<BR>AllTestsNS.web</TD>
-	<TD>Compiled Netscape iPlanet web application. The script compiles the web
-	from the HTML source.</TD>
+	<TD>AllTestsNS<BR>AllTestsNS.html</TD>
+	<TD>Shell script using <EM>jsac</EM> to compile a Netscape iPlanet web application. 
+	The script compiles the web from the HTML source.</TD>
 </TR>
 </TABLE>
 <H2>Internals</H2>
