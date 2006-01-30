@@ -1,6 +1,6 @@
 <!--
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ JavaScript_2_1 = true;
 </script>
 <script type="text/javascript" language="JavaScript9.0">
 <!--
-JavaScript_9_0 = true; 
+JavaScript_3_0 = true; 
 // -->
 </script>
 <script type="text/javascript" language="JScript">
@@ -125,7 +125,7 @@ document.writeln("JavaScript 1.8: " + JavaScript_1_8 + "<br>");
 document.writeln("JavaScript 1.9: " + JavaScript_1_9 + "<br>");
 document.writeln("JavaScript 2.0: " + JavaScript_2_0 + "<br>");
 document.writeln("JavaScript 2.1: " + JavaScript_2_1 + " (version seems ignored)<br>");
-document.writeln("JavaScript 9.0: " + JavaScript_9_0 + " (version seems ignored)<br>");
+document.writeln("JavaScript 3.0: " + JavaScript_3_0 + " (version seems ignored)<br>");
 document.writeln("JScript: " + JScript + "<br>");
 document.writeln("has exceptions: " + hasExceptions + "<br>");
 document.writeln("exceptions working: " + exceptionsWorking + "<br>");
@@ -140,10 +140,13 @@ for( var i in JsUtil.prototype )
 	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
 		document.writeln( i + ": " + JsUtil.prototype[i] + "<br>" );
 document.writeln("</p>");
-	var o = ScriptEngine;
-	document.writeln( "Object: " + o + "<br>");
-	for( var i in o )
-		document.writeln( " i is " + i + "<br>");
+    if( this.ScriptEngine )
+    {
+	    var o = this.ScriptEngine;
+    	document.writeln( "Object: " + o + "<br>");
+	    for( var i in o )
+		    document.writeln( " i is " + i + "<br>");
+    }
 document.writeln("</p>");
 // -->
 </script>
@@ -153,8 +156,8 @@ document.writeln("</p>");
 <!--
 if( exceptionsWorking )
 {
-	var runner = new HTMLTestRunner( new StringWriter());
-	runner.start( "--classic" );
+    var runner = new TextTestRunner();
+	runner.start( "--classic --html" );
 }
 else
 	document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");

@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,9 +33,7 @@ have been integrated and JsUnit is running quite smoothly for JScript,
 SpiderMonkey and Rhino. Also the new documentation script works fine.</p>
 
 <p>Since the current state of the framework is now quite stable regading
-the mensioned JavaScript engines I released an intermediate version 1.2
-before version 2.0, that was proposed to have an integration with Edward
-Hieatt's browser GUI.</p>
+the mensioned JavaScript engines, I released an version 1.2.</p>
 
 \subsection new New Features
 
@@ -60,8 +58,9 @@ Hieatt's browser GUI.</p>
 	RegExp against a string</li>
 	<li>New utility class JsUtil and enhanced CallStack API</li>
 	<li>New utility class hierarchy PrinterWriter</li>
-	<li>Special HTML support with classes HTMLTestRunner and 
-	HTMLWriterFilter</li>
+	<li>Special HTML support with HTMLWriterFilter</li>
+    <li>Deprecated CtxRunner and NSServerRunner in favour of a more generic
+    solution using a TextTestRunner and the new CtxWriter/NsServerWriter</li>
 </ul>
 
 \subsection change Design Changes

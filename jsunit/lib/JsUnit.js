@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -1530,7 +1530,8 @@ BaseTestRunner.prototype.setPreference( "maxMessageLength", 500 );
 
 /**
  * TestRunner of JsUnit 1.1
- * @deprecated
+ * @see TextTestRunner
+ * @deprecated since 1.2 in favour of TextTestRunner
  */
 function TestRunner()
 {
@@ -1952,9 +1953,17 @@ function TextTestRunner_start( args )
 			switch( args[i] )
 			{
 				case "--classic" :
-					this.setPrinter( new ClassicResultPrinter());
+					this.setPrinter( 
+                        new ClassicResultPrinter( 
+                            this.mPrinter.getWriter()));
 					continue;
 					
+				case "--html" :
+                    this.mPrinter.setWriter(
+                        new HTMLWriterFilter(
+                            this.mPrinter.getWriter()));
+                    continue;
+                    
 				default:
 					msg = "\nUnknown option \"" + args[i] + "\"";
 				case "-?" :
@@ -2143,6 +2152,10 @@ ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
 
 /**
  * Class for an application running test suites reporting in HTML.
+ * @see TextTestRunner
+ * @see HTMLWriterFilter
+ * @deprecated since 1.2 in favour of TextTestRunner in combination with a
+ * HTMLWrtierFilter wrapping an arbitrary PrinterWriter.
  */
 function HTMLTestRunner( outdev )
 {
@@ -2154,12 +2167,13 @@ function HTMLTestRunner( outdev )
  * @treturn Number TextTestRunner.FAILURE_EXIT.
  * The function wraps the PrinterWriter of the new ResultPrinter with a 
  * HTMLWriterFilter.
+ * @deprecated since 1.2
  */
 function HTMLTestRunner_setPrinter( outdev )
 {
 	TextTestRunner.prototype.setPrinter.call( this, outdev );
-	var wrapper = new HTMLWriterFilter( this.mPrinter.getWriter());
-	this.mPrinter.setWriter( wrapper );
+    this.mPrinter.setWriter( 
+        new HTMLWriterFilter( this.mPrinter.getWriter()));
 }
 HTMLTestRunner.prototype = new TextTestRunner();
 HTMLTestRunner.prototype.setPrinter = HTMLTestRunner_setPrinter;
