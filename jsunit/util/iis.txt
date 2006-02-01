@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ debuggers of the Windows Script Engine.</p>
 	<li><a href="http://msdn.microsoft.com/library/en-us/dnserv/html/server04242000.asp">Debugging ASP Applications</a></li>
 </ul>
 
-\subsection genasp Generating JsUnit ASP
+\section genasp Generating JsUnit ASP
 
 <p>Active Server Pages contain by default only HTML and client-side
 JavaScript. Any script running directly on the server must be embedded into
@@ -69,7 +69,7 @@ $ /usr/lib/jsunit> util/genasp conf/ASP
 	<li><a href="http://www.cygwin.com">Cygwin</a></li>
 </ul>
 
-\subsection setupiis Seting up IIS for the examples
+\section setupiis Seting up IIS for the examples
 
 <p>To run the ASP samples of JsUnit you can start the Internet Information
 Server (the Personal Web Server should also be capable) and add a virtual

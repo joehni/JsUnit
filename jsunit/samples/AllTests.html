@@ -1,6 +1,6 @@
 <!--
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ license.
 <body>
 <h1>JsUnit Test</h1>
 <script language="JavaScript1.3">
-var runner = new HTMLTestRunner( new StringWriter());
-runner.start( "--classic" );
+var runner = new TestTestRunner();
+runner.start( "--classic --html" );
 </script>
 </body>
 </html>
