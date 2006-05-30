@@ -85,6 +85,12 @@ SOURCE=.\AllTests.html
 # End Source File
 # Begin Source File
 
+SOURCE=.\AllTests.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
 SOURCE=.\ArrayTest.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1

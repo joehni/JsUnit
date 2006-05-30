@@ -1,0 +1,96 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
+\page iis Microsoft Internet Information Server
+
+<p>Microsoft's web server is the Internet Information Server. It is part of
+the Microsoft Windows Professional and Server versions and also with a
+simpler user interface as Personal Web Server in the home user's Windows
+versions. This web server is able to run Active Server Pages (ASP), that are
+written in one of the languages registered in the Windows Script Engine. A
+special article of Miscrosoft exists for debugging ASPs with the different
+debuggers of the Windows Script Engine.</p>
+
+<ul>
+	<li>\ref windowsscript</li>
+	<li><a href="http://msdn.microsoft.com/library/en-us/dnserv/html/server04242000.asp">Debugging ASP Applications</a></li>
+</ul>
+
+\section genasp Generating JsUnit ASP
+
+<p>Active Server Pages contain by default only HTML and client-side
+JavaScript. Any script running directly on the server must be embedded into
+the server-side script tags &lt;% and %&gt;.</p>
+ 
+\dontinclude samples.asp
+\until %>
+\skip #include
+\until Header
+
+<p>To include the JsUnit library
+files you have to run the <em>genasp</em> shell script. It will add these
+tags to the beginning and end of the files and write them to the given target
+directory preserving JsUnit's directory structure.</p>
+
+\code
+$ /usr/lib/jsunit> util/genasp conf/ASP
+\endcode
+
+<p>On Windows I personally use Cygwin to have a Unix shell environment.</p>
+
+<ul>
+	<li><a href="http://www.cygwin.com">Cygwin</a></li>
+</ul>
+
+\section setupiis Seting up IIS for the examples
+
+<p>To run the ASP samples of JsUnit you can start the Internet Information
+Server (the Personal Web Server should also be capable) and add a virtual
+folder names <em>JsUnit</em>. Set the root of your JsUnit location as root of
+this virtual location. Allow the execution of scripts and add to the supported
+default documents <em>index.asp</em>.</p>
+
+\image html iis.png
+
+<p>Run the web application and you should be able to run the examples of
+JsUnit in ASP pages at the server-side:</p>
+
+<ul>
+	<li><a
+	href="http://localhost/JsUnit/conf/ASP/">http://localhost/JsUnit/conf/ASP/</a></li>
+</ul>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
+
+*/

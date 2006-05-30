@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,139 +24,156 @@ license.
 
 \page release Release Notes
 
-<P>2002-06-25: Current release is version 2.0.alpha.3</P>
+\section currentrelease Release
 
-<P>While it seems not to be too much work to change the object model to
-standard ECMA script, the real work was done writing the new Perl script
-to support the documentation generation again.  This bullied me to learn
-Perl (nice language) and the script is now quite smart detecting what you
-have really defined.</P>
+<p>2002-11-09: Current release is version 1.2.beta.1</p>
+
+<p>A lot of internal work has be done. The changes of JUnit 3.8.1
+have been integrated and JsUnit is running quite smoothly for JScript,
+SpiderMonkey and Rhino. Also the new documentation script works fine.</p>
+
+<p>Since the current state of the framework is now quite stable regading
+the mensioned JavaScript engines, I released an version 1.2.</p>
 
 \subsection new New Features
 
-<UL>
-	<LI>TestSuite supports object class definitions</LI>
-	<LI>TestSuite has now also function addTestSuite</LI>
-	<LI>TestResult has now also function removeListener and runProtected</LI>
-	<LI>Assert has new functions assertSame, assertTrue and assertFalse</LI>
-	<LI>TestRunner has new function countMilliSeconds to measure the elapsed
-	time</LI>
-	<LI>Interface Protectable supported</LI>
-	<LI>Test is an interface now (conforming JUnit), TestCase and TestSuite
-	implement this interface</LI>
-	<LI>Support conforming Error object hierarchy</LI>
-	<LI>Alternative interface design contract by Function.fulfills</LI>
-	<LI>New script for document generation recognizes functions and classes
-	directly</LI>
-	<LI>Support of the JUnit 3.7 extension classes</LI>
-</UL>
+<ul>
+	<li>Test is an interface now (conforming with JUnit), TestCase and 
+	TestSuite implement this interface</li>
+	<li>Assert supports member functions assertSame, assertTrue and 
+	assertFalse</li>
+	<li>TestSuite supports member function addTestSuite</li>
+	<li>TestResult supports member function removeListener and 
+	runProtected</li>
+	<li>Support of class ResultPrinter</li>
+	<li>BaseTestRunner supports preferences</li>
+	<li>Interface Protectable supported</li>
+	<li>Support conforming Error object hierarchy</li>
+	<li>Alternative interface design contract by Function.fulfills</li>
+	<li>New script for document generation recognizes functions and classes
+	directly</li>
+	<li>Support of the JUnit extension classes</li>
+	<li>Changes of JUnit 3.8.1 and new classes migrated to JsUnit</li>
+	<li>Special support in Assert.assertEquals comparing Strings or match a
+	RegExp against a string</li>
+	<li>New utility class JsUtil and enhanced CallStack API</li>
+	<li>New utility class hierarchy PrinterWriter</li>
+	<li>Special HTML support with HTMLWriterFilter</li>
+    <li>Deprecated CtxRunner and NSServerRunner in favour of a more generic
+    solution using a TextTestRunner and the new CtxWriter/NsServerWriter</li>
+</ul>
 
 \subsection change Design Changes
 
-<UL>
-	<LI>JsUnit uses standard object model</LI>
-	<LI>TestSuite supports again strings as name</LI>
-	<LI>CallStack.js has been renamed to JsUtil.js</LI>
-	<LI>Support of Array.push and Array.pop at all systems</LI>
-	<LI>TestSuites for complete test files provided</LI>
-	<LI>TestSuite needs now a TextCase object as argument</LI>
-	<LI>Call base class always with explicit name</LI>
-</UL>
+<ul>
+	<li>JsUnit uses standard object model</li>
+	<li>TestSuite supports again strings as name</li>
+	<li>CallStack.js has been renamed to JsUtil.js</li>
+	<li>Support of Array.push and Array.pop at all systems</li>
+	<li>TestSuites for complete test files provided</li>
+	<li>TestSuite needs now a TextCase object as argument</li>
+	<li>TestRunner renamed to BaseTestRunner according to JUnit</li>
+	<li>Call base class always with explicit name</li>
+	<li>Name of fixtures are prepended with the name of the TestCase</li>
+	<li>Native report format equals now JUnit. Old format supported by
+	class ClassicReportPrinter</li>
+	<li>Use TextTestRunner.prototype.main to call</li>
+	<li>Use own Error class hierarchy since ECMA standard does not guarantee
+	consistant behaviour deriving from system classes</li>
+</ul>
 
 \subsection bug Bug Fixes
 
-<UL>
-	<LI>Added BerliOS reference to project documentation</LI>
-	<LI>Added test code for constructors</LI>
-	<LI>HTML output of exceptions</LI>
-	<LI>Expression 'this.constructor' does not refer direct base class</LI>
-	<LI>TestSuite constructor cannot create test fixture from object</LI>
-</UL>
+<ul>
+	<li>Added BerliOS reference to project documentation</li>
+	<li>Added test code for constructors</li>
+	<li>HTML output of exceptions</li>
+	<li>Expression 'this.constructor' does not refer direct base class</li>
+</ul>
 
 \subsection progress Work in Progress
 
-<UL>
-	<LI>Port of JsUnit 3.7</LI>
-	<LI>New file JsUnitBrowser.js used for Edward's browser GUI</LI>
-	<LI>JsUnit.js has a browser detection</LI>
-</UL>
+<ul>
+	<li>Compatibility tests</li>
+</ul>
 
 \section todo ToDo List
 
-<TABLE>
-<TR>
-	<TD><B>Topic</B></TD>
-	<TD><B>Comment</B></TD>
-</TR>
-<TR>
+<table>
+<tr>
+	<td><b>Topic</b></td>
+	<td><b>Comment</b></td>
+</tr>
+<tr>
 
-	<TD>Update compatibility list</TD>
+	<td>Update compatibility list</td>
 	
-	<TD>Meanwhile I am aware of a lot more applications supporting JavaScript.
+	<td>Meanwhile I am aware of a lot more applications supporting JavaScript.
 	Since most of the applications share the same JavaScript engine, I will
 	introduce a grouping in the compatibility section of the documentation.
 	Additionally I have to test the new JsUnit version for the supported
 	platforms again and a compatibility check with the version 1.1 test cases
-	should be done.</TD>
+	should be done.</td>
 	
-</TR>
-<TR>
+</tr>
+<tr>
 
-	<TD>Integrate with <A
-	HREF="http://sourceforge.net/projects/jsunit/">JsUnit</A> of Edward
-	Hieatt</TD>
+	<td>Integrate with <a
+	href="http://sourceforge.net/projects/jsunit/">JsUnit</a> of Edward
+	Hieatt</td>
 	
-	<TD>Edward's version of JsUnit is more based on a nice browser frontend.
+	<td>Edward's version of JsUnit is more based on a nice browser frontend.
 	This would be also nice to have to my version. Edward and I agreed that I
-	may try to integrate his GUI on top of my engine. Work in progress.</TD>
+	may try to integrate his GUI on top of my engine. Work currently stopped
+	for version 1.2. Will be continued for JsUnit 2.0.</td>
 	
-</TR>
-</TABLE>
+</tr>
+</table>
 
 \section history History of JsUnit
 
 \subsection v1_1 Version 1.1
 
-<P>2001-09-07: Minor update</P>
+<p>2001-09-07: Minor update</p>
 
-<H5>New Features</H5>
+<h5>New Features</h5>
 
-<UL>
-	<LI>Added unit tests for JsUnit library</LI>
-	<LI>Automated test suite generation</LI>
-	<LI>Browser TestSuite for JsUnit checks now JavaScript compatibility</LI>
-	<LI>Support of Rhino and SpiderMonkey shells from Mozilla.org</LI>
-	<LI>Support of Konqueror and Opera failed</LI>
-</UL>
+<ul>
+	<li>Added unit tests for JsUnit library</li>
+	<li>Automated test suite generation</li>
+	<li>Browser TestSuite for JsUnit checks now JavaScript compatibility</li>
+	<li>Support of Rhino and SpiderMonkey shells from Mozilla.org</li>
+	<li>Support of Konqueror and Opera failed</li>
+</ul>
 
-<H5>Design Changes</H5>
+<h5>Design Changes</h5>
 
-<UL>
-	<LI>TestSuite has no methods setUp and tearDown anymore</LI>
-	<LI>BrowserTestRunner renamed to HTMLTestRunner</LI>
-</UL>
+<ul>
+	<li>TestSuite has no methods setUp and tearDown anymore</li>
+	<li>BrowserTestRunner renamed to HTMLTestRunner</li>
+</ul>
 
-<H5>Bug Fixes</H5>
+<h5>Bug Fixes</h5>
 
-<UL>
-	<LI>Added copyright notice to all files</LI>
-	<LI>Added BerliOS reference to project documentation</LI>
-	<LI>Corrected script tags in HTML files</LI>
-	<LI>tearDown method was not called in case of an exception</LI>
-</UL>
+<ul>
+	<li>Added copyright notice to all files</li>
+	<li>Added BerliOS reference to project documentation</li>
+	<li>Corrected script tags in HTML files</li>
+	<li>tearDown method was not called in case of an exception</li>
+</ul>
 
 \subsection v1_0 Version 1.0
 
-<P>2001-08-01: Completing the library after more than a year more or less
-ongoing development, the first release of this software is published</P>
+<p>2001-08-01: Completing the library after more than a year more or less
+ongoing development, the first release of this software is published</p>
 
-<H5>Features</H5>
+<h5>Features</h5>
 
-<UL>
-	<LI>Port of JUnit 3.2 for JavaScript</LI>
-	<LI>Support of various systems, mostly based on standalone script 
-	engines</LI>
-	<LI>JavaDoc like documentation generation</LI>
-</UL>
+<ul>
+	<li>Port of JUnit 3.2 for JavaScript</li>
+	<li>Support of various systems, mostly based on standalone script 
+	engines</li>
+	<li>JavaDoc like documentation generation</li>
+</ul>
 
 */

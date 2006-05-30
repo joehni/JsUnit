@@ -1,0 +1,82 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation in version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Test suites built with JsUnit are derivative works derived from tested 
+classes and functions in their production; they are not affected by this 
+license.
+*/
+
+/*!
+
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
+\page spidermonkey SpiderMonkey
+
+\section mozspidermonkey Mozilla.org's SpiderMonkey
+
+<p>SpiderMoney is the name of the JavaScript engine from mozilla.org written
+completely in C. Depending on the configuration, the engine is even capable of
+compiling the JavaScript.  Since it is Open Source and especially designed for
+usage in other products, you can find nowadays a lot of applications using
+SpiderMonkey as easy scripting environment. Mozilla browser itself (and
+therefore the Netscape browser also) is using this engine in their browsers.
+This engine extremly fast and reliable.</p>
+
+<ul>
+	<li><a href="http://www.mozilla.org/js/spidermonkey">SpiderMoney Homepage</a></li>
+	<li><a href="http://www.mozilla.org/js/spidermonkey/apidoc/jsguide.html">Embedder's Guide</a></li>
+	<li><a href="http://www.mozilla.org">Mozilla</a></li>
+	<li><a href="http://channels.netscape.com/ns/browsers/default.jsp">Netscape Navigator</a></li>
+	<li><a href="http://www.obtree.com">IXOS-Obtree C4</a></li>
+</ul>
+
+<p>Early version built into the iPlanet Web Server does not seem to have an
+Error object.</p>
+
+\subsection spidermonkeyexample Examples
+
+<p>The SpiderMonkey sources contain also a shell that is able to execute
+standalone JavaScript sources. You have to optain the sources from the CVS or
+from a defined tarball and build the shell yourself. Depending on your OS you
+will have an executable js or jsshell.</p>
+
+<p>You can run the examples or the JsUnit's TestSuite giving AllTests.js as
+argument running the shell.</p>
+
+<ul>
+	<li><a href="http://www.mozilla.org/cvs.html">Source from CVS</a></li>
+	<li><a href="ftp://ftp.mozilla.org/pub/js/">Source as tarball</a></li>
+	<li><a href="http://lxr.mozilla.org/mozilla/source/js/src/README.html">Howto build the shell</a></li>
+</ul>
+
+\subsection spidermonkeydebugger Debugger
+
+<p>The SpiderMonkey sources also reference two versions of a debugger, but I
+did not get running one of them. If someone was more successful than me,
+please send a note.</p>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
+
+*/

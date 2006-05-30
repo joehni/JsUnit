@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,46 +35,65 @@ license.
 function JsUtil()
 {
 }
+/** 
+ * Retrieve the caller of a function.
+ * @tparam Function fn The function to examine.
+ * @treturn Function The caller as Function or undefined.
+ **/
+function JsUtil_getCaller( fn )
+{
+	switch( typeof( fn ))
+	{
+		case "undefined":
+			return JsUtil_getCaller( JsUtil_getCaller );
+			
+		case "function":
+			if( fn.caller )
+				return fn.caller;
+			if( fn.arguments && fn.arguments.caller )
+				return fn.arguments.caller;
+	}
+	return undefined;
+}
 /**
- * Print a single line.
- * @tparam String str The line to print.
- * Prints a complete text line incl. line feed. Works for command line
- * shells WSH, Rhino and SpiderMonkey.
+ * Includes a JavaScript file.
+ * @tparam String fname The file name.
+ * Loads the content of a JavaScript file into a String that has to be
+ * evaluated. Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @note This function is highly quirky. While WSH works as expected, the
+ * Mozilla shells will evaluate the file immediately and add any symbols to
+ * the global name space and return just "true". Therefore you have to 
+ * evaluate the returned string for WSH at global level also. Otherwise the
+ * function is not portable.
+ * @treturn String The JavaScript code to be evaluated.
  */
-function JsUtil_load( script )
+function JsUtil_include( fname )
 {
 	var ret = "true";
 	if( JsUtil.prototype.isMozillaShell )
 	{
-		load( script );
+		load( fname );
 	}
 	else if( JsUtil.prototype.isWSH )
 	{
 		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-		var file = fso.OpenTextFile( script, 1 );
+		var file = fso.OpenTextFile( fname, 1 );
 		ret = file.ReadAll();
 		file.Close();
 	}
 	return ret;
 }
 /**
- * Print a single line.
- * @tparam String str The line to print.
- * Prints a complete text line incl. line feed. Works for command line
- * shells WSH, Rhino and SpiderMonkey.
+ * Returns the SystemWriter.
+ * Instanciates a SystemWriter depending on the current JavaScript engine.
+ * Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @type SystemWriter
  */
-function JsUtil_print( str )
+function JsUtil_getSystemWriter()
 {
-	if( JsUtil.prototype.isMozillaShell )
-		print( str );
-	else if( JsUtil.prototype.isBrowser )
-		document.writeln( str );
-	else if( JsUtil.prototype.isWSH )
-		WScript.Echo( str );
-	/*
-	else if( JsUtil.prototype.isNSServer )
-		write( str + "\n" );
-	*/
+	if( !JsUtil.prototype.mWriter )
+		JsUtil.prototype.mWriter = new SystemWriter();
+	return JsUtil.prototype.mWriter;
 }
 /**
  * Quits the JavaScript engine.
@@ -89,9 +108,16 @@ function JsUtil_quit( exit )
 	else if( JsUtil.prototype.isWSH )
 		WScript.Quit( exit );
 }
-JsUtil.prototype.load = JsUtil_load;
-JsUtil.prototype.print = JsUtil_print;
+JsUtil.prototype.getCaller = JsUtil_getCaller;
+JsUtil.prototype.include = JsUtil_include;
+JsUtil.prototype.getSystemWriter = JsUtil_getSystemWriter;
 JsUtil.prototype.quit = JsUtil_quit;
+/**
+ * The SystemWriter.
+ * @type SystemWriter
+ * @see getSystemWriter
+ */
+JsUtil.prototype.mWriter = null;
 /**
  * Flag for a browser.
  * @type Boolean
@@ -111,6 +137,14 @@ JsUtil.prototype.isJScript = this.ScriptEngine != null;
  * Host.
  */
 JsUtil.prototype.isWSH = this.WScript != null;
+/**
+ * Flag for Microsoft IIS.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft JScript engine.
+ */
+JsUtil.prototype.isIIS = 
+	   JsUtil.prototype.isJScript
+	&& this.Server != null;
 /**
  * Flag for Netscape Enterprise Server (iPlanet) engine.
  * @type Boolean
@@ -139,20 +173,26 @@ JsUtil.prototype.isShell =
 	   JsUtil.prototype.isMozillaShell 
 	|| JsUtil.prototype.isWSH;
 /**
- * \internal
+ * Flag for Obtree C4.
+ * @type Boolean
+ * The member is true, if the script runs in Obtree C4 of IXOS.
  */
-JsUtil.prototype.hasCompatibleErrorClass = 
-	(    this.Error != null 
-	  && (   !JsUtil.prototype.isJScript 
-	  	  || (   JsUtil.prototype.isJScript 
-		      && ( this.ScriptEngineMajorVersion() >= 6 ))));
+JsUtil.prototype.isObtree = this.WebObject != null;
+/**
+ * Flag for call stack support.
+ * @type Boolean
+ * The member is true, if the engine provides call stack info.
+ */
+JsUtil.prototype.hasCallStackSupport = 
+	   JsUtil.prototype.getCaller() !== undefined;
+
 
 /**
  * CallStack object.
  * The object is extremly system dependent, since its functionality is not
- * within the range of ECMA 262, 3rd edition. It is supported by the
- * JScript engine and was supported in Netscape Enterprise Server 2.x, but
- * not in the newer version 4.x.
+ * within the range of ECMA 262, 3rd edition. It is supported by JScript
+ * and SpiderMonkey and was supported in Netscape Enterprise Server 2.x, 
+ * but not in the newer version 4.x.
  * @ctor
  * Constructor.
  * The object collects the current call stack up to the JavaScript engine.
@@ -167,63 +207,81 @@ function CallStack( depth )
 	 * The array with the stack. 
 	 * @type Array<String>
 	 */
+	this.mStack = null;
+	if( JsUtil.prototype.hasCallStackSupport )
+		this._fill( depth );
+}
+/**
+ * \internal
+ */
+function CallStack__fill( depth )
+{
 	this.mStack = new Array();
-
+	
 	// set stack depth to default
 	if( depth == null )
 		depth = 10;
 
-	var fn = this.getCaller( CallStack );
-	if( fn === undefined )
+	++depth;
+	var fn = JsUtil.prototype.getCaller( CallStack__fill );
+	while( fn != null && depth > 0 )
 	{
-		this.mStack.push( "[CallStack information not supported]" );
-	}
-	else
-	{
-		while( fn != null && depth > 0 )
-		{
-			s = new String( fn );
-			--depth;
-	
-			// Extract function name and argument list
-			var r = /function (\w+)([^\{\}]*\))/;
-			r.exec( s );
-			var f = new String( RegExp.$1 );
-			var args = new String( RegExp.$2 );
-			this.mStack.push( f + args );
-	
-			// Retrieve caller function
-			if( fn == this.getCaller( fn ))
-			{
-				this.mStack.push( "[JavaScript recursion]" );
-				break;
-			}
-			else
-				fn = this.getCaller( fn );
-		}
-	
-		if( fn == null )
-		{
-			this.mStack.push( "[JavaScript engine]" );
-		}
-	}
-}
+		var s = new String( fn );
+		--depth;
 
-/** 
- * Retrieve the caller of a function.
- * @tparam Function fn The function to examin.
- * @treturn Function The caller as Function or undefined.
+		// Extract function name and argument list
+		var r = /function (\w+)([^\{\}]*\))/;
+		r.exec( s );
+		var f = new String( RegExp.$1 );
+		var args = new String( RegExp.$2 );
+		this.mStack.push(( f + args ).replace( /\s/g, "" ));
+
+		// Retrieve caller function
+		if( fn == JsUtil.prototype.getCaller( fn ))
+		{
+			// Some interpreter's caller use global objects and may start
+			// an endless recursion.
+			this.mStack.push( "[JavaScript recursion]" );
+			break;
+		}
+		else
+			fn = JsUtil.prototype.getCaller( fn );
+	}
+
+	if( fn == null )
+		this.mStack.push( "[JavaScript engine]" );
+
+	// remove direct calling function CallStack or CallStack_fill
+	this.mStack.shift();
+}
+/**
+ * Fills the object with the current call stack info.
+ * The function collects the current call stack up to the JavaScript engine.
+ * Any previous data of the instance is lost.
+ * Most engines will not support call stack information with a recursion.
+ * Therefore the collection is stopped when the stack has two identical
+ * functions in direct sequence.
+ * @tparam Number depth Maximum recorded stack depth (defaults to 10).
  **/
-function CallStack_getCaller( fn )
+function CallStack_fill( depth )
 {
-	if( fn.caller !== undefined )
-		return fn.caller;
-	if( fn.arguments !== undefined && fn.arguments.caller !== undefined )
-		return fn.arguments.caller;
-			
-	return undefined;
+	this.mStack = null;
+	if( JsUtil.prototype.hasCallStackSupport )
+		this._fill( depth );
 }
-
+/**
+ * Retrieve call stack as array.
+ * The function returns the call stack as Array of Strings. 
+ * @treturn Array<String> The call stack as array of strings.
+ **/
+function CallStack_getStack()
+{
+	var a = new Array();
+	if( this.mStack != null )
+		for( var i = this.mStack.length; i--; )
+			a[i] = this.mStack[i];
+	return a;
+}
 /**
  * Retrieve call stack as string.
  * The function returns the call stack as string. Each stack frame has an 
@@ -232,17 +290,20 @@ function CallStack_getCaller( fn )
  **/
 function CallStack_toString()
 {
-	var s = new String();
-	for( var i = 1; i <= this.mStack.length; ++i )
-	{
-		if( s.length != 0 )
-			s += "\n";
-		s += i.toString() + ": " + this.mStack[i-1];
-	}
+	var s = "";
+	if( this.mStack != null )
+		for( var i = 1; i <= this.mStack.length; ++i )
+		{
+			if( s.length != 0 )
+				s += "\n";
+			s += i.toString() + ": " + this.mStack[i-1];
+		}
 	return s;
 }
 
-CallStack.prototype.getCaller = CallStack_getCaller;
+CallStack.prototype._fill = CallStack__fill;
+CallStack.prototype.fill = CallStack_fill;
+CallStack.prototype.getStack = CallStack_getStack;
 CallStack.prototype.toString = CallStack_toString;
 
 
@@ -339,77 +400,109 @@ function String_trim( chars )
 String.prototype.trim = String_trim;
 
 
-if( !this.Error || !JsUtil.prototype.hasCompatibleErrorClass )
+if( !this.Error )
 {
 	/**
 	 * Error class according ECMA specification.
 	 * This class is only active, if the ECMA implementation of the current
-	 * engine does not support it or implements it not following the ECMA 
-	 * standard (3rd edition).
+	 * engine does not support it.
 	 * @ctor
 	 * Constructor.
 	 * The constructor initializes the \c message member with the argument 
 	 * \a msg.
+	 * \attention The ECMA standard does not ensure, that the constructor
+	 * of the internal Error class may be called by derived objects. It will
+	 * normally return a new Error instance if called as function.
 	 * @tparam String msg The error message.
-	 **/
+	 */
 	function Error( msg )
 	{
-		/**
-		 * The error message.
-		 * @type String
-		 **/
-		this.message = msg || "";
+		if( this instanceof Error )
+		{
+			/**
+			 * The error message.
+			 * @type String
+			 */
+			this.message = msg || "";
+			return;
+		}
+		else
+		{
+			return new Error( msg );
+		}
 	}
-	Error.prototype = new Object();
-	/**
-	 * The name of the Error class as String.
-	 * @type String
-	 **/
-	Error.prototype.name = "Error";
-}
-if(   JsUtil.prototype.isRhino 
-   || !Error.prototype.toString 
-   || !JsUtil.prototype.hasCompatibleErrorClass )
-{
 	/**
 	 * String representation of the error.
 	 * @treturn String Returns a \c String containing the Error class name 
 	 * and the error message.
-	 **/
+	 * \attention The format of the returned string is not defined by ECMA
+	 * and is up to the vendor only. This implementation follows the behaviour
+	 * of Mozilla.org's SpiderMonkey.
+	 */
 	function Error_toString()
 	{
 		var msg = this.message;
 		return this.name + ": " + msg;
 	}
+	Error.prototype = new Object();
 	Error.prototype.toString = Error_toString;
+	/**
+	 * The name of the Error class as String.
+	 * @type String
+	 */
+	Error.prototype.name = "Error";
+	/**
+	 * \internal
+	 */
+	Error.prototype.testable = true;
 }
-
-
-if( !this.TypeError || !JsUtil.prototype.hasCompatibleErrorClass )
+else 
 {
 	/**
-	 * TypeError class according ECMA specification.
-	 * This class is only active, if the ECMA implementation of the current
-	 * engine does not support it or implements it nof following the ECMA 
-	 * standard (3rd edition).
-	 * @ctor
-	 * Constructor.
-	 * The constructor initializes the \c message member with the argument 
-	 * \a msg.
-	 * @tparam String msg The error message.
-	 **/
-	function TypeError( msg )
-	{
-		Error.call( this, msg );
-	}
-	TypeError.prototype = new Error();
-	/**
-	 * The name of the TypeError class as String.
-	 * @type String
-	 **/
-	TypeError.prototype.name = "TypeError";
+	 * \internal
+	 */
+	Error.prototype.testable = false;
 }
 
+/**
+ * JsUnitError class.
+ * Since ECMA does not define any inheritability of the Error class and the
+ * class itself is highly vender specific, JsUnit uses its own base class for
+ * all errors in the framework.
+ * @ctor
+ * Constructor.
+ * The constructor initializes the \c message member with the argument 
+ * \a msg.
+ * \attention The ECMA standard does not ensure, that the constructor
+ * of the internal Error class may be called by derived objects. It will
+ * normally return a new Error instance if called as function.
+ * @tparam String msg The error message.
+ * \attention This constructor may <b>not</b> be called as normal function.
+ */
+function JsUnitError( msg )
+{
+	this.message = msg || "";	
+}
+/**
+ * String representation of the error.
+ * The format of the returned string is not defined by ECMA
+ * and is up to the vendor only. This implementation follows the behaviour
+ * of Mozilla.org's SpiderMonkey.
+ * @treturn String Returns a \c String containing the Error class name 
+ * and the error message.
+ */
+function JsUnitError_toString()
+{
+	var msg = this.message;
+	return this.name + ": " + msg;
+}
+JsUnitError.prototype = new Error();
+JsUnitError.prototype.toString = JsUnitError_toString;
+/**
+ * The name of the Error class as String.
+ * @type String
+ */
+JsUnitError.prototype.name = "JsUnitError";
 
 /**
  * InterfaceDefinitionError class.
@@ -425,10 +518,9 @@ if( !this.TypeError || !JsUtil.prototype.hasCompatibleErrorClass )
  **/
 function InterfaceDefinitionError( msg )
 {
-	//TypeError.call( this, msg );
-	this.message = msg;
+	JsUnitError.call( this, msg );
 }
-InterfaceDefinitionError.prototype = new TypeError();
+InterfaceDefinitionError.prototype = new JsUnitError();
 /**
  * The name of the InterfaceDefinitionError class as String.
  * @type String
@@ -457,9 +549,10 @@ function Function_fulfills()
 	{
 		var I = arguments[i];
 		if( typeof I != "function" || !I.prototype )
-			throw new TypeError( I.toString() + " is not an Interface" );
+			throw new InterfaceDefinitionError( 
+				I.toString() + " is not an Interface" );
 		if( !this.prototype )
-			throw new TypeError( 
+			throw new InterfaceDefinitionError( 
 				"Current instance is not a Function definition" );
 		for( var f in I.prototype )
 		{
@@ -482,3 +575,251 @@ function Function_fulfills()
 }
 Function.prototype.fulfills = Function_fulfills;
 
+
+/**
+ * PrinterWriterError class.
+ * This error class is used for errors in the PrinterWriter.
+ * @see PrinterWriter::close
+ * @ctor
+ * Constructor.
+ * The constructor initializes the \c message member with the argument 
+ * \a msg.
+ * @tparam String msg The error message.
+ **/
+function PrinterWriterError( msg )
+{
+	JsUnitError.call( this, msg );
+}
+PrinterWriterError.prototype = new JsUnitError();
+/**
+ * The name of the PrinterWriterError class as String.
+ * @type String
+ **/
+PrinterWriterError.prototype.name = "PrinterWriterError";
+
+
+/**
+ * A PrinterWriter is an abstract base class for printing text.
+ * @note This is a helper construct to support different writers in 
+ * ResultPrinter e.g. depending on the JavaScript engine.
+ */
+function PrinterWriter()
+{
+	this.mBuffer = null;	
+	this.mClosed = false;
+}
+/**
+ * Closes the writer.
+ * After closing the steam no further writing is allowed. Multiple calls to
+ * close should be allowed.
+ */
+function PrinterWriter_close() 
+{
+	this.flush();
+	this.mClosed = true;
+}
+/**
+ * Flushes the writer.
+ * Writes any buffered data to the underlaying output stream system immediatly.
+ * @exception PrinterWriterError If flush was called after closing.
+ */
+function PrinterWriter_flush()
+{
+	if( !this.mClosed )
+	{
+		if( this.mBuffer !== null )
+		{
+			this._flush( this.mBuffer + "\n" );
+			this.mBuffer = null;	
+		}
+	}
+	else	
+		throw new PrinterWriterError( 
+			"'flush' called for closed PrinterWriter." );
+}
+/**
+ * Prints into the writer.
+ * @tparam Object data The data to print as String.
+ * @exception PrinterWriterError If print was called after closing.
+ */
+function PrinterWriter_print( data )
+{
+	if( !this.mClosed )
+	{
+		var undef;
+		if( data === undef || data == null )
+			data = "";
+		if( this.mBuffer )
+			this.mBuffer += data.toString();
+		else
+			this.mBuffer = data.toString();
+	}
+	else	
+		throw new PrinterWriterError( 
+			"'print' called for closed PrinterWriter." );
+}
+/**
+ * Prints a line into the writer.
+ * @tparam Object data The data to print as String.
+ * @exception PrinterWriterError If println was called after closing.
+ */
+function PrinterWriter_println( data )
+{
+	this.print( data );
+	this.flush();
+}
+PrinterWriter.prototype.close = PrinterWriter_close;
+PrinterWriter.prototype.flush = PrinterWriter_flush;
+PrinterWriter.prototype.print = PrinterWriter_print;
+PrinterWriter.prototype.println = PrinterWriter_println;
+/** 
+ * \internal 
+ */
+PrinterWriter.prototype._flush = function() {};
+
+
+/**
+ * The PrinterWriter of the JavaScript engine.
+ */
+function SystemWriter() 
+{
+	PrinterWriter.call( this );
+} 
+/**
+ * Closes the writer.
+ * Function just flushes the writer. Closing the system writer is not possible.
+ */
+function SystemWriter_close() 
+{
+	this.flush();
+}
+/** 
+ * \internal 
+ */
+function SystemWriter__flush( str ) 
+{
+	/* self-modifying code ... */
+	if( JsUtil.prototype.isMozillaShell )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				print( str.substring( 0, str.length - 1 )); 
+			}
+	else if( JsUtil.prototype.isBrowser )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				document.write( str );
+			}
+	else if( JsUtil.prototype.isWSH )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				WScript.Echo( str.substring( 0, str.length - 1 )); 
+			}
+	else if( JsUtil.prototype.isIIS )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				Response.write( str ); 
+			}
+	/*
+	else if( JsUtil.prototype.isNSServer )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				write( str );
+			}
+	*/
+	else if( JsUtil.prototype.isObtree )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				write( str ); 
+			}
+	else
+		this._flush = function() {}
+
+	this._flush( str );
+}
+SystemWriter.prototype = new PrinterWriter();
+SystemWriter.prototype.close = SystemWriter_close;
+SystemWriter.prototype._flush = SystemWriter__flush;
+
+
+/**
+ * The PrinterWriter into a String.
+ */
+function StringWriter() 
+{
+	PrinterWriter.call( this );
+	this.mString = "";
+} 
+/**
+ * Returns the written String.
+ * The function will close also the stream if it is still open.
+ * @type String
+ */
+function StringWriter_get() 
+{
+	if( !this.mClosed )
+		this.close();
+	return this.mString;
+}
+/** 
+ * \internal 
+ */
+function StringWriter__flush( str )
+{
+	this.mString += str;
+}
+StringWriter.prototype = new PrinterWriter();
+StringWriter.prototype.get = StringWriter_get;
+StringWriter.prototype._flush = StringWriter__flush;
+
+
+/**
+ * A filter for a PrinterWriter encoding HTML.
+ * @ctor
+ * Constructor.
+ * @tparam PrinterWriter writer The writer to filter.
+ * The constructor accepts the writer to wrap.
+ */
+function HTMLWriterFilter( writer )
+{
+	PrinterWriter.call( this );
+	this.setWriter( writer );
+}
+/**
+ * Returns the wrapped PrinterWriter.
+ * @type PrinterWriter
+ */
+function HTMLWriterFilter_getWriter() 
+{
+	return this.mWriter;
+}
+/**
+ * Sets the PrinterWriter to wrap.
+ * @tparam PrinterWriter writer The writer to filter.
+ * If the argument is omitted a StringWriter is created and wrapped.
+ */
+function HTMLWriterFilter_setWriter( writer ) 
+{
+	this.mWriter = writer ? writer : new StringWriter();
+}
+/** 
+ * \internal 
+ */
+function HTMLWriterFilter__flush( str )
+{
+	str = str.toString();
+	str = str.replace( /&/g, "&amp;" ); 
+	str = str.replace( /</g, "&lt;" ); 
+	str = str.replace( /\"/g, "&quot;" ); 
+	str = str.replace( /\n/g, "<br>" );
+	this.mWriter._flush( str );
+}
+HTMLWriterFilter.prototype = new PrinterWriter();
+HTMLWriterFilter.prototype.getWriter = HTMLWriterFilter_getWriter;
+HTMLWriterFilter.prototype.setWriter = HTMLWriterFilter_setWriter;
+HTMLWriterFilter.prototype._flush = HTMLWriterFilter__flush;

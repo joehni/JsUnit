@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -83,4 +83,5 @@ function ArrayTestSuite()
 	this.addTestSuite( ArrayTest );
 }
 ArrayTestSuite.prototype = new TestSuite();
+ArrayTestSuite.prototype.suite = function () { return new ArrayTestSuite(); }
 

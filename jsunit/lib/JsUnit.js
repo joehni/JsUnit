@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ license.
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /**
- * Thrown, when a test assertion fails.
+ * Thrown when a test assertion fails.
  * @ctor
  * Constructor.
  * An AssertionFailedMessage needs a message and a call stack for construction.
@@ -46,24 +46,95 @@ license.
  */
 function AssertionFailedError( msg, stack )
 {
-	// Error.call( this, msg );
-	this.message = msg;
+	JsUnitError.call( this, msg );
 	/**
 	 * The call stack for the message.
 	 */
 	this.mCallStack = stack;
 }
-AssertionFailedError.prototype = new Error();
+AssertionFailedError.prototype = new JsUnitError();
 /**
- * The name of the TypeError class as String.
+ * The name of the AssertionFailedError class as String.
  * @type String
  */
 AssertionFailedError.prototype.name = "AssertionFailedError";
 
 
 /**
+ * Thrown when a test assert comparing equal strings fail.
+ * @ctor
+ * Constructor.
+ * An AssertionFailedMessage needs a message and a call stack for construction.
+ * @tparam String msg Failure message (optional).
+ * @tparam String expected The expected string value.
+ * @tparam String actual The actual string value.
+ * @tparam CallStack stack The call stack of the assertion.
+ */
+function ComparisonFailure( msg, expected, actual, stack )
+{
+	AssertionFailedError.call( 
+		this, ( msg ? msg + " " : "" ) + "expected", stack );
+	this.mExpected = new String( expected );
+	this.mActual = new String( actual );
+}
+/**
+ * Returns the error message.
+ * @treturn String Returns the formatted error message.
+ * Returns "..." in place of common prefix and "..." in
+ * place of common suffix between expected and actual.
+ */
+function ComparisonFailure_toString()
+{
+	var str = AssertionFailedError.prototype.toString.call( this );
+	
+	var end = Math.min( this.mExpected.length, this.mActual.length );
+	var i = 0;
+	for( ; i < end; ++i )
+		if( this.mExpected.charAt( i ) != this.mActual.charAt( i ))
+			break;
+	var j = this.mExpected.length - 1;
+	var k = this.mActual.length - 1;
+	for( ; k >= i && j >= i; --k, --j )
+		if( this.mExpected.charAt( j ) != this.mActual.charAt( k ))
+			break;
+
+	var expected;
+	var actual;
+
+	if( j < i && k < i )
+	{
+		expected = this.mExpected;
+		actual = this.mActual;
+	}
+	else
+	{
+		expected = this.mExpected.substring( i, j + 1 );
+		actual = this.mActual.substring( i, k + 1 );
+		if( i <= end && i > 0 )
+		{
+			expected = "..." + expected;
+			actual = "..." + actual;
+		}
+		if( j < this.mExpected.length - 1 )
+			expected += "...";
+		if( k < this.mActual.length - 1 )
+			actual += "...";
+	}
+	
+	return str + ":<" + expected + ">, but was:<" + actual + ">";
+}
+ComparisonFailure.prototype = new AssertionFailedError();
+ComparisonFailure.prototype.toString = ComparisonFailure_toString;
+/**
+ * The name of the ComparisonFailure class as String.
+ * @type String
+ */
+ComparisonFailure.prototype.name = "ComparisonFailure";
+
+
+/**
  * A test can be run and collect its results.
- * @note Additional to JsUnit 3.7 the test has always a name. The interface
+ * @note Additional to JsUnit 3.8 the test has always a name. The interface
  * requires a getter and a setter and a method to search for tests.
  */
 function Test()
@@ -78,14 +149,14 @@ Test.prototype.countTestCases = function() {}
  * Search a test by name.
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The name of the searched test.
  * @treturn Test The test instance itself of null.
  */
 Test.prototype.findTest = function( testName ) {}
 /**
  * Retrieves the name of the test.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @treturn String The name of test.
  */
 Test.prototype.getName = function() {}
@@ -97,7 +168,7 @@ Test.prototype.getName = function() {}
 Test.prototype.run = function( result ) {}
 /**
  * Sets the name of the test.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The new name of the test.
  */
 Test.prototype.setName = function( testName ) {}
@@ -117,10 +188,27 @@ function TestFailure( test, except )
 	this.mTest = test;
 }
 /**
+ * Retrieve the exception message.
+ * @treturn String Returns the exception message.
+ */
+function TestFailure_exceptionMessage()
+{ 
+	var ex = this.thrownException(); 
+	return ex ? ex.toString() : "";
+}
+/**
  * Retrieve the failed test.
  * @treturn Test Returns the failed test.
  */
 function TestFailure_failedTest() { return this.mTest; }
+/**
+ * Test for a JsUnit failure.
+ * @treturn Boolean Returns true if the exception is a failure.
+ */
+function TestFailure_isFailure() 
+{ 
+	return this.thrownException() instanceof AssertionFailedError; 
+}
 /**
  * Retrieve the thrown exception.
  * @treturn Test Returns the thrown exception.
@@ -133,11 +221,26 @@ function TestFailure_thrownException() { return this.mException; }
  */
 function TestFailure_toString() 
 { 
-	return "Test " + this.mTest + " failed: " + this.mException; 
+	return "Test " + this.mTest + " failed: " + this.thrownException();
 }
+/**
+ * Retrieve the stack trace.
+ * @treturn String Returns stack trace (if available).
+ */
+function TestFailure_trace() 
+{ 
+	var ex = this.thrownException();
+	if( ex && ex.mCallStack )
+		return ex.mCallStack.toString();
+	else
+		return "";
+}
+TestFailure.prototype.exceptionMessage = TestFailure_exceptionMessage;
 TestFailure.prototype.failedTest = TestFailure_failedTest;
+TestFailure.prototype.isFailure = TestFailure_isFailure;
 TestFailure.prototype.thrownException = TestFailure_thrownException;
 TestFailure.prototype.toString = TestFailure_toString;
+TestFailure.prototype.trace = TestFailure_trace;
 
 
 /**
@@ -152,6 +255,7 @@ function Protectable()
  */
 Protectable.prototype.protect = function( test ) {}
 
+
 /**
  * A listener for test progress.
  */
@@ -161,15 +265,15 @@ function TestListener()
 /**
  * An occured error was added.
  * @tparam Test test The failed test.
- * @tparam Error except The thrown exception.
+ * @tparam Error except The thrown error.
  */
 TestListener.prototype.addError = function( test, except ) {}
 /**
  * An occured failure was added.
  * @tparam Test test The failed test.
- * @tparam Error except The thrown exception.
+ * @tparam AssertionFailedError afe The thrown assertion failure.
  */
-TestListener.prototype.addFailure = function( test, except ) {}
+TestListener.prototype.addFailure = function( test, afe ) {}
 /**
  * A test ended.
  * @tparam Test test The ended test.
@@ -202,7 +306,7 @@ function TestResult()
  * Add an occured error.
  * Add an occured error and call the registered listeners.
  * @tparam Test test The failed test.
- * @tparam Error except The thrown exception.
+ * @tparam Error except The thrown error.
  */
 function TestResult_addError( test, except )
 {
@@ -214,13 +318,13 @@ function TestResult_addError( test, except )
  * Add an occured failure.
  * Add an occured failure and call the registered listeners.
  * @tparam Test test The failed test.
- * @tparam Error except The thrown exception.
+ * @tparam AssertionFailedError afe The thrown assertion failure.
  */
-function TestResult_addFailure( test, except )
+function TestResult_addFailure( test, afe )
 {
-	this.mFailures.push( new TestFailure( test, except ));
+	this.mFailures.push( new TestFailure( test, afe ));
 	for( var i = 0; i < this.mListeners.length; ++i )
-		this.mListeners[i].addFailure( test, except );
+		this.mListeners[i].addFailure( test, afe );
 }
 /**
  * Add a listener.
@@ -372,27 +476,6 @@ function Assert()
 {
 }
 /**
- * Asserts that a condition is true.
- * @tparam String msg An optional error message.
- * @tparam String cond The condition to evaluate.
- * @exception AssertionFailedError Thrown if the evaluation was not true.
- * @depricated
- */
-function Assert_assert( msg, cond )
-{
-	if( arguments.length == 1 )
-	{
-		cond = msg;
-		msg = null;
-	}
-	if( !eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
-}
-/**
  * Asserts that two values are equal.
  * @tparam String msg An optional error message.
  * @tparam Object expected The expected value.
@@ -408,16 +491,20 @@ function Assert_assertEquals( msg, expected, actual )
 		expected = msg;
 		msg = null;
 	}
-	if( expected != actual )
+	if( expected instanceof RegExp && typeof( actual ) == "string" )
 	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Expected:<" + expected + ">, but was:<" + actual + ">";
-		this.fail( m, new CallStack());
+		if( !actual.match( expected ))
+			this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">" );
 	}
+	else if( expected != actual )
+		if( typeof( expected ) == "string" && typeof( actual ) == "string" )
+			throw new ComparisonFailure( msg, expected, actual, new CallStack());
+		else
+			this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+				, new CallStack(), msg );
 }
 /**
  * Asserts that a condition is false.
- * @note Not part of JUnit 3.7, but already in development branch.
  * @tparam String msg An optional error message.
  * @tparam String cond The condition to evaluate.
  * @exception AssertionFailedError Thrown if the evaluation was not false.
@@ -430,11 +517,41 @@ function Assert_assertFalse( msg, cond )
 		msg = null;
 	}
 	if( eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition should have failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Condition should have failed \"" + cond + "\""
+			, new CallStack(), msg );
+}
+/**
+ * Asserts that two floating point values are equal to within a given tolerence.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @tparam Object tolerance The maximum difference allowed to make equality check pass.
+ * @note This is an enhancement to JUnit 3.8
+ * @exception AssertionFailedError Thrown if the expected value is not within 
+ * the tolerance of the actual one.
+ */
+function Assert_assertFloatEquals( msg, expected, actual, tolerance)
+{
+    if( arguments.length == 3 )
+    {
+        tolerance = actual;
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if(    typeof( actual ) != "number" 
+        || typeof( expected ) != "number" 
+        || typeof( tolerance ) != "number" )
+    {
+        this.fail( "Can not compare " + expected + " and " + actual 
+            + " with tolerance " + tolerance + " (must all be numbers).");
+    }
+ 
+    if( Math.abs(expected - actual) > tolerance)
+    {
+        this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+            , new CallStack(), msg );
+    }
 }
 /**
  * Asserts that an object is not null.
@@ -450,10 +567,27 @@ function Assert_assertNotNull( msg, object )
 		msg = null;
 	}
 	if( object === null )
+		this.fail( "Object was null.", new CallStack(), msg );
+}
+/**
+ * Asserts that two values are not the same.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @exception AssertionFailedError Thrown if the expected value is not the 
+ * actual one.
+ */
+function Assert_assertNotSame( msg, expected, actual )
+{
+	if( arguments.length == 2 )
 	{
-		var m = ( msg ? ( msg + " " ) : "" ) + "Object was null.";
-		this.fail( m, new CallStack());
+		actual = expected;
+		expected = msg;
+		msg = null;
 	}
+	if( expected === actual )
+		this.fail( "Not the same expected:<" + expected + ">"
+			, new CallStack(), msg );
 }
 /**
  * Asserts that an object is not undefined.
@@ -469,11 +603,8 @@ function Assert_assertNotUndefined( msg, object )
 		msg = null;
 	}
 	if( object === undefined )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was undefined.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was undefined."
+			, new CallStack(), msg );
 }
 /**
  * Asserts that an object is null.
@@ -489,11 +620,8 @@ function Assert_assertNull( msg, object )
 		msg = null;
 	}
 	if( object !== null )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was not null.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was not null."
+			, new CallStack(), msg );
 }
 /**
  * Asserts that two values are the same.
@@ -514,11 +642,8 @@ function Assert_assertSame( msg, expected, actual )
 	if( expected === actual )
 		return;
 	else
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Same expected:<" + expected + ">, but was:<" + actual + ">";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Same expected:<" + expected + ">, but was:<" + actual + ">"
+			, new CallStack(), msg );
 }
 /**
  * Asserts that a condition is true.
@@ -534,11 +659,7 @@ function Assert_assertTrue( msg, cond )
 		msg = null;
 	}
 	if( !eval( cond ))
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Condition failed \"" + cond + "\"";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Condition failed \"" + cond + "\"", new CallStack(), msg );
 }
 /**
  * Asserts that an object is undefined.
@@ -554,27 +675,27 @@ function Assert_assertUndefined( msg, object )
 		msg = null;
 	}
 	if( object !== undefined )
-	{
-		var m = ( msg ? ( msg + " " ) : "" ) 
-			+ "Object <" + object + "> was not undefined.";
-		this.fail( m, new CallStack());
-	}
+		this.fail( "Object <" + object + "> was not undefined."
+			, new CallStack(), msg );
 }
 /**
  * Fails a test with a give message.
  * @tparam String msg The error message.
  * @tparam CallStack stack The call stack of the error.
+ * @tparam String usermsg The message part of the user.
  * @exception AssertionFailedError Is always thrown.
  */
-function Assert_fail( msg, stack )
+function Assert_fail( msg, stack, usermsg )
 {
-	var afe = new AssertionFailedError( msg, stack );
+	var afe = new AssertionFailedError(
+		( usermsg ? usermsg + " " : "" ) + msg, stack );
 	throw afe;
 }
-Assert.prototype.assert = Assert_assert;
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
+Assert.prototype.assertFloatEquals = Assert_assertFloatEquals;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
+Assert.prototype.assertNotSame = Assert_assertNotSame;
 Assert.prototype.assertNotUndefined = Assert_assertNotUndefined;
 Assert.prototype.assertNull = Assert_assertNull;
 Assert.prototype.assertSame = Assert_assertSame;
@@ -595,7 +716,7 @@ Assert.prototype.fail = Assert_fail;
  *
  * For each test implement a method which interacts
  * with the fixture. Verify the expected results with assertions specified
- * by calling <code>assert</code> with a boolean or one of the other assert 
+ * by calling <code>assertTrue</code> with a boolean or one of the other assert 
  * functions.
  *
  * Once the methods are defined you can run them. The framework supports
@@ -635,7 +756,7 @@ function TestCase_countTestCases() { return 1; }
 function TestCase_createResult() { return new TestResult(); }
 /**
  * Find a test by name.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * @tparam String testName The name of the searched test.
  * @treturn Test Returns this if the test's name matches or null.
  */
@@ -685,11 +806,14 @@ function TestCase_runBare()
  */
 function TestCase_runTest()
 {
-	var method = this[this.mName];
+	var method = this.getName();
+	this.assertNotNull( method );
+	method = method.substring( method.lastIndexOf( "." ) + 1 );
+	method = this[method];
 	if( method )
 		method.call( this );
 	else
-		this.fail( "Method '" + this.mName + "' not found!" );
+		this.fail( "Method '" + this.getName() + "' not found!" );
 }
 /**
  * Sets the name of the test case.
@@ -758,40 +882,65 @@ function TestSuite( obj )
 			if( !str )
 				str = new String( obj );
 			name = str.substring( str.indexOf( " " ) + 1, str.indexOf( "(" ));
-			if( name == "(" )
+			if( name == "" )
 				name = "[anonymous]";
 			break;
 		case "string": name = obj; break;
 		case "object": 
 			if( obj !== null )
 			{
-				this.addTest( 
-					this.warning( "Cannot instantiate test class for " 
-						+ "object '" + obj + "'" ));
+				if( obj.getName && typeof( obj.getName ) == "function" )
+				{
+					var tname = obj.getName();
+					if( tname )
+					{
+						var idx = tname.indexOf( "." );
+						if( idx == tname.lastIndexOf( "." ))
+							obj = eval( name = tname.substring( 0, idx ));
+					}
+				}
+				if( typeof( obj ) != "function" )
+					this.addTest( 
+						this.warning( "Cannot instantiate test class for " 
+							+ "object '" + obj + "'" ));
 			}
 			// fall through
-		case "undefined": 	// fall through
-		default: name = null; break;
+		case "undefined": 	
+			// fall through
+		default: 
+			if( typeof( name ) == "undefined" )
+				name = null; 
+			break;
 	}
 
-	this.mName = name;
+	this.setName( name );
 
 	// collect all testXXX methods
-	if( typeof( obj ) == "function" )
+	if( typeof( obj ) == "function" && obj.prototype )
 	{
 		for( var member in obj.prototype )
 		{
-			if( member.indexOf( "test" ) == 0 )
+			if(    member.indexOf( "test" ) == 0 
+				&& typeof( obj.prototype[member] ) == "function" )
+			{
 				this.addTest( new ( obj )( member ));
+			}
 		}
 	}
 }
 /**
  * Add a test to the suite.
  * @tparam Test test The test to add.
+ * The test suite will add the given \a test to the suite and prepends the
+ * name of a TestCase with the name of the suite.
  */
 function TestSuite_addTest( test ) 
 { 
+	if( test instanceof TestCase )
+	{
+		var name = test.getName();
+		test.setName( this.getName() + "." + name );
+	}
 	this.mTests.push( test ); 
 }
 /**
@@ -817,11 +966,11 @@ function TestSuite_countTestCases()
 }
 /**
  * Search a test by name.
- * @note This is an enhancement to JUnit 3.7
+ * @note This is an enhancement to JUnit 3.8
  * The function compares the given name with the name of the test and 
  * returns its own instance if the name is equal.
  * @tparam String name The name of the searched test.
- * @treturn String The instance itself of null.
+ * @treturn Test The instance itself or null.
  */
 function TestSuite_findTest( name )
 {
@@ -840,10 +989,10 @@ function TestSuite_findTest( name )
  * Retrieves the name of the test suite.
  * @treturn String The name of test suite.
  */
-function TestSuite_getName() { return this.mName; }
+function TestSuite_getName() { return this.mName ? this.mName : ""; }
 /**
  * Runs the tests and collects their result in a TestResult instance.
- * @note As an enhancement to JUnit 3.7 the method calls also startTest
+ * @note As an enhancement to JUnit 3.8 the method calls also startTest
  * and endTest of the TestResult.
  * @tparam TestResult result The test result to fill.
  */
@@ -882,7 +1031,10 @@ function TestSuite_runTest( test, result )
  * Sets the name of the suite.
  * @tparam String name The name to set.
  */
-function TestSuite_setName( name ) { this.mName = name }
+function TestSuite_setName( name )
+{ 
+	this.mName = name;
+}
 /**
  * Runs the test at the given index.
  * @tparam Number index The index.
@@ -973,11 +1125,13 @@ function TestDecorator_countTestCases() { return this.mTest.countTestCases(); }
 function TestDecorator_findTest( name ) { return this.mTest.findTest( name ); }
 /** 
  * Returns name of the test.
+ * @note This is an enhancement to JUnit 3.8
  * @type String
  */
 function TestDecorator_getName() { return this.mTest.getName(); }
 /** 
  * Returns name the decorated test.
+ * @note This is an enhancement to JUnit 3.8
  * @type Test
  */
 function TestDecorator_getTest() { return this.mTest; }
@@ -993,6 +1147,7 @@ function TestDecorator_run( result ) { this.basicRun( result ); }
 function TestDecorator_setName( name ) { this.mTest.setName( name ); }
 /** 
  * Returns the test as string. 
+ * @note This is an enhancement to JUnit 3.8
  * @type String
  */
 function TestDecorator_toString() { return this.mTest.toString(); }
@@ -1159,35 +1314,247 @@ ExceptionTestCase.prototype.runTest = ExceptionTestCase_runTest;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /**
+ * A listener interface for observing the execution of a test run.
+ * @note This class is an &quot;initial version&quot; in JUnit 3.8.1
+ * and might be replace TestListener some day.
+ */
+function TestRunListener()
+{
+}
+/**
+ * Status for an error.
+ * @type Number
+ */
+TestRunListener.prototype.STATUS_ERROR = 1;
+/**
+ * Status for a failure.
+ * @type Number
+ */
+TestRunListener.prototype.STATUS_FAILURE = 2;
+/**
+ * A test run was started.
+ * @tparam String suiteName The name of the test suite.
+ * @tparam Number testCount The number of tests in the suite.
+ */
+TestRunListener.prototype.testRunStarted = function( suiteName, testCount ) {}
+/**
+ * A test run was ended.
+ * @tparam Number elapsedTime The number of elapsed milliseconds.
+ */
+TestRunListener.prototype.testRunEnded = function( elapsedTime ) {}
+/**
+ * A test run was stopped.
+ * @tparam Number elapsedTime The number of elapsed milliseconds.
+ */
+TestRunListener.prototype.testRunStopped = function( elapsedTime ) {}
+/**
+ * A test started.
+ * @tparam String testName The name of the started test.
+ */
+TestRunListener.prototype.testStarted = function( testName ) {}
+/**
+ * A test ended.
+ * @tparam String testName The name of the ended test.
+ */
+TestRunListener.prototype.testEnded = function( testName ) {}
+/**
+ * A test failed.
+ * @tparam Number status The status of the test.
+ * @tparam String testName The name of the failed test.
+ * @tparam String trace The stack trace as String.
+ */
+TestRunListener.prototype.testFailed = function( status, testName, trace ) {}
+
+
+/**
  * General base class for an application running test suites.
+ */
+function BaseTestRunner()
+{
+	this.mElapsedTime = 0;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had an error.
+ * @tparam Error except The thrown error.
+ */
+function BaseTestRunner_addError( test, except ) 
+{ 
+	this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
+		test.toString(), except.toString()); 
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had a failure.
+ * @tparam AssertionFailedError afe The thrown failure.
+ */
+function BaseTestRunner_addFailure( test, afe ) 
+{ 
+	this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
+		test.toString(), afe.toString()); 
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The ended test.
+ */
+function BaseTestRunner_endTest( test ) 
+{ 
+	this.testEnded( test.toString()); 
+}
+/**
+ * Retrieve the value of a global preference key.
+ * @tparam String key The key of the preference.
+ * @tparam Object value The default value.
+ * @treturn Object The value of the key or the default value.
+ */
+function BaseTestRunner_getPreference( key, value ) 
+{ 
+	var v = BaseTestRunner.prototype.getPreferences()[key];
+	if( !v )
+		v = value;
+	return v;
+}
+/**
+ * Retrieves the Object with the global preferences of any runner.
+ * @treturn Object Returns the runner's global preferences.
+ */
+function BaseTestRunner_getPreferences() 
+{ 
+	return BaseTestRunner.prototype.mPreferences; 
+}
+/**
+ * Returns the Test corresponding to the given suite.
+ * @tparam String name The name of the test.
+ * This is a template method, subclasses override runFailed(), 
+ * clearStatus().
+ */
+function BaseTestRunner_getTest( name ) 
+{ 
+	if( typeof( name ) != "string" )
+	{
+		this.clearStatus();
+		return null;
+	}
+	var test;
+	try
+	{
+		var testFunc = eval( name );
+		if( typeof( testFunc ) == "function" && testFunc.prototype )
+		{
+		  	if( testFunc.prototype.suite )
+				test = new testFunc.prototype.suite();
+			else if( name.match( /Test$/ ))
+				test = new TestSuite( name );
+		}
+	}
+	catch( ex )
+	{
+	}
+	if( test === undefined || !( test instanceof TestSuite ))
+	{
+		this.runFailed( "Test not found \"" + name + "\"" );
+		return null;
+	}
+	else
+	{
+		this.clearStatus();
+		return test;
+	}
+}
+/**
+ * Set a global preference.
+ * @tparam String key The key of the preference.
+ * @tparam Object value The value of the preference.
+ */
+function BaseTestRunner_setPreference( key, value ) 
+{ 
+	BaseTestRunner.prototype.getPreferences()[key] = value;
+}
+/**
+ * Set any runner's global preferences.
+ * @tparam Array prefs The new preferences.
+ */
+function BaseTestRunner_setPreferences( prefs ) 
+{ 
+	BaseTestRunner.prototype.mPreferences = prefs;
+}
+/**
+ * Retrieve the flag for raw stack output.
+ * @treturn Boolean Flag for an unfiltered stack output.
+ */
+function BaseTestRunner_showStackRaw() 
+{ 
+	return BaseTestRunner.prototype.getPreference( "filterStack", false ) != true;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The started test.
+ */
+function BaseTestRunner_startTest( test ) 
+{ 
+	this.testStarted( test.toString()); 
+}
+/**
+ * Truncates string to maximum length.
+ * @tparam String str The string to trancate.
+ * @treturn String The truncated string.
+ */
+function BaseTestRunner_truncate( str ) 
+{
+	var max = BaseTestRunner.prototype.getPreference( "maxMessageLength" );
+	if( max < str.length )
+		str = str.substring( 0, max ) + "...";
+	return str; 
+}
+BaseTestRunner.prototype.mPreferences = new Object();
+BaseTestRunner.prototype.addError = BaseTestRunner_addError;
+BaseTestRunner.prototype.addFailure = BaseTestRunner_addFailure;
+BaseTestRunner.prototype.clearStatus = function() {}
+BaseTestRunner.prototype.endTest = BaseTestRunner_endTest;
+BaseTestRunner.prototype.getPreference = BaseTestRunner_getPreference;
+BaseTestRunner.prototype.getPreferences = BaseTestRunner_getPreferences;
+BaseTestRunner.prototype.getTest = BaseTestRunner_getTest;
+BaseTestRunner.prototype.runFailed = function( msg ) {}
+BaseTestRunner.prototype.setPreference = BaseTestRunner_setPreference;
+BaseTestRunner.prototype.setPreferences = BaseTestRunner_setPreferences;
+BaseTestRunner.prototype.showStackRaw = BaseTestRunner_showStackRaw;
+BaseTestRunner.prototype.startTest = BaseTestRunner_startTest;
+BaseTestRunner.prototype.testEnded = function( test ) {}
+BaseTestRunner.prototype.testFailed = function( test ) {}
+BaseTestRunner.prototype.testStarted = function( test ) {}
+BaseTestRunner.prototype.truncate = BaseTestRunner_truncate;
+BaseTestRunner.fulfills( TestListener );
+BaseTestRunner.prototype.setPreference( "filterStack", true );
+BaseTestRunner.prototype.setPreference( "maxMessageLength", 500 );
+
+
+/**
+ * TestRunner of JsUnit 1.1
+ * @see TextTestRunner
+ * @deprecated since 1.2 in favour of TextTestRunner
  */
 function TestRunner()
 {
+	BaseTestRunner.call( this );
 	this.mSuites = new TestSuite();
-	this.mElapsedTime = 0;
 }
 /**
  * Add a test suite to the application.
  * @tparam TestSuite suite The suite to add.
  */
-function TestRunner_addSuite( suite ) { this.mSuites.addTest( suite ); }
+function TestRunner_addSuite( suite ) 
+{ 
+	this.mSuites.addTest( suite ); 
+}
 /**
  * Counts the number of test cases that will be run by this test 
  * application.
  * @treturn Number The number of test cases.
  */
-function TestRunner_countTestCases() { return this.mSuites.countTestCases(); }
-/**
- * The milliseconds needed to execute all registered tests of the runner.
- * This number is 0 as long as the test was never started.
- * @treturn Number The milliseconds.
- */
-function TestRunner_countMilliSeconds() { return this.mElapsedTime; }
-/**
- * Creates an instance of a TestResult.
- * @treturn TestResult Returns the new TestResult instance.
- */
-function TestRunner_createTestResult() { return new TestResult(); }
+function TestRunner_countTestCases() 
+{ 
+	return this.mSuites.countTestCases(); 
+}
 /**
  * Runs all test of all suites and collects their results in a TestResult 
  * instance.
@@ -1221,43 +1588,450 @@ function TestRunner_runAll( result )
 	this.mSuites.run( result ); 
 	this.mElapsedTime = new Date() - this.mElapsedTime;
 }
-TestRunner.prototype.addError = function( test, except ) {}
-TestRunner.prototype.addFailure = function( test, except ) {}
+TestRunner.prototype = new BaseTestRunner();
 TestRunner.prototype.addSuite = TestRunner_addSuite;
 TestRunner.prototype.countTestCases = TestRunner_countTestCases;
-TestRunner.prototype.countMilliSeconds = TestRunner_countMilliSeconds;
-TestRunner.prototype.createTestResult = TestRunner_createTestResult;
-TestRunner.prototype.endTest = function( test ) {}
 TestRunner.prototype.run = TestRunner_run;
 TestRunner.prototype.runAll = TestRunner_runAll;
-TestRunner.prototype.startTest = function( test ) {}
-TestRunner.fulfills( TestListener );
 
 
 /**
- * Class for an application running test suites with a test based status report.
+ * Class to print the result of a TextTestRunner.
+ * @ctor
+ * Constructor.
+ * @tparam PrinterWriter writer The writer for the report.
+ * Initialization of the ResultPrinter. If no \a writer is provided the 
+ * instance uses the SystemWriter.
  */
-function TextTestRunner()
+function ResultPrinter( writer )
 {
-	TestRunner.call( this );
+	this.setWriter( writer );
+	this.mColumn = 0;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had an error.
+ * @tparam Error except The thrown error.
+ */
+function ResultPrinter_addError( test, except )
+{
+	this.getWriter().print( "E" );
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had a failure.
+ * @tparam AssertionFailedError afe The thrown failure.
+ */
+function ResultPrinter_addFailure( test, afe )
+{
+	this.getWriter().print( "F" );
+}
+/**
+ * Returns the elapsed time in seconds as String.
+ * @tparam Number runTime The elapsed time in ms.
+ * @type String
+ */
+function ResultPrinter_elapsedTimeAsString( runTime )
+{
+	return new String( runTime / 1000 );
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that ends.
+ */
+function ResultPrinter_endTest( test )
+{
+}
+/**
+ * Returns the associated writer to this instance.
+ * @type PrinterWriter
+ */
+function ResultPrinter_getWriter()
+{
+	return this.mWriter;
+}
+/**
+ * Print the complete test result.
+ * @tparam TestResult result The complete test result.
+ * @tparam Number runTime The elapsed time in ms.
+ */
+function ResultPrinter_print( result, runTime )
+{
+	this.printHeader( runTime );
+	this.printErrors( result );
+	this.printFailures( result );
+	this.printFooter( result );
+}
+/**
+ * Print a defect of the test result.
+ * @tparam TestFailure defect The defect to print.
+ * @tparam Number count The counter for this defect type.
+ */
+function ResultPrinter_printDefect( defect, count )
+{
+	this.printDefectHeader( defect, count );
+	this.printDefectTrace( defect );
+	this.getWriter().println();
+}
+/**
+ * \internal
+ */
+function ResultPrinter_printDefectHeader( defect, count )
+{
+	this.getWriter().print( count + ") " + defect.toString());
+}
+/**
+ * Print the defects of a special type of the test result.
+ * @tparam Array<TestFailure> array The array with the defects.
+ * @tparam String type The type of the defects.
+ */
+function ResultPrinter_printDefects( array, type )
+{
+	if( array.length == 0 )
+		return;
+	if( array.length == 1 )
+		this.getWriter().println( "There was 1 " + type + ":" );
+	else
+		this.getWriter().println( 
+			"There were " + array.length + " " + type + "s:" );
+	for( var i = 0; i < array.length; )
+		this.printDefect( array[i], ++i );
+}
+/**
+ * \internal
+ */
+function ResultPrinter_printDefectTrace( defect )
+{
+	if( defect.getCallStack )
+		this.getWriter().print( defect.getCallStack().toString());
+}
+/**
+ * Print the errors of the test result.
+ * @tparam TestResult result The complete test result.
+ */
+function ResultPrinter_printErrors( result )
+{
+	this.printDefects( result.mErrors, "error" );
+}
+/**
+ * Print the failures of the test result.
+ * @tparam TestResult result The complete test result.
+ */
+function ResultPrinter_printFailures( result )
+{
+	this.printDefects( result.mFailures, "failure" );
+}
+/**
+ * Print the footer of the test result.
+ * @tparam TestResult result The complete test result.
+ */
+function ResultPrinter_printFooter( result )
+{
+	var writer = this.getWriter();
+	if( result.wasSuccessful())
+	{
+		var count = result.runCount();
+		writer.println();
+		writer.print( "OK" );
+		writer.println( 
+			" (" + count + " test" + ( count == 1 ? "" : "s" ) + ")" );
+	}
+	else
+	{
+		writer.println();
+		writer.println( "FAILURES!!!" );
+		writer.println( "Tests run: " + result.runCount()
+			+ ", Failures: " + result.failureCount()
+			+ ", Errors: " + result.errorCount());
+	}
+	writer.println();
+}
+/**
+ * Print the header of the test result.
+ * @tparam Number runTime The elapsed time in ms.
+ */
+function ResultPrinter_printHeader( runTime )
+{
+	var writer = this.getWriter();
+	writer.println();
+	writer.println( "Time: " + this.elapsedTimeAsString( runTime ));
+}
+/**
+ * Sets the PrinterWriter.
+ * @note This is an enhancement to JUnit 3.8
+ * @tparam PrinterWriter writer The writer for the report.
+ * Initialization of the ResultPrinter. If no \a writer is provided the 
+ * instance uses the SystemWriter.
+ */
+function ResultPrinter_setWriter( writer )
+{
+	this.mWriter = writer ? writer : JsUtil.prototype.getSystemWriter();
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that starts.
+ */
+function ResultPrinter_startTest( test )
+{
+	if( !( test instanceof TestSuite ))
+	{
+		this.getWriter().print( "." );
+		if( this.mColumn++ >= 39 )
+		{
+			this.getWriter().println();
+			this.mColumn = 0;
+		}
+	}
+}
+ResultPrinter.prototype.addError = ResultPrinter_addError;
+ResultPrinter.prototype.addFailure = ResultPrinter_addFailure;
+ResultPrinter.prototype.elapsedTimeAsString = ResultPrinter_elapsedTimeAsString;
+ResultPrinter.prototype.endTest = ResultPrinter_endTest;
+ResultPrinter.prototype.getWriter = ResultPrinter_getWriter;
+ResultPrinter.prototype.print = ResultPrinter_print;
+ResultPrinter.prototype.printDefect = ResultPrinter_printDefect;
+ResultPrinter.prototype.printDefectHeader = ResultPrinter_printDefectHeader;
+ResultPrinter.prototype.printDefects = ResultPrinter_printDefects;
+ResultPrinter.prototype.printDefectTrace = ResultPrinter_printDefectTrace;
+ResultPrinter.prototype.printErrors = ResultPrinter_printErrors;
+ResultPrinter.prototype.printFailures = ResultPrinter_printFailures;
+ResultPrinter.prototype.printFooter = ResultPrinter_printFooter;
+ResultPrinter.prototype.printHeader = ResultPrinter_printHeader;
+ResultPrinter.prototype.setWriter = ResultPrinter_setWriter;
+ResultPrinter.prototype.startTest = ResultPrinter_startTest;
+ResultPrinter.fulfills( TestListener );
 
-	this.mRunTests = 0;
-	this.mNest = "";
-	this.mStartArgs = new Array();
+
+/**
+ * Class for an application running test suites with a test based status 
+ * report.
+ * @ctor
+ * The constructor.
+ * @tparam Object outdev Output device
+ * The TestRunner is initialized with the given output device. This may be an
+ * instance of a ResultPrinter, a PrinterWriter or undefined. For a 
+ * PrinterWriter the constructor creates a new instance of a standard 
+ * ResultPrinter with this PrinterWriter. If \a outdev is undefined it creates
+ * a ResultPrinter with the SystemWriter.
+ */
+function TextTestRunner( outdev )
+{
+	BaseTestRunner.call( this );
+	this.setPrinter( outdev );
+}
+/**
+ * Creates an instance of a TestResult to be used for the test run.
+ * @treturn TestResult Returns the new TestResult instance.
+ */
+function TextTestRunner_createTestResult() 
+{
+	return new TestResult(); 
+}
+/**
+ * Executes a test run with the given test.
+ * @tparam Test test The test.
+ * @treturn TestResult The result of the test.
+ */
+function TextTestRunner_doRun( test ) 
+{
+	var result = this.createTestResult();
+	result.addListener( this.mPrinter );
+	var startTime = new Date();
+	test.run( result );
+	var endTime = new Date();
+	this.mPrinter.print( result, endTime - startTime );
+	return result;
+}
+/**
+ * Runs a single test or a suite extracted from a TestCase subclass.
+ * @tparam Object test The class to test or a test.
+ * This static method can be used to start a test run from your program.
+ * @treturn TestResult The result of the test.
+ */
+function TextTestRunner_run( test )
+{
+	if( test instanceof Function )
+		test = new TestSuite( test );
+	var runner = new TextTestRunner();
+	return runner.doRun( test );
+}
+/**
+ * Program entry point.
+ * @tparam Array<String> args Program arguments.
+ * The function will create a TextTestRunner or the TestRunner given by the
+ * preference "TestRunner" and run the tests given by the arguments. The 
+ * function will exit the program with an error code indicating the type of
+ * success.
+ */
+function TextTestRunner_main( args )
+{
+	var ex;
+	var runner = BaseTestRunner.prototype.getPreference( "TestRunner" );
+	if( runner )
+		runner = new runner();
+	if( !runner )
+		 runner = new TextTestRunner();
+	try
+	{
+		var result = runner.start( args );
+		JsUtil.prototype.quit( 
+			  result.wasSuccessful() 
+			? TextTestRunner.prototype.SUCCESS_EXIT
+			: TextTestRunner.prototype.FAILURE_EXIT );
+	}
+	catch( ex )
+	{
+		runner.runFailed( ex.toString());
+	}
+}
+/**
+ * Run failed.
+ * @tparam String msg The failure message.
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ */
+function TextTestRunner_runFailed( msg )
+{
+	JsUtil.prototype.getSystemWriter().println( msg );
+	JsUtil.prototype.quit( TextTestRunner.prototype.EXCEPTION_EXIT );
+}
+/**
+ * Set printer.
+ * @tparam Object outdev Output device
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ */
+function TextTestRunner_setPrinter( outdev )
+{
+	if( typeof( outdev ) == "object" )
+	{
+		if( outdev instanceof PrinterWriter )
+			outdev = new ResultPrinter( outdev );
+		if( !( outdev instanceof ResultPrinter ))
+			outdev = new ResultPrinter();
+	}
+	else
+		outdev = new ResultPrinter();
+
+	this.mPrinter = outdev;
+}
+/**
+ * Starts a test run.
+ * @tparam Object args The (optional) arguments as Array or String
+ * @type TestResult
+ * @exception Usage If an unknown option is used
+ * Analyzes the command line arguments and runs the given test suite. If
+ * no argument was given, the function tries to run AllTests.suite().
+ */
+function TextTestRunner_start( args )
+{
+	function Usage( msg )
+	{
+		JsUnitError.call( this, 
+			"[JavaScript engine] [TestScript] TestName [TestName2]" + msg );
+	}
+	Usage.prototype = new JsUnitError();
+	Usage.prototype.name = "Usage";
+
+	var testCases = new Array();
+	
+	if( typeof( args ) == "undefined" )
+		args = new Array();
+	else if( typeof( args ) == "string" )
+		args = args.split( /[ ,;]/ );
+
+	var optionsPossible = true;
+	var msg = "";
+	for( var i = 0; i < args.length; ++i )
+	{
+		args[i] = args[i].trim();
+		if( optionsPossible && args[i].match( /^-/ ))
+		{
+			if( args[i] == "--" )
+			{
+				optionsPossible = false;
+				continue;
+			}
+			switch( args[i] )
+			{
+				case "--classic" :
+					this.setPrinter( 
+                        new ClassicResultPrinter( 
+                            this.mPrinter.getWriter()));
+					continue;
+					
+				case "--html" :
+                    this.mPrinter.setWriter(
+                        new HTMLWriterFilter(
+                            this.mPrinter.getWriter()));
+                    continue;
+                    
+				default:
+					msg = "\nUnknown option \"" + args[i] + "\"";
+				case "-?" :
+					throw new Usage( msg );
+			}
+		}
+		testCases.push( args[i] );
+	}
+
+	var suite;
+	if( testCases.length == 0 )
+		suite = this.getTest( "AllTests" );
+	else if( testCases.length > 1 )
+	{
+		suite = new TestSuite( "Start" );
+		for( i = 0; i < testCases.length; ++i )
+			suite.addTestSuite( testCases[i] );
+	}
+	else
+		suite = this.getTest( testCases[0] );
+
+	if( suite )
+		return this.doRun( suite );
+	else
+		return new TestResult();
+}
+TextTestRunner.prototype = new BaseTestRunner();
+TextTestRunner.prototype.createTestResult = TextTestRunner_createTestResult;
+TextTestRunner.prototype.doRun = TextTestRunner_doRun;
+TextTestRunner.prototype.main = TextTestRunner_main;
+TextTestRunner.prototype.run = TextTestRunner_run;
+TextTestRunner.prototype.runFailed = TextTestRunner_runFailed;
+TextTestRunner.prototype.setPrinter = TextTestRunner_setPrinter;
+TextTestRunner.prototype.start = TextTestRunner_start;
+/**
+ * Exit code, when all tests succeed
+ * @type Number
+ */
+TextTestRunner.prototype.SUCCESS_EXIT = 0;
+/**
+ * Exit code, when at least one test fails with a failure.
+ * @type Number
+ */
+TextTestRunner.prototype.FAILURE_EXIT = 1;
+/**
+ * Exit code, when at least one test fails with an error.
+ * @type Number
+ */
+TextTestRunner.prototype.EXCEPTION_EXIT = 2;
+
+
+function ClassicResultPrinter( writer )
+{
+	ResultPrinter.call( this, writer );
 }
 /**
  * An occured error was added.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
-function TextTestRunner_addError( test, except )
+function ClassicResultPrinter_addError( test, except )
 {
 	var str = "";
-	if( except.message || except.description )
+	if( except.description )
 	{
 		if( except.name )
 			str = except.name + ": ";
-		str += except.message || except.description;
+		str += except.description;
 	}
 	else
 		str = except;
@@ -1268,18 +2042,19 @@ function TextTestRunner_addError( test, except )
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
-function TextTestRunner_addFailure( test, except )
+function ClassicResultPrinter_addFailure( test, except )
 {
 	this.writeLn( "FAILURE in " + test + ": " + except );
-	this.writeLn( except.mCallStack );
+	if( except.mCallStack )
+		this.writeLn( except.mCallStack.toString());
 }
 /**
  * A test ended
  * @tparam Test test The ended test.
  */
-function TextTestRunner_endTest( test )
+function ClassicResultPrinter_endTest( test )
 {
-	if( test.testCount != null )
+	if( test instanceof TestSuite )
 	{
 		this.mNest = this.mNest.substr( 1 );
 		this.writeLn( 
@@ -1288,19 +2063,33 @@ function TextTestRunner_endTest( test )
 	}
 }
 /**
- * Write a header starting the application.
+ * Print the complete test result.
+ * @tparam TestResult result The complete test result.
+ * @tparam Number runTime The elapsed time in ms.
+ * Overloaded, because only the footer is needed.
  */
-function TextTestRunner_printHeader()
+function ClassicResultPrinter_print( result, runTime )
 {
+	this.printFooter( result, runTime );
+}
+/**
+ * Write a header starting the application.
+ * @tparam Test test The top level test.
+ */
+function ClassicResultPrinter_printHeader( test )
+{
+	this.mRunTests = 0;
+	this.mInReport = true;
+	this.mNest = "";
 	this.writeLn( 
-		  "TestRunner(" + this.mStartArgs[0] + ") (" 
-		+ this.countTestCases() + " test cases available)" );
+		  "TestRunner (" + test.countTestCases() + " test cases available)" );
 }
 /**
  * Write a footer at application end with a summary of the tests.
  * @tparam TestResult result The result of the test run.
+ * @tparam Number runTime The elapsed time in ms.
  */
-function TextTestRunner_printFooter( result )
+function ClassicResultPrinter_printFooter( result, runTime )
 {
 	if( result.wasSuccessful() == 0 )
 	{
@@ -1313,45 +2102,18 @@ function TextTestRunner_printFooter( result )
 	else
 		this.writeLn( 
 			  result.runCount() + " tests successful in " 
-			+ ( this.mElapsedTime / 1000 ) + " seconds." );
-}
-/**
- * Start the test functionality of the application.
- * @param args list of test names in an array or a single test name
- * @treturn Number 0 if no test fails, otherwise -1
- */
-function TextTestRunner_start( args )
-{
-	if( typeof( args ) == "undefined" )
-		args = new Array();
-	else if( typeof( args ) == "string" )
-		args = new Array( args );
-	if( args.length == 0 )
-		args[0] = "all";
-	this.mStartArgs = args;
-
-	var result = this.createTestResult();
-	result.addListener( this );
-
-	this.printHeader();
-	if( args[0] == "all" )
-		this.runAll( result );
-	else
-	{
-		for( var i = 0; i < args.length; ++ i )
-			this.run( args[i], result );
-	}
-	this.printFooter( result );
-
-	return result.wasSuccessful() ? 0 : -1;
+			+ this.elapsedTimeAsString( runTime ) + " seconds." );
+	this.mInReport = false;
 }
 /**
  * A test started
  * @tparam Test test The started test.
  */
-function TextTestRunner_startTest( test )
+function ClassicResultPrinter_startTest( test )
 {
-	if( test.testCount == null )
+	if( !this.mInReport )
+		this.printHeader( test );
+	if( !( test instanceof TestSuite ))
 	{
 		++this.mRunTests;
 		this.writeLn( 
@@ -1366,14 +2128,6 @@ function TextTestRunner_startTest( test )
 		this.mNest += "-";
 	}
 }
-TextTestRunner.prototype = new TestRunner();
-TextTestRunner.prototype.addFailure = TextTestRunner_addFailure;
-TextTestRunner.prototype.addError = TextTestRunner_addError;
-TextTestRunner.prototype.endTest = TextTestRunner_endTest;
-TextTestRunner.prototype.printHeader = TextTestRunner_printHeader;
-TextTestRunner.prototype.printFooter = TextTestRunner_printFooter;
-TextTestRunner.prototype.start = TextTestRunner_start;
-TextTestRunner.prototype.startTest = TextTestRunner_startTest;
 /**
  * Write a line of text.
  * @tparam String str The text to print on the line.
@@ -1381,95 +2135,46 @@ TextTestRunner.prototype.startTest = TextTestRunner_startTest;
  * overloaded with a proper version, that knows how to print a line,
  * if the script engine cannot be detected (yet).
  */
-TextTestRunner.prototype.writeLn = function ( str )
+function ClassicResultPrinter_writeLn( str )
 {
-	JsUtil.prototype.print( str );
-};
+	this.getWriter().println( str );
+}
+ClassicResultPrinter.prototype = new ResultPrinter();
+ClassicResultPrinter.prototype.addError = ClassicResultPrinter_addError;
+ClassicResultPrinter.prototype.addFailure = ClassicResultPrinter_addFailure;
+ClassicResultPrinter.prototype.endTest = ClassicResultPrinter_endTest;
+ClassicResultPrinter.prototype.print = ClassicResultPrinter_print;
+ClassicResultPrinter.prototype.printHeader = ClassicResultPrinter_printHeader;
+ClassicResultPrinter.prototype.printFooter = ClassicResultPrinter_printFooter;
+ClassicResultPrinter.prototype.writeLn = ClassicResultPrinter_writeLn;
+ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
 
 
 /**
  * Class for an application running test suites reporting in HTML.
+ * @see TextTestRunner
+ * @see HTMLWriterFilter
+ * @deprecated since 1.2 in favour of TextTestRunner in combination with a
+ * HTMLWrtierFilter wrapping an arbitrary PrinterWriter.
  */
-function HTMLTestRunner()
+function HTMLTestRunner( outdev )
 {
-	TextTestRunner.call( this );
-	this.mPrefix = "";
-	this.mPostfix = "";
+	TextTestRunner.call( this, outdev );
 }
 /**
- * Write a header starting the application.
- * The function will add a \<pre\> tag in front of the header.
+ * Set printer.
+ * @tparam Object outdev Output device
+ * @treturn Number TextTestRunner.FAILURE_EXIT.
+ * The function wraps the PrinterWriter of the new ResultPrinter with a 
+ * HTMLWriterFilter.
+ * @deprecated since 1.2
  */
-function HTMLTestRunner_printHeader()
+function HTMLTestRunner_setPrinter( outdev )
 {
-	this.setPrefix( "<pre>" );
-	TextTestRunner.prototype.printHeader.call( this );
-	this.setPrefix( "" );
-}
-/**
- * Write a footer at application end with a summary of the tests.
- * @tparam TestResult result The result of the test run.
- * The function will add a \</pre\> tag at the end of the footer.
- */
-function HTMLTestRunner_printFooter( result )
-{
-	this.setPostfix( "</pre>" );
-	TextTestRunner.prototype.printFooter.call( this, result );
-	this.setPostfix( "" );
-}
-/**
- * Set prefix of printed lines.
- * @tparam String prefix The prefix.
- */
-function HTMLTestRunner_setPrefix( prefix )
-{
-	this.mPrefix = prefix;
-}
-/**
- * Set postfix of printed lines.
- * @tparam String postfix The postfix.
- */
-function HTMLTestRunner_setPostfix( postfix )
-{
-	this.mPostfix = postfix;
-}
-/**
- * Write a line of text to the output stream.
- * @tparam String str The text to print on the line.
- * The function will convert '\&' and '\<' to \&amp; and \&lt; and add
- * prefix and postfix to the string.
- */
-function HTMLTestRunner_writeLn( str ) 
-{ 
-	str = str.toString();
-	str = str.replace( /&/g, "&amp;" ); 
-	str = str.replace( /</g, "&lt;" ); 
-	str = this.mPrefix + str + this.mPostfix;
-	TextTestRunner.prototype.writeLn.call( this, str );
+	TextTestRunner.prototype.setPrinter.call( this, outdev );
+    this.mPrinter.setWriter( 
+        new HTMLWriterFilter( this.mPrinter.getWriter()));
 }
 HTMLTestRunner.prototype = new TextTestRunner();
-HTMLTestRunner.prototype.printHeader = HTMLTestRunner_printHeader;
-HTMLTestRunner.prototype.printFooter = HTMLTestRunner_printFooter;
-HTMLTestRunner.prototype.setPrefix = HTMLTestRunner_setPrefix;
-HTMLTestRunner.prototype.setPostfix = HTMLTestRunner_setPostfix;
-HTMLTestRunner.prototype.writeLn = HTMLTestRunner_writeLn;
-
-
-/*************************************************************/
-if( this.window )
-{
-	function newOnLoadEventForJsUnit() 
-	{
-		window.isJsUnitPageLoaded = true;
-		if( typeof( window.savedOnLoadEventBeforeJsUnit ) == "function" )
-			window.savedOnLoadEventBeforeJsUnit();
-	}
-
-	if( this.name && this.name == "testFrame" )
-	{
-		window.isJsUnitPageLoaded = false;
-		window.savedOnLoadEventBeforeJsUnit = window.onload;
-		window.onload = newOnLoadEventForJsUnit;
-	}
-}
+HTMLTestRunner.prototype.setPrinter = HTMLTestRunner_setPrinter;
 

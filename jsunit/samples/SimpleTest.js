@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -48,10 +48,13 @@ function SimpleTest_testAsserts()
 	this.assertTrue( true );
 	this.assertFalse( false );
 	this.assertEquals( 1, this.fValue2 - this.fValue1 );
-	this.assertNotNull( this.fValue1 );
 	this.assertNull( null );
+	this.assertNotNull( this.fValue1 );
 	this.assertUndefined();
 	this.assertNotUndefined( true );
+	this.assertSame( this, this );
+	this.assertNotSame( 
+		new Number( this.fValue1 ), new Number( this.fValue1 ));
 }
 SimpleTest.prototype = new TestCase();
 SimpleTest.prototype.setUp = SimpleTest_setUp;
@@ -66,4 +69,5 @@ function SimpleTestSuite()
 	this.addTestSuite( SimpleTest );
 }
 SimpleTestSuite.prototype = new TestSuite();
+SimpleTestSuite.prototype.suite = function () { return new SimpleTestSuite(); }
 

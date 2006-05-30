@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,42 +20,58 @@ classes and functions in their production; they are not affected by this
 license.
 */
 
-if( this.WScript )
+if( !this.JsUtil )
 {
-	var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-	var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
-	var all = file.ReadAll();
-	file.Close();
-	eval( all );
-}
-else
-	load( "../lib/JsUtil.js" );
-
-eval( JsUtil.prototype.load( "../lib/JsUnit.js" ));
-eval( JsUtil.prototype.load( "ArrayTest.js" ));
-eval( JsUtil.prototype.load( "money/IMoney.js" ));
-eval( JsUtil.prototype.load( "money/Money.js" ));
-eval( JsUtil.prototype.load( "money/MoneyBag.js" ));
-eval( JsUtil.prototype.load( "money/MoneyTest.js" ));
-eval( JsUtil.prototype.load( "SimpleTest.js" ));
-
-function main( test )
-{
-	var runner = new TextTestRunner();
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-	return runner.start( test );
+	if( this.WScript )
+	{
+		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+		var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
+		var all = file.ReadAll();
+		file.Close();
+		eval( all );
+	}
+	else
+		load( "../lib/JsUtil.js" );
+	
+	eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+	eval( JsUtil.prototype.include( "ArrayTest.js" ));
+	eval( JsUtil.prototype.include( "money/IMoney.js" ));
+	eval( JsUtil.prototype.include( "money/Money.js" ));
+	eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
+	eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
+	eval( JsUtil.prototype.include( "SimpleTest.js" ));
 }
 
-var args;
-if( this.WScript )
+function AllTests()
 {
-	if( WScript.Arguments.Count())
-		args = WScript.Arguments( 0 );
+	TestSuite.call( this, "AllTests" );
 }
-else 
-	args = arguments;
+function AllTests_suite()
+{
+	var suite = new AllTests();
+	suite.addTest( ArrayTestSuite.prototype.suite());
+	suite.addTest( MoneyTestSuite.prototype.suite());
+	suite.addTest( SimpleTestSuite.prototype.suite());
+	return suite;
+}
+AllTests.prototype = new TestSuite();
+AllTests.prototype.suite = AllTests_suite;
+
+if( JsUtil.prototype.isShell )
+{
+	var args;
+	if( this.WScript )
+	{
+		args = new Array();
+		for( var i = 0; i < WScript.Arguments.Count(); ++i )
+			args[i] = WScript.Arguments( i );
+	}
+	else if( this.arguments )
+		args = arguments;
+	else
+		args = new Array();
 		
-JsUtil.prototype.quit( main( args ));
+	var result = TextTestRunner.prototype.main( args );
+	JsUtil.prototype.quit( result );
+}
 

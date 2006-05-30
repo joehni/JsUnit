@@ -1,7 +1,7 @@
-#!/bin/perl
+#!/usr/bin/perl
 
 # JsUnit - a JUnit port for JavaScript
-# Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+# Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,10 +49,6 @@ $DEB_SCANNER = 16;
 	$DEB_PARSER => "Parser",
 	$DEB_SCANNER => "Scanner"
 );
-#$debug_names{$DEB_DATABASE} = "Database";
-#$debug_names{$DEB_DETECTOR} = "Detector";
-#$debug_names{$DEB_PARSER} = "Parser";
-#$debug_names{$DEB_SCANNER} = "Scanner";
 
 
 use Getopt::Long;
@@ -193,7 +189,7 @@ sub next_token
 	{
 		$cur_line = <>;
 		$cur_line =~ s/\r//g; # Bug of Perl 5.6.1 for Cygwin on text mounts
-		return if eof;
+		return if(( not $cur_line ) and eof );
 	}
 	
 	if( $cur_line ne "" )
@@ -277,7 +273,7 @@ sub switch_scan_mode
 		{
 			$scan_mode = $S_LINE_COMMENT;
 		}
-		elsif( $token =~ /[\'\"]/ )
+		elsif( $token =~ /^[\'\"]$/ )
 		{
 			$scan_mode = $S_STRING;
 			$string_type = $&;
@@ -301,8 +297,9 @@ use vars qw(
 	FUNCTION 
 	CLASS 
 	INTERFACE 
-	MEMBER_FUNCTION 
 	MEMBER_VARIABLE 
+	STATIC_MEMBER_VARIABLE 
+	MEMBER_FUNCTION 
 	CONSTRUCTOR
 );
 $object_type_names[-1] = "UNDEF";
@@ -635,7 +632,7 @@ sub parse_this
 			
 			debug_msg( $DEB_DATABASE, 
 				 "Added member variable '$token' to class '"
-				.$context->{name}."." );
+				.$context->{name}."'." );
 		}
 		if( $last_doc )
 		{
@@ -665,7 +662,7 @@ sub parse_function
 	debug_msg( $DEB_DETECTOR, "Find Function Definition in '"
 		.$context->{name}."'." );
 	
-	if( $token_queue[1] !~ /(?:^[{}=;]$|^\/\*|^\/\/)/ )
+	if( $#token_queue > 1 && $token_queue[1] !~ /(?:^[{}=;]$|^\/\*|^\/\/)/ )
 	{
 		#dump_struct( \@token_queue, "Stack" );
 		#warning( "Function Definition cannot follow '".$token_queue[1]."'." );
@@ -689,15 +686,29 @@ sub parse_function
 		$name = "?".($context->{anonymous}++);
 	}
 
-	$context->{objs}{$name} = 
-	{ 
-		name => $name,
-		otype => $OT_FUNCTION, 
-		scope => $context 
-	};
-	my $fnContext = $context->{objs}{$name};
+	my $fnContext;
+	if( not exists $context->{objs}{$name} )
+	{
+		$context->{objs}{$name} = 
+		{ 
+			name => $name,
+			otype => $OT_FUNCTION, 
+			scope => $context 
+		};
+		$fnContext = $context->{objs}{$name};
+	}
+	else
+	{
+		$fnContext = $context->{objs}{$name};
+		syntax_err( "Function or class expected, found '".
+				$object_type_names[$fnContext->{otype}]."'" )
+			if(    $fnContext->{otype} != $OT_FUNCTION
+				&& $fnContext->{otype} != $OT_CLASS );
+		delete $fnContext->{unknown}
+			if( exists $fnContext->{unknown} );
+	}
 	debug_msg( $DEB_DATABASE, "Added "
-		.($name =~ /^\?/ ? "anonymous " : "")."function '$name'." );
+		.( $name =~ /^\?/ ? "anonymous " : "" )."function '$name'." );
 	if( $last_doc )
 	{
 		if( $last_doc->{otype} == $OT_UNKNOWN )
@@ -758,7 +769,6 @@ sub parse_function
 sub create_base
 {
 	my ( $context, $base ) = @_;
-	#TODO: look in inherited classes, too.
 	my $scope = $context;
 	while( $scope && ( not exists $scope->{objs}{$base} ))
 	{
@@ -780,6 +790,18 @@ sub create_base
 	return $scope;
 }
 
+sub create_static_var
+{
+	my ( $context, $member ) = @_;
+	syntax_err( "Static '$member' already defined as type '"
+			.$object_type_names[$context->{members}{$member}{otype}]."'." )
+		if(   exists $context->{members}{$member}
+	   	   && $context->{members}{$member}{otype} != $OT_MEMBERVAR
+	   	   && $context->{members}{$member}{otype} != $OT_MEMBERSVAR );
+	$context->{members}{$member} = { otype => $OT_MEMBERSVAR };
+	debug_msg( $DEB_DATABASE, "Added static member variable '$member'." );
+}
+
 sub find_member
 {
 	my ( $context, $member ) = @_;
@@ -799,15 +821,6 @@ sub find_member
 
 		$scope = find_member( $context->{base}, $member )
 			if(( not $scope ) && ( exists $context->{base} ));
-
-		if(( not $scope ) && ( exists $context->{inherits} ))
-		{
-			for my $class ( keys %{$context->{inherits}} )
-			{
-				$scope = find_member( $context->{inherits}{$class}, $member );
-				last if( $scope );
-			}
-		}
 	}
 	else
 	{
@@ -820,16 +833,6 @@ sub find_member
 			$scope = find_member( $context->{base}, 
 								  "$member.prototype.$struct" )
 				if(( not $scope ) && ( exists $context->{base} ));
-
-			if(( not $scope ) && ( exists $context->{inherits} ))
-			{
-				for my $class ( keys %{$context->{inherits}} )
-				{
-					$scope = find_member( $context->{inherits}{$class}, 
-										  "$member.prototype.$struct" );
-					last if( $scope );
-				}
-			}
 		}
 		else
 		{
@@ -931,7 +934,13 @@ sub parse_prototype
 		syntax_err( "';' expected, found '$token'." ) if( $token ne ";" );
 		
 		my $scope = create_base( $context, $base );
+		$scope->{objs}{$base}{otype} = $OT_CLASS
+			if( $scope->{objs}{$base}{otype} == $OT_FUNCTION );
+		syntax_err( "'$base' is not of type class, but of type '"
+				.$object_type_names[$scope->{objs}{$base}{otype}]."'." ) 
+			if( $scope->{objs}{$base}{otype} != $OT_CLASS );
 		$fnContext->{base} = $scope->{objs}{$base};
+		debug_msg( $DEB_DATABASE, "Set '$base' as base for class '$name'." );
 		if( $last_doc )
 		{
 			if( exists $fnContext->{doc} )
@@ -973,17 +982,18 @@ sub parse_prototype
 					/^$identifier$/	&& $token =~ /\.prototype\.$/ 
 									&& !/^prototype$/
 									&& ( $token .= $_, next );
-					syntax_err( "Unexpected tokens '$token' and '$_'"
-						." in prototype assignment" );
+					$base = "???";
+					#syntax_err( "Unexpected tokens '$token' and '$_'"
+					#	." in prototype assignment" );
 				}
 			}
 			my $scope = $context;
-			#TODO: look in inherited classes, too.
 			$scope = $scope->{scope} 
 				while( $scope and ( not exists $scope->{objs}{$base} ));
 			if( not $scope )
 			{
-				warning( "'$base' is not defined." );
+				create_static_var( $fnContext, $member );
+				$end and ( $token = parse_code()) ne ";";
 			}
 			else
 			{
@@ -1003,29 +1013,28 @@ sub parse_prototype
 							.$object_type_names[$scope->{otype}]
 							."' and not a member." )
 						if(   ( $scope->{otype} != $OT_MEMBERFUNC )
-						   && ( $scope->{otype} != $OT_MEMBERSVAR ));
+						   && ( $scope->{otype} != $OT_MEMBERSVAR )
+						   && ( $fnContext->{base} != $scope ));
 				}
-				debug_msg( $DEB_DATABASE, "'$member' is a "
-				   .(  $scope->{otype} == $OT_MEMBERSVAR
-					 ? "static " 
-					 : "")."member "
-				   .(  $scope->{otype} == $OT_MEMBERFUNC 
-					 ? "function" 
-					 : "variable")." with global name '"
-				   .$scope->{name}."'." );
-				$fnContext->{members}{$member} = $scope;
+				if( $fnContext->{base} != $scope )
+				{
+					debug_msg( $DEB_DATABASE, "'$member' is a "
+					   .(  $scope->{otype} == $OT_MEMBERSVAR
+						 ? "static " 
+						 : "")."member "
+					   .(  $scope->{otype} == $OT_MEMBERFUNC 
+						 ? "function" 
+						 : "variable")." with global name '"
+					   .$scope->{name}."'." );
+					$fnContext->{members}{$member} = $scope;
+				}
 				syntax_err( "';' expected, found '$token'." )
 					if( $end and ( $token = parse_code()) ne ";" );
 			}
 		}
 		else
 		{
-			syntax_err( "'$member' already defined." )
-				if(   exists $fnContext->{members}{$member}
-				   && $fnContext->{members}{$member}{otype} != $OT_MEMBERVAR );
-			$fnContext->{members}{$member} = { otype => $OT_MEMBERSVAR };
-			debug_msg( $DEB_DATABASE, 
-				"Added static member variable '$member'." );
+			create_static_var( $fnContext, $member );
 			while( parse_code() ne ";" ) {}
 		}
 		
@@ -1052,51 +1061,46 @@ sub parse_interface
 	my $context = shift;
 	my $token;
 	local $_;
-
 	
 	$_ = shift;
-	debug_msg( $DEB_DETECTOR, "Find possible Interface or Inheritance in '"
+	debug_msg( $DEB_DETECTOR, "Find possible Interface in '"
 		.$context->{name}."' with token '$_'." );
 
-	   /^($identifier)\.(fulfills|inherits)$/
+	   /^($identifier)\.fulfills$/
 	or do
 		{
-			warning(( $2 eq "fulfills" ? "Interface" : "Inheritance")
-				." definition '$_' not supported." );
+			warning( "Interface definition '$_' not supported." );
 			$last_doc = undef;
-			debug_msg( $DEB_DETECTOR, "Not found Interface or Inheritance in '"
+			debug_msg( $DEB_DETECTOR, "Not found Interface in '"
 				.$context->{name}."' with token '$_'." );
 			return;
 		};
 	
 	my $name = $1;
-	my $type = $2;
 	
 	if(( $token = parse_code()) ne "(" )
 	{
 		warning( "'(' expected, found '$token'." );
-		debug_msg( $DEB_DETECTOR, "Not found Interface or Inheritance in '"
+		debug_msg( $DEB_DETECTOR, "Not found Interface in '"
 			.$context->{name}."'." );
 		return;
 	}
 	if( not exists $context->{objs}{$name} )
 	{
-		warning( "Prototype fulfillment or inheritance, "
-			."but no constructor of $name." );
-		debug_msg( $DEB_DETECTOR, "Not found Interface or Inheritance in '"
+		warning( "Prototype fulfillment, but no constructor of $name." );
+		debug_msg( $DEB_DETECTOR, "Not found Interface in '"
 			.$context->{name}."'." );
 		return;
 	}
 	my $fnContext = $context->{objs}{$name};
-	$fnContext->{$type} = {};
+	$fnContext->{fulfills} = {};
 	while(( $token = parse_code()) ne ")" )
 	{
 		next if( $token eq "," );
 		if(( $token !~ /^$identifier$/ ) || ( $token =~ /^(?:new|delete)$/ ))
 		{
-			warning(( $type eq "fulfills" ? "Interface" : "Class" )
-				." name expected, found '$token'." );
-			debug_msg( $DEB_DETECTOR, "Not found Interface or Inheritance in '"
+			warning( "Interface name expected, found '$token'." );
+			debug_msg( $DEB_DETECTOR, "Not found Interface in '"
 				.$context->{name}."'." );
 			return;
 		}
@@ -1104,20 +1108,16 @@ sub parse_interface
 		my $scope = create_base( $context, $token );
 		$scope = $scope->{objs}{$token};
 		$scope->{otype} = $OT_INTERFACE 
-			if(( $type eq "fulfills" ) && ( $scope->{otype} == $OT_CLASS ));
+			if( $scope->{otype} == $OT_CLASS );
 		syntax_err( "$token is a '"
 				.$object_type_names[$scope->{otype}]."', but not a class." )
-			if(   ( $type eq "fulfills" && $scope->{otype} != $OT_INTERFACE )
-			   || ( $type eq "inherits" && $scope->{otype} != $OT_CLASS ));
+			if( $scope->{otype} != $OT_INTERFACE );
 		debug_msg( $DEB_DATABASE, "'$token' is an interface." );
 		
-		$fnContext->{$type}{$token} = $scope;
-		debug_msg( $DEB_DATABASE, "'$name' "
-			.( $type eq "fulfills" ? "implements" : "is inherited by" )
-			." '$token'." );
+		$fnContext->{fulfills}{$token} = $scope;
+		debug_msg( $DEB_DATABASE, "'$name' implements '$token'." );
 	}
-	debug_msg( $DEB_DETECTOR, "Found Interface or Inheritance in '"
-		.$context->{name}."'." );
+	debug_msg( $DEB_DETECTOR, "Found Interface in '".$context->{name}."'." );
 }
 
 sub parse
@@ -1145,7 +1145,7 @@ sub parse
 					&& do { parse_function( $context ); next; };
 				/^.+\.prototype/	
 					&& do { parse_prototype( $context, $token ); next; };
-				/^.+\.(?:fulfills|inherits)$/	
+				/^.+\.fulfills$/	
 					&& do { parse_interface( $context, $token ); next; };
 			}
 		}
@@ -1167,6 +1167,17 @@ sub parse
 	syntax_err( "Unbalanced '}' found." ) if( $level < -1 );
 	syntax_err( "EOF found. '}' expected." ) 
 		if( $level >= 0 && $context->{otype} != $OT_FILE );
+
+	for( $context->{otype} )
+	{
+		/^$OT_FUNCTION$/ && do
+		{
+			$context->{otype} = $OT_CLASS 
+				if(   ( exists $context->{ctor} ) 
+				   || (   ( exists $context->{doc} )
+					   && ( exists $context->{doc}{ctor} )));
+		}
+	}
 }
 
 
@@ -1235,15 +1246,15 @@ sub generate_function
 			if(   $ctor->{otype} != $OT_CONSTRUCTOR
 			   && $ctor->{otype} != $OT_UNKNOWN );
 		print( "\n".$ctor->{text} );
-		$rtype = $ctor->{rtype} if( exists $doc->{rtype} );
-		$argtypes = $ctor->{args} if( exists $doc->{args} );
+		$rtype = "void";
+		$argtypes = $ctor->{args} if( exists $ctor->{args} );
 	}
 	my $virtual = $otype == $OT_INTERFACE ? "virtual " : "";
 	print( $pref.$virtual."$rtype $npref$name(" );
 	for my $arg( @{$func->{args}} )
 	{
-		my $argtype = ( $argtypes and ( exists $doc->{args}{$arg->{name}} ))
-			? $doc->{args}{$arg->{name}} : "void";
+		my $argtype = ( $argtypes and ( exists $argtypes->{$arg->{name}} ))
+			? $argtypes->{$arg->{name}} : "void";
 		print( $delim."$argtype ", $arg->{name} );
 		$delim = ", ";
 	}
@@ -1303,11 +1314,6 @@ sub generate_class
 		if( exists $context->{base} )
 		{
 			print( $delim, "public ", $context->{base}{name} );
-			$delim = ", ";
-		}
-		for my $class( keys %{$context->{inherits}} )
-		{
-			print( $delim, "public $class" );
 			$delim = ", ";
 		}
 		for my $if( keys %{$context->{fulfills}} )
@@ -1456,6 +1462,8 @@ Any unattached comment is placed into file scope.
 
 The program will accept some additional help commands to produce better C++:
 
+=over 8
+
 =item B<\ctor>
 
 This command starts the description of the constructor.
@@ -1484,6 +1492,8 @@ command supported by this program.
 
 This command sets the type of a variable or the return type of a function.
 It may not be the first command in a documentation comment.
+
+=back
 
 =head1 LIMITATIONS
 

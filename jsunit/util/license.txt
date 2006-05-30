@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,8 +24,9 @@ license.
 
 \page license License
 
-<p>Copyright &copy; 1999, 2000, 2001, 2002 by <a
-href="mailto:joehni@mail.berlios.de">J&ouml;rg Schaible</a>.</p>
+\section jsunitlicense JsUnit License
+
+<p>Copyright &copy; 1999, 2000, 2001, 2002, 2003 by <a href="mailto:joehni@mail.berlios.de">J&ouml;rg Schaible</a>.</p>
 
 <p>%Test suites built with JsUnit are derivative works derived from tested
 classes and functions in their production; they are not affected by this

@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +28,29 @@ license.
  */
 
 /**
+ * Class for an application running test suites with the BroadVision ctxdriver
+ * and console output.
+ */
+function NSServerWriter()
+{
+}
+/** 
+ * \internal 
+ */
+function NsServerWriter__flush( str )
+{
+	print( str ); 
+}
+NsServerWriter.prototype = new PrinterWriter();
+NsServerWriter.prototype._flush = NsServerWriter__flush;
+
+
+/**
  * Class for an application running test suites with a Netscape Server.
+ * @see TextTestRunner
+ * @see NSServerWriter
+ * @deprecated since 1.2 in favour of TextTestRunner in combination with a 
+ * NSServerWriter.
  */
 function NSServerTestRunner()
 {
@@ -36,6 +58,7 @@ function NSServerTestRunner()
 }
 /**
  * Write a header starting the application.
+ * @deprecated since 1.2
  */
 function NSServerTestRunner_printHeader()
 {
@@ -45,6 +68,7 @@ function NSServerTestRunner_printHeader()
 /**
  * Write a footer at application end with a summary of the tests.
  * @tparam TestResult result The result of the test run.
+ * @deprecated since 1.2
  */
 function NSServerTestRunner_printFooter( result )
 {
@@ -54,6 +78,7 @@ function NSServerTestRunner_printFooter( result )
 /**
  * Write a line of text to the console to the browser window.
  * @tparam String str The text to print on the line.
+ * @deprecated since 1.2
  */
 function NSServerTestRunner_writeLn( str ) { write( str + "\n" ); }
 

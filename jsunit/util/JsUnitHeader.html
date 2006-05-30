@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,21 +24,29 @@ license.
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
 <title>$title</title>
 <link href="JsUnit.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" language="JavaScript">
-<!--
-// Reference BerliOS if viewed in the web.
-var img = new Image();
-if( document.location.protocol.indexOf( "http", 0 ) == 0 )
-	img.src = "http://developer.berlios.de/sflogo.php?group_id=158&type=1";
-else
-	img.src = "berlios.bmp";
-//-->
-</script>
 </head><body>
 <table width="100%" class="header"><tr>
 <td width="100%"><div class="header"><span class="J">J</span><span class="s">s</span><span class="U">U</span>nit <small>$projectnumber</small></div></td>
-<td><a href="http://developer.berlios.de/projects/jsunit"><img name="HeadBerliOS" src="javascript:document.HeadBerliOS.src=img.src" width="118" height="52" border="0" alt="Project Developer Home"></a></td>
+<td>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="joehni@mail.berlios.de">
+<input type="hidden" name="item_name" value="JsUnit">
+<input type="image" src="PayPal.png" border="0" name="submit" alt="Make a donation using PayPal">
+</form></td>
+<td><a href="http://developer.berlios.de/projects/jsunit"><img name="HeadBerliOS" src="berlios.png" width="118" height="52" border="0" alt="Project Developer Home"></a></td>
 <td><a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border=0 width=110 height=52></a></td>
 </tr></table>
+<script type="text/javascript" language="JavaScript">
+<!--
+// Reference BerliOS if viewed in the web.
+if(   window.location.protocol.indexOf( "http", 0 ) == 0
+   && window.location.host != "localhost" 
+   && window.location.host != "127.0.0.1" )
+{
+	document.HeadBerliOS.src = "http://developer.berlios.de/sflogo.php?group_id=158&type=1";
+}
+//-->
+</script>
 <hr>
 

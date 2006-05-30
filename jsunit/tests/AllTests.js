@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ license.
 
 var hasExceptions = "false";
 var exceptionsWorking = "false";
+var i;
 
 function throwEx()
 {
@@ -35,55 +36,80 @@ function testEx()
 }
 new testEx();
 
-if( this.WScript )
+if( !this.JsUtil )
 {
-	var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-	var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
-	var all = file.ReadAll();
-	file.Close();
-	eval( all );
+	if( this.WScript )
+	{
+		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+		var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
+		var all = file.ReadAll();
+		file.Close();
+		eval( all );
+	}
+	else
+		load( "../lib/JsUtil.js" );
 }
-else
-	load( "../lib/JsUtil.js" );
-
-JsUtil.prototype.print( "\nJavaScript compatibility:" );
-JsUtil.prototype.print( "\thas exceptions: " + hasExceptions );
-JsUtil.prototype.print( "\texceptions working: " + exceptionsWorking );
-
-JsUtil.prototype.print( "\nJavaScript engine detection:" );
-for( var i in JsUtil.prototype )
-	if( typeof JsUtil.prototype[i] != "function" && i.indexOf( "is" ) == 0 )
-		JsUtil.prototype.print( "\t" + i + ": " + JsUtil.prototype[i] );
-
-function main( args )
+if( !JsUtil.prototype.isBrowser )
 {
-	var runner = new TextTestRunner();
-	runner.addSuite( new JsUtilTestSuite());
-	runner.addSuite( new JsUnitTestSuite());
-	return runner.start( args );
-}
+	var writer = JsUtil.prototype.getSystemWriter();
+	/*
+	o = this.Environment;
+	print( "Object: " + o );
+	for( i in o )
+		print( " i is " + i );
+	quit(0);
+	*/
+	writer.println( "\nJavaScript compatibility:" );
+	writer.println( "\thas exceptions: " + hasExceptions );
+	writer.println( "\texceptions working: " + exceptionsWorking );
 
-JsUtil.prototype.print( "\nJsUnit Test Suite:\n" );
+	writer.println( "\nJavaScript engine detection:" );
+	for( i in JsUtil.prototype )
+		if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
+			writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
+
+	writer.println( "\nJsUnit Test Suite:\n" );
+}
 if( exceptionsWorking )
 {
-	eval( JsUtil.prototype.load( "../lib/JsUnit.js" ));
-	eval( JsUtil.prototype.load( "JsUtilTest.js" ));
-	eval( JsUtil.prototype.load( "JsUnitTest.js" ));
+	eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+	eval( JsUtil.prototype.include( "JsUtilTest.js" ));
+	eval( JsUtil.prototype.include( "JsUnitTest.js" ));
 
+	function AllTests()
+	{
+		TestSuite.call( this, "AllTests" );
+	}
+	function AllTests_suite()
+	{
+		var suite = new AllTests();
+		suite.addTest( JsUtilTestSuite.prototype.suite());
+		suite.addTest( JsUnitTestSuite.prototype.suite());
+		return suite;
+	}
+	AllTests.prototype = new TestSuite();
+	AllTests.prototype.suite = AllTests_suite;
+}
+if( JsUtil.prototype.isShell )
+{
+	if( !exceptionsWorking )
+	{
+		writer.println( "\tSorry, exceptions not working!\n" );
+		JsUtil.prototype.quit( -1 );
+	}
 	var args;
 	if( this.WScript )
 	{
-		if( WScript.Arguments.Count())
-			args = WScript.Arguments( 0 );
+		args = new Array();
+		for( i = 0; i < WScript.Arguments.Count(); ++i )
+			args[i] = WScript.Arguments( i );
 	}
-	else 
+	else if( this.arguments )
 		args = arguments;
+	else
+		args = new Array();
 		
-	JsUtil.prototype.quit( main( args ));
-}
-else
-{
-	JsUtil.prototype.print( "\tSorry, exceptions not working!\n" );
-	JsUtil.prototype.quit( -1 );
+	var result = TextTestRunner.prototype.main( args );
+	JsUtil.prototype.quit( result );
 }
 

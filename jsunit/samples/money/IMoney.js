@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ IMoney.prototype.addMoney = function ( money ) {};
  */
 IMoney.prototype.addMoneyBag = function ( moneyBag ) {};
 /**
- * Tests whether this money is null
+ * Tests whether this money is zero
  */
-IMoney.prototype.isNull = function () {};
+IMoney.prototype.isZero = function () {};
 /**
  * Multiplies a money by the given factor.
  */
@@ -57,4 +57,8 @@ IMoney.prototype.negate = function () {};
  * Subtracts a money from this money.
  */
 IMoney.prototype.subtract = function ( iMoney ) {};
+/**
+ * Append this to a MoneyBag m.
+ */
+IMoney.prototype.appendTo = function ( moneyBag ) {};
 

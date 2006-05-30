@@ -1,7 +1,7 @@
 <?XML version="1.0" standalone="yes" ?>
 <!--
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,21 +30,5 @@ license.
 <script language="JScript" src="money/MoneyBag.js" />
 <script language="JScript" src="money/MoneyTest.js" />
 <script language="JScript" src="SimpleTest.js" />
-<script language="JScript">
-<![CDATA[
-function main( test )
-{
-	var runner = new TextTestRunner();
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-	return runner.start( test );
-}
-
-var arg;
-if( WScript.Arguments.Count())
-	arg = WScript.Arguments(0);
-WScript.Quit( main( arg ));
-]]>
-</script>
+<script language="JScript" src="AllTests.js" />
 </job>

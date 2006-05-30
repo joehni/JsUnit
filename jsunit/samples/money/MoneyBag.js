@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,14 +34,13 @@ license.
 function MoneyBag() 
 {
 	this.fMonies = new Array();
-
-	for( var i = 0; i < arguments.length; ++i ) 
-	{
-		if( arguments[i] instanceof Money ) 
-			this.appendMoney( arguments[i] );
-		if( arguments[i] instanceof MoneyBag ) 
-			this.appendBag( arguments[i] );
-	}
+}
+function MoneyBag_create( iMoney1, iMoney2 ) 
+{
+	var result = new MoneyBag();
+	iMoney1.appendTo( result );
+	iMoney2.appendTo( result );
+	return result.simplify();
 }
 function MoneyBag_add( money ) 
 {
@@ -49,13 +48,11 @@ function MoneyBag_add( money )
 }
 function MoneyBag_addMoney( money ) 
 {
-	var moneyBag = new MoneyBag( money, this );
-	return moneyBag.simplify();
+	return MoneyBag.prototype.create( money, this );
 }
 function MoneyBag_addMoneyBag( moneyBag ) 
 {
-	var moneyBag = new MoneyBag( moneyBag, this );
-	return moneyBag.simplify();
+	return MoneyBag.prototype.create( moneyBag, this );
 }
 function MoneyBag_appendBag( moneyBag ) 
 {
@@ -64,7 +61,7 @@ function MoneyBag_appendBag( moneyBag )
 }
 function MoneyBag_appendMoney( money ) 
 {
-	if( money.amount() == 0 )
+	if( money.isZero())
 		return;
 	var i = this.findMoney( money.currency());
 	if ( i == null )
@@ -74,25 +71,20 @@ function MoneyBag_appendMoney( money )
 	}
 	var old = this.fMonies[i];
 	var sum = old.add( money );
-	if( sum.amount() != 0 ) 
-	{
-		this.fMonies[i] = sum;
-	} 
-	else 
+	if( sum.isZero()) 
 	{
 		var monies = new Array();
-		for( j = 0; j < this.fMonies.length; ++j ) 
+		for( var j = 0; j < this.fMonies.length; ++j ) 
 		{
 			if( j != i )
 				monies.push( this.fMonies[j] );
 		}
 		this.fMonies = monies;
 	}
-}
-function MoneyBag_contains( money ) 
-{
-	var i = this.findMoney( money.currency());
-	return i != null && this.fMonies[i].amount() == money.amount();
+	else 
+	{
+		this.fMonies[i] = sum;
+	} 
 }
 function MoneyBag_equals( object ) 
 {
@@ -100,7 +92,7 @@ function MoneyBag_equals( object )
 		return false;
 
 	if( object instanceof Money )
-		return this.isNull() && object.isNull();
+		return this.isZero() && object.isZero();
 
 	if( object instanceof MoneyBag ) 
 	{
@@ -126,6 +118,11 @@ function MoneyBag_findMoney( currency )
 	}
 	return null;
 }
+function MoneyBag_contains( money ) 
+{
+	var i = this.findMoney( money.currency());
+	return i != null && this.fMonies[i].amount() == money.amount();
+}
 /*
 function MoneyBag_int hashCode() 
 {
@@ -138,7 +135,7 @@ function MoneyBag_int hashCode()
     return hash;
 } 
 */
-function MoneyBag_isNull() 
+function MoneyBag_isZero() 
 {
 	return this.fMonies.length == 0;
 }
@@ -176,19 +173,25 @@ function MoneyBag_toString()
 	    buffer = buffer + this.fMonies[i].toString();
 	return buffer + "}";
 }
+function MoneyBag_appendTo( moneyBag ) 
+{
+	moneyBag.appendBag( this );
+}
 
+MoneyBag.prototype.create = MoneyBag_create;
 MoneyBag.prototype.add = MoneyBag_add;
 MoneyBag.prototype.addMoney = MoneyBag_addMoney;
 MoneyBag.prototype.addMoneyBag = MoneyBag_addMoneyBag;
 MoneyBag.prototype.appendBag = MoneyBag_appendBag;
 MoneyBag.prototype.appendMoney = MoneyBag_appendMoney;
-MoneyBag.prototype.contains = MoneyBag_contains;
 MoneyBag.prototype.equals = MoneyBag_equals;
 MoneyBag.prototype.findMoney = MoneyBag_findMoney;
-MoneyBag.prototype.isNull = MoneyBag_isNull;
+MoneyBag.prototype.contains = MoneyBag_contains;
+MoneyBag.prototype.isZero = MoneyBag_isZero;
 MoneyBag.prototype.multiply = MoneyBag_multiply;
 MoneyBag.prototype.negate = MoneyBag_negate;
 MoneyBag.prototype.simplify = MoneyBag_simplify;
 MoneyBag.prototype.subtract = MoneyBag_subtract;
 MoneyBag.prototype.toString = MoneyBag_toString;
+MoneyBag.prototype.appendTo = MoneyBag_appendTo;
 MoneyBag.fulfills( IMoney );

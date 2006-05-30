@@ -11,6 +11,10 @@ C.prototype.memvar = 1;
 
 if( true )
 {
+	/**
+	 * This is CC_test.
+	 * @treturn String It returns String.
+	 */
 	function CC_test() {}
 	C.prototype.CC = function () {}
 	C.prototype.CC.prototype.test = CC_test;
@@ -19,6 +23,9 @@ if( true )
 }
 
 var regex = /function (\w+)([^\{\}]*\))/;
+
+this["ActionScriptContext"].ActionScriptClass = ActionScript;
+ActionScript.prototype.context = this["ActionScriptContext"];
 
 /**
  * This is variable v.
@@ -41,6 +48,8 @@ function x(a,b)
 	{
 		this.xxx = 1;
 	}
+	this.aa = a;
+	this.bb = this.xx;
 
 	function N()
 	{
@@ -48,13 +57,32 @@ function x(a,b)
 	}
 
 	N.prototype = new M();
+	N.prototype.v = this;
+	N.prototype.w = this.xxx;
 }
 /**
  * This is class x.
  * We can describe x also with a long text.
  */
 x.prototype = new y();
-x.inherits( C );
+x.prototype.fn = B.prototype.memfun;
+/**
+ * Member function.
+ * \type "char *"
+ */
+x.prototype.anonymous = function()
+{ 
+	x.prototype.a = 2; 
+	return "Hello"; 
+}
+/**
+ * This is class O.
+ * \ctor
+ * Nothing special.
+ * \tparam String s A string.
+ */
+x.prototype.O = function (s) {}
+x.prototype.O.prototype = new y();
 /**
  * This is static member a.
  * \type long
@@ -62,19 +90,6 @@ x.inherits( C );
  */
 x.prototype.a = 1;
 x.prototype.xxx = 0;
-x.prototype.fn = B.prototype.memfun;
-/**
- * Member function.
- * \type "char *"
- */
-x.prototype.anonymous = function() { return "Hello"; }
-/**
- * This is class O.
- * \ctor
- * Nothing special.
- */
-x.prototype.O = function () {}
-x.prototype.O.prototype = new y();
 x.fulfills( A, B );
 
 /**
@@ -86,7 +101,9 @@ x.fulfills( A, B );
  */
 function fn2(x)
 {
-	return "Hi!";
+	var str = '"Hi!"';
+	str = str.replace( /\"/g, "&quot" );
+	return str;
 }
 
 /**
@@ -104,8 +121,31 @@ function Array_isEmpty( array )
 	return array.length() == 0;
 }
 Array.prototype.isEmpty = Array_isEmpty;
-Array.prototype.test = x.prototype.CC.prototype.test;
+Array.prototype.test = C.prototype.CC.prototype.test;
+/** 
+ * Equivalent for toString.
+ * \treturn String Returns array as String.
+ */
 Array.prototype._toString = Array.prototype.toString;
+Array.prototype._isEmpty = Array.prototype.isEmpty;
 Array.prototype.member = 1;
+Array.prototype.func = C.prototype.CC;
+Array.prototype.isTest1 = this.window != null;
+Array.prototype.isTest2 = this.window == null;
+Array.prototype.isTest =
+	   Array.prototype.isTest1
+	|| Array.prototype.isTest2;
 
+/**
+ * @ctor
+ * This is a ctor of a struct
+ */
+function struct()
+{
+	/**
+	 * A variable.
+	 * \type Number
+	 */
+	this.x = 0;
+}
 

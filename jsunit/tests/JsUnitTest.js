@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,14 +33,71 @@ AssertionFailedErrorTest.prototype = new TestCase();
 AssertionFailedErrorTest.prototype.testToString = AssertionFailedErrorTest_testToString;
 
 
+function ComparisonFailureTest( name )
+{
+	TestCase.call( this, name );
+}
+function ComparisonFailureTest_testToString()
+{
+	var cf = new ComparisonFailure( "!", "a", "b", null );
+	this.assertEquals( "ComparisonFailure: ! expected:<a>, but was:<b>", cf );
+	cf = new ComparisonFailure( null, "a", "b", null );
+	this.assertEquals( "ComparisonFailure: expected:<a>, but was:<b>", cf );
+	cf = new ComparisonFailure( null, "ba", "bc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...a>, but was:<...c>", cf );
+	cf = new ComparisonFailure( null, "ab", "cb", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<a...>, but was:<c...>", cf );
+	cf = new ComparisonFailure( null, "ab", "ab", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<ab>, but was:<ab>", cf );
+	cf = new ComparisonFailure( null, "abc", "adc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...b...>, but was:<...d...>", cf );
+	cf = new ComparisonFailure( null, "ab", "abc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...>, but was:<...c>", cf );
+	cf = new ComparisonFailure( null, "bc", "abc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...>, but was:<a...>", cf );
+	cf = new ComparisonFailure( null, "abc", "abbc", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<......>, but was:<...b...>", cf );
+	cf = new ComparisonFailure( null, "abcdde", "abcde", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<...d...>, but was:<......>", cf );
+	cf = new ComparisonFailure( null, "a", null, null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<a>, but was:<null>", cf );
+	cf = new ComparisonFailure( null, null, "a", null );
+	this.assertEquals( 
+		"ComparisonFailure: expected:<null>, but was:<a>", cf );
+}
+ComparisonFailureTest.prototype = new TestCase();
+ComparisonFailureTest.prototype.testToString = ComparisonFailureTest_testToString;
+
+
 function TestFailureTest( name )
 {
 	TestCase.call( this, name );
+}
+function TestFailureTest_testExceptionMessage()
+{
+	var ft = new TestFailure( this.mTest, this.mException );
+	this.assertEquals( "AssertionFailedError: Message", ft.exceptionMessage());
 }
 function TestFailureTest_testFailedTest()
 {
 	var ft = new TestFailure( this.mTest, this.mException );
 	this.assertEquals( "testFunction", ft.failedTest());
+}
+function TestFailureTest_testIsFailure()
+{
+	var ft = new TestFailure( this.mTest, this.mException );
+	this.assertTrue( ft.isFailure());
+	ft = new TestFailure( this.mTest, new Error( "Error" ));
+	this.assertFalse( ft.isFailure());
 }
 function TestFailureTest_testThrownException()
 {
@@ -53,12 +110,21 @@ function TestFailureTest_testToString()
 	this.assertEquals( 
 		"Test testFunction failed: AssertionFailedError: Message", ft );
 }
+function TestFailureTest_testTrace()
+{
+	var ft = new TestFailure( this.mTest, 
+		new AssertionFailedError( "Message", "Trace" ));
+	this.assertEquals( "Trace", ft.trace());
+}
 TestFailureTest.prototype = new TestCase();
 TestFailureTest.prototype.mException = new AssertionFailedError( "Message", null );
 TestFailureTest.prototype.mTest = "testFunction";
+TestFailureTest.prototype.testExceptionMessage = TestFailureTest_testExceptionMessage;
 TestFailureTest.prototype.testFailedTest = TestFailureTest_testFailedTest;
+TestFailureTest.prototype.testIsFailure = TestFailureTest_testIsFailure;
 TestFailureTest.prototype.testThrownException = TestFailureTest_testThrownException;
 TestFailureTest.prototype.testToString = TestFailureTest_testToString;
+TestFailureTest.prototype.testTrace = TestFailureTest_testTrace;
 
 
 function TestResultTest( name )
@@ -285,30 +351,6 @@ function AssertTest( name )
 {
 	TestCase.call( this, name );
 }
-function AssertTest_testAssert()
-{
-	this.mAssert.assert( "Should not throw!", true );
-	this.mAssert.assert( true );
-	try
-	{
-		this.mAssert.assert( "Have to throw!", false );
-		this.fail( "'assert' should have thrown." );
-	}
-	catch( ex )
-	{
-		this.assertTrue( ex instanceof AssertionFailedError );
-		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
-	}
-	try
-	{
-		this.mAssert.assert( false );
-		this.fail( "'assert' should have thrown." );
-	}
-	catch( ex )
-	{
-		this.assertTrue(ex instanceof AssertionFailedError );
-	}
-}
 function AssertTest_testAssertEquals()
 {
 	this.mAssert.assertEquals( 1, 1 );
@@ -332,6 +374,28 @@ function AssertTest_testAssertEquals()
 		this.assertTrue( ex instanceof AssertionFailedError );
 		this.assertTrue( ex.toString().indexOf( "0 is not 1" ) > 0 );
 	}
+	this.mAssert.assertEquals( "This is 1", "This is 1" );
+	try
+	{
+		this.mAssert.assertEquals( "This is 1", "This is 0" );
+		this.fail( "'assertEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof ComparisonFailure );
+		this.assertTrue( ex.toString().indexOf( "...1>" ) > 0 );
+	}
+	this.mAssert.assertEquals( /.*1$/, "This is 1" );
+	try
+	{
+		this.mAssert.assertEquals( /.*1$/, "This is 0" );
+		this.fail( "'assertEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "RegExp" ) > 0 );
+	}
 }
 function AssertTest_testAssertFalse()
 {
@@ -351,6 +415,40 @@ function AssertTest_testAssertFalse()
 	{
 		this.mAssert.assertFalse( true );
 		this.fail( "'assertFalse' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+	this.mAssert.assertFalse( "this instanceof Test" );
+	try
+	{
+		this.mAssert.assertFalse( "this instanceof Assert" );
+		this.fail( "'assertFalse' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+}
+function AssertTest_testAssertFloatEquals()
+{
+	this.mAssert.assertFloatEquals( 1, 1, 0 );
+	this.mAssert.assertFloatEquals( "1 is 1", 1, 1, 0 );
+	this.mAssert.assertFloatEquals( 1, 0.99, 0.1 );
+	try
+	{
+		this.mAssert.assertFloatEquals( 0, 1, 0.1 );
+		this.fail( "'assertFloatEquals' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+	try
+	{
+		this.mAssert.assertFloatEquals( 1, "foo", "bar" );
+		this.fail( "'assertFloatEquals' should have thrown." );
 	}
 	catch( ex )
 	{
@@ -383,6 +481,33 @@ function AssertTest_testAssertNotNull()
 	{
 		this.assertTrue( ex instanceof AssertionFailedError );
 		this.assertTrue( ex.toString().indexOf( "Is null!" ) > 0 );
+	}
+}
+function AssertTest_testAssertNotSame()
+{
+	var one = new String( "1" );
+	this.mAssert.assertNotSame( "Should not throw!", one, new String( "1" ));
+	this.mAssert.assertNotSame( one, one, new String( "1" ));
+	try
+	{
+		var me = this;
+		this.mAssert.assertNotSame( "Have to throw!", this, me );
+		this.fail( "'assertNotSame' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+		this.assertTrue( ex.toString().indexOf( "Have to throw!" ) > 0 );
+	}
+	try
+	{
+		var me = this;
+		this.mAssert.assertNotSame( this, me );
+		this.fail( "'assertNotSame' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
 	}
 }
 function AssertTest_testAssertNotUndefined()
@@ -446,8 +571,8 @@ function AssertTest_testAssertSame()
 	this.mAssert.assertSame( this, me );
 	try
 	{
-		var one = "1";
-		this.mAssert.assertSame( "Have to throw!", one, 1 );
+		var one = new String( "1" );
+		this.mAssert.assertSame( "Have to throw!", one, new String( "1" ));
 		this.fail( "'assertSame' should have thrown." );
 	}
 	catch( ex )
@@ -457,8 +582,8 @@ function AssertTest_testAssertSame()
 	}
 	try
 	{
-		var one = "1";
-		this.mAssert.assertSame( one, 1 );
+		var one = new String( "1" );
+		this.mAssert.assertSame( one, new String( "1" ));
 		this.fail( "'assertSame' should have thrown." );
 	}
 	catch( ex )
@@ -483,6 +608,16 @@ function AssertTest_testAssertTrue()
 	try
 	{
 		this.mAssert.assertTrue( false );
+		this.fail( "'assertTrue' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertTrue( ex instanceof AssertionFailedError );
+	}
+	this.mAssert.assertTrue( "this instanceof Assert" );
+	try
+	{
+		this.mAssert.assertTrue( "this instanceof Test" );
 		this.fail( "'assertTrue' should have thrown." );
 	}
 	catch( ex )
@@ -535,10 +670,11 @@ function AssertTest_testFail()
 }
 AssertTest.prototype = new TestCase();
 AssertTest.prototype.mAssert = new Assert();
-AssertTest.prototype.testAssert = AssertTest_testAssert;
 AssertTest.prototype.testAssertEquals = AssertTest_testAssertEquals;
 AssertTest.prototype.testAssertFalse = AssertTest_testAssertFalse;
+AssertTest.prototype.testAssertFloatEquals = AssertTest_testAssertFloatEquals;
 AssertTest.prototype.testAssertNotNull = AssertTest_testAssertNotNull;
+AssertTest.prototype.testAssertNotSame = AssertTest_testAssertNotSame;
 AssertTest.prototype.testAssertNotUndefined = AssertTest_testAssertNotUndefined;
 AssertTest.prototype.testAssertNull = AssertTest_testAssertNull;
 AssertTest.prototype.testAssertSame = AssertTest_testAssertSame;
@@ -656,13 +792,13 @@ function TestSuiteTest_testCtor()
 	var undef;
 	var suite = new TestSuite();
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 	suite = new TestSuite( null );
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 	suite = new TestSuite( undef );
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 	suite = new TestSuite( "name" );
 	this.assertEquals( 0, suite.countTestCases());
 	this.assertEquals( "name", suite.getName());
@@ -671,23 +807,23 @@ function TestSuiteTest_testCtor()
 	this.assertEquals( "MyTest", suite.getName());
 	suite = new TestSuite( new this.MyTest());
 	this.assertEquals( 1, suite.countTestCases());
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 	suite = new TestSuite( new this.MyTest( "name" ));
 	this.assertEquals( 1, suite.countTestCases());
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 }
 function TestSuiteTest_testAddTest()
 {
 	var suite = new TestSuite();
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertUndefined( suite.addTest( new this.MyTest( "testMe" )));
+	suite.addTest( new this.MyTest( "testMe" ));
 	this.assertEquals( 1, suite.countTestCases());
 }
 function TestSuiteTest_testAddTestSuite()
 {
 	var suite = new TestSuite();
 	this.assertEquals( 0, suite.countTestCases());
-	this.assertUndefined( suite.addTestSuite( this.MyTest ));
+	suite.addTestSuite( this.MyTest );
 	this.assertEquals( 2, suite.countTestCases());
 }
 function TestSuiteTest_testCountTestCases()
@@ -704,9 +840,9 @@ function TestSuiteTest_testCountTestCases()
 function TestSuiteTest_testFindTest()
 {
 	var suite = new TestSuite( this.MyTest );
-	var test = suite.findTest( "testMe" );
-	this.assertEquals( "testMe", test.getName());
-	this.assertNotNull( suite.findTest( "testMyself" ));
+	var test = suite.findTest( "MyTest.testMe" );
+	this.assertEquals( "MyTest.testMe", test ? test.getName() : null );
+	this.assertNotNull( suite.findTest( "MyTest.testMyself" ));
 	this.assertNotNull( suite.findTest( "MyTest" ));
 	this.assertNull( suite.findTest( "you" ));
 	this.assertNull( suite.findTest());
@@ -742,7 +878,7 @@ function TestSuiteTest_testRunTest()
 function TestSuiteTest_testSetName()
 {
 	var suite = new TestSuite();
-	this.assertNull( suite.getName());
+	this.assertSame( "", suite.getName());
 	suite.setName( "name" );
 	this.assertEquals( "name", suite.getName());
 }
@@ -752,7 +888,7 @@ function TestSuiteTest_testTestAt()
 	suite.addTest( new TestSuite( this.MyTest ));
 	suite.addTest( new this.MyTest( "testMyself" ));
 	this.assertEquals( "MyTest", suite.testAt( 0 ).getName());
-	this.assertEquals( "testMyself", suite.testAt( 1 ).getName());
+	this.assertEquals( ".testMyself", suite.testAt( 1 ).getName());
 	this.assertUndefined( suite.testAt( 2 ));
 }
 function TestSuiteTest_testTestCount()
@@ -795,10 +931,11 @@ TestSuiteTest.prototype.testTestAt = TestSuiteTest_testTestAt;
 TestSuiteTest.prototype.testTestCount = TestSuiteTest_testTestCount;
 TestSuiteTest.prototype.testToString = TestSuiteTest_testToString;
 TestSuiteTest.prototype.testWarning = TestSuiteTest_testWarning;
-TestSuiteTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TestSuiteTest.prototype.MyTest = MyTest;
 TestSuiteTest.prototype.MyTest.prototype = new TestCase();
 TestSuiteTest.prototype.MyTest.prototype.testMe = function() {};
 TestSuiteTest.prototype.MyTest.prototype.testMyself = function() {};
@@ -832,7 +969,7 @@ function TestDecoratorTest_testCountTestCases()
 function TestDecoratorTest_testFindTest()
 {
 	var decorator = new TestDecorator( this.mTest );
-	this.assertNotNull( decorator.findTest( "testMyself" ));
+	this.assertNotNull( decorator.findTest( "OnTheFly.testMyself" ));
 }
 function TestDecoratorTest_testGetName()
 {
@@ -964,10 +1101,140 @@ ExceptionTestCaseTest.prototype = new TestCase();
 ExceptionTestCaseTest.prototype.testRunTest = ExceptionTestCaseTest_testRunTest;
 
 
+function BaseTestRunnerTest( name )
+{
+	TestCase.call( this, name );
+}
+function BaseTestRunnerTest_setUp()
+{
+	this.mRunner = new BaseTestRunner();
+}
+function BaseTestRunnerTest_tearDown()
+{
+	delete this.mRunner;
+}
+function BaseTestRunnerTest_testGetPreference()
+{
+	this.assertTrue( this.mRunner.getPreference( "filterStack" ));
+	var mPrefs = BaseTestRunner.prototype.getPreferences(); 
+	BaseTestRunner.prototype.setPreferences( new Object());
+	var value = this.mRunner.getPreference( "key" );
+	this.assertUndefined( value );
+	value = this.mRunner.getPreference( "key", "default" );
+	this.assertEquals( "default", value );
+	this.mRunner.setPreference( "key", "value" );
+	value = this.mRunner.getPreference( "key", "default" );
+	this.assertEquals( "value", value );
+	BaseTestRunner.prototype.setPreferences( mPrefs );
+}
+function BaseTestRunnerTest_testGetPreferences()
+{
+	var mPrefs = BaseTestRunner.prototype.getPreferences(); 
+	BaseTestRunner.prototype.setPreferences( new Object());
+	this.mRunner.setPreference( "key", "value" );
+	var prefs = ( new BaseTestRunner()).getPreferences();
+	this.assertEquals( "value", prefs["key"] );
+	this.assertSame( BaseTestRunner.prototype.mPreferences, prefs );
+	this.assertSame( BaseTestRunner.prototype.mPreferences,
+		this.mRunner.getPreferences());
+	BaseTestRunner.prototype.setPreferences( mPrefs );
+}
+function BaseTestRunnerTest_getTest()
+{
+	this.mRunner.runFailed = function() { this.mFailed = true; }
+	var suite = this.mRunner.getTest( "MyTest" );
+	this.assertNotNull( suite );
+	this.assertEquals( "MyTest", suite.getName());
+	suite = this.mRunner.getTest( "MyTestSuite" );
+	this.assertNotNull( suite );
+	this.assertEquals( "MyTestSuite's Name", suite.getName());
+	this.assertNull( this.mRunner.getTest( "none" ));
+	this.assertTrue( this.mRunner.mFailed );
+	this.mRunner.mFailed = false;
+	this.assertNull( this.mRunner.getTest( "???" ));
+	this.assertTrue( this.mRunner.mFailed );
+	this.assertNull( this.mRunner.getTest( "MyTest.testMe" ));
+}
+function BaseTestRunnerTest_testSetPreference()
+{
+	var mPrefs = BaseTestRunner.prototype.getPreferences(); 
+	BaseTestRunner.prototype.setPreferences( new Object());
+	var prefs = BaseTestRunner.prototype.mPreferences;
+	this.assertUndefined( prefs.key );
+	this.mRunner.setPreference( "key", "value" );
+	this.assertEquals( "value", prefs.key );
+	BaseTestRunner.prototype.setPreferences( mPrefs );
+}
+function BaseTestRunnerTest_testSetPreferences()
+{
+	var mPrefs = BaseTestRunner.prototype.getPreferences(); 
+	BaseTestRunner.prototype.setPreferences( new Object());
+	var prefs = new Object();
+	this.mRunner.setPreferences( prefs );
+	this.assertSame( BaseTestRunner.prototype.mPreferences, prefs );
+	BaseTestRunner.prototype.setPreferences( mPrefs );
+}
+function BaseTestRunnerTest_testShowStackRaw()
+{
+	var mPrefs = BaseTestRunner.prototype.getPreferences(); 
+	var value = mPrefs.filterStack;
+	this.mRunner.setPreference( "filterStack", false );
+	this.assertTrue( "this.mRunner.showStackRaw()" );
+	this.mRunner.setPreference( "filterStack", true );
+	this.assertFalse( "this.mRunner.showStackRaw()" );
+	BaseTestRunner.prototype.setPreferences( new Object());
+	this.assertTrue( "this.mRunner.showStackRaw()" );
+	mPrefs.filterStack = value;
+	BaseTestRunner.prototype.setPreferences( mPrefs );
+}
+function BaseTestRunnerTest_testTruncate()
+{
+	var oldMaxMessageLength = 
+		BaseTestRunner.prototype.getPreference( "maxMessageLength" );
+	this.mRunner.setPreference( "maxMessageLength", 10 );
+	this.assertEquals( "0123456789...", 
+		this.mRunner.truncate( "0123456789abcdef" ));
+	this.mRunner.setPreference( "maxMessageLength", oldMaxMessageLength );
+}
+BaseTestRunnerTest.prototype = new TestCase();
+BaseTestRunnerTest.prototype.setUp = BaseTestRunnerTest_setUp;
+BaseTestRunnerTest.prototype.tearDown = BaseTestRunnerTest_tearDown;
+BaseTestRunnerTest.prototype.testGetPreference = BaseTestRunnerTest_testGetPreference;
+BaseTestRunnerTest.prototype.testGetPreferences = BaseTestRunnerTest_testGetPreferences;
+BaseTestRunnerTest.prototype.testSetPreference = BaseTestRunnerTest_testSetPreference;
+BaseTestRunnerTest.prototype.testSetPreferences = BaseTestRunnerTest_testSetPreferences;
+BaseTestRunnerTest.prototype.testShowStackRaw = BaseTestRunnerTest_testShowStackRaw;
+BaseTestRunnerTest.prototype.testTruncate = BaseTestRunnerTest_testTruncate;
+function MyTest( name )
+{
+	TestCase.call( this, name );
+};
+BaseTestRunnerTest.prototype.MyTest = MyTest;
+BaseTestRunnerTest.prototype.MyTest.prototype = new TestCase();
+BaseTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
+BaseTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
+BaseTestRunnerTest.prototype.MyTestSuite = function MyTestSuite( name )
+{
+	TestSuite.call( this, name );
+};
+BaseTestRunnerTest.prototype.MyTestSuite.prototype = new TestSuite();
+BaseTestRunnerTest.prototype.MyTestSuite.prototype.suite = function() 
+{ 
+	return new TestSuite( "MyTestSuite's Name" );
+};
+
+
 function TestRunnerTest( name )
 {
 	TestCase.call( this, name );
+}
+function TestRunnerTest_setUp()
+{
 	this.mRunner = new TestRunner();
+}
+function TestRunnerTest_tearDown()
+{
+	delete this.mRunner;
 }
 function TestRunnerTest_testAddSuite()
 {
@@ -982,19 +1249,15 @@ function TestRunnerTest_testCountTestCases()
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	this.assertEquals( 2, this.mRunner.countTestCases());
 }
-function TestRunnerTest_testCreateTestResult()
-{
-	this.assertTrue( this.mRunner.createTestResult() instanceof TestResult );
-}
 function TestRunnerTest_testRun()
 {
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	var result = new TestResult();
-	this.assertUndefined( this.mRunner.run( "none", result ));
+	this.mRunner.run( "none", result );
 	this.assertEquals( 1, result.failureCount());
 	this.assertEquals( 0, result.runCount());
 	result = new TestResult();
-	this.assertUndefined( this.mRunner.run( "testMe", result ));
+	this.mRunner.run( "MyTest.testMe", result );
 	this.assertEquals( 0, result.failureCount());
 	this.assertEquals( 1, result.runCount());
 }
@@ -1002,128 +1265,349 @@ function TestRunnerTest_testRunAll()
 {
 	this.mRunner.addSuite( new TestSuite( this.MyTest ));
 	var result = new TestResult();
-	this.assertUndefined( this.mRunner.runAll( result ));
+	this.mRunner.runAll( result );
 	this.assertEquals( 2, result.runCount());
 }
 TestRunnerTest.prototype = new TestCase();
+TestRunnerTest.prototype.setUp = TestRunnerTest_setUp;
+TestRunnerTest.prototype.tearDown = TestRunnerTest_tearDown;
 TestRunnerTest.prototype.testAddSuite = TestRunnerTest_testAddSuite;
 TestRunnerTest.prototype.testCountTestCases = TestRunnerTest_testCountTestCases;
-TestRunnerTest.prototype.testCreateTestResult = TestRunnerTest_testCreateTestResult;
 TestRunnerTest.prototype.testRun = TestRunnerTest_testRun;
 TestRunnerTest.prototype.testRunAll = TestRunnerTest_testRunAll;
-TestRunnerTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TestRunnerTest.prototype.MyTest = MyTest;
 TestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
 
 
+function ResultPrinterTest( name )
+{
+	TestCase.call( this, name );
+}
+function ResultPrinterTest_setUp()
+{
+	this.mPrinter = new ResultPrinter( new StringWriter());
+}
+function ResultPrinterTest_testAddError()
+{
+	this.mPrinter.addError( null, null );
+	this.assertEquals( "E\n", this.mPrinter.getWriter().get());
+}
+function ResultPrinterTest_testAddFailure()
+{
+	this.mPrinter.addFailure( null, null );
+	this.assertEquals( "F\n", this.mPrinter.getWriter().get());
+}
+function ResultPrinterTest_testElapsedTimeAsString()
+{
+	this.assertEquals( "1", this.mPrinter.elapsedTimeAsString( 1000 ));
+	this.assertEquals( "0.01", this.mPrinter.elapsedTimeAsString( 10 ));
+	this.assertEquals( "100", this.mPrinter.elapsedTimeAsString( 1E5 ));
+	this.assertEquals( "0.0001", this.mPrinter.elapsedTimeAsString( .1 ));
+}
+function ResultPrinterTest_testPrint()
+{
+	function test( x ) { this.getWriter().print( x ); }
+	this.mPrinter.printHeader = test;
+	this.mPrinter.printErrors = test;
+	this.mPrinter.printFailures = test;
+	this.mPrinter.printFooter = test;
+	this.mPrinter.print( "0", "1" );
+	this.assertEquals( "1000\n", this.mPrinter.getWriter().get());
+}
+function ResultPrinterTest_testPrintErrors()
+{
+	var result = new Object();
+	result.mErrors = new Array();
+	result.mErrors.push( new Error( "XXX" ));
+	result.mErrors.push( new Error( "YYY" ));
+	this.mPrinter.printErrors( result );
+	var str = this.mPrinter.getWriter().get();
+	this.assertEquals( /were 2 errors/, str );
+	this.assertEquals( /1\) /, str );
+	this.assertEquals( /2\) /, str );
+}
+function ResultPrinterTest_testPrintFailures()
+{
+	var result = new Object();
+	result.mFailures = new Array();
+	result.mFailures.push( new AssertionFailedError( "AFE", new CallStack()));
+	this.mPrinter.printFailures( result );
+	var str = this.mPrinter.getWriter().get();
+	this.assertEquals( /was 1 failure/, str );
+	this.assertEquals( /1\) AssertionFailedError: AFE/, str );
+}
+function ResultPrinterTest_testPrintFooter()
+{
+	var result = new TestResult();
+	this.mPrinter.printFooter( result );
+	result.addError( "Test", new Error( "XXX" ));
+	this.mPrinter.printFooter( result );
+	var str = this.mPrinter.getWriter().get();
+	this.assertEquals( /OK \(0 tests\)/, str );
+	this.assertEquals( /FAILURES!!!\nTests run: 0, Failures: 0, Errors: 1/m, 
+		str );
+}
+function ResultPrinterTest_testPrintHeader()
+{
+	this.mPrinter.printHeader( 10000 );
+	this.assertEquals( "\nTime: 10\n", this.mPrinter.getWriter().get());
+}
+function ResultPrinterTest_testSetWriter()
+{
+	this.assertNotSame( 
+		JsUtil.prototype.getSystemWriter(), this.mPrinter.getWriter());
+	this.mPrinter.setWriter();
+	this.assertSame( 
+		JsUtil.prototype.getSystemWriter(), this.mPrinter.getWriter());
+}
+function ResultPrinterTest_testStartTest()
+{
+	for( var i = 0; i++ < 42; )
+		this.mPrinter.startTest( "test" );
+	this.assertEquals( /^\.{40}\n\.\.$/m, this.mPrinter.getWriter().get());
+}
+ResultPrinterTest.prototype = new TestCase();
+ResultPrinterTest.prototype.setUp = ResultPrinterTest_setUp;
+ResultPrinterTest.prototype.testAddError = ResultPrinterTest_testAddError;
+ResultPrinterTest.prototype.testAddFailure = ResultPrinterTest_testAddFailure;
+ResultPrinterTest.prototype.testElapsedTimeAsString = ResultPrinterTest_testElapsedTimeAsString;
+ResultPrinterTest.prototype.testPrint = ResultPrinterTest_testPrint;
+ResultPrinterTest.prototype.testPrintErrors = ResultPrinterTest_testPrintErrors;
+ResultPrinterTest.prototype.testPrintFailures = ResultPrinterTest_testPrintFailures;
+ResultPrinterTest.prototype.testPrintFooter = ResultPrinterTest_testPrintFooter;
+ResultPrinterTest.prototype.testPrintHeader = ResultPrinterTest_testPrintHeader;
+ResultPrinterTest.prototype.testSetWriter = ResultPrinterTest_testSetWriter;
+ResultPrinterTest.prototype.testStartTest = ResultPrinterTest_testStartTest;
+
+
 function TextTestRunnerTest( name )
 {
 	TestCase.call( this, name );
-
+}
+function TextTestRunnerTest_setUp()
+{
 	this.mRunner = new TextTestRunner();
-	this.mRunner.mMsg = "";
-	this.mRunner.writeLn = function( str ) { this.mMsg += str + "~"; }
 }
-function TextTestRunnerTest_testAddError()
+function TextTestRunnerTest_testCreateTestResult()
 {
-	this.assertUndefined( this.mRunner.addError( "testMe", false ));
-	this.assertEquals( 0, this.mRunner.mMsg.indexOf( "ERROR in" ));
+	this.assertTrue( this.mRunner.createTestResult() instanceof TestResult );
 }
-function TextTestRunnerTest_testAddFailure()
+function TextTestRunnerTest_testDoRun()
 {
-	this.assertUndefined( 
-		this.mRunner.addFailure( "testMe", 
-			new AssertionFailedError( "Failed!", new CallStack())));
-	this.assertEquals( 0, this.mRunner.mMsg.indexOf( "FAILURE in" ));
+	this.mRunner.setPrinter( new StringWriter());
+	var result = this.mRunner.doRun( new TestSuite( "Suite" ));
+	this.assertTrue( result instanceof TestResult );
 }
-function TextTestRunnerTest_testEndTest()
+function TextTestRunnerTest_testMain()
 {
-	var test = new this.MyTest( "My" );
-	this.mRunner.endTest( test );
-	this.assertEquals( "", this.mRunner.mMsg );
-	test.testCount = 1;
-	this.mRunner.mNest = "----";
-	this.mRunner.endTest( test );
-	this.assertEquals( 0, 
-		this.mRunner.mMsg.indexOf( "<=== Completed test suite \"My\"" ));
+	var orig = BaseTestRunner.prototype.getPreference( "TestRunner" );
+
+	function DummyRunner( ) { TextTestRunner.call( this ); }
+	DummyRunner.prototype = new TextTestRunner();
+	DummyRunner.prototype.start = function ( args ) { throw args.length; }
+	DummyRunner.prototype.runFailed = function ( msg ) 
+	{ 
+		DummyRunner.prototype.msg = msg; 
+	}
+
+	BaseTestRunner.prototype.setPreference( "TestRunner", DummyRunner );
+	
+	var args = new Array();
+	args.push( "--classic" );
+	args.push( "test" );
+	TextTestRunner.prototype.main( args );
+	this.assertEquals( "2", DummyRunner.prototype.msg );
+
+	BaseTestRunner.prototype.setPreference( "TestRunner", orig );
 }
-function TextTestRunnerTest_testPrintHeader()
+function TextTestRunnerTest_testSetPrinter()
 {
-	this.mRunner.addSuite( new TestSuite( this.MyTest ));
-	this.mRunner.start();
-	this.assertEquals( 0, 
-		this.mRunner.mMsg.indexOf(
-			"TestRunner(all) (2 test cases available)" ));
-}
-function TextTestRunnerTest_testPrintFooter()
-{
-	this.mRunner.addSuite( new TestSuite( this.MyTest ));
-	this.mRunner.start();
-	this.assertTrue( this.mRunner.mMsg.indexOf( "2 tests successful" ) > 0 );
-	var test = new this.MyTest( "testMe" );
-	test.testMe = function() { throw new Object(); }
-	var suite = new TestSuite();
-	suite.addTest( test );
-	this.mRunner.addSuite( suite );
-	this.mRunner.start();
-	this.assertTrue( this.mRunner.mMsg.indexOf( "1 error, 0 failures." ) > 0 );
+	var printer = new StringWriter();
+	this.mRunner.setPrinter( printer );
+	this.assertSame( printer, this.mRunner.mPrinter.getWriter());
+	printer = new ClassicResultPrinter();
+	this.mRunner.setPrinter( printer );
+	this.assertSame( printer, this.mRunner.mPrinter );
+	this.mRunner.setPrinter( null );
+	this.assertTrue( this.mRunner.mPrinter instanceof ResultPrinter );
 }
 function TextTestRunnerTest_testStart()
 {
-	this.mRunner.addSuite( new TestSuite( this.MyTest ));
-	this.assertEquals( 0, this.mRunner.start());
-	var test = new this.MyTest( "testMe" );
-	test.testMe = function() { throw new Object(); }
-	var suite = new TestSuite();
-	suite.addTest( test );
-	this.mRunner.addSuite( suite );
-	this.assertEquals( -1, this.mRunner.start());
-	this.assertEquals( 0, this.mRunner.start( "testMyself" ));
-}
-function TextTestRunnerTest_testStartTest()
-{
-	var test = new this.MyTest( "My" );
-	this.mRunner.mNest = "---";
-	this.mRunner.startTest( test );
-	this.assertEquals( 0, 
-		this.mRunner.mMsg.indexOf( "--- Running test 1: \"My\"" ));
-	this.mRunner.mMsg = "";
-	test.testCount = 1;
-	this.mRunner.startTest( test );
-	this.assertEquals( 0, 
-		this.mRunner.mMsg.indexOf( "===> Starting test suite \"My\"" ));
-}
-function TextTestRunnerTest_testWriteLn()
-{
-	this.assertUndefined( this.mRunner.writeLn( "OK" ));
-	this.assertEquals( "OK~", this.mRunner.mMsg );
+	this.mRunner.doRun = function( suite ) { this.mName = suite.getName(); }
+	this.mRunner.runFailed = function( msg ) { this.mFailed = msg; }
+	try
+	{
+		this.mRunner.start( "-x" );
+		this.fail( "'TextTestRunner.prototype.start' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertEquals( "Usage", ex.name );
+	}
+	try
+	{
+		this.mRunner.start( "-?" );
+		this.fail( "'TextTestRunner.prototype.start' should have thrown." );
+	}
+	catch( ex )
+	{
+		this.assertEquals( "Usage", ex.name );
+	}
+	this.mRunner.start();
+	this.assertEquals( "AllTests", this.mRunner.mName );
+	this.mRunner.start( "TextTestRunnerTest AssertionFailedErrorTest" );
+	this.assertEquals( "Start", this.mRunner.mName );
+	this.mRunner.start( "--classic TextTestRunnerTest" );
+	this.assertTrue( 
+		this.mRunner.mPrinter instanceof ClassicResultPrinter );
+	this.assertEquals( "TextTestRunnerTest", this.mRunner.mName );
+	this.mRunner.start( "-- -TestNotFound-" );
+	this.assertEquals( /-TestNotFound-/, this.mRunner.mFailed );
 }
 TextTestRunnerTest.prototype = new TestCase();
-TextTestRunnerTest.prototype.testAddError = TextTestRunnerTest_testAddError;
-TextTestRunnerTest.prototype.testAddFailure = TextTestRunnerTest_testAddFailure;
-TextTestRunnerTest.prototype.testEndTest = TextTestRunnerTest_testEndTest;
-TextTestRunnerTest.prototype.testPrintHeader = TextTestRunnerTest_testPrintHeader;
-TextTestRunnerTest.prototype.testPrintFooter = TextTestRunnerTest_testPrintFooter;
+TextTestRunnerTest.prototype.setUp = TextTestRunnerTest_setUp;
+TextTestRunnerTest.prototype.testCreateTestResult = TextTestRunnerTest_testCreateTestResult;
+TextTestRunnerTest.prototype.testDoRun = TextTestRunnerTest_testDoRun;
+TextTestRunnerTest.prototype.testMain = TextTestRunnerTest_testMain;
+TextTestRunnerTest.prototype.testSetPrinter = TextTestRunnerTest_testSetPrinter;
 TextTestRunnerTest.prototype.testStart = TextTestRunnerTest_testStart;
-TextTestRunnerTest.prototype.testStartTest = TextTestRunnerTest_testStartTest;
-TextTestRunnerTest.prototype.testWriteLn = TextTestRunnerTest_testWriteLn;
-TextTestRunnerTest.prototype.MyTest = function MyTest( name )
+function MyTest( name )
 {
 	TestCase.call( this, name );
 };
+TextTestRunnerTest.prototype.MyTest = MyTest;
 TextTestRunnerTest.prototype.MyTest.prototype = new TestCase();
 TextTestRunnerTest.prototype.MyTest.prototype.testMe = function() {};
 TextTestRunnerTest.prototype.MyTest.prototype.testMyself = function() {};
+
+
+function ClassicResultPrinterTest( name )
+{
+	TestCase.call( this, name );
+}
+function ClassicResultPrinterTest_setUp()
+{
+	this.printer = new ClassicResultPrinter( new StringWriter());
+}
+function ClassicResultPrinterTest_testAddError()
+{
+	try
+	{
+		var x = y;
+	}
+	catch( err )
+	{
+		this.printer.addError( "Test.dummy", err );
+		var str = this.printer.getWriter().get();
+		this.assertEquals( /^ERROR in Test.dummy/, str );
+	}
+}
+function ClassicResultPrinterTest_testAddFailure()
+{
+	this.printer.addFailure( "Test.dummy", new AssertionFailedError( "AFE" ));
+	var str = this.printer.getWriter().get();
+	this.assertEquals( /^FAILURE in Test.dummy/, str );
+	this.assertEquals( /\bAssertionFailedError\b/, str );
+	this.assertEquals( /\bAFE\b/, str );
+}
+function ClassicResultPrinterTest_testEndTest()
+{
+	this.printer.mNest = "---";
+	this.printer.endTest( new TestCase( "MyTestCase" ));
+	this.printer.endTest( new TestSuite( "MyTestSuite" ));
+	var str = this.printer.getWriter().get();
+	this.assertEquals( /^<== /, str );
+	this.assertEquals( /\bMyTestSuite\b/, str );
+}
+function ClassicResultPrinterTest_testPrint()
+{
+	function test( x ) { this.getWriter().print( x ); }
+	this.printer.printHeader = test;
+	this.printer.printErrors = test;
+	this.printer.printFailures = test;
+	this.printer.printFooter = test;
+	this.printer.print( "0", "1" );
+	this.assertEquals( "0\n", this.printer.getWriter().get());
+}
+function ClassicResultPrinterTest_testPrintFooter()
+{
+	var result = new TestResult();
+	this.printer.printFooter( result, 10000 );
+	result.addError( "Test", new Error( "XXX" ));
+	this.printer.printFooter( result, 20000 );
+	var str = this.printer.getWriter().get();
+	this.assertEquals( /0 tests successful in 10 sec/, str );
+	this.assertEquals( /1 error, 0 failures/m, str );
+}
+function ClassicResultPrinterTest_testPrintHeader()
+{
+	var suite = new TestSuite( "Suite" );
+	suite.addTest( new TestCase( "1" ));
+	suite.addTest( new TestCase( "2" ));
+	suite.addTest( new TestCase( "3" ));
+	this.printer.printHeader( suite );
+	this.assertEquals( /\(3 test cases/, this.printer.getWriter().get());
+}
+function ClassicResultPrinterTest_testStartTest()
+{
+	this.assertFalse( this.printer.mInReport );
+	this.printer.mNest = "-----";
+	this.printer.startTest( new TestSuite( "Suite" ));
+	this.assertTrue( this.printer.mInReport );
+	this.assertEquals( "-", this.printer.mNest );
+	this.printer.startTest( new TestCase( "Test 1" ));
+	var str = this.printer.getWriter().get();
+	this.assertEquals( /^> Starting test suite \"Suite\"$/m, str );
+	this.assertEquals( /^- Running test 1: \"Test 1\"$/m, str );
+}
+function ClassicResultPrinterTest_testWriteLn()
+{
+	this.printer.writeLn( "Hello" );
+	this.assertEquals( "Hello\n", this.printer.getWriter().get());
+}
+ClassicResultPrinterTest.prototype = new TestCase();
+ClassicResultPrinterTest.prototype.setUp = ClassicResultPrinterTest_setUp;
+ClassicResultPrinterTest.prototype.testAddError = ClassicResultPrinterTest_testAddError;
+ClassicResultPrinterTest.prototype.testAddFailure = ClassicResultPrinterTest_testAddFailure;
+ClassicResultPrinterTest.prototype.testEndTest = ClassicResultPrinterTest_testEndTest;
+ClassicResultPrinterTest.prototype.testPrint = ClassicResultPrinterTest_testPrint;
+ClassicResultPrinterTest.prototype.testPrintFooter = ClassicResultPrinterTest_testPrintFooter;
+ClassicResultPrinterTest.prototype.testPrintHeader = ClassicResultPrinterTest_testPrintHeader;
+ClassicResultPrinterTest.prototype.testStartTest = ClassicResultPrinterTest_testStartTest;
+ClassicResultPrinterTest.prototype.testWriteLn = ClassicResultPrinterTest_testWriteLn;
+
+
+function HTMLTestRunnerTest( name )
+{
+	TestCase.call( this, name );
+}
+function HTMLTestRunnerTest_testCtor()
+{
+	var runner = new HTMLTestRunner();
+	this.assertTrue( runner.mPrinter.getWriter() instanceof HTMLWriterFilter );
+}
+function HTMLTestRunnerTest_testSetPrinter()
+{
+	var runner = new HTMLTestRunner();
+	runner.setPrinter( new StringWriter());
+	this.assertTrue( runner.mPrinter.getWriter() instanceof HTMLWriterFilter );
+}
+HTMLTestRunnerTest.prototype = new TestCase();
+HTMLTestRunnerTest.prototype.testCtor = HTMLTestRunnerTest_testCtor;
+HTMLTestRunnerTest.prototype.testSetPrinter = HTMLTestRunnerTest_testSetPrinter;
 
 
 function JsUnitTestSuite()
 {
 	TestSuite.call( this, "JsUnitTest" );
 	this.addTestSuite( AssertionFailedErrorTest );
+	this.addTestSuite( ComparisonFailureTest );
 	this.addTestSuite( TestFailureTest );
 	this.addTestSuite( TestResultTest );
 	this.addTestSuite( AssertTest );
@@ -1133,8 +1617,13 @@ function JsUnitTestSuite()
 	this.addTestSuite( TestSetupTest );
 	this.addTestSuite( RepeatedTestTest );
 	this.addTestSuite( ExceptionTestCaseTest );
+	this.addTestSuite( BaseTestRunnerTest );
 	this.addTestSuite( TestRunnerTest );
+	this.addTestSuite( ResultPrinterTest );
 	this.addTestSuite( TextTestRunnerTest );
+	this.addTestSuite( ClassicResultPrinterTest );
+	this.addTestSuite( HTMLTestRunnerTest );
 }
 JsUnitTestSuite.prototype = new TestSuite();
+JsUnitTestSuite.prototype.suite = function (){ return new JsUnitTestSuite(); }
 
