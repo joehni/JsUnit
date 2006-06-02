@@ -70,7 +70,7 @@ function JsUtil_getCaller( fn )
 function JsUtil_include( fname )
 {
 	var ret = "true";
-	if( JsUtil.prototype.isMozillaShell )
+	if( JsUtil.prototype.isMozillaShell || JsUtil.prototype.isKJS )
 	{
 		load( fname );
 	}
@@ -97,16 +97,18 @@ function JsUtil_getSystemWriter()
 }
 /**
  * Quits the JavaScript engine.
- * @tparam Number exit The exit code.
+ * @tparam Number ret The exit code.
  * Stops current JavaScript engine and returns an exit code. Works for 
  * command line shells WSH, Rhino and SpiderMonkey.
  */
-function JsUtil_quit( exit )
+function JsUtil_quit( ret )
 {
 	if( JsUtil.prototype.isMozillaShell )
-		quit( exit );
+		quit( ret );
+	else if( JsUtil.prototype.isKJS )
+		exit( ret );
 	else if( JsUtil.prototype.isWSH )
-		WScript.Quit( exit );
+		WScript.Quit( ret );
 }
 JsUtil.prototype.getCaller = JsUtil_getCaller;
 JsUtil.prototype.include = JsUtil_include;
@@ -163,7 +165,14 @@ JsUtil.prototype.isRhino = this.importPackage != null;
  * The member is true, if the script runs in a command line shell of a
  * Mozilla.org script engine (either SpiderMonkey or Rhino).
  */
-JsUtil.prototype.isMozillaShell = this.load != null;
+JsUtil.prototype.isMozillaShell = this.quit != null;
+/**
+ * Flag for a KJS shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell of a
+ * KDE's script engine.
+ */
+JsUtil.prototype.isKJS = this.exit != null;
 /**
  * Flag for a command line shell.
  * @type Boolean
@@ -171,6 +180,7 @@ JsUtil.prototype.isMozillaShell = this.load != null;
  */
 JsUtil.prototype.isShell = 
 	   JsUtil.prototype.isMozillaShell 
+	|| JsUtil.prototype.isKJS 
 	|| JsUtil.prototype.isWSH;
 /**
  * Flag for Obtree C4.
@@ -704,6 +714,12 @@ function SystemWriter__flush( str )
 			function SystemWriter__flush( str ) 
 			{ 
 				print( str.substring( 0, str.length - 1 )); 
+			}
+	else if( JsUtil.prototype.isKJS )
+		this._flush = 
+			function SystemWriter__flush( str ) 
+			{ 
+				print( str ); 
 			}
 	else if( JsUtil.prototype.isBrowser )
 		this._flush = 
