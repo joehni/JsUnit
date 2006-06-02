@@ -37,12 +37,12 @@ function NSServerWriter()
 /** 
  * \internal 
  */
-function NsServerWriter__flush( str )
+function NSServerWriter__flush( str )
 {
 	print( str ); 
 }
-NsServerWriter.prototype = new PrinterWriter();
-NsServerWriter.prototype._flush = NsServerWriter__flush;
+NSServerWriter.prototype = new PrinterWriter();
+NSServerWriter.prototype._flush = NSServerWriter__flush;
 
 
 /**
