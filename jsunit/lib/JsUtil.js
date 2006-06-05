@@ -152,7 +152,10 @@ JsUtil.prototype.isIIS =
  * @type Boolean
  * The member is true, if the script runs in the iPlanet as SSJS.
  */
-JsUtil.prototype.isNSServer = this.Packages != null && !this.importPackage;
+JsUtil.prototype.isNSServer = 
+       this.Packages != null 
+    && !this.importPackage 
+    && !JsUtil.prototype.isBrowser;
 /**
  * Flag for Rhino.
  * @type Boolean
