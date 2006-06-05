@@ -209,8 +209,8 @@ have listed all products that I am aware of.</p>
 <tr>
     <td><a href="http://www.adobe.com/products/golive/main.html">GoLive 5</a></td>
     <td><a href="http://www.adobe.com">Adobe</a></td>
-    <td>?</td>
-    <td>?</td>
+    <td>ECMA 262, v3</td>
+    <td>SpiderMonkey</td>
     <td>?</td>
     <td>&nbsp;</td>
 </tr>
@@ -280,9 +280,17 @@ have listed all products that I am aware of.</p>
     <td>JavaScript for .NET</td>
 </tr>
 <tr>
+    <td><a href="http://www.konqueror.org">KJSCMD 0.3</a></td>
+    <td><a href="http://www.kde.org">KDE.org</a></td>
+    <td>ECMA 262, v?</td>
+    <td>KJS</td>
+    <td>1.2</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
     <td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
     <td><a href="http://www.kde.org">KDE.org</a></td>
-    <td>?</td>
+    <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2 ?</td>
     <td>&nbsp;</td>
@@ -290,7 +298,15 @@ have listed all products that I am aware of.</p>
 <tr>
     <td><a href="http://www.konqueror.org">Konqueror 3.1.3</a></td>
     <td><a href="http://www.kde.org">KDE.org</a></td>
-    <td>?</td>
+    <td>ECMA 262, v?</td>
+    <td>KJS</td>
+    <td>1.2</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><a href="http://www.konqueror.org">Konqueror 3.5.2</a></td>
+    <td><a href="http://www.kde.org">KDE.org</a></td>
+    <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2</td>
     <td>&nbsp;</td>
@@ -440,6 +456,14 @@ have listed all products that I am aware of.</p>
     <td>follows ECMA-262, 3rd</td>
 </tr>
 <tr>
+    <td><a href="http://www.opera.com/download/">Opera 8.x</a></td>
+    <td><a href="http://www.opera.com">Opera</a></td>
+    <td>ECMAScript</td>
+    <td><a href="http://www.opera.com/docs/specs/js/ecma/">own</a></td>
+    <td>1.2</td>
+    <td>follows ECMA-262, 3rd</td>
+</tr>
+<tr>
     <td><a href="http://www.mozilla.org/rhino/index.html">Rhino 1.5</a></td>
     <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
     <td>JavaScript 1.5</td>
@@ -450,7 +474,7 @@ have listed all products that I am aware of.</p>
 <tr>
     <td><a href="http://www.apple.com/safari">Safari</a></td>
     <td><a href="http://www.apple.com">Apple</a></td>
-    <td>?</td>
+    <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2 ?</td>
     <td>&nbsp;</td>
