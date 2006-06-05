@@ -40,7 +40,7 @@ debuggers of the Windows Script Engine.</p>
 
 <ul>
     <li>\ref windowsscript</li>
-    <li><a href="http://msdn.microsoft.com/library/en-us/dnserv/html/server04242000.asp">Debugging ASP Applications</a></li>
+    <li><a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vsdebug/html/vxtskaspscriptdebugging.asp">Debugging ASP Applications</a></li>
 </ul>
 
 \section genasp Generating JsUnit ASP
