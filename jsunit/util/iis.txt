@@ -39,8 +39,8 @@ special article of Miscrosoft exists for debugging ASPs with the different
 debuggers of the Windows Script Engine.</p>
 
 <ul>
-	<li>\ref windowsscript</li>
-	<li><a href="http://msdn.microsoft.com/library/en-us/dnserv/html/server04242000.asp">Debugging ASP Applications</a></li>
+    <li>\ref windowsscript</li>
+    <li><a href="http://msdn.microsoft.com/library/en-us/dnserv/html/server04242000.asp">Debugging ASP Applications</a></li>
 </ul>
 
 \section genasp Generating JsUnit ASP
@@ -66,7 +66,7 @@ $ /usr/lib/jsunit> util/genasp conf/ASP
 <p>On Windows I personally use Cygwin to have a Unix shell environment.</p>
 
 <ul>
-	<li><a href="http://www.cygwin.com">Cygwin</a></li>
+    <li><a href="http://www.cygwin.com">Cygwin</a></li>
 </ul>
 
 \section setupiis Seting up IIS for the examples
@@ -83,8 +83,8 @@ default documents <em>index.asp</em>.</p>
 JsUnit in ASP pages at the server-side:</p>
 
 <ul>
-	<li><a
-	href="http://localhost/JsUnit/conf/ASP/">http://localhost/JsUnit/conf/ASP/</a></li>
+    <li><a
+    href="http://localhost/JsUnit/conf/ASP/">http://localhost/JsUnit/conf/ASP/</a></li>
 </ul>
 
 \htmlonly

@@ -211,63 +211,63 @@ for all deliveries. Individual execution od the examples is available in the
 product specific documentation.</p>
 
 <ul>
-	<li>\ref scriptengines</li>
+    <li>\ref scriptengines</li>
 </ul>
 
 <table>
 <tr>
-	<td><b>Files</b></td>
-	<td><b>Environment</b></td>
+    <td><b>Files</b></td>
+    <td><b>Environment</b></td>
 </tr>
 <tr>
 
-	<td>AllTests.html</td>
-	
-	<td>Any browser with a JavaScript implementation capable of
-	exceptions</td>
-	
+    <td>AllTests.html</td>
+    
+    <td>Any browser with a JavaScript implementation capable of
+    exceptions</td>
+    
 </tr>
 <tr>
 
-	<td>AllTests.vup</td>
-	
-	<td>Project for Microsoft Visual Interdev</td>
-	
+    <td>AllTests.vup</td>
+    
+    <td>Project for Microsoft Visual Interdev</td>
+    
 </tr>
 <tr>
 
-	<td>AllTests.wsf</td>
-	
-	<td>Script for Windows Script Host. Run best with <em>cscript</em></td>
-	
+    <td>AllTests.wsf</td>
+    
+    <td>Script for Windows Script Host. Run best with <em>cscript</em></td>
+    
 </tr>
 <tr>
 
-	<td>AllTestsBV<br>AllTestsBV.jsp</td>
-	
-	<td>JavaScript Server Page of BroadVision's One-2-one server. Use the
-	script AllTestsBV to start the <em>ctxdriver</em> for command line
-	invocation.</td>
-	
+    <td>AllTestsBV<br>AllTestsBV.jsp</td>
+    
+    <td>JavaScript Server Page of BroadVision's One-2-one server. Use the
+    script AllTestsBV to start the <em>ctxdriver</em> for command line
+    invocation.</td>
+    
 </tr>
 <tr>
 
-	<td>AllTestsNS<br>AllTestsNS.html</td>
-	
-	<td>Netscape SSJS application. The shell script uses <em>jsac</em> to
-	compile the web application. The script generates a web file from the HTML
-	source and the other used files.</td>
-	
+    <td>AllTestsNS<br>AllTestsNS.html</td>
+    
+    <td>Netscape SSJS application. The shell script uses <em>jsac</em> to
+    compile the web application. The script generates a web file from the HTML
+    source and the other used files.</td>
+    
 </tr>
 <tr>
 
-	<td>AllTests.js</td>
-	
-	<td>JavaScript to use with the JavaScript shells. Use <em>java js.jar</em>
-	to run <em>Rhino</em> build from Java source or use <em>jsshell</em> to
-	run <em>SpiderMonkey</em> build from C source. You may also use
-	<em>cscript</em> for this file.</td>
-	
+    <td>AllTests.js</td>
+    
+    <td>JavaScript to use with the JavaScript shells. Use <em>java js.jar</em>
+    to run <em>Rhino</em> build from Java source or use <em>jsshell</em>
+        resp. <em>js</em> to run <em>SpiderMonkey</em> build from C source. You 
+        may also use <em>cscript</em> for this file.</td>
+    
 </tr>
 </table>
 

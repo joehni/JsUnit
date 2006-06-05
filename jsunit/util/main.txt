@@ -40,9 +40,9 @@ port of JUnit 3.8.1 originally written by Erich Gamma and Kent Beck. It covers
 the core system and the examples.</p>
 
 <ul>
-	<li><a href="http://www.junit.org">Homepage JUnit</a></li>
-	<li><a href="http://www.xprogramming.com/software.htm">Unit testing frameworks</a></li>
-	<li><a href="http://c2.com/cgi/wiki?TestingFramework">Portland Pattern Repository for Testing Frameworks</a></li>
+    <li><a href="http://www.junit.org">Homepage JUnit</a></li>
+    <li><a href="http://www.xprogramming.com/software.htm">Unit testing frameworks</a></li>
+    <li><a href="http://c2.com/cgi/wiki?TestingFramework">Portland Pattern Repository for Testing Frameworks</a></li>
 </ul>
 
 \subsection licenseintro License
@@ -52,7 +52,7 @@ suites built with JsUnit are derivative works derived from tested classes and
 functions in their production; they are not affected by this license.</p>
 
 <ul>
-	<li>\ref license</li>
+    <li>\ref license</li>
 </ul>
 
 \subsection downloads Downloads
@@ -62,9 +62,9 @@ are available at the of the JsUnit project page. The documentation of JsUnit
 cointains always rlease notes and the project history.</p>
 
 <ul>
-	<li><a href="http://developer.berlios.de/project/filelist.php?group_id=158">Download section of JsUnit at SouceForge</a></li>
-	<li>\ref release</li>
-	<li>\ref history</li>
+    <li><a href="http://developer.berlios.de/project/filelist.php?group_id=158">Download section of JsUnit at SouceForge</a></li>
+    <li>\ref release</li>
+    <li>\ref history</li>
 </ul>
 
 <p>The JsUnit projects uses the Perl script js2doxy.pl to convert JavaScript
@@ -73,8 +73,8 @@ of JsUnit contains this script in the util directory. You may download this
 script also from the CVS repository directly.</p>
 
 <ul>
-	<li><a href="http://cvs.berlios.de/cgi-bin/viewcvs.cgi/jsunit/jsunit/util/js2doxy.pl">js2doxy.pl in the CVS</a></li>
-	<li>\ref docConv</li>
+    <li><a href="http://cvs.berlios.de/cgi-bin/viewcvs.cgi/jsunit/jsunit/util/js2doxy.pl">js2doxy.pl in the CVS</a></li>
+    <li>\ref docConv</li>
 </ul>
 
 \subsection usageintro Usage
@@ -86,11 +86,11 @@ following a specific programming convention. The distribution also includes
 some samples demonstrating the usage of JsUnit in different environments.</p>
 
 <ul>
-	<li>\ref codeConv</li>
-	<li>\ref interface</li>
-	<li>\ref writing</li>
-	<li>\ref examples</li>
-	<li>\ref products</li>
+    <li>\ref codeConv</li>
+    <li>\ref interface</li>
+    <li>\ref writing</li>
+    <li>\ref examples</li>
+    <li>\ref products</li>
 </ul>
 
 \subsection people People
@@ -102,10 +102,10 @@ than one JsUnit project exists. Addinionally JsUnit would not have been
 possible in the current from with the help of other people.</p>
 
 <ul>
-	<li><a href="http://groups.yahoo.com/group/jsunit/join">Join JsUnit mailing list</a></li>
-	<li><a href="mailto:joehni@mail.berlios.de">E-mail to J&ouml;rg
+    <li><a href="http://groups.yahoo.com/group/jsunit/join">Join JsUnit mailing list</a></li>
+    <li><a href="mailto:joehni@mail.berlios.de">E-mail to J&ouml;rg
 Schaible</a></li>
-	<li>\ref acknowledge</li>
+    <li>\ref acknowledge</li>
 </ul>
 
 \section donations Donations
@@ -122,14 +122,14 @@ higher level.</p>
 <p>There might be a reason for you reading at this section:</p>
 
 <ul>
-	<li>You appreciate the features that JsUnit already has and you want to
-	show your appreciation for implementing these features.</li>
-	<li>You are an individual or business user interested in ongoing
-	develpment on this framework.</li>
-	<li>You are a business user contributing a fair amount of money for the
-	pontential large benefit (and cost savings) that your company derives from
-	JsUnit development.</li>
-	<li>Or, you have just some money to share :)</li>
+    <li>You appreciate the features that JsUnit already has and you want to
+    show your appreciation for implementing these features.</li>
+    <li>You are an individual or business user interested in ongoing
+    develpment on this framework.</li>
+    <li>You are a business user contributing a fair amount of money for the
+    pontential large benefit (and cost savings) that your company derives from
+    JsUnit development.</li>
+    <li>Or, you have just some money to share :)</li>
 </ul>
 
 \subsection donationcollection Collection of Donations

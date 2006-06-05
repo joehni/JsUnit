@@ -34,7 +34,7 @@ DoxyGen are supported including the QT style of the comments.  See following
 chapter how to generate the documentation.</p>
 
 <ul>
-	<li><a href="http://www.doxygen.org">Doxygen</a></li>
+    <li><a href="http://www.doxygen.org">Doxygen</a></li>
 </ul>
 
 <p>Documentation blocks within the code are embedded with:</p>
@@ -51,12 +51,12 @@ element or is directly a brief description of the next code element. Within
 the code following elements are supported:</p>
 
 <ul>
-	<li>\@class</li>
-	<li>\@ctor</li>
-	<li>\@file</li>
-	<li>\@fn</li>
-	<li>\@interface</li>
-	<li>\@var</li>
+    <li>\@class</li>
+    <li>\@ctor</li>
+    <li>\@file</li>
+    <li>\@fn</li>
+    <li>\@interface</li>
+    <li>\@var</li>
 </ul>
 
 <p>Other elements like <em>\@type</em> or <em>\@enum</em> are ignored. The
@@ -73,18 +73,18 @@ pseudo code:</p>
 
 <ul>
 
-	<li><em>\@tparam TYPE PARAM COMMENT</em><br>This command sets the type of
-	a parameter.  It is replaced in the documentation comment with the
-	<em>\@param PARAM COMMENT</em> command (without the <em>TYPE</em>).</li>
+    <li><em>\@tparam TYPE PARAM COMMENT</em><br>This command sets the type of
+    a parameter.  It is replaced in the documentation comment with the
+    <em>\@param PARAM COMMENT</em> command (without the <em>TYPE</em>).</li>
 
-	<li><em>\@tparam TYPE COMMENT</em><br>This command sets the return type of
-	a function.  It is replaced in the documentation comment with the
-	<em>\@return COMMENT</em> command (without the <em>TYPE</em>).  This
-	comand is a short cut of the normal <em>\@return</em> command and the
-	<em>\@type</em> command supported by this program.</li>
+    <li><em>\@tparam TYPE COMMENT</em><br>This command sets the return type of
+    a function.  It is replaced in the documentation comment with the
+    <em>\@return COMMENT</em> command (without the <em>TYPE</em>).  This
+    comand is a short cut of the normal <em>\@return</em> command and the
+    <em>\@type</em> command supported by this program.</li>
 
-	<li><em>\@type TYPE</em><br>This command sets the type of a variable or the
-	return type of a function.</li>
+    <li><em>\@type TYPE</em><br>This command sets the type of a variable or the
+    return type of a function.</li>
 
 </ul>
 
@@ -120,9 +120,9 @@ mounted my Windows program files folder to /opt using Cygwin functionality.
 outdated and works only at binary mounts.)</p>
 
 <ul>
-	<li><a href="http://www.cygwin.com">Cygwin</a></li>
-	<li><a href="http://www.doxygen.org">Doxygen</a></li>
-	<li><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a></li>
+    <li><a href="http://www.cygwin.com">Cygwin</a></li>
+    <li><a href="http://www.doxygen.org">Doxygen</a></li>
+    <li><a href="http://www.research.att.com/sw/tools/graphviz/">Graphviz</a></li>
 </ul>
 
 <p>My script will call the Perl script <em>js2doxy.pl</em> to generate pseudo

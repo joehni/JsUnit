@@ -38,27 +38,27 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
 \subsection new New Features
 
 <ul>
-	<li>Test is an interface now (conforming with JUnit), TestCase and 
-	TestSuite implement this interface</li>
-	<li>Assert supports member functions assertSame, assertTrue and 
-	assertFalse</li>
-	<li>TestSuite supports member function addTestSuite</li>
-	<li>TestResult supports member function removeListener and 
-	runProtected</li>
-	<li>Support of class ResultPrinter</li>
-	<li>BaseTestRunner supports preferences</li>
-	<li>Interface Protectable supported</li>
-	<li>Support conforming Error object hierarchy</li>
-	<li>Alternative interface design contract by Function.fulfills</li>
-	<li>New script for document generation recognizes functions and classes
-	directly</li>
-	<li>Support of the JUnit extension classes</li>
-	<li>Changes of JUnit 3.8.1 and new classes migrated to JsUnit</li>
-	<li>Special support in Assert.assertEquals comparing Strings or match a
-	RegExp against a string</li>
-	<li>New utility class JsUtil and enhanced CallStack API</li>
-	<li>New utility class hierarchy PrinterWriter</li>
-	<li>Special HTML support with HTMLWriterFilter</li>
+    <li>Test is an interface now (conforming with JUnit), TestCase and 
+    TestSuite implement this interface</li>
+    <li>Assert supports member functions assertSame, assertTrue and 
+    assertFalse</li>
+    <li>TestSuite supports member function addTestSuite</li>
+    <li>TestResult supports member function removeListener and 
+    runProtected</li>
+    <li>Support of class ResultPrinter</li>
+    <li>BaseTestRunner supports preferences</li>
+    <li>Interface Protectable supported</li>
+    <li>Support conforming Error object hierarchy</li>
+    <li>Alternative interface design contract by Function.fulfills</li>
+    <li>New script for document generation recognizes functions and classes
+    directly</li>
+    <li>Support of the JUnit extension classes</li>
+    <li>Changes of JUnit 3.8.1 and new classes migrated to JsUnit</li>
+    <li>Special support in Assert.assertEquals comparing Strings or match a
+    RegExp against a string</li>
+    <li>New utility class JsUtil and enhanced CallStack API</li>
+    <li>New utility class hierarchy PrinterWriter</li>
+    <li>Special HTML support with HTMLWriterFilter</li>
     <li>Deprecated CtxRunner and NSServerRunner in favour of a more generic
     solution using a TextTestRunner and the new CtxWriter/NsServerWriter</li>
 </ul>
@@ -66,67 +66,67 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
 \subsection change Design Changes
 
 <ul>
-	<li>JsUnit uses standard object model</li>
-	<li>TestSuite supports again strings as name</li>
-	<li>CallStack.js has been renamed to JsUtil.js</li>
-	<li>Support of Array.push and Array.pop at all systems</li>
-	<li>TestSuites for complete test files provided</li>
-	<li>TestSuite needs now a TextCase object as argument</li>
-	<li>TestRunner renamed to BaseTestRunner according to JUnit</li>
-	<li>Call base class always with explicit name</li>
-	<li>Name of fixtures are prepended with the name of the TestCase</li>
-	<li>Native report format equals now JUnit. Old format supported by
-	class ClassicReportPrinter</li>
-	<li>Use TextTestRunner.prototype.main to call</li>
-	<li>Use own Error class hierarchy since ECMA standard does not guarantee
-	consistant behaviour deriving from system classes</li>
+    <li>JsUnit uses standard object model</li>
+    <li>TestSuite supports again strings as name</li>
+    <li>CallStack.js has been renamed to JsUtil.js</li>
+    <li>Support of Array.push and Array.pop at all systems</li>
+    <li>TestSuites for complete test files provided</li>
+    <li>TestSuite needs now a TextCase object as argument</li>
+    <li>TestRunner renamed to BaseTestRunner according to JUnit</li>
+    <li>Call base class always with explicit name</li>
+    <li>Name of fixtures are prepended with the name of the TestCase</li>
+    <li>Native report format equals now JUnit. Old format supported by
+    class ClassicReportPrinter</li>
+    <li>Use TextTestRunner.prototype.main to call</li>
+    <li>Use own Error class hierarchy since ECMA standard does not guarantee
+    consistant behaviour deriving from system classes</li>
 </ul>
 
 \subsection bug Bug Fixes
 
 <ul>
-	<li>Added BerliOS reference to project documentation</li>
-	<li>Added test code for constructors</li>
-	<li>HTML output of exceptions</li>
-	<li>Expression 'this.constructor' does not refer direct base class</li>
+    <li>Added BerliOS reference to project documentation</li>
+    <li>Added test code for constructors</li>
+    <li>HTML output of exceptions</li>
+    <li>Expression 'this.constructor' does not refer direct base class</li>
 </ul>
 
 \subsection progress Work in Progress
 
 <ul>
-	<li>Compatibility tests</li>
+    <li>Compatibility tests</li>
 </ul>
 
 \section todo ToDo List
 
 <table>
 <tr>
-	<td><b>Topic</b></td>
-	<td><b>Comment</b></td>
+    <td><b>Topic</b></td>
+    <td><b>Comment</b></td>
 </tr>
 <tr>
 
-	<td>Update compatibility list</td>
-	
-	<td>Meanwhile I am aware of a lot more applications supporting JavaScript.
-	Since most of the applications share the same JavaScript engine, I will
-	introduce a grouping in the compatibility section of the documentation.
-	Additionally I have to test the new JsUnit version for the supported
-	platforms again and a compatibility check with the version 1.1 test cases
-	should be done.</td>
-	
+    <td>Update compatibility list</td>
+    
+    <td>Meanwhile I am aware of a lot more applications supporting JavaScript.
+    Since most of the applications share the same JavaScript engine, I will
+    introduce a grouping in the compatibility section of the documentation.
+    Additionally I have to test the new JsUnit version for the supported
+    platforms again and a compatibility check with the version 1.1 test cases
+    should be done.</td>
+    
 </tr>
 <tr>
 
-	<td>Integrate with <a
-	href="http://sourceforge.net/projects/jsunit/">JsUnit</a> of Edward
-	Hieatt</td>
-	
-	<td>Edward's version of JsUnit is more based on a nice browser frontend.
-	This would be also nice to have to my version. Edward and I agreed that I
-	may try to integrate his GUI on top of my engine. Work currently stopped
-	for version 1.2. Will be continued for JsUnit 2.0.</td>
-	
+    <td>Integrate with <a
+    href="http://sourceforge.net/projects/jsunit/">JsUnit</a> of Edward
+    Hieatt</td>
+    
+    <td>Edward's version of JsUnit is more based on a nice browser frontend.
+    This would be also nice to have to my version. Edward and I agreed that I
+    may try to integrate his GUI on top of my engine. Work currently stopped
+    for version 1.2. Will be continued for JsUnit 2.0.</td>
+    
 </tr>
 </table>
 
@@ -139,27 +139,27 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
 <h5>New Features</h5>
 
 <ul>
-	<li>Added unit tests for JsUnit library</li>
-	<li>Automated test suite generation</li>
-	<li>Browser TestSuite for JsUnit checks now JavaScript compatibility</li>
-	<li>Support of Rhino and SpiderMonkey shells from Mozilla.org</li>
-	<li>Support of Konqueror and Opera failed</li>
+    <li>Added unit tests for JsUnit library</li>
+    <li>Automated test suite generation</li>
+    <li>Browser TestSuite for JsUnit checks now JavaScript compatibility</li>
+    <li>Support of Rhino and SpiderMonkey shells from Mozilla.org</li>
+    <li>Support of Konqueror and Opera failed</li>
 </ul>
 
 <h5>Design Changes</h5>
 
 <ul>
-	<li>TestSuite has no methods setUp and tearDown anymore</li>
-	<li>BrowserTestRunner renamed to HTMLTestRunner</li>
+    <li>TestSuite has no methods setUp and tearDown anymore</li>
+    <li>BrowserTestRunner renamed to HTMLTestRunner</li>
 </ul>
 
 <h5>Bug Fixes</h5>
 
 <ul>
-	<li>Added copyright notice to all files</li>
-	<li>Added BerliOS reference to project documentation</li>
-	<li>Corrected script tags in HTML files</li>
-	<li>tearDown method was not called in case of an exception</li>
+    <li>Added copyright notice to all files</li>
+    <li>Added BerliOS reference to project documentation</li>
+    <li>Corrected script tags in HTML files</li>
+    <li>tearDown method was not called in case of an exception</li>
 </ul>
 
 \subsection v1_0 Version 1.0
@@ -170,10 +170,10 @@ ongoing development, the first release of this software is published</p>
 <h5>Features</h5>
 
 <ul>
-	<li>Port of JUnit 3.2 for JavaScript</li>
-	<li>Support of various systems, mostly based on standalone script 
-	engines</li>
-	<li>JavaDoc like documentation generation</li>
+    <li>Port of JUnit 3.2 for JavaScript</li>
+    <li>Support of various systems, mostly based on standalone script 
+    engines</li>
+    <li>JavaDoc like documentation generation</li>
 </ul>
 
 */

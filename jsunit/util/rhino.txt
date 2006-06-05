@@ -41,9 +41,9 @@ engine is shipped in the file <i>js.jar</i>. A shell and a transpiler to
 convert JavaScript into Java code is available.</p>
 
 <ul>
-	<li><a href="http://www.mozilla.org/rhino/index.html">Rhino Homepage</a></li>
-	<li><a href="http://www.mozilla.org/rhino/tutorial.html">Embedder's Guide</a></li>
-	<li><a href="http://www.mozilla.org">Mozilla</a></li>
+    <li><a href="http://www.mozilla.org/rhino/index.html">Rhino Homepage</a></li>
+    <li><a href="http://www.mozilla.org/rhino/tutorial.html">Embedder's Guide</a></li>
+    <li><a href="http://www.mozilla.org">Mozilla</a></li>
 </ul>
 
 <p>The version 1.5RC3 (and possibly earlier versions) has a bug and will throw
@@ -51,7 +51,7 @@ a TypeError if the method toString is called for a class derived from Error.
 JsUnit is able to compensate this bug, although it is fixed for 1.5RC4.</p>
 
 <ul>
-	<li><a href="http://bugzilla.mozilla.org/show_bug.cgi?id=181654">Bug
+    <li><a href="http://bugzilla.mozilla.org/show_bug.cgi?id=181654">Bug
 181654</a></li>
 </ul>
 
@@ -78,8 +78,8 @@ optimization is enabled (greater 0). I have not investigated on this
 further.</p>
 
 <ul>
-	<li><a href="http://www.mozilla.org/rhino/shell.html">Rhino
-	Shell reference</a></li>
+    <li><a href="http://www.mozilla.org/rhino/shell.html">Rhino
+    Shell reference</a></li>
 </ul>
 
 \subsection rhinodebugger Debugger

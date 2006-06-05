@@ -21,17 +21,17 @@
 # license.
 
 if test -z $1 || test ! -d $1; then
-	echo "Usage: genasp <targetroot>"
-	exit 1
+    echo "Usage: genasp <targetroot>"
+    exit 1
 fi
 
 genasp()
 {
-	mkdir -p $2/`dirname $1`
-	echo -e "<%\n" > $2/`dirname $1`/`basename $1 .js`.inc
-	cat $1 >> $2/`dirname $1`/`basename $1 .js`.inc
-	echo -e "\n" >> $2/`dirname $1`/`basename $1 .js`.inc
-	echo -n "%>" >> $2/`dirname $1`/`basename $1 .js`.inc
+    mkdir -p $2/`dirname $1`
+    echo -e "<%\n" > $2/`dirname $1`/`basename $1 .js`.inc
+    cat $1 >> $2/`dirname $1`/`basename $1 .js`.inc
+    echo -e "\n" >> $2/`dirname $1`/`basename $1 .js`.inc
+    echo -n "%>" >> $2/`dirname $1`/`basename $1 .js`.inc
 }
 
 CWD=$PWD
@@ -44,10 +44,10 @@ esac
 
 cd $JSUNIT_HOME
 for dir in lib samples tests; do
-	rm -rf $TARGET/$dir
-	for js in `find $dir -name "*.js" ! -path "*/CVS*" -prune`; do
-		genasp $js $TARGET
-	done
+    rm -rf $TARGET/$dir
+    for js in `find $dir -name "*.js" ! -path "*/CVS*" -prune`; do
+        genasp $js $TARGET
+    done
 done
 
 cd $CWD

@@ -41,7 +41,7 @@ application may embed the script engine and process scripts in any of the
 registered languages.</p>
 
 <ul>
-	<li><a href="http://msdn.microsoft.com/scripting/">Windows Script</a></li>
+    <li><a href="http://msdn.microsoft.com/scripting/">Windows Script</a></li>
 </ul>
 
 <p>Please recognize, that products using Windows Script are often delivered
@@ -56,19 +56,19 @@ members.  Early versions also miss the Array#push and Array#pop member
 functions that are in this case provided by JsUnit.</p>
 
 <ul>
-	<li>Applications
-		<ul>
-			<li>\ref cscript</li>
-			<li>\ref iexplore</li>
-			<li>\ref iis (ASP)</li>
-		</ul>
-	</li>
-	<li>Development and Debugging
-		<ul>
-			<li>\ref wsdebug</li>
-			<li>\ref interdev</li>
-		</ul>
-	</li>
+    <li>Applications
+        <ul>
+            <li>\ref cscript</li>
+            <li>\ref iexplore</li>
+            <li>\ref iis (ASP)</li>
+        </ul>
+    </li>
+    <li>Development and Debugging
+        <ul>
+            <li>\ref wsdebug</li>
+            <li>\ref interdev</li>
+        </ul>
+    </li>
 </ul>
 
 \subsection cscript Windows Script Host
@@ -112,7 +112,7 @@ used to debug scripts embedded in HTML documents or for single JavaScript
 files.</p>
 
 <ul>
-	<li><a href="http://msdn.microsoft.com/library/default.asp?url=/downloads/list/webdev.asp">Windows Script Debugger</a></li>
+    <li><a href="http://msdn.microsoft.com/library/default.asp?url=/downloads/list/webdev.asp">Windows Script Debugger</a></li>
 </ul>
 
 <p>To debug a script from command-line use the command-line interpreters with
@@ -135,8 +135,8 @@ and server side. JsUnit contains a Visual InterDev solution (.sln) and project
 integrated into Visual Studio .NET</p>
 
 <ul>
-	<li><a href="http://msdn.microsoft.com/vinterdev/technical/documentation.asp">Microsoft Visual InterDev 6.0</a></li>
-	<li><a href="http://msdn.microsoft.com/vinterdev/default.asp">Visual Studio .NET</a></li>
+    <li><a href="http://msdn.microsoft.com/vinterdev/technical/documentation.asp">Microsoft Visual InterDev 6.0</a></li>
+    <li><a href="http://msdn.microsoft.com/vinterdev/default.asp">Visual Studio .NET</a></li>
 </ul>
 
 \image html interdev.png

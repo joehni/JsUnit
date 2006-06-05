@@ -64,8 +64,8 @@ JavaScript, that will implement the features of an upcoming 4th edition of the
 ECMA standard.</p>
 
 <ul>
-	<li><a href="http://www.ecma.ch">ECMA</a></li>
-	<li><a href="http://www.mozilla.org/js/language/">JavaScript 2.0</a></li>
+    <li><a href="http://www.ecma-international.org/">ECMA</a></li>
+    <li><a href="http://www.mozilla.org/js/language/">JavaScript 2.0</a></li>
 </ul>
 
 <p>The JsUnit library has to use exceptions. Exceptions were part of the third
@@ -92,8 +92,8 @@ COM.</p>
 Mozilla browser.</p>
 
 <ul>
-	<li>\ref spidermonkey</li>
-	<li>\ref rhino</li>
+    <li>\ref spidermonkey</li>
+    <li>\ref rhino</li>
 </ul>
 
 \subsection jscriptoverview Microsoft JScript
@@ -104,20 +104,20 @@ run a lot of languages, JScript is just one among others. Any application may em
 scripts in any of the registered languages.</p>
 
 <ul>
-	<li>\ref windowsscript</li>
-	<li>JScript enabled applications
-		<ul>
-			<li>\ref cscript</li>
-			<li>\ref iexplore</li>
-			<li>\ref iis (ASP)</li>
-		</ul>
-	</li>
-	<li>Development and Debugging with JScript
-		<ul>
-			<li>\ref wsdebug</li>
-			<li>\ref interdev</li>
-		</ul>
-	</li>
+    <li>\ref windowsscript</li>
+    <li>JScript enabled applications
+        <ul>
+            <li>\ref cscript</li>
+            <li>\ref iexplore</li>
+            <li>\ref iis (ASP)</li>
+        </ul>
+    </li>
+    <li>Development and Debugging with JScript
+        <ul>
+            <li>\ref wsdebug</li>
+            <li>\ref interdev</li>
+        </ul>
+    </li>
 </ul>
 \section enabledproducts JavaScript enabled products
 
@@ -126,398 +126,398 @@ have listed all products that I am aware of.</p>
 
 <table border="0">
 <tr>
-	<td><b>Product</b></td>
-	<td><b>Vendor</b></td>
-	<td><b>Language</b></td>
-	<td><b>Engine</b></td>
-	<td><b>JsUnit Version</b></td>
-	<td><b>Comment</b></td>
+    <td><b>Product</b></td>
+    <td><b>Vendor</b></td>
+    <td><b>Language</b></td>
+    <td><b>Engine</b></td>
+    <td><b>JsUnit Version</b></td>
+    <td><b>Comment</b></td>
 </tr>
 <tr>
-	<td>Bean Scripting Framework</a></td>
-	<td><a href="http://oss.software.ibm.com/developerworks/projects/bsf">IBM</a></td>
-	<td>JavaScript 1.5</td>
-	<td>Rhino, JScript</td>
-	<td>?</td>
-	<td>uses other scripting engines</td>
+    <td>Bean Scripting Framework</a></td>
+    <td><a href="http://oss.software.ibm.com/developerworks/projects/bsf">IBM</a></td>
+    <td>JavaScript 1.5</td>
+    <td>Rhino, JScript</td>
+    <td>?</td>
+    <td>uses other scripting engines</td>
 </tr>
 <tr>
-	<td>Communiqu&eacute; 2.x</td>
-	<td><a href="http://www.day.com">Day International</a></td>
-	<td>ECMAScript</td>
-	<td>own</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Communiqu&eacute; 2.x</td>
+    <td><a href="http://www.day.com">Day International</a></td>
+    <td>ECMAScript</td>
+    <td>own</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.day.com/en/product.html">Communiqu&eacute; 
-	Unify (3.x)</a></td>
-	<td><a href="http://www.day.com">Day International</a></td>
-	<td>JavaScript 1.5</td>
-	<td>Rhino</td>
-	<td>1.2 ?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.day.com/en/product.html">Communiqu&eacute; 
+    Unify (3.x)</a></td>
+    <td><a href="http://www.day.com">Day International</a></td>
+    <td>JavaScript 1.5</td>
+    <td>Rhino</td>
+    <td>1.2 ?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>deployZone Application Server</td>
-	<td><a href="http://www.deployzone.com">deployZone</a></td>
-	<td>JavaScript 1.5</td>
-	<td>Mochascript</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td>deployZone Application Server</td>
+    <td><a href="http://www.deployzone.com">deployZone</a></td>
+    <td>JavaScript 1.5</td>
+    <td>Mochascript</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.digitalmars.com/dscript/">DMDScript</a></td>
-	<td><a href="http://www.digitalmars.com/">Digital Mars</a></td>
-	<td>ECMA-262, v3</td>
-	<td>own</td>
-	<td>?</td>
-	<td>?</td>
+    <td><a href="http://www.digitalmars.com/dscript/">DMDScript</a></td>
+    <td><a href="http://www.digitalmars.com/">Digital Mars</a></td>
+    <td>ECMA-262, v3</td>
+    <td>own</td>
+    <td>?</td>
+    <td>?</td>
 </tr>
 <tr>
-	<td>Enterprise Server 3.x</td>
-	<td><a href="http://www.iplanet.com">Netscape</a></td>
-	<td>JavaScript 1.2</td>
-	<td>Netscape</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Enterprise Server 3.x</td>
+    <td><a href="http://www.iplanet.com">Netscape</a></td>
+    <td>JavaScript 1.2</td>
+    <td>Netscape</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.lugrin.ch/fesi/index.html">FESI</a></td>
-	<td>Jean-Marc Lugrin</td>
-	<td>ECMA 262, v2</td>
-	<td>own</td>
-	<td>- ?</td>
-	<td>?</td>
+    <td><a href="http://www.lugrin.ch/fesi/index.html">FESI</a></td>
+    <td>Jean-Marc Lugrin</td>
+    <td>ECMA 262, v2</td>
+    <td>own</td>
+    <td>- ?</td>
+    <td>?</td>
 </tr>
 <tr>
-	<td>Flash 5.x</td>
-	<td><a href="http://www.macromedia.com">Macromedia</a></td>
-	<td>ActionScript 5</td>
-	<td>own</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Flash 5.x</td>
+    <td><a href="http://www.macromedia.com">Macromedia</a></td>
+    <td>ActionScript 5</td>
+    <td>own</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.macromedia.com/software/flash/">Flash MX</a></td>
-	<td><a href="http://www.macromedia.com">Macromedia</a></td>
-	<td>ActionScript 6</td>
-	<td>own</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td><a href="http://www.macromedia.com/software/flash/">Flash MX</a></td>
+    <td><a href="http://www.macromedia.com">Macromedia</a></td>
+    <td>ActionScript 6</td>
+    <td>own</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.adobe.com/products/golive/main.html">GoLive 5</a></td>
-	<td><a href="http://www.adobe.com">Adobe</a></td>
-	<td>?</td>
-	<td>?</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.adobe.com/products/golive/main.html">GoLive 5</a></td>
+    <td><a href="http://www.adobe.com">Adobe</a></td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>IceStorm Browser</td>
-	<td><a href="http://www.icesoft.com">IceSoft</a></td>
-	<td>?</td>
-	<td>?</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td>IceStorm Browser</td>
+    <td><a href="http://www.icesoft.com">IceSoft</a></td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>Internet Explorer 4.x</td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 3.0</td>
-	<td>JScript</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Internet Explorer 4.x</td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 3.0</td>
+    <td>JScript</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.microsoft.com/windows/ie/previous/default.asp">Internet Explorer 5.x</a></td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 5.0</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.microsoft.com/windows/ie/previous/default.asp">Internet Explorer 5.x</a></td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 5.0</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.microsoft.com/windows/ie/default.asp">Internet
-	Explorer 6.x</a></td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 6.0</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.microsoft.com/windows/ie/default.asp">Internet
+    Explorer 6.x</a></td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 6.0</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>Internet Information Server 4.x</td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 3.0</td>
-	<td>JScript</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Internet Information Server 4.x</td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 3.0</td>
+    <td>JScript</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td>Internet Information Server 5.x</td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 5.0</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td>Internet Information Server 5.x</td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 5.0</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://wwws.sun.com/software/download/download/5051.html">iPlanet Web Server, Enterprise Edition 4.x</a></td>
-	<td><a href="http://www.iplanet.com">iPlanet</a></td>
-	<td>JavaScript 1.4</td>
-	<td>Netscape</td>
-	<td>1.0</td>
-	<td>no call stack</td>
+    <td><a href="http://wwws.sun.com/software/download/download/5051.html">iPlanet Web Server, Enterprise Edition 4.x</a></td>
+    <td><a href="http://www.iplanet.com">iPlanet</a></td>
+    <td>JavaScript 1.4</td>
+    <td>Netscape</td>
+    <td>1.0</td>
+    <td>no call stack</td>
 </tr>
 <tr>
-	<td><a href="http://janet-js.sourceforge.net/">JANET</a></td>
-	<td>Steve Newman</td>
-	<td>JavaScript 1.4</td>
-	<td>own</td>
-	<td>?</td>
-	<td>JavaScript for .NET</td>
+    <td><a href="http://janet-js.sourceforge.net/">JANET</a></td>
+    <td>Steve Newman</td>
+    <td>JavaScript 1.4</td>
+    <td>own</td>
+    <td>?</td>
+    <td>JavaScript for .NET</td>
 </tr>
 <tr>
-	<td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
-	<td><a href="http://www.kde.org">KDE.org</a></td>
-	<td>?</td>
-	<td>KJS</td>
-	<td>1.2 ?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
+    <td><a href="http://www.kde.org">KDE.org</a></td>
+    <td>?</td>
+    <td>KJS</td>
+    <td>1.2 ?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.konqueror.org">Konqueror 3.1.3</a></td>
-	<td><a href="http://www.kde.org">KDE.org</a></td>
-	<td>?</td>
-	<td>KJS</td>
-	<td>1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.konqueror.org">Konqueror 3.1.3</a></td>
+    <td><a href="http://www.kde.org">KDE.org</a></td>
+    <td>?</td>
+    <td>KJS</td>
+    <td>1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>LiveMotion 1</a></td>
-	<td><a href="http://www.adobe.com">Adobe</a></td>
-	<td>ActionScript 4</td>
-	<td>?</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>LiveMotion 1</a></td>
+    <td><a href="http://www.adobe.com">Adobe</a></td>
+    <td>ActionScript 4</td>
+    <td>?</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.adobe.com/products/livemotion/main.html">LiveMotion 2</a></td>
-	<td><a href="http://www.adobe.com">Adobe</a></td>
-	<td>Automation Script 2</td>
-	<td>?</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.adobe.com/products/livemotion/main.html">LiveMotion 2</a></td>
+    <td><a href="http://www.adobe.com">Adobe</a></td>
+    <td>Automation Script 2</td>
+    <td>?</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.metamerge.com/product.html">Metamerge Integrator</a></td>
-	<td><a href="http://www.metamerge.com">Metamerge</a></td>
-	<td>JavaScript 1.5</td>
-	<td>Rhino</td>
-	<td>1.2 ?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.metamerge.com/product.html">Metamerge Integrator</a></td>
+    <td><a href="http://www.metamerge.com">Metamerge</a></td>
+    <td>JavaScript 1.5</td>
+    <td>Rhino</td>
+    <td>1.2 ?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>Mozilla 0.8x</td>
-	<td><a href="http://www.mozilla.org">Mozilla.org</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td>Mozilla 0.8x</td>
+    <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.mozilla.org/releases/">Mozilla 1.x</a></td>
-	<td><a href="http://www.mozilla.org">Mozilla.org</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.mozilla.org/releases/">Mozilla 1.x</a></td>
+    <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://wp.netscape.com/download/archive.html">Navigator 4.x</a></td>
-	<td><a href="http://www.netscape.com">Netscape</a></td>
-	<td>JavaScript 1.3</td>
-	<td>-</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td><a href="http://wp.netscape.com/download/archive.html">Navigator 4.x</a></td>
+    <td><a href="http://www.netscape.com">Netscape</a></td>
+    <td>JavaScript 1.3</td>
+    <td>-</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://wp.netscape.com/download/archive.html">Navigator 6.x</a></td>
-	<td><a href="http://www.netscape.com">Netscape</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>is Mozilla 0.81</td>
+    <td><a href="http://wp.netscape.com/download/archive.html">Navigator 6.x</a></td>
+    <td><a href="http://www.netscape.com">Netscape</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>is Mozilla 0.81</td>
 </tr>
 <tr>
-	<td><a href="http://channels.netscape.com/ns/browsers/default.jsp">Navigator 7.x</a></td>
-	<td><a href="http://www.netscape.com">Netscape</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>is Mozilla 1.0 RC2</td>
+    <td><a href="http://channels.netscape.com/ns/browsers/default.jsp">Navigator 7.x</a></td>
+    <td><a href="http://www.netscape.com">Netscape</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>is Mozilla 1.0 RC2</td>
 </tr>
 <tr>
-	<td><a href="http://people.ssh.fi/mtr/js">NGS JavaScript Interpreter 0.2.5</a></td>
-	<td>Markku Rossi</td>
-	<td>JavaScript 1.4</td>
-	<td>own</td>
-	<td>-</td>
-	<td>bugs in exceptions</td>
+    <td><a href="http://people.ssh.fi/mtr/js">NGS JavaScript Interpreter 0.2.5</a></td>
+    <td>Markku Rossi</td>
+    <td>JavaScript 1.4</td>
+    <td>own</td>
+    <td>-</td>
+    <td>bugs in exceptions</td>
 </tr>
 <tr>
-	<td><a href="http://www.bbassett.net/njs">NJS JavaScript Interpreter 0.3</a></td>
-	<td>Brian Basset</td>
-	<td>JavaScript 1.4</td>
-	<td>-</td>
-	<td>-</td>
-	<td>fork of NGS 0.2.5</td>
+    <td><a href="http://www.bbassett.net/njs">NJS JavaScript Interpreter 0.3</a></td>
+    <td>Brian Basset</td>
+    <td>JavaScript 1.4</td>
+    <td>-</td>
+    <td>-</td>
+    <td>fork of NGS 0.2.5</td>
 </tr>
 <tr>
-	<td>Notes 5.x</td>
-	<td><a href="http://www.lotus.com">Lotus</a></td>
-	<td>LiveScript x</td>
-	<td>own</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td>Notes 5.x</td>
+    <td><a href="http://www.lotus.com">Lotus</a></td>
+    <td>LiveScript x</td>
+    <td>own</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.obtree.com/index/products/products_obtreec4.htm">Obtree C4</a></td>
-	<td><a href="http://www.obtree.com">IXOS-Obtree</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.2</td>
-	<td>no call stack support</td>
+    <td><a href="http://www.obtree.com/index/products/products_obtreec4.htm">Obtree C4</a></td>
+    <td><a href="http://www.obtree.com">IXOS-Obtree</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.2</td>
+    <td>no call stack support</td>
 </tr>
 <tr>
-	<td>One-to-One 5.x</td>
-	<td><a href="http://www.broadvision.com">BroadVision</a></td>
-	<td>JavaScript 1.4</td>
-	<td>1.0</td>
-	<td>Netscape</td>
-	<td>OEM of iPlanet 4.x</td>
+    <td>One-to-One 5.x</td>
+    <td><a href="http://www.broadvision.com">BroadVision</a></td>
+    <td>JavaScript 1.4</td>
+    <td>1.0</td>
+    <td>Netscape</td>
+    <td>OEM of iPlanet 4.x</td>
 </tr>
 <tr>
-	<td>One-to-One 6.x or newer</td>
-	<td><a href="http://www.broadvision.com">BroadVision</a></td>
-	<td>?</td>
-	<td>?</td>
-	<td>?</td>
-	<td>is now J2EE server</td>
+    <td>One-to-One 6.x or newer</td>
+    <td><a href="http://www.broadvision.com">BroadVision</a></td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>is now J2EE server</td>
 </tr>
 <tr>
-	<td>Opera 4.x</td>
-	<td><a href="http://www.opera.com">Opera</a></td>
-	<td>ECMAScript 2</td>
-	<td>own</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Opera 4.x</td>
+    <td><a href="http://www.opera.com">Opera</a></td>
+    <td>ECMAScript 2</td>
+    <td>own</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td>Opera 5.x</td>
-	<td><a href="http://www.opera.com">Opera</a></td>
-	<td>ECMAScript</td>
-	<td>own</td>
-	<td>-</td>
-	<td>exceptions buggy, no call stack</td>
+    <td>Opera 5.x</td>
+    <td><a href="http://www.opera.com">Opera</a></td>
+    <td>ECMAScript</td>
+    <td>own</td>
+    <td>-</td>
+    <td>exceptions buggy, no call stack</td>
 </tr>
 <tr>
-	<td><a href="http://www.opera.com/download/">Opera 6.x</a></td>
-	<td><a href="http://www.opera.com">Opera</a></td>
-	<td>ECMAScript</td>
-	<td>own</td>
-	<td>?</td>
-	<td>follows ECMA-262, 3rd</td>
+    <td><a href="http://www.opera.com/download/">Opera 6.x</a></td>
+    <td><a href="http://www.opera.com">Opera</a></td>
+    <td>ECMAScript</td>
+    <td>own</td>
+    <td>?</td>
+    <td>follows ECMA-262, 3rd</td>
 </tr>
 <tr>
-	<td><a href="http://www.opera.com/download/">Opera 7.x</a></td>
-	<td><a href="http://www.opera.com">Opera</a></td>
-	<td>ECMAScript</td>
-	<td>own</td>
-	<td>?</td>
-	<td>follows ECMA-262, 3rd</td>
+    <td><a href="http://www.opera.com/download/">Opera 7.x</a></td>
+    <td><a href="http://www.opera.com">Opera</a></td>
+    <td>ECMAScript</td>
+    <td>own</td>
+    <td>?</td>
+    <td>follows ECMA-262, 3rd</td>
 </tr>
 <tr>
-	<td><a href="http://www.mozilla.org/rhino/index.html">Rhino 1.5</a></td>
-	<td><a href="http://www.mozilla.org">Mozilla.org</a></td>
-	<td>JavaScript 1.5</td>
-	<td>Rhino</td>
-	<td>1.2</td>
-	<td>no call stack support</td>
+    <td><a href="http://www.mozilla.org/rhino/index.html">Rhino 1.5</a></td>
+    <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
+    <td>JavaScript 1.5</td>
+    <td>Rhino</td>
+    <td>1.2</td>
+    <td>no call stack support</td>
 </tr>
 <tr>
-	<td><a href="http://www.apple.com/safari">Safari</a></td>
-	<td><a href="http://www.apple.com">Apple</a></td>
-	<td>?</td>
-	<td>KJS</td>
-	<td>1.2 ?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.apple.com/safari">Safari</a></td>
+    <td><a href="http://www.apple.com">Apple</a></td>
+    <td>?</td>
+    <td>KJS</td>
+    <td>1.2 ?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.sap.com/solutions/technology/linux/eval/was/">SAP Web Application Server</a></td>
-	<td><a href="http://www.sap.com">SAP</a></td>
-	<td>?</td>
-	<td>?</td>
-	<td>?</td>
-	<td>&nbsp;</td>
+    <td><a href="http://www.sap.com/solutions/technology/linux/eval/was/">SAP Web Application Server</a></td>
+    <td><a href="http://www.sap.com">SAP</a></td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://www.nombas.com/us/desktop/index.htm">ScriptEase Desktop</a></td>
-	<td><a href="http://www.nombas.com/">Nombas</a></td>
-	<td>ECMA 262, v3</td>
-	<td>ScriptEase</td>
-	<td>?</td>
-	<td>?</td>
+    <td><a href="http://www.nombas.com/us/desktop/index.htm">ScriptEase Desktop</a></td>
+    <td><a href="http://www.nombas.com/">Nombas</a></td>
+    <td>ECMA 262, v3</td>
+    <td>ScriptEase</td>
+    <td>?</td>
+    <td>?</td>
 </tr>
 <tr>
-	<td><a href="http://www.mozilla.org/js/spidermonkey">SpiderMonkey 1.5</a></td>
-	<td><a href="http://www.mozilla.org">Mozilla.org</a></td>
-	<td>JavaScript 1.5</td>
-	<td>SpiderMonkey</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>no call stack support</td>
+    <td><a href="http://www.mozilla.org/js/spidermonkey">SpiderMonkey 1.5</a></td>
+    <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
+    <td>JavaScript 1.5</td>
+    <td>SpiderMonkey</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>no call stack support</td>
 </tr>
 <tr>
-	<td><a href="http://wwws.sun.com/software/products/web_srvr/home_web_srvr.html">Sun ONE Web Server 6.0</a></td>
-	<td><a href="http://www.sun.com">Sun</a></td>
-	<td>-</td>
-	<td>-</td>
-	<td>-</td>
-	<td><a href="http://docs.sun.com/source/816-5688-10/rn60.html#37413">JavaScript dropped</a></td>
+    <td><a href="http://wwws.sun.com/software/products/web_srvr/home_web_srvr.html">Sun ONE Web Server 6.0</a></td>
+    <td><a href="http://www.sun.com">Sun</a></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td><a href="http://docs.sun.com/source/816-5688-10/rn60.html#37413">JavaScript dropped</a></td>
 </tr>
 <tr>
-	<td><a href="http://msdn.microsoft.com/vinterdev/">Visual InterDev 6.0</a></td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 5.0</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://msdn.microsoft.com/vinterdev/">Visual InterDev 6.0</a></td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 5.0</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td><a href="http://msdn.microsoft.com/scripting/">Windows Script 5.x</a></td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 5.x</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td><a href="http://msdn.microsoft.com/scripting/">Windows Script 5.x</a></td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 5.x</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 <tr>
-	<td>Windows Script Host 1.x</td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 3.0</td>
-	<td>JScript</td>
-	<td>-</td>
-	<td>no exceptions</td>
+    <td>Windows Script Host 1.x</td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 3.0</td>
+    <td>JScript</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
-	<td>Windows Script Host 2.x</td>
-	<td><a href="http://www.microsoft.com">Microsoft</a></td>
-	<td>JScript 5.0/5.5</td>
-	<td>JScript</td>
-	<td>1.0, 1.1, 1.2</td>
-	<td>&nbsp;</td>
+    <td>Windows Script Host 2.x</td>
+    <td><a href="http://www.microsoft.com">Microsoft</a></td>
+    <td>JScript 5.0/5.5</td>
+    <td>JScript</td>
+    <td>1.0, 1.1, 1.2</td>
+    <td>&nbsp;</td>
 </tr>
 </table>
 

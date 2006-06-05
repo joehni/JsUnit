@@ -22,26 +22,26 @@
 
 type doxygen > /dev/null 2>&1
 if test $? -ne 0; then
-	if test -d /opt/doxygen/bin; then
-		PATH=$PATH:/opt/doxygen/bin
-	else
-		echo "doxygen not available!"
-		exit 1
-	fi
+    if test -d /opt/doxygen/bin; then
+        PATH=$PATH:/opt/doxygen/bin
+    else
+        echo "doxygen not available!"
+        exit 1
+    fi
 fi
 type dot > /dev/null 2>&1
 if test $? -ne 0; then
-	if test -d /opt/graphviz/bin; then
-		HAVE_DOT="YES"
-		PATH=$PATH:/opt/graphviz/bin
-	elif test -d /opt/ATT/Graphviz/bin; then
-		HAVE_DOT="YES"
-		PATH=$PATH:/opt/ATT/Graphviz/bin
-	else
-		HAVE_DOT="NO"
-	fi
+    if test -d /opt/graphviz/bin; then
+        HAVE_DOT="YES"
+        PATH=$PATH:/opt/graphviz/bin
+    elif test -d /opt/ATT/Graphviz/bin; then
+        HAVE_DOT="YES"
+        PATH=$PATH:/opt/ATT/Graphviz/bin
+    else
+        HAVE_DOT="NO"
+    fi
 else
-	HAVE_DOT="YES"
+    HAVE_DOT="YES"
 fi
 OUTPUT_DIRECTORY=.
 VERSION=`dirname $0`/version.cfg
@@ -49,13 +49,13 @@ VERSION=`cat $VERSION`
 GENERATE_HTML=YES
 PERL_PATH=/usr/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
-	PERL_PATH=`cygpath -aw $PERL_PATH`
+    PERL_PATH=`cygpath -aw $PERL_PATH`
 fi
 export GENERATE_HTML OUTPUT_DIRECTORY HAVE_DOT PERL_PATH VERSION
 if test "$1" = "--keep-temp"; then
-	KEEP=1
+    KEEP=1
 else
-	KEEP=0
+    KEEP=0
 fi
 
 CWD=$PWD
@@ -66,7 +66,7 @@ mkdir .lib .docs
 PAGER=cat perldoc -t util/js2doxy.pl > .lib/js2doxy.man
 cd $JSUNIT_HOME/lib
 for js in *.js; do 
-	../util/js2doxy.pl $js > ../.lib/$js
+    ../util/js2doxy.pl $js > ../.lib/$js
 done
 
 cd $JSUNIT_HOME
@@ -75,11 +75,11 @@ cp util/*.png docs/
 mv docs/*.html .docs/
 cd $JSUNIT_HOME/.docs
 for html in *.html; do 
-	sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../docs/$html
-#	if test "$html" = "index.html" -o -f ../util/`basename $html .html`.txt; then
-#		mv ../docs/$html .$html
-#		sed -e 's,<body>,<body><div class="JsUnit">,g' .$html | sed -e 's,</body>,</div></body>,g' > ../docs/$html
-#	fi	
+    sed -e 's,<\([hH][1-9]\)>JsU\(nit.*\)</\1>,<\1><span class="J">J</span><span class="s">s</span><span class="U">U</span>\2</\1>,g' $html > ../docs/$html
+#   if test "$html" = "index.html" -o -f ../util/`basename $html .html`.txt; then
+#       mv ../docs/$html .$html
+#       sed -e 's,<body>,<body><div class="JsUnit">,g' .$html | sed -e 's,</body>,</div></body>,g' > ../docs/$html
+#   fi  
 done
 
 cd $JSUNIT_HOME/docs
@@ -87,7 +87,7 @@ chmod 644 *
 
 cd $JSUNIT_HOME
 if test $KEEP -eq 0; then 
-	rm -rf .lib .docs
+    rm -rf .lib .docs
 fi
 
 #wget --mirror --convert-links --html-extension -nH --cut-dirs=2 -P docs http://localhost/JsUnit/php/index.php
