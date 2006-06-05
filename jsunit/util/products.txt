@@ -280,7 +280,7 @@ have listed all products that I am aware of.</p>
     <td>JavaScript for .NET</td>
 </tr>
 <tr>
-    <td><a href="http://www.konqueror.org">KJSCMD 0.3</a></td>
+    <td><a href="http://xmelegance.org/kjsembed/">KJSCMD 0.3</a></td>
     <td><a href="http://www.kde.org">KDE.org</a></td>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
