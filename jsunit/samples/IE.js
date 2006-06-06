@@ -28,9 +28,9 @@ ie.Navigate("file://" + shell.CurrentDirectory + "/AllTests.html");
 var count = 0;
 while( count < 5 )
 {
-	if( ie.ReadyState == 4 )
-		break;
-	WScript.sleep(500);
+    if( ie.ReadyState == 4 )
+        break;
+    WScript.sleep(500);
 }
 
 var text = ie.Document.getElementsByTagName("body")[0].innerHTML;
@@ -38,7 +38,7 @@ var text = ie.Document.getElementsByTagName("body")[0].innerHTML;
 ie.Quit();
 
 if( text.match(/0 errors/) && text.match(/0 failures/))
-	WScript.Quit(0);
-	
+    WScript.Quit(0);
+    
 WScript.Quit(1);
 

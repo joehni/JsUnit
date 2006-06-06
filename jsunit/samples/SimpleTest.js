@@ -25,36 +25,36 @@ license.
  */
 function SimpleTest(name)
 {
-	TestCase.call( this, name );
+    TestCase.call( this, name );
 }
 function SimpleTest_setUp()
 {
-	this.fValue1= 2;
-	this.fValue2= 3;
+    this.fValue1= 2;
+    this.fValue2= 3;
 }
 function SimpleTest_testAdd()
 {
-	var result = this.fValue1 + this.fValue2;
-	// forced failure result == 5
-	this.assertEquals( 6, result );
+    var result = this.fValue1 + this.fValue2;
+    // forced failure result == 5
+    this.assertEquals( 6, result );
 }
 function SimpleTest_testDivideByZero()
 {
-	var zero = 0;
-	this.assertEquals( "Infinity", 8/zero );
+    var zero = 0;
+    this.assertEquals( "Infinity", 8/zero );
 }
 function SimpleTest_testAsserts()
 {
-	this.assertTrue( true );
-	this.assertFalse( false );
-	this.assertEquals( 1, this.fValue2 - this.fValue1 );
-	this.assertNull( null );
-	this.assertNotNull( this.fValue1 );
-	this.assertUndefined();
-	this.assertNotUndefined( true );
-	this.assertSame( this, this );
-	this.assertNotSame( 
-		new Number( this.fValue1 ), new Number( this.fValue1 ));
+    this.assertTrue( true );
+    this.assertFalse( false );
+    this.assertEquals( 1, this.fValue2 - this.fValue1 );
+    this.assertNull( null );
+    this.assertNotNull( this.fValue1 );
+    this.assertUndefined();
+    this.assertNotUndefined( true );
+    this.assertSame( this, this );
+    this.assertNotSame( 
+        new Number( this.fValue1 ), new Number( this.fValue1 ));
 }
 SimpleTest.prototype = new TestCase();
 SimpleTest.prototype.setUp = SimpleTest_setUp;
@@ -65,8 +65,8 @@ SimpleTest.prototype.testAsserts = SimpleTest_testAsserts;
 
 function SimpleTestSuite()
 {
-	TestSuite.call( this, "SimpleTestSuite" );
-	this.addTestSuite( SimpleTest );
+    TestSuite.call( this, "SimpleTestSuite" );
+    this.addTestSuite( SimpleTest );
 }
 SimpleTestSuite.prototype = new TestSuite();
 SimpleTestSuite.prototype.suite = function () { return new SimpleTestSuite(); }

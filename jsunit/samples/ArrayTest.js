@@ -26,47 +26,47 @@ license.
  */
 function ArrayTest( name )
 {
-	TestCase.call( this, name );
+    TestCase.call( this, name );
 }
 function ArrayTest_setUp()
 {
-	this.fEmpty = new Array();
-	this.fFull = [1, 2, 3];
+    this.fEmpty = new Array();
+    this.fFull = [1, 2, 3];
 }
 function ArrayTest_testCapacity() 
 {
-	var size = this.fFull.length; 
-	for( var i = 0; i < 100; i++ )
-		this.fFull[size + i] = i;
-	this.assertEquals( 100+size, this.fFull.length );
+    var size = this.fFull.length; 
+    for( var i = 0; i < 100; i++ )
+        this.fFull[size + i] = i;
+    this.assertEquals( 100+size, this.fFull.length );
 }
 function ArrayTest_testConcat() 
 {
-	for( var i = 0; i < 3; i++ )
-		this.fEmpty[i] = i+4;
-	var all = this.fFull.concat( this.fEmpty );
-	this.assertEquals( "1,2,3,4,5,6", all );
+    for( var i = 0; i < 3; i++ )
+        this.fEmpty[i] = i+4;
+    var all = this.fFull.concat( this.fEmpty );
+    this.assertEquals( "1,2,3,4,5,6", all );
 }
 function ArrayTest_testJoin() 
 {
-	this.assertEquals( "1-2-3", this.fFull.join( "-" ));
+    this.assertEquals( "1-2-3", this.fFull.join( "-" ));
 }
 function ArrayTest_testReverse() 
 {
-	this.assertEquals( "3,2,1", this.fFull.reverse());
+    this.assertEquals( "3,2,1", this.fFull.reverse());
 }
 function ArrayTest_testSlice() 
 {
-	this.assertEquals( "2,3", this.fFull.slice( 1 ));
-	this.assertEquals( "2", this.fFull.slice( 1, 2 ));
-	this.assertEquals( "1,2", this.fFull.slice( 0, -1 ));
+    this.assertEquals( "2,3", this.fFull.slice( 1 ));
+    this.assertEquals( "2", this.fFull.slice( 1, 2 ));
+    this.assertEquals( "1,2", this.fFull.slice( 0, -1 ));
 }
 function ArrayTest_testSort() 
 {
-	for( var i = 0; i < 3; i++ )
-		this.fEmpty[i] = i+4;
-	var all = this.fEmpty.concat( this.fFull );
-	this.assertEquals( "1,2,3,4,5,6", all.sort());
+    for( var i = 0; i < 3; i++ )
+        this.fEmpty[i] = i+4;
+    var all = this.fEmpty.concat( this.fFull );
+    this.assertEquals( "1,2,3,4,5,6", all.sort());
 }
 ArrayTest.prototype = new TestCase();
 ArrayTest.prototype.setUp = ArrayTest_setUp;
@@ -79,8 +79,8 @@ ArrayTest.prototype.testSort = ArrayTest_testSort;
 
 function ArrayTestSuite()
 {
-	TestSuite.call( this, "ArrayTestSuite" );
-	this.addTestSuite( ArrayTest );
+    TestSuite.call( this, "ArrayTestSuite" );
+    this.addTestSuite( ArrayTest );
 }
 ArrayTestSuite.prototype = new TestSuite();
 ArrayTestSuite.prototype.suite = function () { return new ArrayTestSuite(); }

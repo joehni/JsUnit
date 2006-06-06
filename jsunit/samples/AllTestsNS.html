@@ -27,10 +27,10 @@ license.
 function main( args )
 {
     var runner = new TextTestRunner( new NSServerWriter());
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-	return runner.start( args );
+    runner.addSuite( new ArrayTestSuite());
+    runner.addSuite( new MoneyTestSuite());
+    runner.addSuite( new SimpleTestSuite());
+    return runner.start( args );
 }
 </server>
 </head>
