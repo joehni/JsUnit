@@ -26,14 +26,12 @@ license.
 
 \section currentrelease Release
 
-<p>2002-11-09: Current release is version 1.2.beta.1</p>
+<p>2006-06-06: Current release is version 1.2</p>
 
 <p>A lot of internal work has be done. The changes of JUnit 3.8.1
 have been integrated and JsUnit is running quite smoothly for JScript,
-SpiderMonkey and Rhino. Also the new documentation script works fine.</p>
-
-<p>Since the current state of the framework is now quite stable regading
-the mensioned JavaScript engines, I released an version 1.2.</p>
+SpiderMonkey, Rhino and KJSCmd. Also the new documentation script works 
+fine.</p>
 
 \subsection new New Features
 
@@ -60,7 +58,7 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
     <li>New utility class hierarchy PrinterWriter</li>
     <li>Special HTML support with HTMLWriterFilter</li>
     <li>Deprecated CtxRunner and NSServerRunner in favour of a more generic
-    solution using a TextTestRunner and the new CtxWriter/NsServerWriter</li>
+    solution using a TextTestRunner and the new CtxWriter/NSServerWriter</li>
 </ul>
 
 \subsection change Design Changes
@@ -91,12 +89,6 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
     <li>Expression 'this.constructor' does not refer direct base class</li>
 </ul>
 
-\subsection progress Work in Progress
-
-<ul>
-    <li>Compatibility tests</li>
-</ul>
-
 \section todo ToDo List
 
 <table>
@@ -118,14 +110,12 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
 </tr>
 <tr>
 
-    <td>Integrate with <a
-    href="http://sourceforge.net/projects/jsunit/">JsUnit</a> of Edward
-    Hieatt</td>
+    <td>Better usage of static methods</td>
     
-    <td>Edward's version of JsUnit is more based on a nice browser frontend.
-    This would be also nice to have to my version. Edward and I agreed that I
-    may try to integrate his GUI on top of my engine. Work currently stopped
-    for version 1.2. Will be continued for JsUnit 2.0.</td>
+    <td>JsUnit uses currently the prototype to simulate static methods.
+    Meanwhile I learned, that there is a better way to model such
+    functionality and I will refactor some code for next version 1.3 in
+    accordance with an updated js2doxy.pl script.</td>
     
 </tr>
 </table>
@@ -143,7 +133,8 @@ the mensioned JavaScript engines, I released an version 1.2.</p>
     <li>Automated test suite generation</li>
     <li>Browser TestSuite for JsUnit checks now JavaScript compatibility</li>
     <li>Support of Rhino and SpiderMonkey shells from Mozilla.org</li>
-    <li>Support of Konqueror and Opera failed</li>
+    <li>Support of KJSCmd, the shell wrapper for the KJSEmbed of KDE</li>
+    <li>Support of current Konqueror and Opera version</li>
 </ul>
 
 <h5>Design Changes</h5>

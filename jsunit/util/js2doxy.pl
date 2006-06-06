@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # JsUnit - a JUnit port for JavaScript
-# Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+# Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 use strict;
 
 use vars qw( $VERSION );
-$VERSION = "2.0";
+$VERSION = "2.1";
 
 ############ Options ####################
 

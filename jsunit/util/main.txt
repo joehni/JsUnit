@@ -59,7 +59,7 @@ functions in their production; they are not affected by this license.</p>
 
 <p>JsUnit uses the infrastructure of SourceForge. Therefore are all downloads
 are available at the of the JsUnit project page. The documentation of JsUnit
-cointains always rlease notes and the project history.</p>
+contains always release notes and the project history.</p>
 
 <ul>
     <li><a href="http://developer.berlios.de/project/filelist.php?group_id=158">Download section of JsUnit at SouceForge</a></li>
@@ -73,7 +73,9 @@ of JsUnit contains this script in the util directory. You may download this
 script also from the CVS repository directly.</p>
 
 <ul>
-    <li><a href="http://cvs.berlios.de/cgi-bin/viewcvs.cgi/jsunit/jsunit/util/js2doxy.pl">js2doxy.pl in the CVS</a></li>
+    <li><a
+    href="http://svn.berlios.de/wsvn/jsunit/trunk/jsunit/util/js2doxy.pl?op=file">js2doxy.pl
+    in Subversion</a></li>
     <li>\ref docConv</li>
 </ul>
 
