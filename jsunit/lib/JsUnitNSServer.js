@@ -39,7 +39,7 @@ function NSServerWriter()
  */
 function NSServerWriter__flush( str )
 {
-	print( str ); 
+    print( str ); 
 }
 NSServerWriter.prototype = new PrinterWriter();
 NSServerWriter.prototype._flush = NSServerWriter__flush;
@@ -54,7 +54,7 @@ NSServerWriter.prototype._flush = NSServerWriter__flush;
  */
 function NSServerTestRunner()
 {
-	TextTestRunner.call( this );
+    TextTestRunner.call( this );
 }
 /**
  * Write a header starting the application.
@@ -62,8 +62,8 @@ function NSServerTestRunner()
  */
 function NSServerTestRunner_printHeader()
 {
-	write( "<pre>" );
-	TextTestRunner.prototype.printHeader.call( this );
+    write( "<pre>" );
+    TextTestRunner.prototype.printHeader.call( this );
 }
 /**
  * Write a footer at application end with a summary of the tests.
@@ -72,8 +72,8 @@ function NSServerTestRunner_printHeader()
  */
 function NSServerTestRunner_printFooter( result )
 {
-	TextTestRunner.prototype.printFooter.call( this, result );
-	write( "</pre>" );
+    TextTestRunner.prototype.printFooter.call( this, result );
+    write( "</pre>" );
 }
 /**
  * Write a line of text to the console to the browser window.

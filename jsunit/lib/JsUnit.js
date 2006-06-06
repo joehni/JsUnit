@@ -46,11 +46,11 @@ license.
  */
 function AssertionFailedError( msg, stack )
 {
-	JsUnitError.call( this, msg );
-	/**
-	 * The call stack for the message.
-	 */
-	this.mCallStack = stack;
+    JsUnitError.call( this, msg );
+    /**
+     * The call stack for the message.
+     */
+    this.mCallStack = stack;
 }
 AssertionFailedError.prototype = new JsUnitError();
 /**
@@ -72,10 +72,10 @@ AssertionFailedError.prototype.name = "AssertionFailedError";
  */
 function ComparisonFailure( msg, expected, actual, stack )
 {
-	AssertionFailedError.call( 
-		this, ( msg ? msg + " " : "" ) + "expected", stack );
-	this.mExpected = new String( expected );
-	this.mActual = new String( actual );
+    AssertionFailedError.call( 
+        this, ( msg ? msg + " " : "" ) + "expected", stack );
+    this.mExpected = new String( expected );
+    this.mActual = new String( actual );
 }
 /**
  * Returns the error message.
@@ -85,43 +85,43 @@ function ComparisonFailure( msg, expected, actual, stack )
  */
 function ComparisonFailure_toString()
 {
-	var str = AssertionFailedError.prototype.toString.call( this );
-	
-	var end = Math.min( this.mExpected.length, this.mActual.length );
-	var i = 0;
-	for( ; i < end; ++i )
-		if( this.mExpected.charAt( i ) != this.mActual.charAt( i ))
-			break;
-	var j = this.mExpected.length - 1;
-	var k = this.mActual.length - 1;
-	for( ; k >= i && j >= i; --k, --j )
-		if( this.mExpected.charAt( j ) != this.mActual.charAt( k ))
-			break;
+    var str = AssertionFailedError.prototype.toString.call( this );
+    
+    var end = Math.min( this.mExpected.length, this.mActual.length );
+    var i = 0;
+    for( ; i < end; ++i )
+        if( this.mExpected.charAt( i ) != this.mActual.charAt( i ))
+            break;
+    var j = this.mExpected.length - 1;
+    var k = this.mActual.length - 1;
+    for( ; k >= i && j >= i; --k, --j )
+        if( this.mExpected.charAt( j ) != this.mActual.charAt( k ))
+            break;
 
-	var expected;
-	var actual;
+    var expected;
+    var actual;
 
-	if( j < i && k < i )
-	{
-		expected = this.mExpected;
-		actual = this.mActual;
-	}
-	else
-	{
-		expected = this.mExpected.substring( i, j + 1 );
-		actual = this.mActual.substring( i, k + 1 );
-		if( i <= end && i > 0 )
-		{
-			expected = "..." + expected;
-			actual = "..." + actual;
-		}
-		if( j < this.mExpected.length - 1 )
-			expected += "...";
-		if( k < this.mActual.length - 1 )
-			actual += "...";
-	}
-	
-	return str + ":<" + expected + ">, but was:<" + actual + ">";
+    if( j < i && k < i )
+    {
+        expected = this.mExpected;
+        actual = this.mActual;
+    }
+    else
+    {
+        expected = this.mExpected.substring( i, j + 1 );
+        actual = this.mActual.substring( i, k + 1 );
+        if( i <= end && i > 0 )
+        {
+            expected = "..." + expected;
+            actual = "..." + actual;
+        }
+        if( j < this.mExpected.length - 1 )
+            expected += "...";
+        if( k < this.mActual.length - 1 )
+            actual += "...";
+    }
+    
+    return str + ":<" + expected + ">, but was:<" + actual + ">";
 }
 ComparisonFailure.prototype = new AssertionFailedError();
 ComparisonFailure.prototype.toString = ComparisonFailure_toString;
@@ -184,8 +184,8 @@ Test.prototype.setName = function( testName ) {}
  */
 function TestFailure( test, except )
 {
-	this.mException = except;
-	this.mTest = test;
+    this.mException = except;
+    this.mTest = test;
 }
 /**
  * Retrieve the exception message.
@@ -193,8 +193,8 @@ function TestFailure( test, except )
  */
 function TestFailure_exceptionMessage()
 { 
-	var ex = this.thrownException(); 
-	return ex ? ex.toString() : "";
+    var ex = this.thrownException(); 
+    return ex ? ex.toString() : "";
 }
 /**
  * Retrieve the failed test.
@@ -207,7 +207,7 @@ function TestFailure_failedTest() { return this.mTest; }
  */
 function TestFailure_isFailure() 
 { 
-	return this.thrownException() instanceof AssertionFailedError; 
+    return this.thrownException() instanceof AssertionFailedError; 
 }
 /**
  * Retrieve the thrown exception.
@@ -221,7 +221,7 @@ function TestFailure_thrownException() { return this.mException; }
  */
 function TestFailure_toString() 
 { 
-	return "Test " + this.mTest + " failed: " + this.thrownException();
+    return "Test " + this.mTest + " failed: " + this.thrownException();
 }
 /**
  * Retrieve the stack trace.
@@ -229,11 +229,11 @@ function TestFailure_toString()
  */
 function TestFailure_trace() 
 { 
-	var ex = this.thrownException();
-	if( ex && ex.mCallStack )
-		return ex.mCallStack.toString();
-	else
-		return "";
+    var ex = this.thrownException();
+    if( ex && ex.mCallStack )
+        return ex.mCallStack.toString();
+    else
+        return "";
 }
 TestFailure.prototype.exceptionMessage = TestFailure_exceptionMessage;
 TestFailure.prototype.failedTest = TestFailure_failedTest;
@@ -296,11 +296,11 @@ TestListener.prototype.startTest = function( test ) {}
  */
 function TestResult()
 {
-	this.mErrors = new Array();
-	this.mFailures = new Array();
-	this.mListeners = new Array();
-	this.mRunTests = 0;
-	this.mStop = 0;
+    this.mErrors = new Array();
+    this.mFailures = new Array();
+    this.mListeners = new Array();
+    this.mRunTests = 0;
+    this.mStop = 0;
 }
 /**
  * Add an occured error.
@@ -310,9 +310,9 @@ function TestResult()
  */
 function TestResult_addError( test, except )
 {
-	this.mErrors.push( new TestFailure( test, except ));
-	for( var i = 0; i < this.mListeners.length; ++i )
-		this.mListeners[i].addError( test, except );
+    this.mErrors.push( new TestFailure( test, except ));
+    for( var i = 0; i < this.mListeners.length; ++i )
+        this.mListeners[i].addError( test, except );
 }
 /**
  * Add an occured failure.
@@ -322,9 +322,9 @@ function TestResult_addError( test, except )
  */
 function TestResult_addFailure( test, afe )
 {
-	this.mFailures.push( new TestFailure( test, afe ));
-	for( var i = 0; i < this.mListeners.length; ++i )
-		this.mListeners[i].addFailure( test, afe );
+    this.mFailures.push( new TestFailure( test, afe ));
+    for( var i = 0; i < this.mListeners.length; ++i )
+        this.mListeners[i].addFailure( test, afe );
 }
 /**
  * Add a listener.
@@ -332,7 +332,7 @@ function TestResult_addFailure( test, afe )
  */
 function TestResult_addListener( listener ) 
 { 
-	this.mListeners.push( listener ); 
+    this.mListeners.push( listener ); 
 }
 /**
  * Returns a copy of the listeners.
@@ -340,10 +340,10 @@ function TestResult_addListener( listener )
  */
 function TestResult_cloneListeners() 
 { 
-	var listeners = new Array();
-	for( var i = 0; i < this.mListeners.length; ++i )
-		listeners[i] = this.mListeners[i];
-	return listeners;
+    var listeners = new Array();
+    for( var i = 0; i < this.mListeners.length; ++i )
+        listeners[i] = this.mListeners[i];
+    return listeners;
 }
 /**
  * A test ended.
@@ -352,8 +352,8 @@ function TestResult_cloneListeners()
  */
 function TestResult_endTest( test )
 {
-	for( var i = 0; i < this.mListeners.length; ++i )
-		this.mListeners[i].endTest( test );
+    for( var i = 0; i < this.mListeners.length; ++i )
+        this.mListeners[i].endTest( test );
 }
 /**
  * Retrieve the number of occured errors.
@@ -371,14 +371,14 @@ function TestResult_failureCount() { return this.mFailures.length; }
  */
 function TestResult_removeListener( listener ) 
 { 
-	for( var i = 0; i < this.mListeners.length; ++i )
-	{
-		if( this.mListeners[i] == listener )
-		{
-			this.mListeners.splice( i, 1 );
-			break;
-		}
-	}
+    for( var i = 0; i < this.mListeners.length; ++i )
+    {
+        if( this.mListeners[i] == listener )
+        {
+            this.mListeners.splice( i, 1 );
+            break;
+        }
+    }
 }
 /**
  * Runs a test case.
@@ -386,15 +386,15 @@ function TestResult_removeListener( listener )
  */
 function TestResult_run( test )
 {
-	this.startTest( test );
+    this.startTest( test );
 
-	function OnTheFly() {}
-	OnTheFly.prototype.protect = function() { this.mTest.runBare(); }
-	OnTheFly.prototype.mTest = test;
-	OnTheFly.fulfills( Protectable );
-	
-	this.runProtected( test, new OnTheFly());
-	this.endTest( test );
+    function OnTheFly() {}
+    OnTheFly.prototype.protect = function() { this.mTest.runBare(); }
+    OnTheFly.prototype.mTest = test;
+    OnTheFly.fulfills( Protectable );
+    
+    this.runProtected( test, new OnTheFly());
+    this.endTest( test );
 }
 /**
  * Retrieve the number of run tests.
@@ -410,17 +410,17 @@ function TestResult_runCount() { return this.mRunTests; }
  */
 function TestResult_runProtected( test, p )
 {
-	try
-	{
-		p.protect();
-	}
-	catch( ex )
-	{
-		if( ex instanceof AssertionFailedError )
-			this.addFailure( test, ex );
-		else
-			this.addError( test, ex );
-	}
+    try
+    {
+        p.protect();
+    }
+    catch( ex )
+    {
+        if( ex instanceof AssertionFailedError )
+            this.addFailure( test, ex );
+        else
+            this.addError( test, ex );
+    }
 }
 /**
  * Checks whether the test run should stop.
@@ -434,10 +434,10 @@ function TestResult_shouldStop() { return this.mStop; }
  */
 function TestResult_startTest( test )
 {
-	++this.mRunTests;
+    ++this.mRunTests;
 
-	for( var i = 0; i < this.mListeners.length; ++i )
-		this.mListeners[i].startTest( test );
+    for( var i = 0; i < this.mListeners.length; ++i )
+        this.mListeners[i].startTest( test );
 }
 /**
  * Marks that the test run should stop.
@@ -449,7 +449,7 @@ function TestResult_stop() { this.mStop = 1; }
  */
 function TestResult_wasSuccessful() 
 { 
-	return this.mErrors.length + this.mFailures.length == 0; 
+    return this.mErrors.length + this.mFailures.length == 0; 
 }
 TestResult.prototype.addError = TestResult_addError;
 TestResult.prototype.addFailure = TestResult_addFailure;
@@ -485,23 +485,23 @@ function Assert()
  */
 function Assert_assertEquals( msg, expected, actual )
 {
-	if( arguments.length == 2 )
-	{
-		actual = expected;
-		expected = msg;
-		msg = null;
-	}
-	if( expected instanceof RegExp && typeof( actual ) == "string" )
-	{
-		if( !actual.match( expected ))
-			this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">" );
-	}
-	else if( expected != actual )
-		if( typeof( expected ) == "string" && typeof( actual ) == "string" )
-			throw new ComparisonFailure( msg, expected, actual, new CallStack());
-		else
-			this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
-				, new CallStack(), msg );
+    if( arguments.length == 2 )
+    {
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if( expected instanceof RegExp && typeof( actual ) == "string" )
+    {
+        if( !actual.match( expected ))
+            this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">" );
+    }
+    else if( expected != actual )
+        if( typeof( expected ) == "string" && typeof( actual ) == "string" )
+            throw new ComparisonFailure( msg, expected, actual, new CallStack());
+        else
+            this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+                , new CallStack(), msg );
 }
 /**
  * Asserts that a condition is false.
@@ -511,14 +511,14 @@ function Assert_assertEquals( msg, expected, actual )
  */
 function Assert_assertFalse( msg, cond )
 {
-	if( arguments.length == 1 )
-	{
-		cond = msg;
-		msg = null;
-	}
-	if( eval( cond ))
-		this.fail( "Condition should have failed \"" + cond + "\""
-			, new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        cond = msg;
+        msg = null;
+    }
+    if( eval( cond ))
+        this.fail( "Condition should have failed \"" + cond + "\""
+            , new CallStack(), msg );
 }
 /**
  * Asserts that two floating point values are equal to within a given tolerence.
@@ -561,13 +561,13 @@ function Assert_assertFloatEquals( msg, expected, actual, tolerance)
  */
 function Assert_assertNotNull( msg, object )
 {
-	if( arguments.length == 1 )
-	{
-		object = msg;
-		msg = null;
-	}
-	if( object === null )
-		this.fail( "Object was null.", new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        object = msg;
+        msg = null;
+    }
+    if( object === null )
+        this.fail( "Object was null.", new CallStack(), msg );
 }
 /**
  * Asserts that two values are not the same.
@@ -579,15 +579,15 @@ function Assert_assertNotNull( msg, object )
  */
 function Assert_assertNotSame( msg, expected, actual )
 {
-	if( arguments.length == 2 )
-	{
-		actual = expected;
-		expected = msg;
-		msg = null;
-	}
-	if( expected === actual )
-		this.fail( "Not the same expected:<" + expected + ">"
-			, new CallStack(), msg );
+    if( arguments.length == 2 )
+    {
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if( expected === actual )
+        this.fail( "Not the same expected:<" + expected + ">"
+            , new CallStack(), msg );
 }
 /**
  * Asserts that an object is not undefined.
@@ -597,14 +597,14 @@ function Assert_assertNotSame( msg, expected, actual )
  */
 function Assert_assertNotUndefined( msg, object )
 {
-	if( arguments.length == 1 )
-	{
-		object = msg;
-		msg = null;
-	}
-	if( object === undefined )
-		this.fail( "Object <" + object + "> was undefined."
-			, new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        object = msg;
+        msg = null;
+    }
+    if( object === undefined )
+        this.fail( "Object <" + object + "> was undefined."
+            , new CallStack(), msg );
 }
 /**
  * Asserts that an object is null.
@@ -614,14 +614,14 @@ function Assert_assertNotUndefined( msg, object )
  */
 function Assert_assertNull( msg, object )
 {
-	if( arguments.length == 1 )
-	{
-		object = msg;
-		msg = null;
-	}
-	if( object !== null )
-		this.fail( "Object <" + object + "> was not null."
-			, new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        object = msg;
+        msg = null;
+    }
+    if( object !== null )
+        this.fail( "Object <" + object + "> was not null."
+            , new CallStack(), msg );
 }
 /**
  * Asserts that two values are the same.
@@ -633,17 +633,17 @@ function Assert_assertNull( msg, object )
  */
 function Assert_assertSame( msg, expected, actual )
 {
-	if( arguments.length == 2 )
-	{
-		actual = expected;
-		expected = msg;
-		msg = null;
-	}
-	if( expected === actual )
-		return;
-	else
-		this.fail( "Same expected:<" + expected + ">, but was:<" + actual + ">"
-			, new CallStack(), msg );
+    if( arguments.length == 2 )
+    {
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if( expected === actual )
+        return;
+    else
+        this.fail( "Same expected:<" + expected + ">, but was:<" + actual + ">"
+            , new CallStack(), msg );
 }
 /**
  * Asserts that a condition is true.
@@ -653,13 +653,13 @@ function Assert_assertSame( msg, expected, actual )
  */
 function Assert_assertTrue( msg, cond )
 {
-	if( arguments.length == 1 )
-	{
-		cond = msg;
-		msg = null;
-	}
-	if( !eval( cond ))
-		this.fail( "Condition failed \"" + cond + "\"", new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        cond = msg;
+        msg = null;
+    }
+    if( !eval( cond ))
+        this.fail( "Condition failed \"" + cond + "\"", new CallStack(), msg );
 }
 /**
  * Asserts that an object is undefined.
@@ -669,14 +669,14 @@ function Assert_assertTrue( msg, cond )
  */
 function Assert_assertUndefined( msg, object )
 {
-	if( arguments.length == 1 )
-	{
-		object = msg;
-		msg = null;
-	}
-	if( object !== undefined )
-		this.fail( "Object <" + object + "> was not undefined."
-			, new CallStack(), msg );
+    if( arguments.length == 1 )
+    {
+        object = msg;
+        msg = null;
+    }
+    if( object !== undefined )
+        this.fail( "Object <" + object + "> was not undefined."
+            , new CallStack(), msg );
 }
 /**
  * Fails a test with a give message.
@@ -687,9 +687,9 @@ function Assert_assertUndefined( msg, object )
  */
 function Assert_fail( msg, stack, usermsg )
 {
-	var afe = new AssertionFailedError(
-		( usermsg ? usermsg + " " : "" ) + msg, stack );
-	throw afe;
+    var afe = new AssertionFailedError(
+        ( usermsg ? usermsg + " " : "" ) + msg, stack );
+    throw afe;
 }
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
@@ -741,8 +741,8 @@ Assert.prototype.fail = Assert_fail;
  */
 function TestCase( name )
 {
-	Assert.call( this );
-	this.mName = name;
+    Assert.call( this );
+    this.mName = name;
 }
 /**
  * Counts the number of test cases that will be run by this test.
@@ -762,7 +762,7 @@ function TestCase_createResult() { return new TestResult(); }
  */
 function TestCase_findTest( testName ) 
 { 
-	return testName == this.mName ? this : null; 
+    return testName == this.mName ? this : null; 
 }
 /**
  * Retrieves the name of the test.
@@ -779,41 +779,41 @@ function TestCase_getName() { return this.mName; }
  */
 function TestCase_run( result )
 {
-	if( !result )
-		result = this.createResult();
-	result.run( this );
-	return result;
+    if( !result )
+        result = this.createResult();
+    result.run( this );
+    return result;
 }
 /**
  * \internal
  */
 function TestCase_runBare()
 {
-	this.setUp();
-	try
-	{
-		this.runTest();
-		this.tearDown();
-	}
-	catch( ex )
-	{
-		this.tearDown();
-		throw ex;
-	}
+    this.setUp();
+    try
+    {
+        this.runTest();
+        this.tearDown();
+    }
+    catch( ex )
+    {
+        this.tearDown();
+        throw ex;
+    }
 }
 /**
  * Override to run the test and assert its state.
  */
 function TestCase_runTest()
 {
-	var method = this.getName();
-	this.assertNotNull( method );
-	method = method.substring( method.lastIndexOf( "." ) + 1 );
-	method = this[method];
-	if( method )
-		method.call( this );
-	else
-		this.fail( "Method '" + this.getName() + "' not found!" );
+    var method = this.getName();
+    this.assertNotNull( method );
+    method = method.substring( method.lastIndexOf( "." ) + 1 );
+    method = this[method];
+    if( method )
+        method.call( this );
+    else
+        this.fail( "Method '" + this.getName() + "' not found!" );
 }
 /**
  * Sets the name of the test case.
@@ -826,13 +826,13 @@ function TestCase_setName( name ) { this.mName = name; }
  */
 function TestCase_toString() 
 { 
-	/*
-	var className = new String( this.constructor ); 
-	var regex = /function (\w+)/;
-	regex.exec( className );
-	className = new String( RegExp.$1 );
-	*/
-	return this.mName; // + "(" + className + ")"; 
+    /*
+    var className = new String( this.constructor ); 
+    var regex = /function (\w+)/;
+    regex.exec( className );
+    className = new String( RegExp.$1 );
+    */
+    return this.mName; // + "(" + className + ")"; 
 }
 TestCase.prototype = new Assert();
 TestCase.prototype.countTestCases = TestCase_countTestCases;
@@ -873,60 +873,60 @@ TestCase.prototype.tearDown = function() {};
  */
 function TestSuite( obj )
 {
-	this.mTests = new Array();
+    this.mTests = new Array();
 
-	var name, str;
-	switch( typeof obj )
-	{
-		case "function":
-			if( !str )
-				str = new String( obj );
-			name = str.substring( str.indexOf( " " ) + 1, str.indexOf( "(" ));
-			if( name == "" )
-				name = "[anonymous]";
-			break;
-		case "string": name = obj; break;
-		case "object": 
-			if( obj !== null )
-			{
-				if( obj.getName && typeof( obj.getName ) == "function" )
-				{
-					var tname = obj.getName();
-					if( tname )
-					{
-						var idx = tname.indexOf( "." );
-						if( idx == tname.lastIndexOf( "." ))
-							obj = eval( name = tname.substring( 0, idx ));
-					}
-				}
-				if( typeof( obj ) != "function" )
-					this.addTest( 
-						this.warning( "Cannot instantiate test class for " 
-							+ "object '" + obj + "'" ));
-			}
-			// fall through
-		case "undefined": 	
-			// fall through
-		default: 
-			if( typeof( name ) == "undefined" )
-				name = null; 
-			break;
-	}
+    var name, str;
+    switch( typeof obj )
+    {
+        case "function":
+            if( !str )
+                str = new String( obj );
+            name = str.substring( str.indexOf( " " ) + 1, str.indexOf( "(" ));
+            if( name == "" )
+                name = "[anonymous]";
+            break;
+        case "string": name = obj; break;
+        case "object": 
+            if( obj !== null )
+            {
+                if( obj.getName && typeof( obj.getName ) == "function" )
+                {
+                    var tname = obj.getName();
+                    if( tname )
+                    {
+                        var idx = tname.indexOf( "." );
+                        if( idx == tname.lastIndexOf( "." ))
+                            obj = eval( name = tname.substring( 0, idx ));
+                    }
+                }
+                if( typeof( obj ) != "function" )
+                    this.addTest( 
+                        this.warning( "Cannot instantiate test class for " 
+                            + "object '" + obj + "'" ));
+            }
+            // fall through
+        case "undefined":   
+            // fall through
+        default: 
+            if( typeof( name ) == "undefined" )
+                name = null; 
+            break;
+    }
 
-	this.setName( name );
+    this.setName( name );
 
-	// collect all testXXX methods
-	if( typeof( obj ) == "function" && obj.prototype )
-	{
-		for( var member in obj.prototype )
-		{
-			if(    member.indexOf( "test" ) == 0 
-				&& typeof( obj.prototype[member] ) == "function" )
-			{
-				this.addTest( new ( obj )( member ));
-			}
-		}
-	}
+    // collect all testXXX methods
+    if( typeof( obj ) == "function" && obj.prototype )
+    {
+        for( var member in obj.prototype )
+        {
+            if(    member.indexOf( "test" ) == 0 
+                && typeof( obj.prototype[member] ) == "function" )
+            {
+                this.addTest( new ( obj )( member ));
+            }
+        }
+    }
 }
 /**
  * Add a test to the suite.
@@ -936,12 +936,12 @@ function TestSuite( obj )
  */
 function TestSuite_addTest( test ) 
 { 
-	if( test instanceof TestCase )
-	{
-		var name = test.getName();
-		test.setName( this.getName() + "." + name );
-	}
-	this.mTests.push( test ); 
+    if( test instanceof TestCase )
+    {
+        var name = test.getName();
+        test.setName( this.getName() + "." + name );
+    }
+    this.mTests.push( test ); 
 }
 /**
  * Add a test suite to the current suite.
@@ -951,7 +951,7 @@ function TestSuite_addTest( test )
  */
 function TestSuite_addTestSuite( testCase ) 
 { 
-	this.addTest( new TestSuite( testCase )); 
+    this.addTest( new TestSuite( testCase )); 
 }
 /**
  * Counts the number of test cases that will be run by this test suite.
@@ -959,10 +959,10 @@ function TestSuite_addTestSuite( testCase )
  */
 function TestSuite_countTestCases()
 {
-	var tests = 0;
-	for( var i = 0; i < this.testCount(); ++i )
-		tests += this.mTests[i].countTestCases();
-	return tests;
+    var tests = 0;
+    for( var i = 0; i < this.testCount(); ++i )
+        tests += this.mTests[i].countTestCases();
+    return tests;
 }
 /**
  * Search a test by name.
@@ -974,16 +974,16 @@ function TestSuite_countTestCases()
  */
 function TestSuite_findTest( name )
 {
-	if( name == this.mName )
-		return this;
+    if( name == this.mName )
+        return this;
 
-	for( var i = 0; i < this.testCount(); ++i )
-	{
-		var test = this.mTests[i].findTest( name );
-		if( test != null )
-			return test;
-	}
-	return null;
+    for( var i = 0; i < this.testCount(); ++i )
+    {
+        var test = this.mTests[i].findTest( name );
+        if( test != null )
+            return test;
+    }
+    return null;
 }
 /**
  * Retrieves the name of the test suite.
@@ -998,25 +998,25 @@ function TestSuite_getName() { return this.mName ? this.mName : ""; }
  */
 function TestSuite_run( result )
 {
-	--result.mRunTests;
-	result.startTest( this );
+    --result.mRunTests;
+    result.startTest( this );
 
-	for( var i = 0; i < this.testCount(); ++i )
-	{
-		if( result.shouldStop())
-			break;
-		var test = this.mTests[i];
-		this.runTest( test, result );
-	}
+    for( var i = 0; i < this.testCount(); ++i )
+    {
+        if( result.shouldStop())
+            break;
+        var test = this.mTests[i];
+        this.runTest( test, result );
+    }
 
-	if( i == 0 )
-	{
-		var ex = new AssertionFailedError( 
-			"Test suite with no tests.", new CallStack());
-		result.addFailure( this, ex );
-	}
+    if( i == 0 )
+    {
+        var ex = new AssertionFailedError( 
+            "Test suite with no tests.", new CallStack());
+        result.addFailure( this, ex );
+    }
 
-	result.endTest( this );
+    result.endTest( this );
 }
 /**
  * Runs a single test test and collect its result in a TestResult instance.
@@ -1025,7 +1025,7 @@ function TestSuite_run( result )
  */
 function TestSuite_runTest( test, result )
 {
-	test.run( result );
+    test.run( result );
 }
 /**
  * Sets the name of the suite.
@@ -1033,7 +1033,7 @@ function TestSuite_runTest( test, result )
  */
 function TestSuite_setName( name )
 { 
-	this.mName = name;
+    this.mName = name;
 }
 /**
  * Runs the test at the given index.
@@ -1042,7 +1042,7 @@ function TestSuite_setName( name )
  */
 function TestSuite_testAt( index )
 {
-	return this.mTests[index];
+    return this.mTests[index];
 }
 /**
  * Returns the number of tests in this suite.
@@ -1055,7 +1055,7 @@ function TestSuite_testCount() { return this.mTests.length; }
  */
 function TestSuite_toString() 
 { 
-	return "Suite '" + this.mName + "'";
+    return "Suite '" + this.mName + "'";
 }
 /**
  * Returns a test which will fail and log a warning message.
@@ -1064,12 +1064,12 @@ function TestSuite_toString()
  */
 function TestSuite_warning( message )
 {
-	function Warning() { TestCase.call( this, "warning" ); }
-	Warning.prototype = new TestCase();
-	Warning.prototype.runTest = function() { this.fail( this.mMessage ); }
-	Warning.prototype.mMessage = message;
+    function Warning() { TestCase.call( this, "warning" ); }
+    Warning.prototype = new TestCase();
+    Warning.prototype.runTest = function() { this.fail( this.mMessage ); }
+    Warning.prototype.mMessage = message;
 
-	return new Warning();
+    return new Warning();
 }
 TestSuite.prototype.addTest = TestSuite_addTest;
 TestSuite.prototype.addTestSuite = TestSuite_addTestSuite;
@@ -1103,8 +1103,8 @@ TestSuite.fulfills( Test );
  */
 function TestDecorator( test )
 {
-	Assert.call( this );
-	this.mTest = test;
+    Assert.call( this );
+    this.mTest = test;
 }
 /**
  * The basic run behaviour. The function calls the run method of the decorated
@@ -1175,7 +1175,7 @@ TestDecorator.fulfills( Test );
  */
 function TestSetup( test )
 {
-	TestDecorator.call( this, test );
+    TestDecorator.call( this, test );
 }
 /**
  * Runs a test case with additional set up and tear down.
@@ -1183,18 +1183,18 @@ function TestSetup( test )
  */
 function TestSetup_run( result )
 {
-	function OnTheFly() {}
-	OnTheFly.prototype.protect = function()
-	{	
-		this.mTestSetup.setUp();
-		this.mTestSetup.basicRun( this.result );
-		this.mTestSetup.tearDown();
-	}
-	OnTheFly.prototype.result = result;
-	OnTheFly.prototype.mTestSetup = this;
-	OnTheFly.fulfills( Protectable );
-	
-	result.runProtected( this.mTest, new OnTheFly());
+    function OnTheFly() {}
+    OnTheFly.prototype.protect = function()
+    {   
+        this.mTestSetup.setUp();
+        this.mTestSetup.basicRun( this.result );
+        this.mTestSetup.tearDown();
+    }
+    OnTheFly.prototype.result = result;
+    OnTheFly.prototype.mTestSetup = this;
+    OnTheFly.fulfills( Protectable );
+    
+    result.runProtected( this.mTest, new OnTheFly());
 }
 TestSetup.prototype = new TestDecorator();
 TestSetup.prototype.run = TestSetup_run;
@@ -1219,13 +1219,13 @@ TestSetup.prototype.tearDown = function() {}
  */
 function RepeatedTest( test, repeat )
 {
-	TestDecorator.call( this, test );
-	this.mTimesRepeat = repeat;
+    TestDecorator.call( this, test );
+    this.mTimesRepeat = repeat;
 }
 function RepeatedTest_countTestCases()
 {
-	var tests = TestDecorator.prototype.countTestCases.call( this );
-	return tests * this.mTimesRepeat;
+    var tests = TestDecorator.prototype.countTestCases.call( this );
+    return tests * this.mTimesRepeat;
 }
 /**
  * Runs a test case with additional set up and tear down.
@@ -1233,16 +1233,16 @@ function RepeatedTest_countTestCases()
  */
 function RepeatedTest_run( result )
 {
-	for( var i = 0; i < this.mTimesRepeat; i++ )
-	{
-		if( result.shouldStop())
-			break;
-		TestDecorator.prototype.run.call( this, result );
-	}
+    for( var i = 0; i < this.mTimesRepeat; i++ )
+    {
+        if( result.shouldStop())
+            break;
+        TestDecorator.prototype.run.call( this, result );
+    }
 }
 function RepeatedTest_toString()
 {
-	return TestDecorator.prototype.toString.call( this ) + " (repeated)";
+    return TestDecorator.prototype.toString.call( this ) + " (repeated)";
 }
 RepeatedTest.prototype = new TestDecorator();
 RepeatedTest.prototype.countTestCases = RepeatedTest_countTestCases;
@@ -1259,7 +1259,7 @@ RepeatedTest.prototype.toString = RepeatedTest_toString;
  * }
  * catch (ex) {
  *   if (ex instanceof SpecialException)
- *   	return;
+ *      return;
  *   else
  *      throw ex;
  * }
@@ -1279,12 +1279,12 @@ RepeatedTest.prototype.toString = RepeatedTest_toString;
  */
 function ExceptionTestCase( name, clazz )
 {
-	TestCase.call( this, name )
-	/**
-	 * Save the class.
-	 * @type Function
-	 */
-	this.mClass = clazz;
+    TestCase.call( this, name )
+    /**
+     * Save the class.
+     * @type Function
+     */
+    this.mClass = clazz;
 }
 /**
  * Execute the test method expecting that an exception of
@@ -1292,18 +1292,18 @@ function ExceptionTestCase( name, clazz )
  */
 function ExceptionTestCase_runTest()
 {
-	try
-	{
-		TestCase.prototype.runTest.call( this );
-	}
-	catch( ex )
-	{
-		if( ex instanceof this.mClass )
-			return;
-		else
-			throw ex;
-	}
-	this.fail( "Expected exception " + this.mClass.toString());
+    try
+    {
+        TestCase.prototype.runTest.call( this );
+    }
+    catch( ex )
+    {
+        if( ex instanceof this.mClass )
+            return;
+        else
+            throw ex;
+    }
+    this.fail( "Expected exception " + this.mClass.toString());
 }
 ExceptionTestCase.prototype = new TestCase();
 ExceptionTestCase.prototype.runTest = ExceptionTestCase_runTest;
@@ -1371,7 +1371,7 @@ TestRunListener.prototype.testFailed = function( status, testName, trace ) {}
  */
 function BaseTestRunner()
 {
-	this.mElapsedTime = 0;
+    this.mElapsedTime = 0;
 }
 /**
  * Implementation of TestListener.
@@ -1380,8 +1380,8 @@ function BaseTestRunner()
  */
 function BaseTestRunner_addError( test, except ) 
 { 
-	this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
-		test.toString(), except.toString()); 
+    this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
+        test.toString(), except.toString()); 
 }
 /**
  * Implementation of TestListener.
@@ -1390,8 +1390,8 @@ function BaseTestRunner_addError( test, except )
  */
 function BaseTestRunner_addFailure( test, afe ) 
 { 
-	this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
-		test.toString(), afe.toString()); 
+    this.testFailed( TestRunListener.prototype.STATUS_ERROR, 
+        test.toString(), afe.toString()); 
 }
 /**
  * Implementation of TestListener.
@@ -1399,7 +1399,7 @@ function BaseTestRunner_addFailure( test, afe )
  */
 function BaseTestRunner_endTest( test ) 
 { 
-	this.testEnded( test.toString()); 
+    this.testEnded( test.toString()); 
 }
 /**
  * Retrieve the value of a global preference key.
@@ -1409,10 +1409,10 @@ function BaseTestRunner_endTest( test )
  */
 function BaseTestRunner_getPreference( key, value ) 
 { 
-	var v = BaseTestRunner.prototype.getPreferences()[key];
-	if( !v )
-		v = value;
-	return v;
+    var v = BaseTestRunner.prototype.getPreferences()[key];
+    if( !v )
+        v = value;
+    return v;
 }
 /**
  * Retrieves the Object with the global preferences of any runner.
@@ -1420,7 +1420,7 @@ function BaseTestRunner_getPreference( key, value )
  */
 function BaseTestRunner_getPreferences() 
 { 
-	return BaseTestRunner.prototype.mPreferences; 
+    return BaseTestRunner.prototype.mPreferences; 
 }
 /**
  * Returns the Test corresponding to the given suite.
@@ -1430,36 +1430,36 @@ function BaseTestRunner_getPreferences()
  */
 function BaseTestRunner_getTest( name ) 
 { 
-	if( typeof( name ) != "string" )
-	{
-		this.clearStatus();
-		return null;
-	}
-	var test;
-	try
-	{
-		var testFunc = eval( name );
-		if( typeof( testFunc ) == "function" && testFunc.prototype )
-		{
-		  	if( testFunc.prototype.suite )
-				test = new testFunc.prototype.suite();
-			else if( name.match( /Test$/ ))
-				test = new TestSuite( name );
-		}
-	}
-	catch( ex )
-	{
-	}
-	if( test === undefined || !( test instanceof TestSuite ))
-	{
-		this.runFailed( "Test not found \"" + name + "\"" );
-		return null;
-	}
-	else
-	{
-		this.clearStatus();
-		return test;
-	}
+    if( typeof( name ) != "string" )
+    {
+        this.clearStatus();
+        return null;
+    }
+    var test;
+    try
+    {
+        var testFunc = eval( name );
+        if( typeof( testFunc ) == "function" && testFunc.prototype )
+        {
+            if( testFunc.prototype.suite )
+                test = new testFunc.prototype.suite();
+            else if( name.match( /Test$/ ))
+                test = new TestSuite( name );
+        }
+    }
+    catch( ex )
+    {
+    }
+    if( test === undefined || !( test instanceof TestSuite ))
+    {
+        this.runFailed( "Test not found \"" + name + "\"" );
+        return null;
+    }
+    else
+    {
+        this.clearStatus();
+        return test;
+    }
 }
 /**
  * Set a global preference.
@@ -1468,7 +1468,7 @@ function BaseTestRunner_getTest( name )
  */
 function BaseTestRunner_setPreference( key, value ) 
 { 
-	BaseTestRunner.prototype.getPreferences()[key] = value;
+    BaseTestRunner.prototype.getPreferences()[key] = value;
 }
 /**
  * Set any runner's global preferences.
@@ -1476,7 +1476,7 @@ function BaseTestRunner_setPreference( key, value )
  */
 function BaseTestRunner_setPreferences( prefs ) 
 { 
-	BaseTestRunner.prototype.mPreferences = prefs;
+    BaseTestRunner.prototype.mPreferences = prefs;
 }
 /**
  * Retrieve the flag for raw stack output.
@@ -1484,7 +1484,7 @@ function BaseTestRunner_setPreferences( prefs )
  */
 function BaseTestRunner_showStackRaw() 
 { 
-	return BaseTestRunner.prototype.getPreference( "filterStack", false ) != true;
+    return BaseTestRunner.prototype.getPreference( "filterStack", false ) != true;
 }
 /**
  * Implementation of TestListener.
@@ -1492,7 +1492,7 @@ function BaseTestRunner_showStackRaw()
  */
 function BaseTestRunner_startTest( test ) 
 { 
-	this.testStarted( test.toString()); 
+    this.testStarted( test.toString()); 
 }
 /**
  * Truncates string to maximum length.
@@ -1501,10 +1501,10 @@ function BaseTestRunner_startTest( test )
  */
 function BaseTestRunner_truncate( str ) 
 {
-	var max = BaseTestRunner.prototype.getPreference( "maxMessageLength" );
-	if( max < str.length )
-		str = str.substring( 0, max ) + "...";
-	return str; 
+    var max = BaseTestRunner.prototype.getPreference( "maxMessageLength" );
+    if( max < str.length )
+        str = str.substring( 0, max ) + "...";
+    return str; 
 }
 BaseTestRunner.prototype.mPreferences = new Object();
 BaseTestRunner.prototype.addError = BaseTestRunner_addError;
@@ -1535,8 +1535,8 @@ BaseTestRunner.prototype.setPreference( "maxMessageLength", 500 );
  */
 function TestRunner()
 {
-	BaseTestRunner.call( this );
-	this.mSuites = new TestSuite();
+    BaseTestRunner.call( this );
+    this.mSuites = new TestSuite();
 }
 /**
  * Add a test suite to the application.
@@ -1544,7 +1544,7 @@ function TestRunner()
  */
 function TestRunner_addSuite( suite ) 
 { 
-	this.mSuites.addTest( suite ); 
+    this.mSuites.addTest( suite ); 
 }
 /**
  * Counts the number of test cases that will be run by this test 
@@ -1553,7 +1553,7 @@ function TestRunner_addSuite( suite )
  */
 function TestRunner_countTestCases() 
 { 
-	return this.mSuites.countTestCases(); 
+    return this.mSuites.countTestCases(); 
 }
 /**
  * Runs all test of all suites and collects their results in a TestResult 
@@ -1563,19 +1563,19 @@ function TestRunner_countTestCases()
  */
 function TestRunner_run( name, result )
 {
-	var test = this.mSuites.findTest( name );
-	if( test == null )
-	{
-		var ex = new AssertionFailedError( 
-			"Test \"" + name + "\" not found.", new CallStack());
-		result.addFailure( new Test( name ), ex );
-	}
-	else
-	{
-		this.mElapsedTime = new Date();
-		test.run( result );
-		this.mElapsedTime = new Date() - this.mElapsedTime;
-	}
+    var test = this.mSuites.findTest( name );
+    if( test == null )
+    {
+        var ex = new AssertionFailedError( 
+            "Test \"" + name + "\" not found.", new CallStack());
+        result.addFailure( new Test( name ), ex );
+    }
+    else
+    {
+        this.mElapsedTime = new Date();
+        test.run( result );
+        this.mElapsedTime = new Date() - this.mElapsedTime;
+    }
 }
 /**
  * Runs all test of all suites and collects their results in a TestResult 
@@ -1584,9 +1584,9 @@ function TestRunner_run( name, result )
  */
 function TestRunner_runAll( result ) 
 { 
-	this.mElapsedTime = new Date();
-	this.mSuites.run( result ); 
-	this.mElapsedTime = new Date() - this.mElapsedTime;
+    this.mElapsedTime = new Date();
+    this.mSuites.run( result ); 
+    this.mElapsedTime = new Date() - this.mElapsedTime;
 }
 TestRunner.prototype = new BaseTestRunner();
 TestRunner.prototype.addSuite = TestRunner_addSuite;
@@ -1605,8 +1605,8 @@ TestRunner.prototype.runAll = TestRunner_runAll;
  */
 function ResultPrinter( writer )
 {
-	this.setWriter( writer );
-	this.mColumn = 0;
+    this.setWriter( writer );
+    this.mColumn = 0;
 }
 /**
  * Implementation of TestListener.
@@ -1615,7 +1615,7 @@ function ResultPrinter( writer )
  */
 function ResultPrinter_addError( test, except )
 {
-	this.getWriter().print( "E" );
+    this.getWriter().print( "E" );
 }
 /**
  * Implementation of TestListener.
@@ -1624,7 +1624,7 @@ function ResultPrinter_addError( test, except )
  */
 function ResultPrinter_addFailure( test, afe )
 {
-	this.getWriter().print( "F" );
+    this.getWriter().print( "F" );
 }
 /**
  * Returns the elapsed time in seconds as String.
@@ -1633,7 +1633,7 @@ function ResultPrinter_addFailure( test, afe )
  */
 function ResultPrinter_elapsedTimeAsString( runTime )
 {
-	return new String( runTime / 1000 );
+    return new String( runTime / 1000 );
 }
 /**
  * Implementation of TestListener.
@@ -1648,7 +1648,7 @@ function ResultPrinter_endTest( test )
  */
 function ResultPrinter_getWriter()
 {
-	return this.mWriter;
+    return this.mWriter;
 }
 /**
  * Print the complete test result.
@@ -1657,10 +1657,10 @@ function ResultPrinter_getWriter()
  */
 function ResultPrinter_print( result, runTime )
 {
-	this.printHeader( runTime );
-	this.printErrors( result );
-	this.printFailures( result );
-	this.printFooter( result );
+    this.printHeader( runTime );
+    this.printErrors( result );
+    this.printFailures( result );
+    this.printFooter( result );
 }
 /**
  * Print a defect of the test result.
@@ -1669,16 +1669,16 @@ function ResultPrinter_print( result, runTime )
  */
 function ResultPrinter_printDefect( defect, count )
 {
-	this.printDefectHeader( defect, count );
-	this.printDefectTrace( defect );
-	this.getWriter().println();
+    this.printDefectHeader( defect, count );
+    this.printDefectTrace( defect );
+    this.getWriter().println();
 }
 /**
  * \internal
  */
 function ResultPrinter_printDefectHeader( defect, count )
 {
-	this.getWriter().print( count + ") " + defect.toString());
+    this.getWriter().print( count + ") " + defect.toString());
 }
 /**
  * Print the defects of a special type of the test result.
@@ -1687,23 +1687,23 @@ function ResultPrinter_printDefectHeader( defect, count )
  */
 function ResultPrinter_printDefects( array, type )
 {
-	if( array.length == 0 )
-		return;
-	if( array.length == 1 )
-		this.getWriter().println( "There was 1 " + type + ":" );
-	else
-		this.getWriter().println( 
-			"There were " + array.length + " " + type + "s:" );
-	for( var i = 0; i < array.length; )
-		this.printDefect( array[i], ++i );
+    if( array.length == 0 )
+        return;
+    if( array.length == 1 )
+        this.getWriter().println( "There was 1 " + type + ":" );
+    else
+        this.getWriter().println( 
+            "There were " + array.length + " " + type + "s:" );
+    for( var i = 0; i < array.length; )
+        this.printDefect( array[i], ++i );
 }
 /**
  * \internal
  */
 function ResultPrinter_printDefectTrace( defect )
 {
-	if( defect.getCallStack )
-		this.getWriter().print( defect.getCallStack().toString());
+    if( defect.getCallStack )
+        this.getWriter().print( defect.getCallStack().toString());
 }
 /**
  * Print the errors of the test result.
@@ -1711,7 +1711,7 @@ function ResultPrinter_printDefectTrace( defect )
  */
 function ResultPrinter_printErrors( result )
 {
-	this.printDefects( result.mErrors, "error" );
+    this.printDefects( result.mErrors, "error" );
 }
 /**
  * Print the failures of the test result.
@@ -1719,7 +1719,7 @@ function ResultPrinter_printErrors( result )
  */
 function ResultPrinter_printFailures( result )
 {
-	this.printDefects( result.mFailures, "failure" );
+    this.printDefects( result.mFailures, "failure" );
 }
 /**
  * Print the footer of the test result.
@@ -1727,24 +1727,24 @@ function ResultPrinter_printFailures( result )
  */
 function ResultPrinter_printFooter( result )
 {
-	var writer = this.getWriter();
-	if( result.wasSuccessful())
-	{
-		var count = result.runCount();
-		writer.println();
-		writer.print( "OK" );
-		writer.println( 
-			" (" + count + " test" + ( count == 1 ? "" : "s" ) + ")" );
-	}
-	else
-	{
-		writer.println();
-		writer.println( "FAILURES!!!" );
-		writer.println( "Tests run: " + result.runCount()
-			+ ", Failures: " + result.failureCount()
-			+ ", Errors: " + result.errorCount());
-	}
-	writer.println();
+    var writer = this.getWriter();
+    if( result.wasSuccessful())
+    {
+        var count = result.runCount();
+        writer.println();
+        writer.print( "OK" );
+        writer.println( 
+            " (" + count + " test" + ( count == 1 ? "" : "s" ) + ")" );
+    }
+    else
+    {
+        writer.println();
+        writer.println( "FAILURES!!!" );
+        writer.println( "Tests run: " + result.runCount()
+            + ", Failures: " + result.failureCount()
+            + ", Errors: " + result.errorCount());
+    }
+    writer.println();
 }
 /**
  * Print the header of the test result.
@@ -1752,9 +1752,9 @@ function ResultPrinter_printFooter( result )
  */
 function ResultPrinter_printHeader( runTime )
 {
-	var writer = this.getWriter();
-	writer.println();
-	writer.println( "Time: " + this.elapsedTimeAsString( runTime ));
+    var writer = this.getWriter();
+    writer.println();
+    writer.println( "Time: " + this.elapsedTimeAsString( runTime ));
 }
 /**
  * Sets the PrinterWriter.
@@ -1765,7 +1765,7 @@ function ResultPrinter_printHeader( runTime )
  */
 function ResultPrinter_setWriter( writer )
 {
-	this.mWriter = writer ? writer : JsUtil.prototype.getSystemWriter();
+    this.mWriter = writer ? writer : JsUtil.prototype.getSystemWriter();
 }
 /**
  * Implementation of TestListener.
@@ -1773,15 +1773,15 @@ function ResultPrinter_setWriter( writer )
  */
 function ResultPrinter_startTest( test )
 {
-	if( !( test instanceof TestSuite ))
-	{
-		this.getWriter().print( "." );
-		if( this.mColumn++ >= 39 )
-		{
-			this.getWriter().println();
-			this.mColumn = 0;
-		}
-	}
+    if( !( test instanceof TestSuite ))
+    {
+        this.getWriter().print( "." );
+        if( this.mColumn++ >= 39 )
+        {
+            this.getWriter().println();
+            this.mColumn = 0;
+        }
+    }
 }
 ResultPrinter.prototype.addError = ResultPrinter_addError;
 ResultPrinter.prototype.addFailure = ResultPrinter_addFailure;
@@ -1816,8 +1816,8 @@ ResultPrinter.fulfills( TestListener );
  */
 function TextTestRunner( outdev )
 {
-	BaseTestRunner.call( this );
-	this.setPrinter( outdev );
+    BaseTestRunner.call( this );
+    this.setPrinter( outdev );
 }
 /**
  * Creates an instance of a TestResult to be used for the test run.
@@ -1825,7 +1825,7 @@ function TextTestRunner( outdev )
  */
 function TextTestRunner_createTestResult() 
 {
-	return new TestResult(); 
+    return new TestResult(); 
 }
 /**
  * Executes a test run with the given test.
@@ -1834,13 +1834,13 @@ function TextTestRunner_createTestResult()
  */
 function TextTestRunner_doRun( test ) 
 {
-	var result = this.createTestResult();
-	result.addListener( this.mPrinter );
-	var startTime = new Date();
-	test.run( result );
-	var endTime = new Date();
-	this.mPrinter.print( result, endTime - startTime );
-	return result;
+    var result = this.createTestResult();
+    result.addListener( this.mPrinter );
+    var startTime = new Date();
+    test.run( result );
+    var endTime = new Date();
+    this.mPrinter.print( result, endTime - startTime );
+    return result;
 }
 /**
  * Runs a single test or a suite extracted from a TestCase subclass.
@@ -1850,10 +1850,10 @@ function TextTestRunner_doRun( test )
  */
 function TextTestRunner_run( test )
 {
-	if( test instanceof Function )
-		test = new TestSuite( test );
-	var runner = new TextTestRunner();
-	return runner.doRun( test );
+    if( test instanceof Function )
+        test = new TestSuite( test );
+    var runner = new TextTestRunner();
+    return runner.doRun( test );
 }
 /**
  * Program entry point.
@@ -1865,24 +1865,24 @@ function TextTestRunner_run( test )
  */
 function TextTestRunner_main( args )
 {
-	var ex;
-	var runner = BaseTestRunner.prototype.getPreference( "TestRunner" );
-	if( runner )
-		runner = new runner();
-	if( !runner )
-		 runner = new TextTestRunner();
-	try
-	{
-		var result = runner.start( args );
-		JsUtil.prototype.quit( 
-			  result.wasSuccessful() 
-			? TextTestRunner.prototype.SUCCESS_EXIT
-			: TextTestRunner.prototype.FAILURE_EXIT );
-	}
-	catch( ex )
-	{
-		runner.runFailed( ex.toString());
-	}
+    var ex;
+    var runner = BaseTestRunner.prototype.getPreference( "TestRunner" );
+    if( runner )
+        runner = new runner();
+    if( !runner )
+         runner = new TextTestRunner();
+    try
+    {
+        var result = runner.start( args );
+        JsUtil.prototype.quit( 
+              result.wasSuccessful() 
+            ? TextTestRunner.prototype.SUCCESS_EXIT
+            : TextTestRunner.prototype.FAILURE_EXIT );
+    }
+    catch( ex )
+    {
+        runner.runFailed( ex.toString());
+    }
 }
 /**
  * Run failed.
@@ -1891,8 +1891,8 @@ function TextTestRunner_main( args )
  */
 function TextTestRunner_runFailed( msg )
 {
-	JsUtil.prototype.getSystemWriter().println( msg );
-	JsUtil.prototype.quit( TextTestRunner.prototype.EXCEPTION_EXIT );
+    JsUtil.prototype.getSystemWriter().println( msg );
+    JsUtil.prototype.quit( TextTestRunner.prototype.EXCEPTION_EXIT );
 }
 /**
  * Set printer.
@@ -1901,17 +1901,17 @@ function TextTestRunner_runFailed( msg )
  */
 function TextTestRunner_setPrinter( outdev )
 {
-	if( typeof( outdev ) == "object" )
-	{
-		if( outdev instanceof PrinterWriter )
-			outdev = new ResultPrinter( outdev );
-		if( !( outdev instanceof ResultPrinter ))
-			outdev = new ResultPrinter();
-	}
-	else
-		outdev = new ResultPrinter();
+    if( typeof( outdev ) == "object" )
+    {
+        if( outdev instanceof PrinterWriter )
+            outdev = new ResultPrinter( outdev );
+        if( !( outdev instanceof ResultPrinter ))
+            outdev = new ResultPrinter();
+    }
+    else
+        outdev = new ResultPrinter();
 
-	this.mPrinter = outdev;
+    this.mPrinter = outdev;
 }
 /**
  * Starts a test run.
@@ -1923,72 +1923,72 @@ function TextTestRunner_setPrinter( outdev )
  */
 function TextTestRunner_start( args )
 {
-	function Usage( msg )
-	{
-		JsUnitError.call( this, 
-			"[JavaScript engine] [TestScript] TestName [TestName2]" + msg );
-	}
-	Usage.prototype = new JsUnitError();
-	Usage.prototype.name = "Usage";
+    function Usage( msg )
+    {
+        JsUnitError.call( this, 
+            "[JavaScript engine] [TestScript] TestName [TestName2]" + msg );
+    }
+    Usage.prototype = new JsUnitError();
+    Usage.prototype.name = "Usage";
 
-	var testCases = new Array();
-	
-	if( typeof( args ) == "undefined" )
-		args = new Array();
-	else if( typeof( args ) == "string" )
-		args = args.split( /[ ,;]/ );
+    var testCases = new Array();
+    
+    if( typeof( args ) == "undefined" )
+        args = new Array();
+    else if( typeof( args ) == "string" )
+        args = args.split( /[ ,;]/ );
 
-	var optionsPossible = true;
-	var msg = "";
-	for( var i = 0; i < args.length; ++i )
-	{
-		args[i] = args[i].trim();
-		if( optionsPossible && args[i].match( /^-/ ))
-		{
-			if( args[i] == "--" )
-			{
-				optionsPossible = false;
-				continue;
-			}
-			switch( args[i] )
-			{
-				case "--classic" :
-					this.setPrinter( 
+    var optionsPossible = true;
+    var msg = "";
+    for( var i = 0; i < args.length; ++i )
+    {
+        args[i] = args[i].trim();
+        if( optionsPossible && args[i].match( /^-/ ))
+        {
+            if( args[i] == "--" )
+            {
+                optionsPossible = false;
+                continue;
+            }
+            switch( args[i] )
+            {
+                case "--classic" :
+                    this.setPrinter( 
                         new ClassicResultPrinter( 
                             this.mPrinter.getWriter()));
-					continue;
-					
-				case "--html" :
+                    continue;
+                    
+                case "--html" :
                     this.mPrinter.setWriter(
                         new HTMLWriterFilter(
                             this.mPrinter.getWriter()));
                     continue;
                     
-				default:
-					msg = "\nUnknown option \"" + args[i] + "\"";
-				case "-?" :
-					throw new Usage( msg );
-			}
-		}
-		testCases.push( args[i] );
-	}
+                default:
+                    msg = "\nUnknown option \"" + args[i] + "\"";
+                case "-?" :
+                    throw new Usage( msg );
+            }
+        }
+        testCases.push( args[i] );
+    }
 
-	var suite;
-	if( testCases.length == 0 )
-		suite = this.getTest( "AllTests" );
-	else if( testCases.length > 1 )
-	{
-		suite = new TestSuite( "Start" );
-		for( i = 0; i < testCases.length; ++i )
-			suite.addTestSuite( testCases[i] );
-	}
-	else
-		suite = this.getTest( testCases[0] );
+    var suite;
+    if( testCases.length == 0 )
+        suite = this.getTest( "AllTests" );
+    else if( testCases.length > 1 )
+    {
+        suite = new TestSuite( "Start" );
+        for( i = 0; i < testCases.length; ++i )
+            suite.addTestSuite( testCases[i] );
+    }
+    else
+        suite = this.getTest( testCases[0] );
 
-	if( suite )
-		return this.doRun( suite );
-	else
-		return new TestResult();
+    if( suite )
+        return this.doRun( suite );
+    else
+        return new TestResult();
 }
 TextTestRunner.prototype = new BaseTestRunner();
 TextTestRunner.prototype.createTestResult = TextTestRunner_createTestResult;
@@ -2017,7 +2017,7 @@ TextTestRunner.prototype.EXCEPTION_EXIT = 2;
 
 function ClassicResultPrinter( writer )
 {
-	ResultPrinter.call( this, writer );
+    ResultPrinter.call( this, writer );
 }
 /**
  * An occured error was added.
@@ -2026,16 +2026,16 @@ function ClassicResultPrinter( writer )
  */
 function ClassicResultPrinter_addError( test, except )
 {
-	var str = "";
-	if( except.description )
-	{
-		if( except.name )
-			str = except.name + ": ";
-		str += except.description;
-	}
-	else
-		str = except;
-	this.writeLn( "ERROR in " + test + ": " + str );
+    var str = "";
+    if( except.description )
+    {
+        if( except.name )
+            str = except.name + ": ";
+        str += except.description;
+    }
+    else
+        str = except;
+    this.writeLn( "ERROR in " + test + ": " + str );
 }
 /**
  * An occured failure was added.
@@ -2044,9 +2044,9 @@ function ClassicResultPrinter_addError( test, except )
  */
 function ClassicResultPrinter_addFailure( test, except )
 {
-	this.writeLn( "FAILURE in " + test + ": " + except );
-	if( except.mCallStack )
-		this.writeLn( except.mCallStack.toString());
+    this.writeLn( "FAILURE in " + test + ": " + except );
+    if( except.mCallStack )
+        this.writeLn( except.mCallStack.toString());
 }
 /**
  * A test ended
@@ -2054,13 +2054,13 @@ function ClassicResultPrinter_addFailure( test, except )
  */
 function ClassicResultPrinter_endTest( test )
 {
-	if( test instanceof TestSuite )
-	{
-		this.mNest = this.mNest.substr( 1 );
-		this.writeLn( 
-			  "<" + this.mNest.replace( /-/g, "=" ) 
-			+ " Completed test suite \"" + test.getName() + "\"" );
-	}
+    if( test instanceof TestSuite )
+    {
+        this.mNest = this.mNest.substr( 1 );
+        this.writeLn( 
+              "<" + this.mNest.replace( /-/g, "=" ) 
+            + " Completed test suite \"" + test.getName() + "\"" );
+    }
 }
 /**
  * Print the complete test result.
@@ -2070,7 +2070,7 @@ function ClassicResultPrinter_endTest( test )
  */
 function ClassicResultPrinter_print( result, runTime )
 {
-	this.printFooter( result, runTime );
+    this.printFooter( result, runTime );
 }
 /**
  * Write a header starting the application.
@@ -2078,11 +2078,11 @@ function ClassicResultPrinter_print( result, runTime )
  */
 function ClassicResultPrinter_printHeader( test )
 {
-	this.mRunTests = 0;
-	this.mInReport = true;
-	this.mNest = "";
-	this.writeLn( 
-		  "TestRunner (" + test.countTestCases() + " test cases available)" );
+    this.mRunTests = 0;
+    this.mInReport = true;
+    this.mNest = "";
+    this.writeLn( 
+          "TestRunner (" + test.countTestCases() + " test cases available)" );
 }
 /**
  * Write a footer at application end with a summary of the tests.
@@ -2091,19 +2091,19 @@ function ClassicResultPrinter_printHeader( test )
  */
 function ClassicResultPrinter_printFooter( result, runTime )
 {
-	if( result.wasSuccessful() == 0 )
-	{
-		var error = result.errorCount() != 1 ? " errors" : " error";
-		var failure = result.failureCount() != 1 ? " failures" : " failure";
-		this.writeLn( 
-			  result.errorCount() + error + ", " 
-			+ result.failureCount() + failure + "." );
-	}
-	else
-		this.writeLn( 
-			  result.runCount() + " tests successful in " 
-			+ this.elapsedTimeAsString( runTime ) + " seconds." );
-	this.mInReport = false;
+    if( result.wasSuccessful() == 0 )
+    {
+        var error = result.errorCount() != 1 ? " errors" : " error";
+        var failure = result.failureCount() != 1 ? " failures" : " failure";
+        this.writeLn( 
+              result.errorCount() + error + ", " 
+            + result.failureCount() + failure + "." );
+    }
+    else
+        this.writeLn( 
+              result.runCount() + " tests successful in " 
+            + this.elapsedTimeAsString( runTime ) + " seconds." );
+    this.mInReport = false;
 }
 /**
  * A test started
@@ -2111,22 +2111,22 @@ function ClassicResultPrinter_printFooter( result, runTime )
  */
 function ClassicResultPrinter_startTest( test )
 {
-	if( !this.mInReport )
-		this.printHeader( test );
-	if( !( test instanceof TestSuite ))
-	{
-		++this.mRunTests;
-		this.writeLn( 
-			  this.mNest + " Running test " 
-			+ this.mRunTests + ": \"" + test + "\"" );
-	}
-	else
-	{
-		this.writeLn( 
-			  this.mNest.replace(/-/g, "=") + "> Starting test suite \"" 
-			+ test.getName() + "\"" );
-		this.mNest += "-";
-	}
+    if( !this.mInReport )
+        this.printHeader( test );
+    if( !( test instanceof TestSuite ))
+    {
+        ++this.mRunTests;
+        this.writeLn( 
+              this.mNest + " Running test " 
+            + this.mRunTests + ": \"" + test + "\"" );
+    }
+    else
+    {
+        this.writeLn( 
+              this.mNest.replace(/-/g, "=") + "> Starting test suite \"" 
+            + test.getName() + "\"" );
+        this.mNest += "-";
+    }
 }
 /**
  * Write a line of text.
@@ -2137,7 +2137,7 @@ function ClassicResultPrinter_startTest( test )
  */
 function ClassicResultPrinter_writeLn( str )
 {
-	this.getWriter().println( str );
+    this.getWriter().println( str );
 }
 ClassicResultPrinter.prototype = new ResultPrinter();
 ClassicResultPrinter.prototype.addError = ClassicResultPrinter_addError;
@@ -2159,7 +2159,7 @@ ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
  */
 function HTMLTestRunner( outdev )
 {
-	TextTestRunner.call( this, outdev );
+    TextTestRunner.call( this, outdev );
 }
 /**
  * Set printer.
@@ -2171,7 +2171,7 @@ function HTMLTestRunner( outdev )
  */
 function HTMLTestRunner_setPrinter( outdev )
 {
-	TextTestRunner.prototype.setPrinter.call( this, outdev );
+    TextTestRunner.prototype.setPrinter.call( this, outdev );
     this.mPrinter.setWriter( 
         new HTMLWriterFilter( this.mPrinter.getWriter()));
 }

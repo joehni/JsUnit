@@ -42,18 +42,18 @@ function JsUtil()
  **/
 function JsUtil_getCaller( fn )
 {
-	switch( typeof( fn ))
-	{
-		case "undefined":
-			return JsUtil_getCaller( JsUtil_getCaller );
-			
-		case "function":
-			if( fn.caller )
-				return fn.caller;
-			if( fn.arguments && fn.arguments.caller )
-				return fn.arguments.caller;
-	}
-	return undefined;
+    switch( typeof( fn ))
+    {
+        case "undefined":
+            return JsUtil_getCaller( JsUtil_getCaller );
+            
+        case "function":
+            if( fn.caller )
+                return fn.caller;
+            if( fn.arguments && fn.arguments.caller )
+                return fn.arguments.caller;
+    }
+    return undefined;
 }
 /**
  * Includes a JavaScript file.
@@ -69,19 +69,19 @@ function JsUtil_getCaller( fn )
  */
 function JsUtil_include( fname )
 {
-	var ret = "true";
-	if( JsUtil.prototype.isMozillaShell || JsUtil.prototype.isKJS )
-	{
-		load( fname );
-	}
-	else if( JsUtil.prototype.isWSH )
-	{
-		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-		var file = fso.OpenTextFile( fname, 1 );
-		ret = file.ReadAll();
-		file.Close();
-	}
-	return ret;
+    var ret = "true";
+    if( JsUtil.prototype.isMozillaShell || JsUtil.prototype.isKJS )
+    {
+        load( fname );
+    }
+    else if( JsUtil.prototype.isWSH )
+    {
+        var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+        var file = fso.OpenTextFile( fname, 1 );
+        ret = file.ReadAll();
+        file.Close();
+    }
+    return ret;
 }
 /**
  * Returns the SystemWriter.
@@ -91,9 +91,9 @@ function JsUtil_include( fname )
  */
 function JsUtil_getSystemWriter()
 {
-	if( !JsUtil.prototype.mWriter )
-		JsUtil.prototype.mWriter = new SystemWriter();
-	return JsUtil.prototype.mWriter;
+    if( !JsUtil.prototype.mWriter )
+        JsUtil.prototype.mWriter = new SystemWriter();
+    return JsUtil.prototype.mWriter;
 }
 /**
  * Quits the JavaScript engine.
@@ -103,12 +103,12 @@ function JsUtil_getSystemWriter()
  */
 function JsUtil_quit( ret )
 {
-	if( JsUtil.prototype.isMozillaShell )
-		quit( ret );
-	else if( JsUtil.prototype.isKJS )
-		exit( ret );
-	else if( JsUtil.prototype.isWSH )
-		WScript.Quit( ret );
+    if( JsUtil.prototype.isMozillaShell )
+        quit( ret );
+    else if( JsUtil.prototype.isKJS )
+        exit( ret );
+    else if( JsUtil.prototype.isWSH )
+        WScript.Quit( ret );
 }
 JsUtil.prototype.getCaller = JsUtil_getCaller;
 JsUtil.prototype.include = JsUtil_include;
@@ -145,8 +145,8 @@ JsUtil.prototype.isWSH = this.WScript != null;
  * The member is true, if the script runs in the Microsoft JScript engine.
  */
 JsUtil.prototype.isIIS = 
-	   JsUtil.prototype.isJScript
-	&& this.Server != null;
+       JsUtil.prototype.isJScript
+    && this.Server != null;
 /**
  * Flag for Netscape Enterprise Server (iPlanet) engine.
  * @type Boolean
@@ -182,9 +182,9 @@ JsUtil.prototype.isKJS = this.exit != null;
  * The member is true, if the script runs in a command line shell.
  */
 JsUtil.prototype.isShell = 
-	   JsUtil.prototype.isMozillaShell 
-	|| JsUtil.prototype.isKJS 
-	|| JsUtil.prototype.isWSH;
+       JsUtil.prototype.isMozillaShell 
+    || JsUtil.prototype.isKJS 
+    || JsUtil.prototype.isWSH;
 /**
  * Flag for Obtree C4.
  * @type Boolean
@@ -197,7 +197,7 @@ JsUtil.prototype.isObtree = this.WebObject != null;
  * The member is true, if the engine provides call stack info.
  */
 JsUtil.prototype.hasCallStackSupport = 
-	   JsUtil.prototype.getCaller() !== undefined;
+       JsUtil.prototype.getCaller() !== undefined;
 
 
 /**
@@ -216,56 +216,56 @@ JsUtil.prototype.hasCallStackSupport =
  **/
 function CallStack( depth )
 {
-	/**
-	 * The array with the stack. 
-	 * @type Array<String>
-	 */
-	this.mStack = null;
-	if( JsUtil.prototype.hasCallStackSupport )
-		this._fill( depth );
+    /**
+     * The array with the stack. 
+     * @type Array<String>
+     */
+    this.mStack = null;
+    if( JsUtil.prototype.hasCallStackSupport )
+        this._fill( depth );
 }
 /**
  * \internal
  */
 function CallStack__fill( depth )
 {
-	this.mStack = new Array();
-	
-	// set stack depth to default
-	if( depth == null )
-		depth = 10;
+    this.mStack = new Array();
+    
+    // set stack depth to default
+    if( depth == null )
+        depth = 10;
 
-	++depth;
-	var fn = JsUtil.prototype.getCaller( CallStack__fill );
-	while( fn != null && depth > 0 )
-	{
-		var s = new String( fn );
-		--depth;
+    ++depth;
+    var fn = JsUtil.prototype.getCaller( CallStack__fill );
+    while( fn != null && depth > 0 )
+    {
+        var s = new String( fn );
+        --depth;
 
-		// Extract function name and argument list
-		var r = /function (\w+)([^\{\}]*\))/;
-		r.exec( s );
-		var f = new String( RegExp.$1 );
-		var args = new String( RegExp.$2 );
-		this.mStack.push(( f + args ).replace( /\s/g, "" ));
+        // Extract function name and argument list
+        var r = /function (\w+)([^\{\}]*\))/;
+        r.exec( s );
+        var f = new String( RegExp.$1 );
+        var args = new String( RegExp.$2 );
+        this.mStack.push(( f + args ).replace( /\s/g, "" ));
 
-		// Retrieve caller function
-		if( fn == JsUtil.prototype.getCaller( fn ))
-		{
-			// Some interpreter's caller use global objects and may start
-			// an endless recursion.
-			this.mStack.push( "[JavaScript recursion]" );
-			break;
-		}
-		else
-			fn = JsUtil.prototype.getCaller( fn );
-	}
+        // Retrieve caller function
+        if( fn == JsUtil.prototype.getCaller( fn ))
+        {
+            // Some interpreter's caller use global objects and may start
+            // an endless recursion.
+            this.mStack.push( "[JavaScript recursion]" );
+            break;
+        }
+        else
+            fn = JsUtil.prototype.getCaller( fn );
+    }
 
-	if( fn == null )
-		this.mStack.push( "[JavaScript engine]" );
+    if( fn == null )
+        this.mStack.push( "[JavaScript engine]" );
 
-	// remove direct calling function CallStack or CallStack_fill
-	this.mStack.shift();
+    // remove direct calling function CallStack or CallStack_fill
+    this.mStack.shift();
 }
 /**
  * Fills the object with the current call stack info.
@@ -278,9 +278,9 @@ function CallStack__fill( depth )
  **/
 function CallStack_fill( depth )
 {
-	this.mStack = null;
-	if( JsUtil.prototype.hasCallStackSupport )
-		this._fill( depth );
+    this.mStack = null;
+    if( JsUtil.prototype.hasCallStackSupport )
+        this._fill( depth );
 }
 /**
  * Retrieve call stack as array.
@@ -289,11 +289,11 @@ function CallStack_fill( depth )
  **/
 function CallStack_getStack()
 {
-	var a = new Array();
-	if( this.mStack != null )
-		for( var i = this.mStack.length; i--; )
-			a[i] = this.mStack[i];
-	return a;
+    var a = new Array();
+    if( this.mStack != null )
+        for( var i = this.mStack.length; i--; )
+            a[i] = this.mStack[i];
+    return a;
 }
 /**
  * Retrieve call stack as string.
@@ -303,15 +303,15 @@ function CallStack_getStack()
  **/
 function CallStack_toString()
 {
-	var s = "";
-	if( this.mStack != null )
-		for( var i = 1; i <= this.mStack.length; ++i )
-		{
-			if( s.length != 0 )
-				s += "\n";
-			s += i.toString() + ": " + this.mStack[i-1];
-		}
-	return s;
+    var s = "";
+    if( this.mStack != null )
+        for( var i = 1; i <= this.mStack.length; ++i )
+        {
+            if( s.length != 0 )
+                s += "\n";
+            s += i.toString() + ": " + this.mStack[i-1];
+        }
+    return s;
 }
 
 CallStack.prototype._fill = CallStack__fill;
@@ -323,63 +323,63 @@ CallStack.prototype.toString = CallStack_toString;
 // MS engine does not implement Array.push and Array.pop until JScript 5.6
 if( !Array.prototype.pop )
 {
-	/**
-	 * \class Array
-	 * Standard ECMA class.
-	 * \docgen function Array() {}
-	 */
-	/**
-	 * Pops last element from Array.
-	 * The function is an implementation of the Array::pop method described
-	 * in the ECMA standard. It removes the last element of the Array and
-	 * returns it.
-	 *
-	 * The function is active if the ECMA implementation does not implement
-	 * it (like Microsoft JScript engine up to version 5.5).
-	 * @treturn Object Last element or undefined
-	 */
-	function Array_pop()
-	{
-		var obj;
-		if( this instanceof Array && this.length > 0 )
-		{
-			var last = parseInt( this.length ) - 1;
-			obj = this[last];
-			this.length = last;
-		}
-		return obj;
-	}
-	Array.prototype.pop = Array_pop;
-}	
+    /**
+     * \class Array
+     * Standard ECMA class.
+     * \docgen function Array() {}
+     */
+    /**
+     * Pops last element from Array.
+     * The function is an implementation of the Array::pop method described
+     * in the ECMA standard. It removes the last element of the Array and
+     * returns it.
+     *
+     * The function is active if the ECMA implementation does not implement
+     * it (like Microsoft JScript engine up to version 5.5).
+     * @treturn Object Last element or undefined
+     */
+    function Array_pop()
+    {
+        var obj;
+        if( this instanceof Array && this.length > 0 )
+        {
+            var last = parseInt( this.length ) - 1;
+            obj = this[last];
+            this.length = last;
+        }
+        return obj;
+    }
+    Array.prototype.pop = Array_pop;
+}   
 if( !Array.prototype.push )
 { 
-	/**
-	 * Pushes elements into Array.
-	 * The function is an implementation of the Array::push method described
-	 * in the ECMA standard. It adds all given parameters at the end of the
-	 * array.
-	 *
-	 * The function is active if the ECMA implementation does not implement
-	 * it (like Microsoft JScript engine up to version 5.5).
-	 * @treturn Object Number of added elements
-	 */
-	function Array_push()
-	{
-		var i = 0;
-		if( this instanceof Array )
-		{
-			i = this.length;
-			
-			// Preallocation of array
-			if( arguments.length > 0 )
-				this[arguments.length + this.length - 1] = null;
-			
-			for( ; i < this.length; ++i )
-				this[i] = arguments[i - this.length + arguments.length];
-		}		
-		return i;
-	}
-	Array.prototype.push = Array_push;
+    /**
+     * Pushes elements into Array.
+     * The function is an implementation of the Array::push method described
+     * in the ECMA standard. It adds all given parameters at the end of the
+     * array.
+     *
+     * The function is active if the ECMA implementation does not implement
+     * it (like Microsoft JScript engine up to version 5.5).
+     * @treturn Object Number of added elements
+     */
+    function Array_push()
+    {
+        var i = 0;
+        if( this instanceof Array )
+        {
+            i = this.length;
+            
+            // Preallocation of array
+            if( arguments.length > 0 )
+                this[arguments.length + this.length - 1] = null;
+            
+            for( ; i < this.length; ++i )
+                this[i] = arguments[i - this.length + arguments.length];
+        }       
+        return i;
+    }
+    Array.prototype.push = Array_push;
 }
 
 
@@ -404,77 +404,77 @@ if( !Array.prototype.push )
  */
 function String_trim( chars )
 {
-	if( !chars )
-		chars = "\\s";
-	var re = new RegExp( "^[" + chars + "]*(.*?)[" + chars + "]*$" );
-	var s = this.replace( re, "$1" );
-	return s;
+    if( !chars )
+        chars = "\\s";
+    var re = new RegExp( "^[" + chars + "]*(.*?)[" + chars + "]*$" );
+    var s = this.replace( re, "$1" );
+    return s;
 }
 String.prototype.trim = String_trim;
 
 
 if( !this.Error )
 {
-	/**
-	 * Error class according ECMA specification.
-	 * This class is only active, if the ECMA implementation of the current
-	 * engine does not support it.
-	 * @ctor
-	 * Constructor.
-	 * The constructor initializes the \c message member with the argument 
-	 * \a msg.
-	 * \attention The ECMA standard does not ensure, that the constructor
-	 * of the internal Error class may be called by derived objects. It will
-	 * normally return a new Error instance if called as function.
-	 * @tparam String msg The error message.
-	 */
-	function Error( msg )
-	{
-		if( this instanceof Error )
-		{
-			/**
-			 * The error message.
-			 * @type String
-			 */
-			this.message = msg || "";
-			return;
-		}
-		else
-		{
-			return new Error( msg );
-		}
-	}
-	/**
-	 * String representation of the error.
-	 * @treturn String Returns a \c String containing the Error class name 
-	 * and the error message.
-	 * \attention The format of the returned string is not defined by ECMA
-	 * and is up to the vendor only. This implementation follows the behaviour
-	 * of Mozilla.org's SpiderMonkey.
-	 */
-	function Error_toString()
-	{
-		var msg = this.message;
-		return this.name + ": " + msg;
-	}
-	Error.prototype = new Object();
-	Error.prototype.toString = Error_toString;
-	/**
-	 * The name of the Error class as String.
-	 * @type String
-	 */
-	Error.prototype.name = "Error";
-	/**
-	 * \internal
-	 */
-	Error.prototype.testable = true;
+    /**
+     * Error class according ECMA specification.
+     * This class is only active, if the ECMA implementation of the current
+     * engine does not support it.
+     * @ctor
+     * Constructor.
+     * The constructor initializes the \c message member with the argument 
+     * \a msg.
+     * \attention The ECMA standard does not ensure, that the constructor
+     * of the internal Error class may be called by derived objects. It will
+     * normally return a new Error instance if called as function.
+     * @tparam String msg The error message.
+     */
+    function Error( msg )
+    {
+        if( this instanceof Error )
+        {
+            /**
+             * The error message.
+             * @type String
+             */
+            this.message = msg || "";
+            return;
+        }
+        else
+        {
+            return new Error( msg );
+        }
+    }
+    /**
+     * String representation of the error.
+     * @treturn String Returns a \c String containing the Error class name 
+     * and the error message.
+     * \attention The format of the returned string is not defined by ECMA
+     * and is up to the vendor only. This implementation follows the behaviour
+     * of Mozilla.org's SpiderMonkey.
+     */
+    function Error_toString()
+    {
+        var msg = this.message;
+        return this.name + ": " + msg;
+    }
+    Error.prototype = new Object();
+    Error.prototype.toString = Error_toString;
+    /**
+     * The name of the Error class as String.
+     * @type String
+     */
+    Error.prototype.name = "Error";
+    /**
+     * \internal
+     */
+    Error.prototype.testable = true;
 }
 else 
 {
-	/**
-	 * \internal
-	 */
-	Error.prototype.testable = false;
+    /**
+     * \internal
+     */
+    Error.prototype.testable = false;
 }
 
 /**
@@ -494,7 +494,7 @@ else
  */
 function JsUnitError( msg )
 {
-	this.message = msg || "";	
+    this.message = msg || "";   
 }
 /**
  * String representation of the error.
@@ -506,8 +506,8 @@ function JsUnitError( msg )
  */
 function JsUnitError_toString()
 {
-	var msg = this.message;
-	return this.name + ": " + msg;
+    var msg = this.message;
+    return this.name + ": " + msg;
 }
 JsUnitError.prototype = new Error();
 JsUnitError.prototype.toString = JsUnitError_toString;
@@ -531,7 +531,7 @@ JsUnitError.prototype.name = "JsUnitError";
  **/
 function InterfaceDefinitionError( msg )
 {
-	JsUnitError.call( this, msg );
+    JsUnitError.call( this, msg );
 }
 InterfaceDefinitionError.prototype = new JsUnitError();
 /**
@@ -558,33 +558,33 @@ InterfaceDefinitionError.prototype.name = "InterfaceDefinitionError";
  */
 function Function_fulfills()
 {
-	for( var i = 0; i < arguments.length; ++i )
-	{
-		var I = arguments[i];
-		if( typeof I != "function" || !I.prototype )
-			throw new InterfaceDefinitionError( 
-				I.toString() + " is not an Interface" );
-		if( !this.prototype )
-			throw new InterfaceDefinitionError( 
-				"Current instance is not a Function definition" );
-		for( var f in I.prototype )
-		{
-			if( typeof I.prototype[f] != "function" )
-				throw new InterfaceDefinitionError( f.toString() 
-					+ " is not a method in Interface " + I.toString());
-			if(    typeof this.prototype[f] != "function" 
-				&& typeof this[f] != "function" )
-			{
-				if(    typeof this.prototype[f] == "undefined" 
-					&& typeof this[f] == "undefined" )
-					throw new InterfaceDefinitionError( 
-						f.toString() + " is not defined" );
-				else
-					throw new InterfaceDefinitionError( 
-						f.toString() + " is not a function" );
-			}
-		}
-	}
+    for( var i = 0; i < arguments.length; ++i )
+    {
+        var I = arguments[i];
+        if( typeof I != "function" || !I.prototype )
+            throw new InterfaceDefinitionError( 
+                I.toString() + " is not an Interface" );
+        if( !this.prototype )
+            throw new InterfaceDefinitionError( 
+                "Current instance is not a Function definition" );
+        for( var f in I.prototype )
+        {
+            if( typeof I.prototype[f] != "function" )
+                throw new InterfaceDefinitionError( f.toString() 
+                    + " is not a method in Interface " + I.toString());
+            if(    typeof this.prototype[f] != "function" 
+                && typeof this[f] != "function" )
+            {
+                if(    typeof this.prototype[f] == "undefined" 
+                    && typeof this[f] == "undefined" )
+                    throw new InterfaceDefinitionError( 
+                        f.toString() + " is not defined" );
+                else
+                    throw new InterfaceDefinitionError( 
+                        f.toString() + " is not a function" );
+            }
+        }
+    }
 }
 Function.prototype.fulfills = Function_fulfills;
 
@@ -601,7 +601,7 @@ Function.prototype.fulfills = Function_fulfills;
  **/
 function PrinterWriterError( msg )
 {
-	JsUnitError.call( this, msg );
+    JsUnitError.call( this, msg );
 }
 PrinterWriterError.prototype = new JsUnitError();
 /**
@@ -618,8 +618,8 @@ PrinterWriterError.prototype.name = "PrinterWriterError";
  */
 function PrinterWriter()
 {
-	this.mBuffer = null;	
-	this.mClosed = false;
+    this.mBuffer = null;    
+    this.mClosed = false;
 }
 /**
  * Closes the writer.
@@ -628,8 +628,8 @@ function PrinterWriter()
  */
 function PrinterWriter_close() 
 {
-	this.flush();
-	this.mClosed = true;
+    this.flush();
+    this.mClosed = true;
 }
 /**
  * Flushes the writer.
@@ -638,17 +638,17 @@ function PrinterWriter_close()
  */
 function PrinterWriter_flush()
 {
-	if( !this.mClosed )
-	{
-		if( this.mBuffer !== null )
-		{
-			this._flush( this.mBuffer + "\n" );
-			this.mBuffer = null;	
-		}
-	}
-	else	
-		throw new PrinterWriterError( 
-			"'flush' called for closed PrinterWriter." );
+    if( !this.mClosed )
+    {
+        if( this.mBuffer !== null )
+        {
+            this._flush( this.mBuffer + "\n" );
+            this.mBuffer = null;    
+        }
+    }
+    else    
+        throw new PrinterWriterError( 
+            "'flush' called for closed PrinterWriter." );
 }
 /**
  * Prints into the writer.
@@ -657,19 +657,19 @@ function PrinterWriter_flush()
  */
 function PrinterWriter_print( data )
 {
-	if( !this.mClosed )
-	{
-		var undef;
-		if( data === undef || data == null )
-			data = "";
-		if( this.mBuffer )
-			this.mBuffer += data.toString();
-		else
-			this.mBuffer = data.toString();
-	}
-	else	
-		throw new PrinterWriterError( 
-			"'print' called for closed PrinterWriter." );
+    if( !this.mClosed )
+    {
+        var undef;
+        if( data === undef || data == null )
+            data = "";
+        if( this.mBuffer )
+            this.mBuffer += data.toString();
+        else
+            this.mBuffer = data.toString();
+    }
+    else    
+        throw new PrinterWriterError( 
+            "'print' called for closed PrinterWriter." );
 }
 /**
  * Prints a line into the writer.
@@ -678,8 +678,8 @@ function PrinterWriter_print( data )
  */
 function PrinterWriter_println( data )
 {
-	this.print( data );
-	this.flush();
+    this.print( data );
+    this.flush();
 }
 PrinterWriter.prototype.close = PrinterWriter_close;
 PrinterWriter.prototype.flush = PrinterWriter_flush;
@@ -696,7 +696,7 @@ PrinterWriter.prototype._flush = function() {};
  */
 function SystemWriter() 
 {
-	PrinterWriter.call( this );
+    PrinterWriter.call( this );
 } 
 /**
  * Closes the writer.
@@ -704,62 +704,62 @@ function SystemWriter()
  */
 function SystemWriter_close() 
 {
-	this.flush();
+    this.flush();
 }
 /** 
  * \internal 
  */
 function SystemWriter__flush( str ) 
 {
-	/* self-modifying code ... */
-	if( JsUtil.prototype.isMozillaShell )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				print( str.substring( 0, str.length - 1 )); 
-			}
-	else if( JsUtil.prototype.isKJS )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				print( str ); 
-			}
-	else if( JsUtil.prototype.isBrowser )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				document.write( str );
-			}
-	else if( JsUtil.prototype.isWSH )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				WScript.Echo( str.substring( 0, str.length - 1 )); 
-			}
-	else if( JsUtil.prototype.isIIS )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				Response.write( str ); 
-			}
-	/*
-	else if( JsUtil.prototype.isNSServer )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				write( str );
-			}
-	*/
-	else if( JsUtil.prototype.isObtree )
-		this._flush = 
-			function SystemWriter__flush( str ) 
-			{ 
-				write( str ); 
-			}
-	else
-		this._flush = function() {}
+    /* self-modifying code ... */
+    if( JsUtil.prototype.isMozillaShell )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                print( str.substring( 0, str.length - 1 )); 
+            }
+    else if( JsUtil.prototype.isKJS )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                print( str ); 
+            }
+    else if( JsUtil.prototype.isBrowser )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                document.write( str );
+            }
+    else if( JsUtil.prototype.isWSH )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                WScript.Echo( str.substring( 0, str.length - 1 )); 
+            }
+    else if( JsUtil.prototype.isIIS )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                Response.write( str ); 
+            }
+    /*
+    else if( JsUtil.prototype.isNSServer )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                write( str );
+            }
+    */
+    else if( JsUtil.prototype.isObtree )
+        this._flush = 
+            function SystemWriter__flush( str ) 
+            { 
+                write( str ); 
+            }
+    else
+        this._flush = function() {}
 
-	this._flush( str );
+    this._flush( str );
 }
 SystemWriter.prototype = new PrinterWriter();
 SystemWriter.prototype.close = SystemWriter_close;
@@ -771,8 +771,8 @@ SystemWriter.prototype._flush = SystemWriter__flush;
  */
 function StringWriter() 
 {
-	PrinterWriter.call( this );
-	this.mString = "";
+    PrinterWriter.call( this );
+    this.mString = "";
 } 
 /**
  * Returns the written String.
@@ -781,16 +781,16 @@ function StringWriter()
  */
 function StringWriter_get() 
 {
-	if( !this.mClosed )
-		this.close();
-	return this.mString;
+    if( !this.mClosed )
+        this.close();
+    return this.mString;
 }
 /** 
  * \internal 
  */
 function StringWriter__flush( str )
 {
-	this.mString += str;
+    this.mString += str;
 }
 StringWriter.prototype = new PrinterWriter();
 StringWriter.prototype.get = StringWriter_get;
@@ -806,8 +806,8 @@ StringWriter.prototype._flush = StringWriter__flush;
  */
 function HTMLWriterFilter( writer )
 {
-	PrinterWriter.call( this );
-	this.setWriter( writer );
+    PrinterWriter.call( this );
+    this.setWriter( writer );
 }
 /**
  * Returns the wrapped PrinterWriter.
@@ -815,7 +815,7 @@ function HTMLWriterFilter( writer )
  */
 function HTMLWriterFilter_getWriter() 
 {
-	return this.mWriter;
+    return this.mWriter;
 }
 /**
  * Sets the PrinterWriter to wrap.
@@ -824,19 +824,19 @@ function HTMLWriterFilter_getWriter()
  */
 function HTMLWriterFilter_setWriter( writer ) 
 {
-	this.mWriter = writer ? writer : new StringWriter();
+    this.mWriter = writer ? writer : new StringWriter();
 }
 /** 
  * \internal 
  */
 function HTMLWriterFilter__flush( str )
 {
-	str = str.toString();
-	str = str.replace( /&/g, "&amp;" ); 
-	str = str.replace( /</g, "&lt;" ); 
-	str = str.replace( /\"/g, "&quot;" ); 
-	str = str.replace( /\n/g, "<br>" );
-	this.mWriter._flush( str );
+    str = str.toString();
+    str = str.replace( /&/g, "&amp;" ); 
+    str = str.replace( /</g, "&lt;" ); 
+    str = str.replace( /\"/g, "&quot;" ); 
+    str = str.replace( /\n/g, "<br>" );
+    this.mWriter._flush( str );
 }
 HTMLWriterFilter.prototype = new PrinterWriter();
 HTMLWriterFilter.prototype.getWriter = HTMLWriterFilter_getWriter;

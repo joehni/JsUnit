@@ -39,7 +39,7 @@ function CtxWriter()
  */
 function CtxWriter__flush( str )
 {
-	print( str.substring( 0, str.length - 1 )); 
+    print( str.substring( 0, str.length - 1 )); 
 }
 CtxWriter.prototype = new PrinterWriter();
 CtxWriter.prototype._flush = CtxWriter__flush;
@@ -55,7 +55,7 @@ CtxWriter.prototype._flush = CtxWriter__flush;
  */
 function CtxTestRunner()
 {
-	TextTestRunner.call( this );
+    TextTestRunner.call( this );
 }
 /**
  * Write a line of text to the browser window.
