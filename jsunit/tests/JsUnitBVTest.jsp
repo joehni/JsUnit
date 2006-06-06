@@ -24,10 +24,10 @@ license.
 <%
 function main( args )
 {
-	var runner = new TextTestRunner( new CtxWriter());
-	runner.addSuite( new JsUtilTestSuite());
-	runner.addSuite( new JsUnitTestSuite());
-	return runner.start( main.arguments );
+    var runner = new TextTestRunner( new CtxWriter());
+    runner.addSuite( new JsUtilTestSuite());
+    runner.addSuite( new JsUnitTestSuite());
+    return runner.start( main.arguments );
 }
 
 main( "all" );

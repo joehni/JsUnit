@@ -26,91 +26,91 @@ var i;
 
 function throwEx()
 {
-	throw new Object();
+    throw new Object();
 }
 function testEx()
 {
-	var me = this;
-	try { hasExceptions = "true"; new throwEx(); } 
-	catch( ex ) { exceptionsWorking = this == me; }
+    var me = this;
+    try { hasExceptions = "true"; new throwEx(); } 
+    catch( ex ) { exceptionsWorking = this == me; }
 }
 new testEx();
 
 if( !this.JsUtil )
 {
-	if( this.WScript )
-	{
-		var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-		var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
-		var all = file.ReadAll();
-		file.Close();
-		eval( all );
-	}
-	else
-		load( "../lib/JsUtil.js" );
+    if( this.WScript )
+    {
+        var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+        var file = fso.OpenTextFile( "../lib/JsUtil.js", 1 );
+        var all = file.ReadAll();
+        file.Close();
+        eval( all );
+    }
+    else
+        load( "../lib/JsUtil.js" );
 }
 if( !JsUtil.prototype.isBrowser )
 {
-	var writer = JsUtil.prototype.getSystemWriter();
+    var writer = JsUtil.prototype.getSystemWriter();
     /*
-	// o = this.Environment;
-	o = this;
-	writer.println( "Object: " + o );
-	for( i in o )
-		writer.println( " i is " + i );
-	JsUtil.ptototype.quit(0);
+    // o = this.Environment;
+    o = this;
+    writer.println( "Object: " + o );
+    for( i in o )
+        writer.println( " i is " + i );
+    JsUtil.ptototype.quit(0);
     */
-	writer.println( "\nJavaScript compatibility:" );
-	writer.println( "\thas exceptions: " + hasExceptions );
-	writer.println( "\texceptions working: " + exceptionsWorking );
+    writer.println( "\nJavaScript compatibility:" );
+    writer.println( "\thas exceptions: " + hasExceptions );
+    writer.println( "\texceptions working: " + exceptionsWorking );
 
-	writer.println( "\nJavaScript engine detection:" );
-	for( i in JsUtil.prototype )
-		if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
-			writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
+    writer.println( "\nJavaScript engine detection:" );
+    for( i in JsUtil.prototype )
+        if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
+            writer.println( "\t" + i + ": " + JsUtil.prototype[i] );
 
-	writer.println( "\nJsUnit Test Suite:\n" );
+    writer.println( "\nJsUnit Test Suite:\n" );
 }
 if( exceptionsWorking )
 {
-	eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
-	eval( JsUtil.prototype.include( "JsUtilTest.js" ));
-	eval( JsUtil.prototype.include( "JsUnitTest.js" ));
+    eval( JsUtil.prototype.include( "../lib/JsUnit.js" ));
+    eval( JsUtil.prototype.include( "JsUtilTest.js" ));
+    eval( JsUtil.prototype.include( "JsUnitTest.js" ));
 
-	function AllTests()
-	{
-		TestSuite.call( this, "AllTests" );
-	}
-	function AllTests_suite()
-	{
-		var suite = new AllTests();
-		suite.addTest( JsUtilTestSuite.prototype.suite());
-		suite.addTest( JsUnitTestSuite.prototype.suite());
-		return suite;
-	}
-	AllTests.prototype = new TestSuite();
-	AllTests.prototype.suite = AllTests_suite;
+    function AllTests()
+    {
+        TestSuite.call( this, "AllTests" );
+    }
+    function AllTests_suite()
+    {
+        var suite = new AllTests();
+        suite.addTest( JsUtilTestSuite.prototype.suite());
+        suite.addTest( JsUnitTestSuite.prototype.suite());
+        return suite;
+    }
+    AllTests.prototype = new TestSuite();
+    AllTests.prototype.suite = AllTests_suite;
 }
 if( JsUtil.prototype.isShell )
 {
-	if( !exceptionsWorking )
-	{
-		writer.println( "\tSorry, exceptions not working!\n" );
-		JsUtil.prototype.quit( -1 );
-	}
-	var args;
-	if( this.WScript )
-	{
-		args = new Array();
-		for( i = 0; i < WScript.Arguments.Count(); ++i )
-			args[i] = WScript.Arguments( i );
-	}
-	else if( this.arguments )
-		args = arguments;
-	else
-		args = new Array();
-		
-	var result = TextTestRunner.prototype.main( args );
-	JsUtil.prototype.quit( result );
+    if( !exceptionsWorking )
+    {
+        writer.println( "\tSorry, exceptions not working!\n" );
+        JsUtil.prototype.quit( -1 );
+    }
+    var args;
+    if( this.WScript )
+    {
+        args = new Array();
+        for( i = 0; i < WScript.Arguments.Count(); ++i )
+            args[i] = WScript.Arguments( i );
+    }
+    else if( this.arguments )
+        args = arguments;
+    else
+        args = new Array();
+        
+    var result = TextTestRunner.prototype.main( args );
+    JsUtil.prototype.quit( result );
 }
 

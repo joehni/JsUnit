@@ -137,15 +137,15 @@ document.writeln("</p>");
 <!--
 document.writeln("<p>");
 for( var i in JsUtil.prototype )
-	if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
-		document.writeln( i + ": " + JsUtil.prototype[i] + "<br>" );
+    if( typeof JsUtil.prototype[i] != "function" && i.match( /^(is|has)/ ))
+        document.writeln( i + ": " + JsUtil.prototype[i] + "<br>" );
 document.writeln("</p>");
     if( this.ScriptEngine )
     {
-	    var o = this.ScriptEngine;
-    	document.writeln( "Object: " + o + "<br>");
-	    for( var i in o )
-		    document.writeln( " i is " + i + "<br>");
+        var o = this.ScriptEngine;
+        document.writeln( "Object: " + o + "<br>");
+        for( var i in o )
+            document.writeln( " i is " + i + "<br>");
     }
 document.writeln("</p>");
 // -->
@@ -157,10 +157,10 @@ document.writeln("</p>");
 if( exceptionsWorking )
 {
     var runner = new TextTestRunner();
-	runner.start( "--classic --html" );
+    runner.start( "--classic --html" );
 }
 else
-	document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");
+    document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");
 // -->
 </script>
 </body>

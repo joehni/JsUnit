@@ -28,13 +28,13 @@ var hasExceptions = "false";
 var exceptionsWorking = "false";
 function throwEx()
 {
-	throw new Object();
+    throw new Object();
 }
 function testEx()
 {
-	var me = this;
-	try { hasExceptions = "true"; new throwEx(); } 
-	catch( ex ) { exceptionsWorking = this == me; }
+    var me = this;
+    try { hasExceptions = "true"; new throwEx(); } 
+    catch( ex ) { exceptionsWorking = this == me; }
 }
 new testEx();
 </server>
@@ -42,9 +42,9 @@ new testEx();
 function main( args )
 {
     var runner = new TextTestRunner( new NsServerWriter());
-	runner.addSuite( new JsUtilTestSuite());
-	runner.addSuite( new JsUnitTestSuite());
-	return runner.start( args );
+    runner.addSuite( new JsUtilTestSuite());
+    runner.addSuite( new JsUnitTestSuite());
+    return runner.start( args );
 }
 </server>
 </HEAD>
@@ -60,9 +60,9 @@ write("</P>");
 <H2>JsUnit Test Suite</H2>
 <server>
 if( exceptionsWorking )
-	main( "all" );
+    main( "all" );
 else
-	write("<P style='color:red'>Sorry, exceptions not working!</P>");
+    write("<P style='color:red'>Sorry, exceptions not working!</P>");
 </server>
 </body>
 </html>
