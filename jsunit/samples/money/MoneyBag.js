@@ -33,149 +33,149 @@ license.
  */
 function MoneyBag() 
 {
-	this.fMonies = new Array();
+    this.fMonies = new Array();
 }
 function MoneyBag_create( iMoney1, iMoney2 ) 
 {
-	var result = new MoneyBag();
-	iMoney1.appendTo( result );
-	iMoney2.appendTo( result );
-	return result.simplify();
+    var result = new MoneyBag();
+    iMoney1.appendTo( result );
+    iMoney2.appendTo( result );
+    return result.simplify();
 }
 function MoneyBag_add( money ) 
 {
-	return money.addMoneyBag( this );
+    return money.addMoneyBag( this );
 }
 function MoneyBag_addMoney( money ) 
 {
-	return MoneyBag.prototype.create( money, this );
+    return MoneyBag.prototype.create( money, this );
 }
 function MoneyBag_addMoneyBag( moneyBag ) 
 {
-	return MoneyBag.prototype.create( moneyBag, this );
+    return MoneyBag.prototype.create( moneyBag, this );
 }
 function MoneyBag_appendBag( moneyBag ) 
 {
-	for( var i = 0; i < moneyBag.fMonies.length; ++i )
-		this.appendMoney( moneyBag.fMonies[i] );
+    for( var i = 0; i < moneyBag.fMonies.length; ++i )
+        this.appendMoney( moneyBag.fMonies[i] );
 }
 function MoneyBag_appendMoney( money ) 
 {
-	if( money.isZero())
-		return;
-	var i = this.findMoney( money.currency());
-	if ( i == null )
-	{
-		this.fMonies.push( money );
-		return;
-	}
-	var old = this.fMonies[i];
-	var sum = old.add( money );
-	if( sum.isZero()) 
-	{
-		var monies = new Array();
-		for( var j = 0; j < this.fMonies.length; ++j ) 
-		{
-			if( j != i )
-				monies.push( this.fMonies[j] );
-		}
-		this.fMonies = monies;
-	}
-	else 
-	{
-		this.fMonies[i] = sum;
-	} 
+    if( money.isZero())
+        return;
+    var i = this.findMoney( money.currency());
+    if ( i == null )
+    {
+        this.fMonies.push( money );
+        return;
+    }
+    var old = this.fMonies[i];
+    var sum = old.add( money );
+    if( sum.isZero()) 
+    {
+        var monies = new Array();
+        for( var j = 0; j < this.fMonies.length; ++j ) 
+        {
+            if( j != i )
+                monies.push( this.fMonies[j] );
+        }
+        this.fMonies = monies;
+    }
+    else 
+    {
+        this.fMonies[i] = sum;
+    } 
 }
 function MoneyBag_equals( object ) 
 {
-	if( object == null )
-		return false;
+    if( object == null )
+        return false;
 
-	if( object instanceof Money )
-		return this.isZero() && object.isZero();
+    if( object instanceof Money )
+        return this.isZero() && object.isZero();
 
-	if( object instanceof MoneyBag ) 
-	{
-		if( object.fMonies.length != this.fMonies.length )
-			return false;
+    if( object instanceof MoneyBag ) 
+    {
+        if( object.fMonies.length != this.fMonies.length )
+            return false;
 
-		for( var i = 0; i < this.fMonies.length; ++i )
-		{
-			if( !object.contains(this.fMonies[i]))
-				return false;
-		}
-		return true;
-	}
-	return false;
+        for( var i = 0; i < this.fMonies.length; ++i )
+        {
+            if( !object.contains(this.fMonies[i]))
+                return false;
+        }
+        return true;
+    }
+    return false;
 }
 function MoneyBag_findMoney( currency ) 
 {
-	for( var i = 0; i < this.fMonies.length; ++i ) 
-	{
-		var money = this.fMonies[i];
-		if( money.currency() == currency ) 
-			return i;
-	}
-	return null;
+    for( var i = 0; i < this.fMonies.length; ++i ) 
+    {
+        var money = this.fMonies[i];
+        if( money.currency() == currency ) 
+            return i;
+    }
+    return null;
 }
 function MoneyBag_contains( money ) 
 {
-	var i = this.findMoney( money.currency());
-	return i != null && this.fMonies[i].amount() == money.amount();
+    var i = this.findMoney( money.currency());
+    return i != null && this.fMonies[i].amount() == money.amount();
 }
 /*
 function MoneyBag_int hashCode() 
 {
-	int hash= 0;
+    int hash= 0;
     for( Enumeration e= fMonies.elements(); e.hasMoreElements(); ) 
-	{
+    {
         Object m = e.nextElement();
-		hash ^= m.hashCode();
-	}
+        hash ^= m.hashCode();
+    }
     return hash;
 } 
 */
 function MoneyBag_isZero() 
 {
-	return this.fMonies.length == 0;
+    return this.fMonies.length == 0;
 }
 function MoneyBag_multiply( factor ) 
 {
-	var result = new MoneyBag();
-	if( factor != 0 )
-	{
-		for( var i = 0; i < this.fMonies.length; ++i ) 
-	        result.appendMoney( this.fMonies[i].multiply( factor ));
-	}
-	return result;
+    var result = new MoneyBag();
+    if( factor != 0 )
+    {
+        for( var i = 0; i < this.fMonies.length; ++i ) 
+            result.appendMoney( this.fMonies[i].multiply( factor ));
+    }
+    return result;
 }
 function MoneyBag_negate() 
 {
-	var result = new MoneyBag();
-	for( var i = 0; i < this.fMonies.length; ++i )
+    var result = new MoneyBag();
+    for( var i = 0; i < this.fMonies.length; ++i )
         result.appendMoney( this.fMonies[i].negate());
-	return result;
+    return result;
 }
 function MoneyBag_simplify() 
 {
-	if( this.fMonies.length == 1 )
-		return this.fMonies[0];
-	return this;
+    if( this.fMonies.length == 1 )
+        return this.fMonies[0];
+    return this;
 }
 function MoneyBag_subtract( money ) 
 {
-	return this.add( money.negate());
+    return this.add( money.negate());
 }
 function MoneyBag_toString() 
 {
-	var	buffer = "{";
-	for( var i = 0; i < this.fMonies.length; ++i )
-	    buffer = buffer + this.fMonies[i].toString();
-	return buffer + "}";
+    var buffer = "{";
+    for( var i = 0; i < this.fMonies.length; ++i )
+        buffer = buffer + this.fMonies[i].toString();
+    return buffer + "}";
 }
 function MoneyBag_appendTo( moneyBag ) 
 {
-	moneyBag.appendBag( this );
+    moneyBag.appendBag( this );
 }
 
 MoneyBag.prototype.create = MoneyBag_create;

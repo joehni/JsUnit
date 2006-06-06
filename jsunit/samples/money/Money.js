@@ -27,75 +27,75 @@ license.
  */
 function Money( theAmount, theCurrency ) 
 {
-	this.fAmount = theAmount;
-	this.fCurrency = theCurrency;
+    this.fAmount = theAmount;
+    this.fCurrency = theCurrency;
 }
 /**
  * Adds a money to this money. Forwards the request to the addMoney helper.
  */
 function Money_add( money ) 
 {
-	return money.addMoney( this );
+    return money.addMoney( this );
 }
 function Money_addMoney( money ) 
 {
-	if( money.currency() == this.currency())
-		return new Money( this.amount() + money.amount(), this.currency());
-	return new MoneyBag.prototype.create( this, money );
+    if( money.currency() == this.currency())
+        return new Money( this.amount() + money.amount(), this.currency());
+    return new MoneyBag.prototype.create( this, money );
 }
 function Money_addMoneyBag( moneyBag ) 
 {
-	return moneyBag.addMoney( this );
+    return moneyBag.addMoney( this );
 }
 function Money_amount() 
 {
-	return this.fAmount;
+    return this.fAmount;
 }
 function Money_currency() 
 {
-	return this.fCurrency;
+    return this.fCurrency;
 }
 function Money_equals( object ) 
 {
-	if( object instanceof MoneyBag )
-		return this.isZero() && object.isZero();
+    if( object instanceof MoneyBag )
+        return this.isZero() && object.isZero();
 
-	if( object instanceof Money ) 
-	{
-		return    object.currency() == this.currency()
-			   && this.amount() == object.amount();
-	}
-	return false;
+    if( object instanceof Money ) 
+    {
+        return    object.currency() == this.currency()
+               && this.amount() == object.amount();
+    }
+    return false;
 }
 /*
 public Money_int hashCode() 
 {
-	return fCurrency.hashCode()+fAmount;
+    return fCurrency.hashCode()+fAmount;
 } 
 */
 function Money_isZero() 
 {
-	return this.amount() == 0;
+    return this.amount() == 0;
 }
 function Money_multiply( factor ) 
 {
-	return new Money( this.amount() * factor, this.currency());
+    return new Money( this.amount() * factor, this.currency());
 }
 function Money_negate() 
 {
-	return new Money( -this.amount(), this.currency());
+    return new Money( -this.amount(), this.currency());
 }
 function Money_subtract( money ) 
 {
-	return this.add( money.negate());
+    return this.add( money.negate());
 }
 function Money_toString() 
 {
-	return "[" + this.amount() + " " + this.currency() + "]";
+    return "[" + this.amount() + " " + this.currency() + "]";
 }
 function Money_appendTo( m ) 
 {
-	m.appendMoney( this );
+    m.appendMoney( this );
 }
 Money.prototype.add = Money_add;
 Money.prototype.addMoney = Money_addMoney;
