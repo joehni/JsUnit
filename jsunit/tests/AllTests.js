@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,13 +52,14 @@ if( !this.JsUtil )
 if( !JsUtil.prototype.isBrowser )
 {
 	var writer = JsUtil.prototype.getSystemWriter();
-	/*
-	o = this.Environment;
-	print( "Object: " + o );
+    /*
+	// o = this.Environment;
+	o = this;
+	writer.println( "Object: " + o );
 	for( i in o )
-		print( " i is " + i );
-	quit(0);
-	*/
+		writer.println( " i is " + i );
+	JsUtil.ptototype.quit(0);
+    */
 	writer.println( "\nJavaScript compatibility:" );
 	writer.println( "\thas exceptions: " + hasExceptions );
 	writer.println( "\texceptions working: " + exceptionsWorking );
