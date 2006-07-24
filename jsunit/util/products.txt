@@ -167,6 +167,15 @@ have listed all products that I am aware of.</p>
     <td>&nbsp;</td>
 </tr>
 <tr>
+    <td><a href="http://www.adobe.com/products/directory/">Director
+    MX 2004</a></td>
+    <td><a href="http://www.adobe.com">Adobe (Macromedia)</a></td>
+    <td>Lingo</td>
+    <td>SpiderMonkey</td>
+    <td>?</td>
+    <td>&nbsp;</td>
+</tr>
+<tr>
     <td><a href="http://www.digitalmars.com/dscript/">DMDScript</a></td>
     <td><a href="http://www.digitalmars.com/">Digital Mars</a></td>
     <td>ECMA-262, v3</td>
