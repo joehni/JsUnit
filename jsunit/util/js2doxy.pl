@@ -1201,7 +1201,7 @@ sub generate_forward_classes
         next if( !/^$identifier$/ );
         print( $pref."class $_;\n" )
             if( $objects->{$_}{otype} == $OT_CLASS );
-        print( $pref."interface $_;\n" )
+        print( $pref."class $_;\n" )
             if( $objects->{$_}{otype} == $OT_INTERFACE );
     }
 }
@@ -1302,7 +1302,7 @@ sub generate_class
         my $delim = " : ";
         my $type = "class ";
         
-        $type = "interface " if( $context->{otype} == $OT_INTERFACE );
+        #$type = "interface " if( $context->{otype} == $OT_INTERFACE );
         if( exists $context->{doc} )
         {
             syntax_err( "Documentation for $name is not for a $type." )
@@ -1318,7 +1318,7 @@ sub generate_class
         }
         for my $if( keys %{$context->{fulfills}} )
         {
-            print( $delim, "public $if" );
+            print( $delim, "protected $if" );
             $delim = ", ";
         }
         print( "\n$pref"."{\n" );
