@@ -179,11 +179,20 @@ from class TestCase:</p>
 \skip SimpleTest_testDivide
 \until }
 
-<p>You may also overload the tearDown utility. To complete the class you have
+<p>You may also overload the tearDown function. To complete the class you have
 to assign the methods</p>
 
 \skip prototype
 \until testAsserts;
+
+<p>In a final step you have to create a TestSuite out of all your test classes.
+Derive your own test suite from the TestSuite:</p>
+
+\skip function
+\until SimpleTestSuite();
+
+<p>You may add as many test classes as you want or even other test suites. The
+test methods will automatically found if they follow the naming conventions.
 
 \subsection application Creating a test application
 
