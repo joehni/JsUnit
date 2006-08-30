@@ -157,7 +157,10 @@ document.writeln("</p>");
 if( exceptionsWorking )
 {
     var runner = new TextTestRunner();
-    runner.start( "--classic --html" );
+    runner.setPrinter(
+        new ClassicResultPrinter(
+            new HTMLWriterFilter( runner.getPrinter().getWriter())));
+    runner.doRun( AllTests.prototype.suite());
 }
 else
     document.writeln("<p style='color:red'>Sorry, exceptions not working!</p>");

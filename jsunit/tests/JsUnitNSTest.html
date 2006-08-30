@@ -39,12 +39,13 @@ function testEx()
 new testEx();
 </server>
 <server>
-function main( args )
+function main()
 {
     var runner = new TextTestRunner( new NsServerWriter());
-    runner.addSuite( new JsUtilTestSuite());
-    runner.addSuite( new JsUnitTestSuite());
-    return runner.start( args );
+    var suite = new TestSuite( "AllTests" );
+    suite.addTest( new JsUtilTestSuite());
+    suite.addTest( new JsUnitTestSuite());
+    return runner.doRun( suite );
 }
 </server>
 </HEAD>
@@ -60,7 +61,7 @@ write("</P>");
 <H2>JsUnit Test Suite</H2>
 <server>
 if( exceptionsWorking )
-    main( "all" );
+    main();
 else
     write("<P style='color:red'>Sorry, exceptions not working!</P>");
 </server>

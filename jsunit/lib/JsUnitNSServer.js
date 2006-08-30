@@ -28,8 +28,8 @@ license.
  */
 
 /**
- * Class for an application running test suites with the BroadVision ctxdriver
- * and console output.
+ * PrinterWriter for an application running test suites with the Netscape 
+ * Server.
  */
 function NSServerWriter()
 {

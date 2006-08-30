@@ -24,20 +24,21 @@ license.
 <head>
 <title>JsUnit Test</title>
 <server>
-function main( args )
+function main()
 {
     var runner = new TextTestRunner( new NSServerWriter());
-    runner.addSuite( new ArrayTestSuite());
-    runner.addSuite( new MoneyTestSuite());
-    runner.addSuite( new SimpleTestSuite());
-    return runner.start( args );
+    var suite = new TestSuite( "AllTests" );
+    suite.addTest( new ArrayTestSuite());
+    suite.addTest( new MoneyTestSuite());
+    suite.addTest( new SimpleTestSuite());
+    return runner.doRun( suite );
 }
 </server>
 </head>
 <body>
 <h1>JsUnit Test</h1>
 <server>
-main( "all" );
+main();
 </server>
 </body>
 </html>

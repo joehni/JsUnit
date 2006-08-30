@@ -22,14 +22,15 @@ license.
 
 <!-- include other JavaScript pages here -->
 <%
-function main( args )
+function main()
 {
     var runner = new TextTestRunner( new CtxWriter());
-    runner.addSuite( new JsUtilTestSuite());
-    runner.addSuite( new JsUnitTestSuite());
-    return runner.start( main.arguments );
+    var suite = new TestSuite( "AllTests" );
+    suite.addTest( new JsUtilTestSuite());
+    suite.addTest( new JsUnitTestSuite());
+    return runner.doRun( suite );
 }
 
-main( "all" );
+main();
 %>
 

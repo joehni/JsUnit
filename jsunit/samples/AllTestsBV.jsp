@@ -22,16 +22,16 @@ license.
 
 <!-- include other JavaScript pages here -->
 <%
-function main( args )
+function main()
 {
-	var runner = new TextTestRunner( new CtxWriter());
-	runner.addSuite( new ArrayTestSuite());
-	runner.addSuite( new MoneyTestSuite());
-	runner.addSuite( new SimpleTestSuite());
-
-	return runner.start( main.arguments );
+    var runner = new TextTestRunner( new CtxWriter());
+    var suite = new TestSuite( "AllTests" );
+    suite.addTest( new ArrayTestSuite());
+    suite.addTest( new MoneyTestSuite());
+    suite.addTest( new SimpleTestSuite());
+    return runner.doRun( suite );
 }
 
-main( "all" );
+main();
 %>
 
