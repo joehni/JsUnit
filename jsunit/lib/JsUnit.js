@@ -543,7 +543,7 @@ function Assert_assertFloatEquals( msg, expected, actual, tolerance)
         || typeof( expected ) != "number" 
         || typeof( tolerance ) != "number" )
     {
-        this.fail( "Can not compare " + expected + " and " + actual 
+        this.fail( "Cannot compare " + expected + " and " + actual 
             + " with tolerance " + tolerance + " (must all be numbers).");
     }
  
@@ -1828,6 +1828,15 @@ function TextTestRunner_createTestResult()
     return new TestResult(); 
 }
 /**
+ * Retrieve the currently used ResultPrinter.
+ * @treturn ResultPrinter Returns the ResultPrinter.
+ * @since 1.3
+ */
+function TextTestRunner_getPrinter()
+{
+    return this.mPrinter;
+}
+/**
  * Executes a test run with the given test.
  * @tparam Test test The test.
  * @treturn TestResult The result of the test.
@@ -1992,6 +2001,7 @@ function TextTestRunner_start( args )
 }
 TextTestRunner.prototype = new BaseTestRunner();
 TextTestRunner.prototype.createTestResult = TextTestRunner_createTestResult;
+TextTestRunner.prototype.getPrinter = TextTestRunner_getPrinter;
 TextTestRunner.prototype.doRun = TextTestRunner_doRun;
 TextTestRunner.prototype.main = TextTestRunner_main;
 TextTestRunner.prototype.run = TextTestRunner_run;
@@ -2155,7 +2165,7 @@ ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
  * @see TextTestRunner
  * @see HTMLWriterFilter
  * @deprecated since 1.2 in favour of TextTestRunner in combination with a
- * HTMLWrtierFilter wrapping an arbitrary PrinterWriter.
+ * HTMLWriterFilter wrapping an arbitrary PrinterWriter.
  */
 function HTMLTestRunner( outdev )
 {
