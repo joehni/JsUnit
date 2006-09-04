@@ -196,8 +196,8 @@ have listed all products that I am aware of.</p>
     <td>Jean-Marc Lugrin</td>
     <td>ECMA 262, v2</td>
     <td>own</td>
-    <td>- ?</td>
-    <td>?</td>
+    <td>-</td>
+    <td>no exceptions</td>
 </tr>
 <tr>
     <td>Flash 5.x</td>
