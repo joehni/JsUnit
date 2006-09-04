@@ -273,9 +273,9 @@ product specific documentation.</p>
     <td>AllTests.js</td>
     
     <td>JavaScript to use with the JavaScript shells. For the Mozilla shells
-    use <em>java js.jar</em> to run <em>Rhino</em> built from Java source or 
-    use <em>jsshell</em> resp. <em>js</em> to run <em>SpiderMonkey</em> built 
-    from C source. You may also use <em>cscript</em> for this file or
+    use <em>java -jar js.jar</em> to run <em>Rhino</em> built from Java source
+    or use <em>jsshell</em> resp. <em>js</em> to run <em>SpiderMonkey</em> 
+    built from C source. You may also use <em>cscript</em> for this file or
     <em>kjscmd</em>.</td>
     
 </tr>

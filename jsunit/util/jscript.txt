@@ -82,7 +82,7 @@ console.</p>
 <p>JScript code can be within normal .js files or the JScript files can be
 included using a Windows Script Host file (.wsf). JsUnit delivers in the
 examples <i>AllTests.js</i> and <i>AllTests.wsf</i> for both variants. Such
-files are also available for the unti tests of JsUnit itself.</p>
+files are also available for the unit tests of JsUnit itself.</p>
 
 \subsection iexplore Internet Explorer
 
