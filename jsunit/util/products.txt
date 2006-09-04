@@ -294,7 +294,7 @@ have listed all products that I am aware of.</p>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2</td>
-    <td>&nbsp;</td>
+    <td>no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.konqueror.org">Konqueror 1.9.8</a></td>
@@ -302,7 +302,7 @@ have listed all products that I am aware of.</p>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2 ?</td>
-    <td>&nbsp;</td>
+    <td>no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.konqueror.org">Konqueror 3.1.3</a></td>
@@ -310,7 +310,7 @@ have listed all products that I am aware of.</p>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2</td>
-    <td>&nbsp;</td>
+    <td>no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.konqueror.org">Konqueror 3.5.2</a></td>
@@ -318,7 +318,7 @@ have listed all products that I am aware of.</p>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2</td>
-    <td>&nbsp;</td>
+    <td>no call stack</td>
 </tr>
 <tr>
     <td>LiveMotion 1</a></td>
@@ -345,15 +345,15 @@ have listed all products that I am aware of.</p>
     <td>&nbsp;</td>
 </tr>
 <tr>
-    <td>Mozilla 0.8x</td>
+    <td>Mozilla Firefox 0.8x</td>
     <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
     <td>JavaScript 1.5</td>
     <td>SpiderMonkey</td>
     <td>1.0, 1.1, 1.2</td>
     <td>&nbsp;</td>
 </tr>
-<tr>
-    <td><a href="http://www.mozilla.org/releases/">Mozilla 1.x</a></td>
+<<tr>
+    <td><a href="http://www.mozilla.org/releases/">Mozilla Firefox 1.x</a></td>
     <td><a href="http://www.mozilla.org">Mozilla.org</a></td>
     <td>JavaScript 1.5</td>
     <td>SpiderMonkey</td>
@@ -454,7 +454,7 @@ have listed all products that I am aware of.</p>
     <td>ECMAScript</td>
     <td>own</td>
     <td>?</td>
-    <td>follows ECMA-262, 3rd</td>
+    <td>follows ECMA-262, 3rd, no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.opera.com/download/">Opera 7.x</a></td>
@@ -462,7 +462,7 @@ have listed all products that I am aware of.</p>
     <td>ECMAScript</td>
     <td>own</td>
     <td>?</td>
-    <td>follows ECMA-262, 3rd</td>
+    <td>follows ECMA-262, 3rd, no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.opera.com/download/">Opera 8.x</a></td>
@@ -470,7 +470,7 @@ have listed all products that I am aware of.</p>
     <td>ECMAScript</td>
     <td><a href="http://www.opera.com/docs/specs/js/ecma/">own</a></td>
     <td>1.2</td>
-    <td>follows ECMA-262, 3rd</td>
+    <td>follows ECMA-262, 3rd, no call stack</td>
 </tr>
 <tr>
     <td><a href="http://www.mozilla.org/rhino/index.html">Rhino 1.5</a></td>
@@ -486,7 +486,7 @@ have listed all products that I am aware of.</p>
     <td>ECMA 262, v?</td>
     <td>KJS</td>
     <td>1.2 ?</td>
-    <td>&nbsp;</td>
+    <td>no call stack support</td>
 </tr>
 <tr>
     <td><a href="http://www.sap.com/solutions/technology/linux/eval/was/">SAP Web Application Server</a></td>
