@@ -30,7 +30,16 @@ license.
 
 \subsection new New Features
 
+<ul>
+    <li>New method assertMatches</li>
+</ul>
+
 \subsection change Design Changes
+
+<ul>
+    <li>Explicit regular expression support now by assertMatches instead of 
+    undocumented functionality in assertEquals</li>
+</ul>
 
 \subsection bug Bug Fixes
 

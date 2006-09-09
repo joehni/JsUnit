@@ -491,17 +491,39 @@ function Assert_assertEquals( msg, expected, actual )
         expected = msg;
         msg = null;
     }
-    if( expected instanceof RegExp && typeof( actual ) == "string" )
-    {
-        if( !actual.match( expected ))
-            this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">" );
-    }
-    else if( expected != actual )
+    if( expected != actual )
         if( typeof( expected ) == "string" && typeof( actual ) == "string" )
             throw new ComparisonFailure( msg, expected, actual, new CallStack());
         else
             this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
                 , new CallStack(), msg );
+}
+/**
+ * Asserts that a regular expression matches a string.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The regular expression.
+ * @tparam Object actual The actual value.
+ * @exception AssertionFailedError Thrown if the actual value does not match 
+ * the regular expression.
+ * @note This is an enhancement to JUnit 3.8
+ * @since 1.3
+ */
+function Assert_assertMatches( msg, expected, actual )
+{
+    if( arguments.length == 2 )
+    {
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if( expected instanceof RegExp && typeof( actual ) == "string" )
+    {
+        if( !actual.match( expected ))
+            this.fail( "RegExp:<" + expected + "> did not match:<" + actual + ">", new CallStack(), msg );
+    }
+    else
+        this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+            , new CallStack(), msg );
 }
 /**
  * Asserts that a condition is false.
@@ -694,6 +716,7 @@ function Assert_fail( msg, stack, usermsg )
 Assert.prototype.assertEquals = Assert_assertEquals;
 Assert.prototype.assertFalse = Assert_assertFalse;
 Assert.prototype.assertFloatEquals = Assert_assertFloatEquals;
+Assert.prototype.assertMatches = Assert_assertMatches;
 Assert.prototype.assertNotNull = Assert_assertNotNull;
 Assert.prototype.assertNotSame = Assert_assertNotSame;
 Assert.prototype.assertNotUndefined = Assert_assertNotUndefined;

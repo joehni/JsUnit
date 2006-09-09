@@ -31,12 +31,12 @@ function CallStackTest_testCtor()
         var cs = this.f0().getStack();
         cs = this.f12().getStack();
         this.assertEquals( 10, cs.length );
-        this.assertEquals( /^f9\(.*\)$/, cs.pop());
+        this.assertMatches( /^f9\(.*\)$/, cs.pop());
         cs = this.f12(13).getStack();
-        this.assertEquals( /^f12\(.*\)$/, cs.pop());
+        this.assertMatches( /^f12\(.*\)$/, cs.pop());
         cs = this.f4().getStack();
-        this.assertEquals( /^f4\(.*\)$/, cs[4] );
-        this.assertEquals( /^CallStackTest_testCtor\(.*\)$/, cs[5] );
+        this.assertMatches( /^f4\(.*\)$/, cs[4] );
+        this.assertMatches( /^CallStackTest_testCtor\(.*\)$/, cs[5] );
     }
 }
 function CallStackTest_testFill()
@@ -47,9 +47,9 @@ function CallStackTest_testFill()
 
         this.cs = new CallStack();
         this.f12(13);
-        this.assertEquals( /^f12\(.*\)$/, this.cs.getStack().pop());
+        this.assertMatches( /^f12\(.*\)$/, this.cs.getStack().pop());
         this.f0();
-        this.assertEquals( /^f0\(.*\)$/, this.cs.getStack()[0] );
+        this.assertMatches( /^f0\(.*\)$/, this.cs.getStack()[0] );
     }
 }
 function CallStackTest_testGetStack()
@@ -387,10 +387,10 @@ function HTMLWriterFilterTest_testFlush()
     var filter = new HTMLWriterFilter();
     filter.println( "Hello & Co. Test if \"5 < 6\" and \"6 > 5\" ..." );
     var str = filter.getWriter().get();
-    this.assertEquals( /&amp;/, str );
-    this.assertEquals( /&lt;/, str );
-    this.assertEquals( /&quot;/, str );
-    this.assertEquals( /<br>$/, str );
+    this.assertMatches( /&amp;/, str );
+    this.assertMatches( /&lt;/, str );
+    this.assertMatches( /&quot;/, str );
+    this.assertMatches( /<br>$/, str );
     this.assertFalse( str.match( /&gt;/ ));
 }
 function HTMLWriterFilterTest_testGetWriter()
