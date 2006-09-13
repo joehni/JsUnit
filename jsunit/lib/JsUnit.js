@@ -211,7 +211,7 @@ function TestFailure_isFailure()
 }
 /**
  * Retrieve the thrown exception.
- * @treturn Test Returns the thrown exception.
+ * @treturn Error Returns the thrown exception.
  */
 function TestFailure_thrownException() { return this.mException; }
 /**
@@ -221,7 +221,7 @@ function TestFailure_thrownException() { return this.mException; }
  */
 function TestFailure_toString() 
 { 
-    return "Test " + this.mTest + " failed: " + this.thrownException();
+    return "Test " + this.mTest + " failed: " + this.exceptionMessage();
 }
 /**
  * Retrieve the stack trace.
@@ -1725,8 +1725,12 @@ function ResultPrinter_printDefects( array, type )
  */
 function ResultPrinter_printDefectTrace( defect )
 {
-    if( defect.getCallStack )
-        this.getWriter().print( defect.getCallStack().toString());
+    var trace = defect.trace();
+    if( trace )
+    {
+        this.getWriter().println();
+        this.getWriter().println( trace );
+    }
 }
 /**
  * Print the errors of the test result.
@@ -1984,6 +1988,12 @@ function TextTestRunner_start( args )
             }
             switch( args[i] )
             {
+                case "--xml" :
+                    this.setPrinter( 
+                        new XMLResultPrinter( 
+                            this.mPrinter.getWriter()));
+                    continue;
+                    
                 case "--classic" :
                     this.setPrinter( 
                         new ClassicResultPrinter( 
@@ -2048,6 +2058,15 @@ TextTestRunner.prototype.FAILURE_EXIT = 1;
 TextTestRunner.prototype.EXCEPTION_EXIT = 2;
 
 
+/**
+ * The ResultPrinter of JsUnit 1.1. It prints for every test a single row
+ * and reports at the end of a test a small summary.
+ * @ctor
+ * Constructor.
+ * @tparam PrinterWriter writer The writer for the report.
+ * Initialization of the ClassicResultPrinter. If no \a writer is provided the 
+ * instance uses the SystemWriter.
+ */
 function ClassicResultPrinter( writer )
 {
     ResultPrinter.call( this, writer );
@@ -2181,6 +2200,152 @@ ClassicResultPrinter.prototype.printHeader = ClassicResultPrinter_printHeader;
 ClassicResultPrinter.prototype.printFooter = ClassicResultPrinter_printFooter;
 ClassicResultPrinter.prototype.writeLn = ClassicResultPrinter_writeLn;
 ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
+
+
+/**
+ * Convert the result of a TextTestPrinter into XML to be used by JUnitReport.
+ * @ctor
+ * Constructor.
+ * @tparam PrinterWriter writer The writer for the report.
+ * Initialization of the XMLResultPrinter. If no \a writer is provided the 
+ * instance uses the SystemWriter.
+ */
+function XMLResultPrinter( writer )
+{
+    ResultPrinter.call( this, writer );
+    this.mTests = new Array();
+    this.mCurrentTest = null;
+    this.mSuite = null;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had an error.
+ * @tparam Error except The thrown error.
+ */
+function XMLResultPrinter_addError( test, except )
+{
+    this.mCurrentTest.mError = except;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that had a failure.
+ * @tparam AssertionFailedError afe The thrown failure.
+ */
+function XMLResultPrinter_addFailure( test, afe )
+{
+    this.mCurrentTest.mFailure = afe;
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that ends.
+ */
+function XMLResultPrinter_endTest( test )
+{
+    if( this.mCurrentTest != null ) 
+    {
+        var endTime = new Date();
+        this.mCurrentTest.mTime = this.elapsedTimeAsString( 
+            endTime - this.mCurrentTest.mTime );
+        this.mTests.push( this.mCurrentTest );
+        this.mCurrentTest = null;
+    }
+}
+/**
+ * Print the complete test result as XML report to be used by JUnitReport.
+ * @tparam TestResult result The complete test result.
+ * @tparam Number runTime The elapsed time in ms.
+ */
+function XMLResultPrinter_print( result, runTime )
+{
+    var writer = this.getWriter();
+    writer.println( '<?xml version="1.0" encoding="ISO-8859-1" ?>' );
+    writer.print( '<testsuite errors="' );
+    writer.print( result.errorCount());
+    writer.print( '" failures="' );
+    writer.print( result.failureCount());
+    writer.print( '" name="' );
+    writer.print( this.mSuite );
+    writer.print( '" tests="' );
+    writer.print( result.runCount());
+    writer.print( '" time="' );
+    writer.print( this.elapsedTimeAsString( runTime ));
+    writer.println( '">' );
+    for( var i = 0; i < this.mTests.length; ++i )
+    {
+        var test = this.mTests[i];
+        writer.print( '    <testcase name="' );
+        writer.print( test.mName );
+        writer.print( '" time="' );
+        writer.print( test.mTime );
+        writer.print( '"' );
+        if( test.mError || test.mFailure )
+        {
+            writer.println( '>' );
+            writer.print( '        <' );
+            var defect;
+            var tag;
+            if( test.mError )
+            {
+                defect = test.mError;
+                tag = "error";
+            }
+            else
+            {
+                defect = test.mFailure;
+                tag = "failure";
+            }
+            writer.print( tag );
+            writer.print( ' message="' );
+            var htmlWriter = new HTMLWriterFilter();
+            htmlWriter.println( defect.toString());
+            var message = htmlWriter.getWriter().get().replace( /<br>/g, " " );
+            writer.print( message.trim());
+            writer.print( '" type=""' );
+            var trace = defect.mCallStack ? defect.mCallStack.toString() : null;
+            if( trace )
+            {
+                writer.print( '>' );
+                writer.print( trace );
+                writer.print( '</' );
+                writer.print( tag );
+            }
+            else
+                writer.print( '/' );
+            writer.println( '>' );
+            writer.print( '    </testcase' );
+        }
+        else
+            writer.print( '/' );
+        writer.println( '>' );
+    }
+    writer.println( '</testsuite>' );
+}
+/**
+ * Implementation of TestListener.
+ * @tparam Test test The test that starts.
+ */
+function XMLResultPrinter_startTest( test )
+{
+    if( this.mSuite == null )
+        this.mSuite = test.getName();
+    this.mCurrentTest = new Object();
+    this.mCurrentTest.mName = test.getName();
+    this.mCurrentTest.mTime = new Date();
+}
+XMLResultPrinter.prototype = new ResultPrinter();
+XMLResultPrinter.prototype.addError = XMLResultPrinter_addError;
+XMLResultPrinter.prototype.addFailure = XMLResultPrinter_addFailure;
+XMLResultPrinter.prototype.endTest = XMLResultPrinter_endTest;
+XMLResultPrinter.prototype.print = XMLResultPrinter_print;
+XMLResultPrinter.prototype.printDefect = function() {}
+XMLResultPrinter.prototype.printDefectHeader = function() {}
+XMLResultPrinter.prototype.printDefects = function() {}
+XMLResultPrinter.prototype.printDefectTrace = function() {}
+XMLResultPrinter.prototype.printErrors = function() {}
+XMLResultPrinter.prototype.printFailures = function() {}
+XMLResultPrinter.prototype.printFooter = function() {}
+XMLResultPrinter.prototype.printHeader = function() {}
+XMLResultPrinter.prototype.startTest = XMLResultPrinter_startTest;
 
 
 /**

@@ -31,7 +31,9 @@ license.
 \subsection new New Features
 
 <ul>
-    <li>New method assertMatches</li>
+    <li>Added method assertMatches</li>
+    <li>New XMLResultPrinter for JUnitReport support</li>
+    <li>TextTestRunner supports new argument --xml</li>
 </ul>
 
 \subsection change Design Changes
@@ -45,8 +47,9 @@ license.
 
 <ul>
     <li>Fix AllTests.html in samples</li>
-    <li>Fix tests for BrowdVision and iPlanet</li>
+    <li>Fix tests for BroadVision and iPlanet</li>
     <li>Interfaces missing in docs for 1.2</li>
+    <li>ResultPrinter failed to print an available CallStack</li>
 </ul>
 
 \section todo ToDo List

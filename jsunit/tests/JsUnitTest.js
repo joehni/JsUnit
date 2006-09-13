@@ -1338,8 +1338,8 @@ function ResultPrinterTest_testPrintErrors()
 {
     var result = new Object();
     result.mErrors = new Array();
-    result.mErrors.push( new Error( "XXX" ));
-    result.mErrors.push( new Error( "YYY" ));
+    result.mErrors.push( new TestFailure( "TestXXX", new Error( "XXX" )));
+    result.mErrors.push( new TestFailure( "TestYYY", new Error( "YYY" )));
     this.mPrinter.printErrors( result );
     var str = this.mPrinter.getWriter().get();
     this.assertMatches( /were 2 errors/, str );
@@ -1350,11 +1350,14 @@ function ResultPrinterTest_testPrintFailures()
 {
     var result = new Object();
     result.mFailures = new Array();
-    result.mFailures.push( new AssertionFailedError( "AFE", new CallStack()));
+    result.mFailures.push( 
+        new TestFailure( "TestAFE", 
+            new AssertionFailedError( "AFE", new CallStack())));
     this.mPrinter.printFailures( result );
     var str = this.mPrinter.getWriter().get();
     this.assertMatches( /was 1 failure/, str );
-    this.assertMatches( /1\) AssertionFailedError: AFE/, str );
+    this.assertMatches( 
+        /1\) Test TestAFE failed: AssertionFailedError: AFE/, str );
 }
 function ResultPrinterTest_testPrintFooter()
 {
@@ -1518,9 +1521,9 @@ function ClassicResultPrinterTest_testAddError()
     catch( err )
     {
         this.printer.addError( "Test.dummy", err );
-        var str = this.printer.getWriter().get();
-        this.assertMatches( /^ERROR in Test.dummy/, str );
     }
+    var str = this.printer.getWriter().get();
+    this.assertMatches( /^ERROR in Test.dummy/, str );
 }
 function ClassicResultPrinterTest_testAddFailure()
 {
@@ -1597,6 +1600,87 @@ ClassicResultPrinterTest.prototype.testStartTest = ClassicResultPrinterTest_test
 ClassicResultPrinterTest.prototype.testWriteLn = ClassicResultPrinterTest_testWriteLn;
 
 
+function XMLResultPrinterTest( name )
+{
+    TestCase.call( this, name );
+}
+function XMLResultPrinterTest_setUp()
+{
+    this.printer = new XMLResultPrinter( new StringWriter());
+}
+function XMLResultPrinterTest_testAddError()
+{
+    this.printer.mCurrentTest = new Object();
+    try
+    {
+        var x = y;
+    }
+    catch( err )
+    {
+        this.printer.addError( "Test.dummy", err );
+        this.assertSame( err, this.printer.mCurrentTest.mError );
+    }
+}
+function XMLResultPrinterTest_testAddFailure()
+{
+    this.printer.mCurrentTest = new Object();
+    var afe = new AssertionFailedError( "AFE" );
+    this.printer.addFailure( "Test.dummy", afe );
+    this.assertSame( afe, this.printer.mCurrentTest.mFailure );
+}
+function XMLResultPrinterTest_testEndTest()
+{
+    this.printer.mCurrentTest = new Object();
+    this.printer.mCurrentTest.mName = "Test";
+    this.printer.mCurrentTest.mTime = new Date();
+    this.printer.endTest( null );
+    this.assertEquals( "Test", this.printer.mTests[0].mName );
+    this.assertNull( this.printer.mCurrentTest ) ;
+}
+function XMLResultPrinterTest_testPrint()
+{
+    var xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>\n'
+        +  '<testsuite errors="0" failures="0" name="TestSuite" tests="1" time="1.1">\n'
+        +  '    <testcase name="TestCase1" time="0.2"/>\n'
+        +  '    <testcase name="TestCase2" time="0.9">\n'
+        +  '        <error message="An error &lt;&gt;&quot;&apos;!" type=""/>\n'
+        +  '    </testcase>\n'
+        +  '</testsuite>\n';
+    var result = new TestResult();
+    result.mRunTests = 1;
+    this.printer.mSuite = "TestSuite";
+    var test = new Object();
+    test.mName = "TestCase1";
+    test.mTime = "0.2";
+    this.printer.mTests.push( test );
+    test = new Object();
+    test.mName = "TestCase2";
+    test.mTime = "0.9";
+    test.mError = new Object();
+    test.mError.toString = function() { return " An\nerror <>\"'! \n"; };
+    this.printer.mTests.push( test );
+    this.printer.print( result, 1100 );
+    this.assertEquals( xml, this.printer.getWriter().get());
+}
+function XMLResultPrinterTest_testStartTest()
+{
+    this.printer.startTest( new TestSuite( "Suite" ));
+    this.assertEquals( "Suite", this.printer.mSuite );
+    this.assertEquals( "Suite", this.printer.mCurrentTest.mName );
+    this.printer.startTest( new TestCase( "Test 1" ));
+    this.assertEquals( "Suite", this.printer.mSuite );
+    this.assertEquals( "Test 1", this.printer.mCurrentTest.mName );
+    this.assertNotNull( this.printer.mCurrentTest.mDate );
+}
+XMLResultPrinterTest.prototype = new TestCase();
+XMLResultPrinterTest.prototype.setUp = XMLResultPrinterTest_setUp;
+XMLResultPrinterTest.prototype.testAddError = XMLResultPrinterTest_testAddError;
+XMLResultPrinterTest.prototype.testAddFailure = XMLResultPrinterTest_testAddFailure;
+XMLResultPrinterTest.prototype.testEndTest = XMLResultPrinterTest_testEndTest;
+XMLResultPrinterTest.prototype.testPrint = XMLResultPrinterTest_testPrint;
+XMLResultPrinterTest.prototype.testStartTest = XMLResultPrinterTest_testStartTest;
+
+
 function HTMLTestRunnerTest( name )
 {
     TestCase.call( this, name );
@@ -1636,6 +1720,7 @@ function JsUnitTestSuite()
     this.addTestSuite( ResultPrinterTest );
     this.addTestSuite( TextTestRunnerTest );
     this.addTestSuite( ClassicResultPrinterTest );
+    this.addTestSuite( XMLResultPrinterTest );
     this.addTestSuite( HTMLTestRunnerTest );
 }
 JsUnitTestSuite.prototype = new TestSuite();

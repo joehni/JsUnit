@@ -834,6 +834,8 @@ function HTMLWriterFilter__flush( str )
     str = str.toString();
     str = str.replace( /&/g, "&amp;" ); 
     str = str.replace( /</g, "&lt;" ); 
+    str = str.replace( />/g, "&gt;" ); 
+    str = str.replace( /\'/g, "&apos;" ); 
     str = str.replace( /\"/g, "&quot;" ); 
     str = str.replace( /\n/g, "<br>" );
     this.mWriter._flush( str );

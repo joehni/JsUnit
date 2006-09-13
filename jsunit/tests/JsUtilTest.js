@@ -385,13 +385,14 @@ function HTMLWriterFilterTest( name )
 function HTMLWriterFilterTest_testFlush()
 {
     var filter = new HTMLWriterFilter();
-    filter.println( "Hello & Co. Test if \"5 < 6\" and \"6 > 5\" ..." );
+    filter.println( "Hello & Co. Test if \"5 < 6\" and \'6 > 5\' ..." );
     var str = filter.getWriter().get();
     this.assertMatches( /&amp;/, str );
     this.assertMatches( /&lt;/, str );
+    this.assertMatches( /&gt;/, str );
     this.assertMatches( /&quot;/, str );
+    this.assertMatches( /&apos;/, str );
     this.assertMatches( /<br>$/, str );
-    this.assertFalse( str.match( /&gt;/ ));
 }
 function HTMLWriterFilterTest_testGetWriter()
 {
