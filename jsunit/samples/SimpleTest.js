@@ -56,11 +56,27 @@ function SimpleTest_testAsserts()
     this.assertNotSame( 
         new Number( this.fValue1 ), new Number( this.fValue1 ));
 }
+function SimpleTest_testExceptions()
+{
+    for(;;)
+    {
+        try
+        {
+            var x = y;
+        }
+        catch( ex ) 
+        {
+            break;
+        }
+        this.fail( "Exception should have been raised", new CallStack());
+    }
+}
 SimpleTest.prototype = new TestCase();
 SimpleTest.prototype.setUp = SimpleTest_setUp;
 SimpleTest.prototype.testAdd = SimpleTest_testAdd;
 SimpleTest.prototype.testDivideByZero = SimpleTest_testDivideByZero;
 SimpleTest.prototype.testAsserts = SimpleTest_testAsserts;
+SimpleTest.prototype.testExceptions = SimpleTest_testExceptions;
 
 
 function SimpleTestSuite()

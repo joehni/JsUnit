@@ -1321,7 +1321,8 @@ function ExceptionTestCase_runTest()
     }
     catch( ex )
     {
-        if( ex instanceof this.mClass )
+        if(    ex instanceof this.mClass 
+            && !( ex instanceof AssertionFailedError ))
             return;
         else
             throw ex;

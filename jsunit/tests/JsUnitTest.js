@@ -1111,8 +1111,30 @@ function ExceptionTestCaseTest_testRunTest()
     test = new OnTheFly( "testNone" );
     this.assertEquals( 1, test.run().failureCount());
 }
+function ExceptionTestCaseTest_testErrorDerivedException()
+{
+    function OnTheFly( name ) 
+    { 
+        ExceptionTestCase.call( this, name, Error ); 
+    }
+    OnTheFly.prototype = new ExceptionTestCase();
+    OnTheFly.prototype.testDerived = function() 
+    { 
+        throw new PrinterWriterError(); 
+    }
+    OnTheFly.prototype.testFail = function() 
+    { 
+        this.fail( "Don't catch this!" ); 
+    }
+
+    var test = new OnTheFly( "testDerived" );
+    this.assertTrue( test.run().wasSuccessful());
+    test = new OnTheFly( "testFail" );
+    this.assertFalse( test.run().wasSuccessful());
+ }
 ExceptionTestCaseTest.prototype = new TestCase();
 ExceptionTestCaseTest.prototype.testRunTest = ExceptionTestCaseTest_testRunTest;
+ExceptionTestCaseTest.prototype.testRunTest = ExceptionTestCaseTest_testErrorDerivedException;
 
 
 function BaseTestRunnerTest( name )

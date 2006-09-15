@@ -50,6 +50,7 @@ license.
     <li>Fix tests for BroadVision and iPlanet</li>
     <li>Interfaces missing in docs for 1.2</li>
     <li>ResultPrinter failed to print an available CallStack</li>
+    <li>ExceptionTestCase does no longer catch AssertionFailedError</li>
 </ul>
 
 \section todo ToDo List
