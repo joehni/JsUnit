@@ -1466,7 +1466,7 @@ function BaseTestRunner_getTest( name )
         if( typeof( testFunc ) == "function" && testFunc.prototype )
         {
             if( testFunc.prototype.suite )
-                test = new testFunc.prototype.suite();
+                test = testFunc.prototype.suite();
             else if( name.match( /Test$/ ))
                 test = new TestSuite( name );
         }

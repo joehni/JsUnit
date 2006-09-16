@@ -58,7 +58,7 @@ if( !JsUtil.prototype.isBrowser )
     writer.println( "Object: " + o );
     for( i in o )
         writer.println( " i is " + i );
-    JsUtil.ptototype.quit(0);
+    JsUtil.prototype.quit(0);
     */
     writer.println( "\nJavaScript compatibility:" );
     writer.println( "\thas exceptions: " + hasExceptions );

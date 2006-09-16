@@ -159,9 +159,12 @@ JsUtil.prototype.isNSServer =
 /**
  * Flag for Rhino.
  * @type Boolean
- * The member is true, if the script runs in Rhino of Mozilla.org.
+ * The member is true, if the script runs in an embedded Rhino of Mozilla.org.
  */
-JsUtil.prototype.isRhino = this.importPackage != null;
+JsUtil.prototype.isRhino = 
+       this.java != null 
+    && this.java.lang != null 
+    && this.java.lang.System != null;
 /**
  * Flag for a Mozilla JavaScript shell.
  * @type Boolean
