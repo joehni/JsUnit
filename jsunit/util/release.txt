@@ -34,6 +34,7 @@ license.
     <li>Added method assertMatches</li>
     <li>New XMLResultPrinter for JUnitReport support</li>
     <li>TextTestRunner supports new argument --xml</li>
+    <li>JsUnit Java library with embedded Rhino</li>
 </ul>
 
 \subsection change Design Changes
