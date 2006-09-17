@@ -17,6 +17,7 @@
 package de.berlios.jsunit;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
 
@@ -168,6 +169,8 @@ public class JsUnitRhinoRunner {
                         null, 1, null)) {
                     throw new JsUnitException("No JavaScript class AllTests with a suite method found");
                 }
+            } catch (final EcmaError e) {
+                throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             } catch (final JavaScriptException e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             }
@@ -181,6 +184,8 @@ public class JsUnitRhinoRunner {
                                         + "runner.doRun(AllTests.prototype.suite());\n"
                                         + "stringWriter.get();\n", "AllTests", 1, null);
                 writer.write(xml);
+            } catch (final EcmaError e) {
+                throw new JsUnitRuntimeException("JavaScript error running tests", e);
             } catch (final JavaScriptException e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             }
@@ -232,6 +237,8 @@ public class JsUnitRhinoRunner {
                                         + "runner.doRun(suite);\n"
                                         + "stringWriter.get();\n", name, 1, null);
                 writer.write(xml);
+            } catch (final EcmaError e) {
+                throw new JsUnitRuntimeException("JavaScript error running tests", e);
             } catch (final JavaScriptException e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             }
@@ -283,6 +290,8 @@ public class JsUnitRhinoRunner {
                                         + "runner.doRun(suite);\n"
                                         + "stringWriter.get();\n", "AllTestCases", 1, null);
                 writer.write(xml);
+            } catch (final EcmaError e) {
+                throw new JsUnitRuntimeException("JavaScript error running tests", e);
             } catch (final JavaScriptException e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             }
