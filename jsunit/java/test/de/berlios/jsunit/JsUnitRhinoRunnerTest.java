@@ -79,7 +79,7 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
                 contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"29\" "));
     }
 
-    public void testRunningWithoutTestSuite() throws JsUnitException, IOException {
+    public void testRunningWithoutTestSuite() throws IOException {
         final StringWriter writer = new StringWriter();
         runner.runTestSuites(writer, "TestSuites");
         final String xml = writer.toString();
@@ -98,7 +98,7 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
                 contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"29\" "));
     }
 
-    public void testRunningWithoutTestCase() throws JsUnitException, IOException {
+    public void testRunningWithoutTestCase() throws IOException {
         final StringWriter writer = new StringWriter();
         runner.runTestSuites(writer, "TestCases");
         final String xml = writer.toString();
