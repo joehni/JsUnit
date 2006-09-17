@@ -99,7 +99,7 @@ public class JsUnitRhinoRunner {
      */
     public void load(final Reader reader, String name) throws JsUnitException, IOException {
         if (reader == null) {
-            throw new IllegalArgumentException("Reader may not be null");
+            throw new IllegalArgumentException("The reader is null");
         }
         if (name == null) {
             name = "anonymous";
@@ -122,11 +122,12 @@ public class JsUnitRhinoRunner {
      * @param name the name of the script (may be null)
      * @return the evaluated value
      * @throws JsUnitException if the code was not valid
+     * @throws IllegalArgumentException if <code>code</code>is <code>null</code>
      * @since upcoming
      */
     public Object eval(final String code, String name) throws JsUnitException {
         if (code == null) {
-            throw new IllegalArgumentException("Code may not be null");
+            throw new IllegalArgumentException("The code is null");
         }
         if (name == null) {
             name = "anonymous";
@@ -142,16 +143,30 @@ public class JsUnitRhinoRunner {
         }
     }
 
-    public void runAllTests(final Writer writer)
-            throws JsUnitException, IOException {
+    /**
+     * Runs the TestSuite &quot;AllTests&quot;. The result of the test is written in XML format
+     * into the given writer. Since the result is a complete XML document, the writer is closed
+     * by the method (even in case of an exception).
+     * 
+     * @param writer the writer receiving the result
+     * @throws JsUnitException if no JavaScript class <code>AllTests</code>can be found
+     * @throws IOException if writing to the <code>writer</code> fails
+     * @throws IllegalArgumentException if <code>writer</code>is <code>null</code>
+     * @throws JsUnitRuntimeException if the JavaScript code of the method itself fails
+     * @since upcoming
+     */
+    public void runAllTests(final Writer writer) throws JsUnitException, IOException {
+        if (writer == null) {
+            throw new IllegalArgumentException("The writer is null");
+        }
         context = Context.enter(context);
         try {
             try {
                 if (Boolean.TRUE != context.evaluateString(
                         scope,
-                        "AllTests && AllTests.prototype && AllTests.prototype.suite && true",
+                        "this.AllTests && AllTests.prototype && AllTests.prototype.suite && true",
                         null, 1, null)) {
-                    throw new JsUnitException("No class AllTests with a suite method found");
+                    throw new JsUnitException("No JavaScript class AllTests with a suite method found");
                 }
             } catch (final JavaScriptException e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
@@ -175,8 +190,24 @@ public class JsUnitRhinoRunner {
         }
     }
 
-    public void runTestSuites(final Writer writer, String name)
-            throws JsUnitException, IOException {
+    /**
+     * Runs all JavaScript TestSuites in the context. The method will collect any JavaScript
+     * <code>TestSuite</code> in the context in a collecting <code>TestSuite</code> and run
+     * it. The result of the test is written in XML format into the given writer. Since the
+     * result is a complete XML document, the writer is closed by the method (even in case of an
+     * exception).
+     * 
+     * @param writer the writer receiving the result
+     * @param name the name of the collecting <code>TestSuite</code> (may be null)
+     * @throws IOException if writing to the <code>writer</code> fails
+     * @throws IllegalArgumentException if <code>writer</code>is <code>null</code>
+     * @throws JsUnitRuntimeException if the JavaScript code of the method itself fails
+     * @since upcoming
+     */
+    public void runTestSuites(final Writer writer, String name) throws IOException {
+        if (writer == null) {
+            throw new IllegalArgumentException("The writer is null");
+        }
         name = name == null ? "AllTestSuites" : name;
         context = Context.enter(context);
         try {
@@ -210,8 +241,24 @@ public class JsUnitRhinoRunner {
         }
     }
 
-    public void runTestCases(final Writer writer, String name)
-            throws JsUnitException, IOException {
+    /**
+     * Runs all JavaScript TestCases in the context. The method will collect any JavaScript
+     * <code>TestCase</code> in the context in a collecting <code>TestSuite</code> and run
+     * it. The result of the test is written in XML format into the given writer. Since the
+     * result is a complete XML document, the writer is closed by the method (even in case of an
+     * exception).
+     * 
+     * @param writer the writer receiving the result
+     * @param name the name of the collecting <code>TestSuite</code> (may be null)
+     * @throws IOException if writing to the <code>writer</code> fails
+     * @throws IllegalArgumentException if <code>writer</code>is <code>null</code>
+     * @throws JsUnitRuntimeException if the JavaScript code of the method itself fails
+     * @since upcoming
+     */
+    public void runTestCases(final Writer writer, String name) throws IOException {
+        if (writer == null) {
+            throw new IllegalArgumentException("The writer is null");
+        }
         name = name == null ? "AllTestCases" : name;
         context = Context.enter(context);
         try {

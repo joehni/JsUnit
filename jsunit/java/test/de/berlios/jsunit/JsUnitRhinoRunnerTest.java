@@ -16,14 +16,17 @@
  */
 package de.berlios.jsunit;
 
-import org.jmock.MockObjectTestCase;
+import org.jmock.Mock;
+import org.jmock.cglib.MockObjectTestCase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
+
 
 /**
  * @author J&ouml;rg Schaible
@@ -47,27 +50,61 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         loadSampleScript("AllTests.js");
         final StringWriter writer = new StringWriter();
         runner.runAllTests(writer);
-        String xml = writer.toString();
+        final String xml = writer.toString();
         assertThat(xml, startsWith("<?xml version=\"1.0\" "));
-        assertThat(xml, contains("<testsuite errors=\"0\" failures=\"1\" name=\"AllTests\" tests=\"29\" "));
+        assertThat(
+                xml,
+                contains("<testsuite errors=\"0\" failures=\"1\" name=\"AllTests\" tests=\"29\" "));
+    }
+
+    public void testMissingAllTests() throws JsUnitException, IOException {
+        loadSampleScripts();
+        final Mock mockWriter = mock(Writer.class);
+        mockWriter.expects(once()).method("close");
+        try {
+            runner.runAllTests((Writer)mockWriter.proxy());
+            fail("Thrown " + JsUnitException.class.getName() + " expected");
+        } catch (final JsUnitException e) {
+            assertThat(e.getMessage(), contains("JavaScript class AllTests"));
+        }
     }
 
     public void testRunningTestSuites() throws JsUnitException, IOException {
         loadSampleScripts();
         final StringWriter writer = new StringWriter();
         runner.runTestSuites(writer, "TestSuites");
-        String xml = writer.toString();
-        assertThat(xml, startsWith("<?xml version=\"1.0\" "));
-        assertThat(xml, contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"29\" "));
+        final String xml = writer.toString();
+        assertThat(
+                xml,
+                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"29\" "));
+    }
+
+    public void testRunningWithoutTestSuite() throws JsUnitException, IOException {
+        final StringWriter writer = new StringWriter();
+        runner.runTestSuites(writer, "TestSuites");
+        final String xml = writer.toString();
+        assertThat(
+                xml,
+                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"0\" "));
     }
 
     public void testRunningTestCases() throws JsUnitException, IOException {
         loadSampleScripts();
         final StringWriter writer = new StringWriter();
         runner.runTestCases(writer, "TestCases");
-        String xml = writer.toString();
-        assertThat(xml, startsWith("<?xml version=\"1.0\" "));
-        assertThat(xml, contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"29\" "));
+        final String xml = writer.toString();
+        assertThat(
+                xml,
+                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"29\" "));
+    }
+
+    public void testRunningWithoutTestCase() throws JsUnitException, IOException {
+        final StringWriter writer = new StringWriter();
+        runner.runTestSuites(writer, "TestCases");
+        final String xml = writer.toString();
+        assertThat(
+                xml,
+                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"0\" "));
     }
 
     private void loadSampleScripts() throws FileNotFoundException, JsUnitException, IOException {
@@ -79,13 +116,16 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         loadSampleScript("SimpleTest.js");
     }
 
-    private void loadSampleScript(String filename) throws FileNotFoundException, JsUnitException, IOException {
-        FileReader reader = new FileReader(new File(new File("samples"), filename));
+    private void loadSampleScript(final String filename)
+            throws FileNotFoundException, JsUnitException, IOException {
+        final FileReader reader = new FileReader(new File(new File("samples"), filename));
         runner.load(reader, filename);
     }
 
     void dump() throws JsUnitException {
-        String[] functions = runner.eval("var a = new Array(); for(o in this) a.push(new String(o)); new String(a)", "Dump").toString().split(",");
+        final String[] functions = runner.eval(
+                "var a = new Array(); for(o in this) a.push(new String(o)); new String(a)",
+                "Dump").toString().split(",");
         Arrays.sort(functions);
         System.out.println(Arrays.asList(functions));
     }
