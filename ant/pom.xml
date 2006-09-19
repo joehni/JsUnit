@@ -46,8 +46,12 @@
             <artifactId>js</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-cglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
         </dependency>
     </dependencies>
 
