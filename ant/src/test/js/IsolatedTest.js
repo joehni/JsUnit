@@ -1,4 +1,4 @@
-/**
+/*
 JsUnit - a JUnit port for JavaScript
 Copyright (C) 2006 Joerg Schaible
 
