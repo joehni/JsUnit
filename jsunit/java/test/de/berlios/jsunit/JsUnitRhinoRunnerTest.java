@@ -25,7 +25,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Arrays;
 
 
 /**
@@ -120,13 +119,5 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
             throws FileNotFoundException, JsUnitException, IOException {
         final FileReader reader = new FileReader(new File(new File("samples"), filename));
         runner.load(reader, filename);
-    }
-
-    void dump() throws JsUnitException {
-        final String[] functions = runner.eval(
-                "var a = new Array(); for(o in this) a.push(new String(o)); new String(a)",
-                "Dump").toString().split(",");
-        Arrays.sort(functions);
-        System.out.println(Arrays.asList(functions));
     }
 }
