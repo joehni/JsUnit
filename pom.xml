@@ -1,20 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-<!--
- Copyright (C) 2006 Jörg Schaible
- Created on 17.09.2006 by Jörg Schaible
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+        Copyright (C) 2006 Jörg Schaible
+        Created on 17.09.2006 by Jörg Schaible
+        
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.berlios.jsunit</groupId>
     <artifactId>jsunit-parent</artifactId>
@@ -31,6 +32,7 @@
     <modules>
         <module>ant</module>
         <module>jsunit</module>
+        <module>maven2</module>
     </modules>
 
     <licenses>
@@ -40,6 +42,21 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>joehni</id>
+            <name>Joerg Schaible</name>
+            <email>joerg.schaible@gmx.de</email>
+            <organization>private</organization>
+            <organizationUrl>www.schaible.info</organizationUrl>
+            <roles>
+                <role>Project Despot</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
 
     <dependencyManagement>
         <dependencies>
@@ -87,7 +104,7 @@
                 <version>2.1_3</version>
                 <scope>test</scope>
             </dependency>
-         </dependencies>
+        </dependencies>
     </dependencyManagement>
 
     <build>
@@ -108,12 +125,11 @@
                     <configuration>
                         <archive>
                             <addMavenDescriptor>false</addMavenDescriptor>
-                            <manifest>
-                            </manifest>
+                            <manifest></manifest>
                         </archive>
                     </configuration>
                 </plugin>
-                 <plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <executions>

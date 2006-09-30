@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<model>
+    <id>jsunit</id>
+    <name>JsUnit Options</name>
+    <description>Options for JsUnit-Plugin</description>
+    <defaults>
+        <default>
+            <key>package</key>
+            <value>de.berlios.jsunit.maven2.options</value>
+        </default>
+    </defaults>
+    <classes>
+        <class>
+            <name>TestSuite</name>
+            <description>A TestSuite parameter</description>
+            <version>1.0.0</version>
+            <fields>
+                <field>
+                    <name>name</name>
+                    <description>The name of the test suite.</description>
+                    <version>1.0.0</version>
+                    <type>String</type>
+                    <identifier>true</identifier>
+                </field>
+            </fields>
+        </class>
+    </classes>
+</model>
