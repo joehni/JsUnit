@@ -82,8 +82,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
 
         String source = IOUtils.toString(new FileReader(new File(outDir, "TEST-Source.xml")));
         assertThat(source, and(
-                and(contains("errors=\"0\""), contains("failures=\"0\"")),
-                contains("tests=\"1\"")));
+            and(contains("errors=\"0\""), contains("failures=\"0\"")), contains("tests=\"1\"")));
     }
 
     public void testRunsIsolatedTests() throws FileNotFoundException, IOException {
@@ -115,13 +114,57 @@ public class JsUnitTaskTest extends MockObjectTestCase {
 
         String first = IOUtils.toString(new FileReader(new File(outDir, "TEST-First.xml")));
         String isolated = IOUtils
-                .toString(new FileReader(new File(outDir, "TEST-Isolated.xml")));
+            .toString(new FileReader(new File(outDir, "TEST-Isolated.xml")));
         assertThat(first, and(
-                and(contains("errors=\"0\""), contains("failures=\"0\"")),
-                contains("tests=\"1\"")));
+            and(contains("errors=\"0\""), contains("failures=\"0\"")), contains("tests=\"1\"")));
         assertThat(isolated, and(
-                and(contains("errors=\"0\""), contains("failures=\"0\"")),
-                contains("tests=\"1\"")));
+            and(contains("errors=\"0\""), contains("failures=\"0\"")), contains("tests=\"1\"")));
+    }
+
+    public void testRunsErroneousTests() {
+        JsUnitTask task = new JsUnitTask();
+        task.setProject(project);
+
+        JsUnitSuite suite = task.createTestSuite();
+        FileSet fileSet = new FileSet();
+        fileSet.setDir(new File("src/test/js"));
+        fileSet.setIncludes("ErrorTest.js");
+        suite.addFileSet(fileSet);
+        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setName("Error");
+        suite.setToDir(outDir);
+
+        try {
+            task.execute();
+            fail("Thrown " + BuildException.class.getName() + " expected");
+        } catch (final BuildException e) {
+            assertThat(e.getMessage(), contains(" 1 errors"));
+        }
+
+        assertTrue(new File(outDir, "TEST-Error.xml").isFile());
+    }
+
+    public void testRunsFailureTests() {
+        JsUnitTask task = new JsUnitTask();
+        task.setProject(project);
+
+        JsUnitSuite suite = task.createTestSuite();
+        FileSet fileSet = new FileSet();
+        fileSet.setDir(new File("src/test/js"));
+        fileSet.setIncludes("FailureTest.js");
+        suite.addFileSet(fileSet);
+        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setName("Failure");
+        suite.setToDir(outDir);
+
+        try {
+            task.execute();
+            fail("Thrown " + BuildException.class.getName() + " expected");
+        } catch (final BuildException e) {
+            assertThat(e.getMessage(), contains(" 1 failures"));
+        }
+
+        assertTrue(new File(outDir, "TEST-Failure.xml").isFile());
     }
 
     public void testSourceDirectoryMustExist() {

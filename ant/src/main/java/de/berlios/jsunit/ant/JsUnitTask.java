@@ -72,6 +72,8 @@ public class JsUnitTask extends Task {
     private File dir = new File(".");
     private final List sources = new ArrayList();
     private final List testSuites = new ArrayList();
+    private boolean haltOnError = true;
+    private boolean haltOnFailure = true;
 
     public void execute() throws BuildException {
         final Project project = getProject();
@@ -81,6 +83,8 @@ public class JsUnitTask extends Task {
         if (testSuites.isEmpty()) {
             throw new BuildException("No test suites defined");
         }
+        int errors = 0;
+        int failures = 0;
         for (final Iterator iterTest = testSuites.iterator(); iterTest.hasNext();) {
             JsUnitRhinoRunner runner = null;
             try {
@@ -105,6 +109,16 @@ public class JsUnitTask extends Task {
             final JsUnitSuite suite = (JsUnitSuite)iterTest.next();
             System.out.println("Run suite " + suite.getName());
             suite.run(project, runner);
+            errors += suite.getErrors();
+            failures += suite.getFailures();
+        }
+        if (errors + failures > 0) {
+            final String msg = "There have been " + errors + " errors and " + failures + " failures testing JavaScript";
+            if ((errors > 0 && isHaltOnError()) || isHaltOnFailure()) {
+                throw new BuildException(msg);
+            } else {
+                project.log(msg, Project.MSG_ERR);
+            }
         }
     }
 
@@ -116,6 +130,46 @@ public class JsUnitTask extends Task {
      */
     public void setDir(final File dir) {
         this.dir = dir;
+    }
+
+    /**
+     * Request the haltOnError flag.
+     * 
+     * @return <code>true</code> if set
+     * @since upcoming
+     */
+    public boolean isHaltOnError() {
+        return this.haltOnError;
+    }
+
+    /**
+     * Set haltOnError flag.
+     * 
+     * @param haltOnError the value
+     * @since upcoming
+     */
+    public void setHaltOnError(boolean haltOnError) {
+        this.haltOnError = haltOnError;
+    }
+
+    /**
+     * Request the haltOnFailure flag.
+     * 
+     * @return <code>true</code> if set
+     * @since upcoming
+     */
+    public boolean isHaltOnFailure() {
+        return this.haltOnFailure;
+    }
+
+    /**
+     * Set haltOnFailure flag.
+     * 
+     * @param haltOnFailure the value
+     * @since upcoming
+     */
+    public void setHaltOnFailure(boolean haltOnFailure) {
+        this.haltOnFailure = haltOnFailure;
     }
 
     /**
@@ -152,6 +206,5 @@ public class JsUnitTask extends Task {
         File getFile() {
             return file;
         }
-
     }
 }

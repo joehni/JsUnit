@@ -19,18 +19,23 @@ package de.berlios.jsunit.ant;
 import de.berlios.jsunit.JsUnitException;
 import de.berlios.jsunit.JsUnitRhinoRunner;
 
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.util.FileUtils;
+import org.apache.tools.ant.util.StringUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -47,6 +52,8 @@ public class JsUnitSuite {
     private File toDir;
     private TestRunType type = new TestRunType("RUN_TESTSUITES");
     private final Vector fileSets = new Vector();
+    private int errors;
+    private int failures;
 
     /**
      * Set the name of the test suite.
@@ -156,9 +163,10 @@ public class JsUnitSuite {
             }
         }
         final File file = new File(toDir, "TEST-" + name + ".xml");
-        FileWriter writer;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Writer writer;
         try {
-            writer = new FileWriter(file);
+            writer = new OutputStreamWriter(new TeeOutputStream(new FileOutputStream(file), baos));
         } catch (final IOException e) {
             throw new BuildException("Cannot create file " + file.getName(), e);
         }
@@ -182,6 +190,31 @@ public class JsUnitSuite {
         } finally {
             FileUtils.close(writer);
         }
+        final String[] lines = (String[]) StringUtils.lineSplit(baos.toString()).toArray(new String[0]);
+        int idx = lines[1].indexOf("errors=\"") + 8;
+        errors = Integer.parseInt(lines[1].substring(idx, lines[1].indexOf('"', idx)));
+        idx = lines[1].indexOf("failures=\"") + 10;
+        failures = Integer.parseInt(lines[1].substring(idx, lines[1].indexOf('"', idx)));
+    }
+
+    /**
+     * Retrieve the number of errors.
+     * 
+     * @return the error count
+     * @since upcoming
+     */
+    public int getErrors() {
+        return this.errors;
+    }
+
+    /**
+     * Retrieve the number of failures.
+     * 
+     * @return the failure count
+     * @since upcoming
+     */
+    public int getFailures() {
+        return this.failures;
     }
 
 }
