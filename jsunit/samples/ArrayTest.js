@@ -17,7 +17,6 @@ limitations under the License.
 
 /**
  * A sample test case, testing <code>Array</code> object.
- *
  */
 function ArrayTest( name )
 {

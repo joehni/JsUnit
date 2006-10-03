@@ -29,7 +29,7 @@
         <mkdir dir="${test.reports.dir}" />
         <jsunit>
             <!-- no source elements necessary, JsUnit is in the JavaScript context -->
-            <testsuite name="JsUnitTests" todir="${test.reports.dir}" type="RUN_ALL_TESTCASES">
+            <testsuite name="JsUnitTests" todir="${test.reports.dir}" type="RUN_TESTCASES">
                 <fileset dir=".">
                     <include name="*Test.js" />
                 </fileset>

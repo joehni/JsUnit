@@ -41,7 +41,9 @@ public class JsUnitTaskTest extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         outDir = new File("target/junit");
-        FileUtils.cleanDirectory(outDir);
+        if (outDir.exists()) {
+            FileUtils.cleanDirectory(outDir);
+        }
         project = new Project();
         project.setBaseDir(new File("."));
     }
@@ -70,7 +72,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("SourceTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_ALL_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
         suite.setName("Source");
         suite.setToDir(outDir);
 
@@ -93,7 +95,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("FirstTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_ALL_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
         suite.setName("First");
         suite.setToDir(outDir);
 
@@ -102,7 +104,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("IsolatedTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_ALL_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
         suite.setName("Isolated");
         suite.setToDir(outDir);
 
