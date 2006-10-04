@@ -2205,6 +2205,7 @@ ClassicResultPrinter.prototype.startTest = ClassicResultPrinter_startTest;
  * @tparam PrinterWriter writer The writer for the report.
  * Initialization of the XMLResultPrinter. If no \a writer is provided the 
  * instance uses the SystemWriter.
+ * @since upcoming
  */
 function XMLResultPrinter( writer )
 {
@@ -2372,3 +2373,95 @@ function HTMLTestRunner_setPrinter( outdev )
 HTMLTestRunner.prototype = new TextTestRunner();
 HTMLTestRunner.prototype.setPrinter = HTMLTestRunner_setPrinter;
 
+
+/**
+ * A collector for Test classes.
+ * In contrast to JUnit this interface returns an Array and not an enumeration.
+ * @since upcoming
+ */
+function TestCollector() 
+{
+}
+/**
+ * Collect Test classes.
+ * @treturn Array Returns an Array with classes.
+ */
+TestCollector.prototype.collectTests = function() {}
+
+
+/**
+ * A collector for the AllTests class.
+ * @ctor
+ * Constructs an AllTestsCollector.
+ * @tparam Object scope The object defining the scope the \c AllTests class is
+ * searched for.
+ * @since upcoming
+ */
+function AllTestsCollector( scope ) 
+{
+    this.mScope = scope;
+}
+/**
+ * Collect Test class \a AllTests.
+ * @treturn Array Returns an Array with the class named \c AllTests.
+ */
+function AllTestsCollector_collectTests() 
+{
+    var tests = new Array();
+    var testFunc = this.mScope.AllTests;
+    if( typeof( testFunc ) == "function" && typeof( testFunc.prototype.suite ) == "function" ) 
+        tests.push( testFunc );
+    return tests;
+}
+AllTestsCollector.prototype.collectTests = AllTestsCollector_collectTests;
+AllTestsCollector.fulfills( TestCollector );
+
+
+/**
+ * A generic collector for all Test classes within a scope.
+ * @ctor
+ * Constructs a GenericTestCollector.
+ * @note This is an equivalent to the ClassPathTestCollector.
+ * @tparam Object scope The object defining the scope of the search.
+ * @tparam RegExp pattern The regular expression the function name must match.
+ * @tparam Function type The class type the function must be an instance of.
+ * @since upcoming
+ */
+function GenericTestCollector( scope, pattern, type ) 
+{
+    this.mScope = scope;
+    this.mPattern = pattern;
+    this.mType = type;
+}
+/**
+ * Collect the Test classes.
+ * @treturn Array Returns an Array with the found Test classes.
+ */
+function GenericTestCollector_collectTests() 
+{
+    var tests = new Array();
+    for( testFunc in this.mScope ) 
+        if( testFunc.match( this.mPattern ))
+        {
+            testFunc = this.mScope[testFunc];
+            if(    typeof( testFunc ) == "function" 
+                && testFunc.prototype 
+                && this.isTest( testFunc )) 
+            {
+                tests.push( testFunc );
+            }
+        }
+    return tests;
+}
+/**
+ * Test the function to be collected.
+ * @tparam Function testFunc The Function to be tested.
+ * @treturn Boolean Returns \c true if the function is a Test.
+ */
+function GenericTestCollector_isTest( testFunc ) 
+{
+    return testFunc.prototype instanceof this.mType;
+}
+GenericTestCollector.prototype.collectTests = GenericTestCollector_collectTests;
+GenericTestCollector.prototype.isTest = GenericTestCollector_isTest;
+GenericTestCollector.fulfills( TestCollector );

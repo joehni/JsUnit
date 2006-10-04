@@ -1718,6 +1718,52 @@ HTMLTestRunnerTest.prototype.testCtor = HTMLTestRunnerTest_testCtor;
 HTMLTestRunnerTest.prototype.testSetPrinter = HTMLTestRunnerTest_testSetPrinter;
 
 
+function AllTestsCollectorTest( name )
+{
+    TestCase.call( this, name );
+}
+function AllTestsCollectorTest_testCollectTests()
+{
+    var scope = new Object();
+    scope.AllTests = function() {};
+    scope.AllTests.prototype.suite = function() {};
+    
+    var collector = new AllTestsCollector( scope );
+    this.assertEquals( 1, collector.collectTests().length );
+}
+AllTestsCollectorTest.prototype = new TestCase();
+AllTestsCollectorTest.prototype.testCollectTests = AllTestsCollectorTest_testCollectTests;
+
+
+function GenericTestCollectorTest( name )
+{
+    TestCase.call( this, name );
+}
+function GenericTestCollectorTest_testCollectTests()
+{
+    var scope = new Object();
+    scope.Test1 = function() {};
+    scope.Test1.prototype = new TestCase();
+    scope.Test2 = function() {};
+    scope.Test2.prototype = new TestCase();
+    scope.Test3 = function() {};
+    scope.Test3.prototype = new TestCase();
+    scope.NotMatchingTest = function() {};
+    scope.NotMatchingTest.prototype = new TestCase();
+    scope.TestSuite1 = function() {};
+    scope.TestSuite1.prototype = new TestSuite();
+    
+    var collector = new GenericTestCollector( scope, /^Test/, TestCase );
+    this.assertEquals( 3, collector.collectTests().length );
+    collector = new GenericTestCollector( scope, /(^Test|Test$)/, TestCase );
+    this.assertEquals( 4, collector.collectTests().length );
+    collector = new GenericTestCollector( scope, /^TestSuite/, TestSuite );
+    this.assertEquals( 1, collector.collectTests().length );
+}
+GenericTestCollectorTest.prototype = new TestCase();
+GenericTestCollectorTest.prototype.testCollectTests = GenericTestCollectorTest_testCollectTests;
+
+
 function JsUnitTestSuite()
 {
     TestSuite.call( this, "JsUnitTest" );
@@ -1739,6 +1785,8 @@ function JsUnitTestSuite()
     this.addTestSuite( ClassicResultPrinterTest );
     this.addTestSuite( XMLResultPrinterTest );
     this.addTestSuite( HTMLTestRunnerTest );
+    this.addTestSuite( AllTestsCollectorTest );
+    this.addTestSuite( GenericTestCollectorTest );
 }
 JsUnitTestSuite.prototype = new TestSuite();
 JsUnitTestSuite.prototype.suite = function (){ return new JsUnitTestSuite(); }
