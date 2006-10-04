@@ -2455,6 +2455,9 @@ function GenericTestCollector_collectTests()
 }
 /**
  * Test the function to be collected.
+ * The method tests the \a testFunc for the class \a type given in the 
+ * constructor. A derived implementation may add additional criterias like the
+ * existance of a specific method of the class type.
  * @tparam Function testFunc The Function to be tested.
  * @treturn Boolean Returns \c true if the function is a Test.
  */
