@@ -38,30 +38,33 @@ import java.util.List;
  * XML reports, that can be processed by the Ant junitreport task. Define the task as follows:
  * 
  * <pre>
- *  &lt;taskdef name=&quot;jsunit&quot; className=&quot;de.berlios.jsunit.ant.JsUnitTask&quot; /&gt;
- *  
- *  &lt;jsunit dir=&quot;sourceDir&quot;&gt;
- *      &lt;source file=&quot;money/IMoney.js&quot; /&gt;
- *      &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;RUN_TESTSUITES&quot;&gt;
- *          &lt;fileset dir=&quot;.&quot;&gt;
- *              &lt;include name=&quot;* /**Test.js&quot; /&gt;
- *          &lt;/fileset&gt;
- *      &lt;/testsuite&gt;
- *  &lt;/jsunit&gt;
+ *   &lt;taskdef name=&quot;jsunit&quot; className=&quot;de.berlios.jsunit.ant.JsUnitTask&quot; /&gt;
+ *   
+ *   &lt;jsunit dir=&quot;sourceDir&quot;&gt;
+ *       &lt;source file=&quot;money/IMoney.js&quot; /&gt;
+ *       &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;RUN_TESTSUITES&quot;&gt;
+ *           &lt;fileset dir=&quot;.&quot;&gt;
+ *               &lt;include name=&quot;* /**Test.js&quot; /&gt;
+ *           &lt;/fileset&gt;
+ *       &lt;/testsuite&gt;
+ *   &lt;/jsunit&gt;
  * </pre>
  * 
  * <p>
  * You may declare multiple <code>source</code> tags, the scripts are loaded into the declared
  * order. You may also declare multiple <code>testsuite</code> sections, each one will
- * generate a separate XML report. The type of the test suite can be one of the following values:
+ * generate a separate XML report. The type of the test suite can be one of the following
+ * values:
  * </p>
  * <dl>
  * <dt>RUN_ALLTESTS</dt>
  * <dd>Looks for a class AllTests dervied from TestSuite and runs its suite.</dd>
  * <dt>RUN_TESTSUITES</dt>
- * <dd>Looks for all classes ending with TestSuite and that are dervied from TestSuite and run their suites (the default).</dd>
+ * <dd>Looks for all classes ending with TestSuite and that are dervied from TestSuite and run
+ * their suites (the default).</dd>
  * <dt>RUN_TESTCASES</dt>
- * <dd>Looks for all classes ending with TestCase and that are dervied from TestCase and runs them.</dd>
+ * <dd>Looks for all classes ending with TestCase and that are dervied from TestCase and runs
+ * them.</dd>
  * </dl>
  * 
  * @author J&ouml;rg Schaible
@@ -101,7 +104,7 @@ public class JsUnitTask extends Task {
                     throw new BuildException("Cannot find " + file.getName(), e);
                 } catch (final JsUnitException e) {
                     throw new BuildException("Cannot evaluate JavaScript code of "
-                            + file.getName(), e);
+                        + file.getName(), e);
                 } catch (final IOException e) {
                     throw new BuildException("Cannot read complete " + file.getName(), e);
                 }
@@ -113,7 +116,11 @@ public class JsUnitTask extends Task {
             failures += suite.getFailures();
         }
         if (errors + failures > 0) {
-            final String msg = "There have been " + errors + " errors and " + failures + " failures testing JavaScript";
+            final String msg = "There have been "
+                + errors
+                + " errors and "
+                + failures
+                + " failures testing JavaScript";
             if ((errors > 0 && isHaltOnError()) || isHaltOnFailure()) {
                 throw new BuildException(msg);
             } else {
@@ -196,7 +203,7 @@ public class JsUnitTask extends Task {
         return source;
     }
 
-   final class SourceFile {
+    final class SourceFile {
         File file;
 
         void setFile(final String name) {

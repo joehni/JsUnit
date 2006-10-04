@@ -133,13 +133,14 @@ public class JsUnitSuite {
 
     /**
      * Run the test suite.
+     * 
      * @param project the project
      * @param runner the prepared Rhino context
      * @throws BuildException if the test cannot run or have been aborted
      * @since upcoming
      */
     public void run(final Project project, final JsUnitRhinoRunner runner)
-            throws BuildException {
+                                                                          throws BuildException {
         if (!toDir.isDirectory()) {
             toDir.mkdirs();
         }
@@ -156,7 +157,7 @@ public class JsUnitSuite {
                     throw new BuildException("Cannot find " + file.getPath(), e);
                 } catch (final JsUnitException e) {
                     throw new BuildException("Cannot evaluate JavaScript code of "
-                            + file.getPath(), e);
+                        + file.getPath(), e);
                 } catch (final IOException e) {
                     throw new BuildException("Cannot read complete " + file.getPath(), e);
                 }
@@ -166,7 +167,8 @@ public class JsUnitSuite {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Writer writer;
         try {
-            writer = new OutputStreamWriter(new TeeOutputStream(new FileOutputStream(file), baos));
+            writer = new OutputStreamWriter(new TeeOutputStream(
+                new FileOutputStream(file), baos));
         } catch (final IOException e) {
             throw new BuildException("Cannot create file " + file.getName(), e);
         }
@@ -190,7 +192,8 @@ public class JsUnitSuite {
         } finally {
             FileUtils.close(writer);
         }
-        final String[] lines = (String[]) StringUtils.lineSplit(baos.toString()).toArray(new String[0]);
+        final String[] lines = (String[])StringUtils.lineSplit(baos.toString()).toArray(
+            new String[0]);
         int idx = lines[1].indexOf("errors=\"") + 8;
         errors = Integer.parseInt(lines[1].substring(idx, lines[1].indexOf('"', idx)));
         idx = lines[1].indexOf("failures=\"") + 10;
