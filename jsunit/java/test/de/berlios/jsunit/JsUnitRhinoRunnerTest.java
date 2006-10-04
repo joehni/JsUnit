@@ -52,8 +52,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         final String xml = writer.toString();
         assertThat(xml, startsWith("<?xml version=\"1.0\" "));
         assertThat(
-                xml,
-                contains("<testsuite errors=\"0\" failures=\"1\" name=\"AllTests\" tests=\"29\" "));
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"AllTests\" tests=\"29\" "));
     }
 
     public void testMissingAllTests() throws JsUnitException, IOException {
@@ -74,8 +74,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         runner.runTestSuites(writer, "TestSuites");
         final String xml = writer.toString();
         assertThat(
-                xml,
-                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"29\" "));
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"29\" "));
     }
 
     public void testRunningWithoutTestSuite() throws IOException {
@@ -83,8 +83,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         runner.runTestSuites(writer, "TestSuites");
         final String xml = writer.toString();
         assertThat(
-                xml,
-                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"0\" "));
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestSuites\" tests=\"0\" "));
     }
 
     public void testRunningTestCases() throws JsUnitException, IOException {
@@ -93,8 +93,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         runner.runTestCases(writer, "TestCases");
         final String xml = writer.toString();
         assertThat(
-                xml,
-                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"29\" "));
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"29\" "));
     }
 
     public void testRunningWithoutTestCase() throws IOException {
@@ -102,8 +102,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
         runner.runTestSuites(writer, "TestCases");
         final String xml = writer.toString();
         assertThat(
-                xml,
-                contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"0\" "));
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"TestCases\" tests=\"0\" "));
     }
 
     private void loadSampleScripts() throws FileNotFoundException, JsUnitException, IOException {
@@ -116,7 +116,8 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
     }
 
     private void loadSampleScript(final String filename)
-            throws FileNotFoundException, JsUnitException, IOException {
+                                                        throws FileNotFoundException,
+                                                        JsUnitException, IOException {
         final FileReader reader = new FileReader(new File(new File("samples"), filename));
         runner.load(reader, filename);
     }

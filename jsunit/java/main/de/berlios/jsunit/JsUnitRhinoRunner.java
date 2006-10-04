@@ -164,10 +164,11 @@ public class JsUnitRhinoRunner {
         try {
             try {
                 if (Boolean.TRUE != context.evaluateString(
-                        scope,
-                        "this.AllTests && AllTests.prototype && AllTests.prototype.suite && true",
-                        null, 1, null)) {
-                    throw new JsUnitException("No JavaScript class AllTests with a suite method found");
+                    scope,
+                    "this.AllTests && AllTests.prototype && AllTests.prototype.suite && true",
+                    null, 1, null)) {
+                    throw new JsUnitException(
+                        "No JavaScript class AllTests with a suite method found");
                 }
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
@@ -175,14 +176,11 @@ public class JsUnitRhinoRunner {
                 throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
             }
             try {
-                final String xml = (String)context
-                        .evaluateString(
-                                scope,
-                                ""
-                                        + "var stringWriter = new StringWriter();\n"
-                                        + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                                        + "runner.doRun(AllTests.prototype.suite());\n"
-                                        + "stringWriter.get();\n", "AllTests", 1, null);
+                final String xml = (String)context.evaluateString(scope, ""
+                    + "var stringWriter = new StringWriter();\n"
+                    + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                    + "runner.doRun(AllTests.prototype.suite());\n"
+                    + "stringWriter.get();\n", "AllTests", 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("JavaScript error running tests", e);
@@ -218,24 +216,24 @@ public class JsUnitRhinoRunner {
         try {
             try {
                 final String xml = (String)context
-                        .evaluateString(
-                                scope,
-                                ""
-                                        + "var suite = new TestSuite(\""
-                                        + name
-                                        + "\");\n"
-                                        + "for (fn in this) {\n"
-                                        + "    if (new String(fn).match(/TestSuite$/)) {\n"
-                                        + "        fn = eval(fn);\n"
-                                        + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype.suite) {\n"
-                                        + "            suite.addTest(fn.prototype.suite());\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "}\n"
-                                        + "var stringWriter = new StringWriter();\n"
-                                        + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                                        + "runner.doRun(suite);\n"
-                                        + "stringWriter.get();\n", name, 1, null);
+                    .evaluateString(
+                        scope,
+                        ""
+                            + "var suite = new TestSuite(\""
+                            + name
+                            + "\");\n"
+                            + "for (fn in this) {\n"
+                            + "    if (new String(fn).match(/TestSuite$/)) {\n"
+                            + "        fn = eval(fn);\n"
+                            + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype.suite) {\n"
+                            + "            suite.addTest(fn.prototype.suite());\n"
+                            + "        }\n"
+                            + "    }\n"
+                            + "}\n"
+                            + "var stringWriter = new StringWriter();\n"
+                            + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                            + "runner.doRun(suite);\n"
+                            + "stringWriter.get();\n", name, 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("JavaScript error running tests", e);
@@ -271,24 +269,24 @@ public class JsUnitRhinoRunner {
         try {
             try {
                 final String xml = (String)context
-                        .evaluateString(
-                                scope,
-                                ""
-                                        + "var suite = new TestSuite(\""
-                                        + name
-                                        + "\");\n"
-                                        + "for (fname in this) {\n"
-                                        + "    if (new String(fname).match(/Test$/)) {\n"
-                                        + "        var fn = eval(fname);\n"
-                                        + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype instanceof TestCase) {\n"
-                                        + "            suite.addTestSuite(fn);\n"
-                                        + "        }\n"
-                                        + "    }\n"
-                                        + "}\n"
-                                        + "var stringWriter = new StringWriter();\n"
-                                        + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                                        + "runner.doRun(suite);\n"
-                                        + "stringWriter.get();\n", "AllTestCases", 1, null);
+                    .evaluateString(
+                        scope,
+                        ""
+                            + "var suite = new TestSuite(\""
+                            + name
+                            + "\");\n"
+                            + "for (fname in this) {\n"
+                            + "    if (new String(fname).match(/Test$/)) {\n"
+                            + "        var fn = eval(fname);\n"
+                            + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype instanceof TestCase) {\n"
+                            + "            suite.addTestSuite(fn);\n"
+                            + "        }\n"
+                            + "    }\n"
+                            + "}\n"
+                            + "var stringWriter = new StringWriter();\n"
+                            + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                            + "runner.doRun(suite);\n"
+                            + "stringWriter.get();\n", "AllTestCases", 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("JavaScript error running tests", e);
