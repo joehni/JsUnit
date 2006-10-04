@@ -25,36 +25,37 @@ import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 
+
 /**
  * A simple Stub for a MavenProject.
- *
- * @author  J&ouml;rg Schaible
+ * 
+ * @author J&ouml;rg Schaible
  */
-public class SimpleMavenProjectStub extends MavenProjectStub
-{
-	//~ Methods ----------------------------------------------------------------
+public class SimpleMavenProjectStub extends MavenProjectStub {
+    // ~ Methods ----------------------------------------------------------------
 
-	/**
-	 * Create an artifact
-	 *
-	 * @param  groupId    the groupId
-	 * @param  artifactId the artifactId
-	 * @param  version    the version
-	 * @param  type       the type
-	 * @param  classifier the classifier
-	 * @param  file       the file itself
-	 * @return the artifact
-	 */
-	protected Artifact createArtifact(final String groupId, final String artifactId, final String version,
-	                                  final String type, final String classifier, final File file)
-	{
-		final Artifact artifact =
-			new DefaultArtifact(groupId, artifactId, VersionRange.createFromVersion(version), "compile", type,
-			                    classifier, new DefaultArtifactHandler(type));
-		if (file != null) {
-			artifact.setFile(file);
-		}
+    /**
+     * Create an artifact
+     * 
+     * @param groupId the groupId
+     * @param artifactId the artifactId
+     * @param version the version
+     * @param type the type
+     * @param classifier the classifier
+     * @param file the file itself
+     * @return the artifact
+     */
+    protected Artifact createArtifact(
+                                      final String groupId, final String artifactId,
+                                      final String version, final String type,
+                                      final String classifier, final File file) {
+        final Artifact artifact = new DefaultArtifact(
+            groupId, artifactId, VersionRange.createFromVersion(version), "compile", type,
+            classifier, new DefaultArtifactHandler(type));
+        if (file != null) {
+            artifact.setFile(file);
+        }
 
-		return artifact;
-	}
+        return artifact;
+    }
 }

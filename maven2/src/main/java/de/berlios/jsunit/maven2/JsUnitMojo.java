@@ -241,7 +241,8 @@ public class JsUnitMojo extends AbstractMojo {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Writer writer;
             try {
-                writer = new OutputStreamWriter(new TeeOutputStream(new FileOutputStream(file), baos));
+                writer = new OutputStreamWriter(new TeeOutputStream(
+                    new FileOutputStream(file), baos));
             } catch (final IOException e) {
                 throw new MojoExecutionException("Cannot create file " + file.getName(), e);
             }
@@ -259,7 +260,8 @@ public class JsUnitMojo extends AbstractMojo {
                 }
                 logger.debug("Created test report " + file.getName());
             } catch (final JsUnitException e) {
-                throw new MojoExecutionException("Cannot run JavaScript code of test suite " + name, e);
+                throw new MojoExecutionException("Cannot run JavaScript code of test suite "
+                    + name, e);
             } catch (final IOException e) {
                 throw new MojoExecutionException("Cannot write to file " + file.getName(), e);
             } finally {
@@ -277,7 +279,11 @@ public class JsUnitMojo extends AbstractMojo {
             }
         }
         if (errors + failures > 0) {
-            final String msg = "There have been " + errors + " errors and " + failures + " failures testing JavaScript";
+            final String msg = "There have been "
+                + errors
+                + " errors and "
+                + failures
+                + " failures testing JavaScript";
             if (testFailureIgnore) {
                 logger.error(msg);
             } else {

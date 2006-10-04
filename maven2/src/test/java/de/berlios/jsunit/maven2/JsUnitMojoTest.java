@@ -20,6 +20,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 import java.io.File;
 
+
 /**
  * @author J&ouml;rg Schaible
  */
@@ -33,7 +34,7 @@ public class JsUnitMojoTest extends AbstractMojoTestCase {
     public void testEnvironment() throws Exception {
         final File testPom = new File(getBasedir(), "src/test/resources/unit/environment.xml");
         assertTrue(testPom.isFile());
-        final JsUnitMojo mojo = (JsUnitMojo) lookupMojo("jsunit-test", testPom);
+        final JsUnitMojo mojo = (JsUnitMojo)lookupMojo("jsunit-test", testPom);
         assertNotNull(mojo);
     }
 
@@ -45,7 +46,7 @@ public class JsUnitMojoTest extends AbstractMojoTestCase {
     public void testSimpleTest() throws Exception {
         final File testPom = new File(getBasedir(), "src/test/resources/unit/simple.xml");
         assertTrue(testPom.isFile());
-        final JsUnitMojo mojo = (JsUnitMojo) lookupMojo("jsunit-test", testPom);
+        final JsUnitMojo mojo = (JsUnitMojo)lookupMojo("jsunit-test", testPom);
         mojo.execute();
     }
 }
