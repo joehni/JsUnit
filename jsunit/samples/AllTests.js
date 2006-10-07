@@ -35,6 +35,8 @@ if( !this.JsUtil )
     eval( JsUtil.prototype.include( "money/MoneyBag.js" ));
     eval( JsUtil.prototype.include( "money/MoneyTest.js" ));
     eval( JsUtil.prototype.include( "SimpleTest.js" ));
+    eval( JsUtil.prototype.include( "special/Functions.js" ));
+    eval( JsUtil.prototype.include( "special/FunctionsTest.js" ));
 }
 
 function AllTests()

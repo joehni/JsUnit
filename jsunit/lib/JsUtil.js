@@ -24,393 +24,6 @@ limitations under the License.
  */
 
 
-/**
- * Helper class with static flags.
- */
-function JsUtil()
-{
-}
-/** 
- * Retrieve the caller of a function.
- * @tparam Function fn The function to examine.
- * @treturn Function The caller as Function or undefined.
- **/
-function JsUtil_getCaller( fn )
-{
-    switch( typeof( fn ))
-    {
-        case "undefined":
-            return JsUtil_getCaller( JsUtil_getCaller );
-            
-        case "function":
-            if( fn.caller )
-                return fn.caller;
-            if( fn.arguments && fn.arguments.caller )
-                return fn.arguments.caller;
-    }
-    return undefined;
-}
-/**
- * Includes a JavaScript file.
- * @tparam String fname The file name.
- * Loads the content of a JavaScript file into a String that has to be
- * evaluated. Works for command line shells WSH, Rhino and SpiderMonkey.
- * @note This function is highly quirky. While WSH works as expected, the
- * Mozilla shells will evaluate the file immediately and add any symbols to
- * the global name space and return just "true". Therefore you have to 
- * evaluate the returned string for WSH at global level also. Otherwise the
- * function is not portable.
- * @treturn String The JavaScript code to be evaluated.
- */
-function JsUtil_include( fname )
-{
-    var ret = "true";
-    if( JsUtil.prototype.isMozillaShell || JsUtil.prototype.isKJS )
-    {
-        load( fname );
-    }
-    else if( JsUtil.prototype.isWSH )
-    {
-        var fso = new ActiveXObject( "Scripting.FileSystemObject" );
-        var file = fso.OpenTextFile( fname, 1 );
-        ret = file.ReadAll();
-        file.Close();
-    }
-    return ret;
-}
-/**
- * Returns the SystemWriter.
- * Instanciates a SystemWriter depending on the current JavaScript engine.
- * Works for command line shells WSH, Rhino and SpiderMonkey.
- * @type SystemWriter
- */
-function JsUtil_getSystemWriter()
-{
-    if( !JsUtil.prototype.mWriter )
-        JsUtil.prototype.mWriter = new SystemWriter();
-    return JsUtil.prototype.mWriter;
-}
-/**
- * Quits the JavaScript engine.
- * @tparam Number ret The exit code.
- * Stops current JavaScript engine and returns an exit code. Works for 
- * command line shells WSH, Rhino and SpiderMonkey.
- */
-function JsUtil_quit( ret )
-{
-    if( JsUtil.prototype.isMozillaShell )
-        quit( ret );
-    else if( JsUtil.prototype.isKJS )
-        exit( ret );
-    else if( JsUtil.prototype.isWSH )
-        WScript.Quit( ret );
-}
-JsUtil.prototype.getCaller = JsUtil_getCaller;
-JsUtil.prototype.include = JsUtil_include;
-JsUtil.prototype.getSystemWriter = JsUtil_getSystemWriter;
-JsUtil.prototype.quit = JsUtil_quit;
-/**
- * The SystemWriter.
- * @type SystemWriter
- * @see getSystemWriter
- */
-JsUtil.prototype.mWriter = null;
-/**
- * Flag for a browser.
- * @type Boolean
- * The member is true, if the script runs within a browser environment.
- */
-JsUtil.prototype.isBrowser = this.window != null;
-/**
- * Flag for Microsoft JScript.
- * @type Boolean
- * The member is true, if the script runs in the Microsoft JScript engine.
- */
-JsUtil.prototype.isJScript = this.ScriptEngine != null;
-/**
- * Flag for Microsoft Windows Scripting Host.
- * @type Boolean
- * The member is true, if the script runs in the Microsoft Windows Scripting
- * Host.
- */
-JsUtil.prototype.isWSH = this.WScript != null;
-/**
- * Flag for Microsoft IIS.
- * @type Boolean
- * The member is true, if the script runs in the Microsoft JScript engine.
- */
-JsUtil.prototype.isIIS = 
-       JsUtil.prototype.isJScript
-    && this.Server != null;
-/**
- * Flag for Netscape Enterprise Server (iPlanet) engine.
- * @type Boolean
- * The member is true, if the script runs in the iPlanet as SSJS.
- */
-JsUtil.prototype.isNSServer = 
-       this.Packages != null 
-    && !this.importPackage 
-    && !JsUtil.prototype.isBrowser;
-/**
- * Flag for Rhino.
- * @type Boolean
- * The member is true, if the script runs in an embedded Rhino of Mozilla.org.
- */
-JsUtil.prototype.isRhino = 
-       this.java != null 
-    && this.java.lang != null 
-    && this.java.lang.System != null;
-/**
- * Flag for a Mozilla JavaScript shell.
- * @type Boolean
- * The member is true, if the script runs in a command line shell of a
- * Mozilla.org script engine (either SpiderMonkey or Rhino).
- */
-JsUtil.prototype.isMozillaShell = this.quit != null;
-/**
- * Flag for a KJS shell.
- * @type Boolean
- * The member is true, if the script runs in a command line shell of a
- * KDE's script engine.
- */
-JsUtil.prototype.isKJS = this.exit != null;
-/**
- * Flag for a command line shell.
- * @type Boolean
- * The member is true, if the script runs in a command line shell.
- */
-JsUtil.prototype.isShell = 
-       JsUtil.prototype.isMozillaShell 
-    || JsUtil.prototype.isKJS 
-    || JsUtil.prototype.isWSH;
-/**
- * Flag for Obtree C4.
- * @type Boolean
- * The member is true, if the script runs in Obtree C4 of IXOS.
- */
-JsUtil.prototype.isObtree = this.WebObject != null;
-/**
- * Flag for call stack support.
- * @type Boolean
- * The member is true, if the engine provides call stack info.
- */
-JsUtil.prototype.hasCallStackSupport = 
-       JsUtil.prototype.getCaller() !== undefined;
-
-
-/**
- * CallStack object.
- * The object is extremly system dependent, since its functionality is not
- * within the range of ECMA 262, 3rd edition. It is supported by JScript
- * and SpiderMonkey and was supported in Netscape Enterprise Server 2.x, 
- * but not in the newer version 4.x.
- * @ctor
- * Constructor.
- * The object collects the current call stack up to the JavaScript engine.
- * Most engines will not support call stack information with a recursion.
- * Therefore the collection is stopped when the stack has two identical
- * functions in direct sequence.
- * @tparam Number depth Maximum recorded stack depth (defaults to 10).
- **/
-function CallStack( depth )
-{
-    /**
-     * The array with the stack. 
-     * @type Array<String>
-     */
-    this.mStack = null;
-    if( JsUtil.prototype.hasCallStackSupport )
-        this._fill( depth );
-}
-/**
- * \internal
- */
-function CallStack__fill( depth )
-{
-    this.mStack = new Array();
-    
-    // set stack depth to default
-    if( depth == null )
-        depth = 10;
-
-    ++depth;
-    var fn = JsUtil.prototype.getCaller( CallStack__fill );
-    while( fn != null && depth > 0 )
-    {
-        var s = new String( fn );
-        --depth;
-
-        // Extract function name and argument list
-        var r = /function (\w+)([^\{\}]*\))/;
-        r.exec( s );
-        var f = new String( RegExp.$1 );
-        var args = new String( RegExp.$2 );
-        this.mStack.push(( f + args ).replace( /\s/g, "" ));
-
-        // Retrieve caller function
-        if( fn == JsUtil.prototype.getCaller( fn ))
-        {
-            // Some interpreter's caller use global objects and may start
-            // an endless recursion.
-            this.mStack.push( "[JavaScript recursion]" );
-            break;
-        }
-        else
-            fn = JsUtil.prototype.getCaller( fn );
-    }
-
-    if( fn == null )
-        this.mStack.push( "[JavaScript engine]" );
-
-    // remove direct calling function CallStack or CallStack_fill
-    this.mStack.shift();
-}
-/**
- * Fills the object with the current call stack info.
- * The function collects the current call stack up to the JavaScript engine.
- * Any previous data of the instance is lost.
- * Most engines will not support call stack information with a recursion.
- * Therefore the collection is stopped when the stack has two identical
- * functions in direct sequence.
- * @tparam Number depth Maximum recorded stack depth (defaults to 10).
- **/
-function CallStack_fill( depth )
-{
-    this.mStack = null;
-    if( JsUtil.prototype.hasCallStackSupport )
-        this._fill( depth );
-}
-/**
- * Retrieve call stack as array.
- * The function returns the call stack as Array of Strings. 
- * @treturn Array<String> The call stack as array of strings.
- **/
-function CallStack_getStack()
-{
-    var a = new Array();
-    if( this.mStack != null )
-        for( var i = this.mStack.length; i--; )
-            a[i] = this.mStack[i];
-    return a;
-}
-/**
- * Retrieve call stack as string.
- * The function returns the call stack as string. Each stack frame has an 
- * own line and is prepended with the call stack depth.
- * @treturn String The call stack as string.
- **/
-function CallStack_toString()
-{
-    var s = "";
-    if( this.mStack != null )
-        for( var i = 1; i <= this.mStack.length; ++i )
-        {
-            if( s.length != 0 )
-                s += "\n";
-            s += i.toString() + ": " + this.mStack[i-1];
-        }
-    return s;
-}
-
-CallStack.prototype._fill = CallStack__fill;
-CallStack.prototype.fill = CallStack_fill;
-CallStack.prototype.getStack = CallStack_getStack;
-CallStack.prototype.toString = CallStack_toString;
-
-
-// MS engine does not implement Array.push and Array.pop until JScript 5.6
-if( !Array.prototype.pop )
-{
-    /**
-     * \class Array
-     * Standard ECMA class.
-     * \docgen function Array() {}
-     */
-    /**
-     * Pops last element from Array.
-     * The function is an implementation of the Array::pop method described
-     * in the ECMA standard. It removes the last element of the Array and
-     * returns it.
-     *
-     * The function is active if the ECMA implementation does not implement
-     * it (like Microsoft JScript engine up to version 5.5).
-     * @treturn Object Last element or undefined
-     */
-    function Array_pop()
-    {
-        var obj;
-        if( this instanceof Array && this.length > 0 )
-        {
-            var last = parseInt( this.length ) - 1;
-            obj = this[last];
-            this.length = last;
-        }
-        return obj;
-    }
-    Array.prototype.pop = Array_pop;
-}   
-if( !Array.prototype.push )
-{ 
-    /**
-     * Pushes elements into Array.
-     * The function is an implementation of the Array::push method described
-     * in the ECMA standard. It adds all given parameters at the end of the
-     * array.
-     *
-     * The function is active if the ECMA implementation does not implement
-     * it (like Microsoft JScript engine up to version 5.5).
-     * @treturn Object Number of added elements
-     */
-    function Array_push()
-    {
-        var i = 0;
-        if( this instanceof Array )
-        {
-            i = this.length;
-            
-            // Preallocation of array
-            if( arguments.length > 0 )
-                this[arguments.length + this.length - 1] = null;
-            
-            for( ; i < this.length; ++i )
-                this[i] = arguments[i - this.length + arguments.length];
-        }       
-        return i;
-    }
-    Array.prototype.push = Array_push;
-}
-
-
-/**
- * \class String
- * Standard ECMA class.
- * \docgen function String() {}
- */
-/**
- * Trims characters from string.
- * @tparam String chars String with characters to remove.  The character may
- * also be a regular expression character class like "\\s" (which is the 
- * default).
- *
- * The function removes the given chararcters \a chars from the beginning an 
- * the end from the current string and returns the result. The function will 
- * not modify the current string.
- *
- * The function is written as String enhancement and available as new member 
- * function of the class String.
- * @treturn String String without given characters at start or end.
- */
-function String_trim( chars )
-{
-    if( !chars )
-        chars = "\\s";
-    var re = new RegExp( "^[" + chars + "]*(.*?)[" + chars + "]*$" );
-    var s = this.replace( re, "$1" );
-    return s;
-}
-String.prototype.trim = String_trim;
-
-
 if( !this.Error )
 {
     /**
@@ -539,6 +152,30 @@ InterfaceDefinitionError.prototype = new JsUnitError();
 InterfaceDefinitionError.prototype.name = "InterfaceDefinitionError";
 
 /**
+ * FunctionGluingError class.
+ * This error class is used for gluing member functions to a class. This convenience
+ * functionality of Function::glue ensures by throwing an instance of this class, that
+ * only valid functions are injected to the prototype. The class has no explicit 
+ * functionality despite the separate type
+ * @see Function::glue
+ * @ctor
+ * Constructor.
+ * The constructor initializes the \c message member with the argument 
+ * \a msg.
+ * @tparam String msg The error message.
+ **/
+function FunctionGluingError( msg )
+{
+    JsUnitError.call( this, msg );
+}
+FunctionGluingError.prototype = new JsUnitError();
+/**
+ * The name of the FunctionGluingError class as String.
+ * @type String
+ **/
+FunctionGluingError.prototype.name = "FunctionGluingError";
+
+/**
  * \class Function
  * Standard ECMA class.
  * \docgen function Function() {}
@@ -584,7 +221,430 @@ function Function_fulfills()
         }
     }
 }
+/**
+ * Glue functions to a JavaScript class as member functions.
+ * The method attachs the functions given as arguments to the prototype of the
+ * current instance.
+ * @exception InterfaceDefinitionError If the current instance of a given
+ * argument is not a Function object with a prototype.
+ */
+function Function_glue()
+{
+    var functions = arguments;
+    if( !this.prototype )
+        throw new FunctionGluingError( 
+            "Current instance is not a Function definition" );
+    var r = /function (\w+)[^\{\}]*\)/;
+    r.exec( this.toString());
+    var className = new String( RegExp.$1 );
+    for( var i = 0; i < functions.length; ++i )
+    {
+        var fn = functions[i];
+        if( typeof( fn ) != "function" )
+            throw new FunctionGluingError( 
+                "Current instance is not a Function definition" );
+        r.exec( fn.toString());
+        var name = new String( RegExp.$1 );
+        if( name.indexOf( className + "_" ) == 0 )
+            name = name.substr( className.length + 1 );
+        if( ! /^[a-z_][\w_]*$/.test( name ))
+            throw new FunctionGluingError( 
+                "Not a valid method name: " + name );
+        this.prototype[name] = fn;
+    }
+}
 Function.prototype.fulfills = Function_fulfills;
+Function.prototype.glue = Function_glue;
+
+
+// MS engine does not implement Array.push and Array.pop until JScript 5.6
+if( !Array.prototype.pop )
+{
+    /**
+     * \class Array
+     * Standard ECMA class.
+     * \docgen function Array() {}
+     */
+    /**
+     * Pops last element from Array.
+     * The function is an implementation of the Array::pop method described
+     * in the ECMA standard. It removes the last element of the Array and
+     * returns it.
+     *
+     * The function is active if the ECMA implementation does not implement
+     * it (like Microsoft JScript engine up to version 5.5).
+     * @treturn Object Last element or undefined
+     */
+    function Array_pop()
+    {
+        var obj;
+        if( this instanceof Array && this.length > 0 )
+        {
+            var last = parseInt( this.length ) - 1;
+            obj = this[last];
+            this.length = last;
+        }
+        return obj;
+    }
+    Array.prototype.pop = Array_pop;
+}   
+if( !Array.prototype.push )
+{ 
+    /**
+     * Pushes elements into Array.
+     * The function is an implementation of the Array::push method described
+     * in the ECMA standard. It adds all given parameters at the end of the
+     * array.
+     *
+     * The function is active if the ECMA implementation does not implement
+     * it (like Microsoft JScript engine up to version 5.5).
+     * @treturn Object Number of added elements
+     */
+    function Array_push()
+    {
+        var i = 0;
+        if( this instanceof Array )
+        {
+            i = this.length;
+            
+            // Preallocation of array
+            if( arguments.length > 0 )
+                this[arguments.length + this.length - 1] = null;
+            
+            for( ; i < this.length; ++i )
+                this[i] = arguments[i - this.length + arguments.length];
+        }       
+        return i;
+    }
+    Array.prototype.push = Array_push;
+}
+
+
+/**
+ * \class String
+ * Standard ECMA class.
+ * \docgen function String() {}
+ */
+/**
+ * Trims characters from string.
+ * @tparam String chars String with characters to remove.  The character may
+ * also be a regular expression character class like "\\s" (which is the 
+ * default).
+ *
+ * The function removes the given chararcters \a chars from the beginning an 
+ * the end from the current string and returns the result. The function will 
+ * not modify the current string.
+ *
+ * The function is written as String enhancement and available as new member 
+ * function of the class String.
+ * @treturn String String without given characters at start or end.
+ */
+function String_trim( chars )
+{
+    if( !chars )
+        chars = "\\s";
+    var re = new RegExp( "^[" + chars + "]*(.*?)[" + chars + "]*$" );
+    var s = this.replace( re, "$1" );
+    return s;
+}
+String.prototype.trim = String_trim;
+
+
+/**
+ * Helper class with static flags.
+ */
+function JsUtil()
+{
+}
+JsUtil.glue(
+/** 
+ * Retrieve the caller of a function.
+ * @tparam Function fn The function to examine.
+ * @treturn Function The caller as Function or undefined.
+ **/
+function JsUtil_getCaller( fn )
+{
+    switch( typeof( fn ))
+    {
+        case "undefined":
+            return JsUtil_getCaller( JsUtil_getCaller );
+            
+        case "function":
+            if( fn.caller )
+                return fn.caller;
+            if( fn.arguments && fn.arguments.caller )
+                return fn.arguments.caller;
+    }
+    return undefined;
+},
+/**
+ * Includes a JavaScript file.
+ * @tparam String fname The file name.
+ * Loads the content of a JavaScript file into a String that has to be
+ * evaluated. Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @note This function is highly quirky. While WSH works as expected, the
+ * Mozilla shells will evaluate the file immediately and add any symbols to
+ * the global name space and return just "true". Therefore you have to 
+ * evaluate the returned string for WSH at global level also. Otherwise the
+ * function is not portable.
+ * @treturn String The JavaScript code to be evaluated.
+ */
+function JsUtil_include( fname )
+{
+    var ret = "true";
+    if( JsUtil.prototype.isMozillaShell || JsUtil.prototype.isKJS )
+    {
+        load( fname );
+    }
+    else if( JsUtil.prototype.isWSH )
+    {
+        var fso = new ActiveXObject( "Scripting.FileSystemObject" );
+        var file = fso.OpenTextFile( fname, 1 );
+        ret = file.ReadAll();
+        file.Close();
+    }
+    return ret;
+},
+/**
+ * Returns the SystemWriter.
+ * Instanciates a SystemWriter depending on the current JavaScript engine.
+ * Works for command line shells WSH, Rhino and SpiderMonkey.
+ * @type SystemWriter
+ */
+function JsUtil_getSystemWriter()
+{
+    if( !JsUtil.prototype.mWriter )
+        JsUtil.prototype.mWriter = new SystemWriter();
+    return JsUtil.prototype.mWriter;
+},
+/**
+ * Quits the JavaScript engine.
+ * @tparam Number ret The exit code.
+ * Stops current JavaScript engine and returns an exit code. Works for 
+ * command line shells WSH, Rhino and SpiderMonkey.
+ */
+function JsUtil_quit( ret )
+{
+    if( JsUtil.prototype.isMozillaShell )
+        quit( ret );
+    else if( JsUtil.prototype.isKJS )
+        exit( ret );
+    else if( JsUtil.prototype.isWSH )
+        WScript.Quit( ret );
+}
+
+);
+/**
+ * The SystemWriter.
+ * @type SystemWriter
+ * @see getSystemWriter
+ */
+JsUtil.prototype.mWriter = null;
+/**
+ * Flag for a browser.
+ * @type Boolean
+ * The member is true, if the script runs within a browser environment.
+ */
+JsUtil.prototype.isBrowser = this.window != null;
+/**
+ * Flag for Microsoft JScript.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft JScript engine.
+ */
+JsUtil.prototype.isJScript = this.ScriptEngine != null;
+/**
+ * Flag for Microsoft Windows Scripting Host.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft Windows Scripting
+ * Host.
+ */
+JsUtil.prototype.isWSH = this.WScript != null;
+/**
+ * Flag for Microsoft IIS.
+ * @type Boolean
+ * The member is true, if the script runs in the Microsoft JScript engine.
+ */
+JsUtil.prototype.isIIS = 
+       JsUtil.prototype.isJScript
+    && this.Server != null;
+/**
+ * Flag for Netscape Enterprise Server (iPlanet) engine.
+ * @type Boolean
+ * The member is true, if the script runs in the iPlanet as SSJS.
+ */
+JsUtil.prototype.isNSServer = 
+       this.Packages != null 
+    && !this.importPackage 
+    && !JsUtil.prototype.isBrowser;
+/**
+ * Flag for Rhino.
+ * @type Boolean
+ * The member is true, if the script runs in an embedded Rhino of Mozilla.org.
+ */
+JsUtil.prototype.isRhino = 
+       this.java != null 
+    && this.java.lang != null 
+    && this.java.lang.System != null;
+/**
+ * Flag for a Mozilla JavaScript shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell of a
+ * Mozilla.org script engine (either SpiderMonkey or Rhino).
+ */
+JsUtil.prototype.isMozillaShell = this.quit != null;
+/**
+ * Flag for a KJS shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell of a
+ * KDE's script engine.
+ */
+JsUtil.prototype.isKJS = this.exit != null;
+/**
+ * Flag for a command line shell.
+ * @type Boolean
+ * The member is true, if the script runs in a command line shell.
+ */
+JsUtil.prototype.isShell = 
+       JsUtil.prototype.isMozillaShell 
+    || JsUtil.prototype.isKJS 
+    || JsUtil.prototype.isWSH;
+/**
+ * Flag for Obtree C4.
+ * @type Boolean
+ * The member is true, if the script runs in Obtree C4 of IXOS.
+ */
+JsUtil.prototype.isObtree = this.WebObject != null;
+/**
+ * Flag for call stack support.
+ * @type Boolean
+ * The member is true, if the engine provides call stack info.
+ */
+JsUtil.prototype.hasCallStackSupport = 
+       JsUtil.prototype.getCaller() !== undefined;
+/**
+ * The global object.
+ * @type Object
+ * The member keeps the execution scope of this file, which is normally the 
+ * global object.
+ */
+JsUtil.prototype.global = this;
+
+
+/**
+ * CallStack object.
+ * The object is extremly system dependent, since its functionality is not
+ * within the range of ECMA 262, 3rd edition. It is supported by JScript
+ * and SpiderMonkey and was supported in Netscape Enterprise Server 2.x, 
+ * but not in the newer version 4.x.
+ * @ctor
+ * Constructor.
+ * The object collects the current call stack up to the JavaScript engine.
+ * Most engines will not support call stack information with a recursion.
+ * Therefore the collection is stopped when the stack has two identical
+ * functions in direct sequence.
+ * @tparam Number depth Maximum recorded stack depth (defaults to 10).
+ **/
+function CallStack( depth )
+{
+    /**
+     * The array with the stack. 
+     * @type Array<String>
+     */
+    this.mStack = null;
+    if( JsUtil.prototype.hasCallStackSupport )
+        this._fill( depth );
+}
+CallStack.glue(
+/**
+ * \internal
+ */
+function CallStack__fill( depth )
+{
+    this.mStack = new Array();
+    
+    // set stack depth to default
+    if( depth == null )
+        depth = 10;
+
+    ++depth;
+    var fn = JsUtil.prototype.getCaller( CallStack__fill );
+    while( fn != null && depth > 0 )
+    {
+        var s = new String( fn );
+        --depth;
+
+        // Extract function name and argument list
+        var r = /function (\w+)([^\{\}]*\))/;
+        r.exec( s );
+        var f = new String( RegExp.$1 );
+        var args = new String( RegExp.$2 );
+        this.mStack.push(( f + args ).replace( /\s/g, "" ));
+
+        // Retrieve caller function
+        if( fn == JsUtil.prototype.getCaller( fn ))
+        {
+            // Some interpreter's caller use global objects and may start
+            // an endless recursion.
+            this.mStack.push( "[JavaScript recursion]" );
+            break;
+        }
+        else
+            fn = JsUtil.prototype.getCaller( fn );
+    }
+
+    if( fn == null )
+        this.mStack.push( "[JavaScript engine]" );
+
+    // remove direct calling function CallStack or CallStack_fill
+    this.mStack.shift();
+},
+/**
+ * Fills the object with the current call stack info.
+ * The function collects the current call stack up to the JavaScript engine.
+ * Any previous data of the instance is lost.
+ * Most engines will not support call stack information with a recursion.
+ * Therefore the collection is stopped when the stack has two identical
+ * functions in direct sequence.
+ * @tparam Number depth Maximum recorded stack depth (defaults to 10).
+ **/
+function CallStack_fill( depth )
+{
+    this.mStack = null;
+    if( JsUtil.prototype.hasCallStackSupport )
+        this._fill( depth );
+},
+/**
+ * Retrieve call stack as array.
+ * The function returns the call stack as Array of Strings. 
+ * @treturn Array<String> The call stack as array of strings.
+ **/
+function CallStack_getStack()
+{
+    var a = new Array();
+    if( this.mStack != null )
+        for( var i = this.mStack.length; i--; )
+            a[i] = this.mStack[i];
+    return a;
+},
+/**
+ * Retrieve call stack as string.
+ * The function returns the call stack as string. Each stack frame has an 
+ * own line and is prepended with the call stack depth.
+ * @treturn String The call stack as string.
+ **/
+function CallStack_toString()
+{
+    var s = "";
+    if( this.mStack != null )
+        for( var i = 1; i <= this.mStack.length; ++i )
+        {
+            if( s.length != 0 )
+                s += "\n";
+            s += i.toString() + ": " + this.mStack[i-1];
+        }
+    return s;
+}
+);
 
 
 /**
@@ -619,6 +679,7 @@ function PrinterWriter()
     this.mBuffer = null;    
     this.mClosed = false;
 }
+PrinterWriter.glue(
 /**
  * Closes the writer.
  * After closing the steam no further writing is allowed. Multiple calls to
@@ -628,7 +689,7 @@ function PrinterWriter_close()
 {
     this.flush();
     this.mClosed = true;
-}
+},
 /**
  * Flushes the writer.
  * Writes any buffered data to the underlaying output stream system immediatly.
@@ -647,7 +708,7 @@ function PrinterWriter_flush()
     else    
         throw new PrinterWriterError( 
             "'flush' called for closed PrinterWriter." );
-}
+},
 /**
  * Prints into the writer.
  * @tparam Object data The data to print as String.
@@ -668,7 +729,7 @@ function PrinterWriter_print( data )
     else    
         throw new PrinterWriterError( 
             "'print' called for closed PrinterWriter." );
-}
+},
 /**
  * Prints a line into the writer.
  * @tparam Object data The data to print as String.
@@ -679,10 +740,7 @@ function PrinterWriter_println( data )
     this.print( data );
     this.flush();
 }
-PrinterWriter.prototype.close = PrinterWriter_close;
-PrinterWriter.prototype.flush = PrinterWriter_flush;
-PrinterWriter.prototype.print = PrinterWriter_print;
-PrinterWriter.prototype.println = PrinterWriter_println;
+);
 /** 
  * \internal 
  */
@@ -696,6 +754,8 @@ function SystemWriter()
 {
     PrinterWriter.call( this );
 } 
+SystemWriter.prototype = new PrinterWriter();
+SystemWriter.glue(
 /**
  * Closes the writer.
  * Function just flushes the writer. Closing the system writer is not possible.
@@ -703,7 +763,7 @@ function SystemWriter()
 function SystemWriter_close() 
 {
     this.flush();
-}
+},
 /** 
  * \internal 
  */
@@ -759,9 +819,7 @@ function SystemWriter__flush( str )
 
     this._flush( str );
 }
-SystemWriter.prototype = new PrinterWriter();
-SystemWriter.prototype.close = SystemWriter_close;
-SystemWriter.prototype._flush = SystemWriter__flush;
+);
 
 
 /**
@@ -772,6 +830,8 @@ function StringWriter()
     PrinterWriter.call( this );
     this.mString = "";
 } 
+StringWriter.prototype = new PrinterWriter();
+StringWriter.glue(
 /**
  * Returns the written String.
  * The function will close also the stream if it is still open.
@@ -782,7 +842,7 @@ function StringWriter_get()
     if( !this.mClosed )
         this.close();
     return this.mString;
-}
+},
 /** 
  * \internal 
  */
@@ -790,9 +850,7 @@ function StringWriter__flush( str )
 {
     this.mString += str;
 }
-StringWriter.prototype = new PrinterWriter();
-StringWriter.prototype.get = StringWriter_get;
-StringWriter.prototype._flush = StringWriter__flush;
+);
 
 
 /**
@@ -807,6 +865,8 @@ function HTMLWriterFilter( writer )
     PrinterWriter.call( this );
     this.setWriter( writer );
 }
+HTMLWriterFilter.prototype = new PrinterWriter();
+HTMLWriterFilter.glue(
 /**
  * Returns the wrapped PrinterWriter.
  * @type PrinterWriter
@@ -814,7 +874,7 @@ function HTMLWriterFilter( writer )
 function HTMLWriterFilter_getWriter() 
 {
     return this.mWriter;
-}
+},
 /**
  * Sets the PrinterWriter to wrap.
  * @tparam PrinterWriter writer The writer to filter.
@@ -823,7 +883,7 @@ function HTMLWriterFilter_getWriter()
 function HTMLWriterFilter_setWriter( writer ) 
 {
     this.mWriter = writer ? writer : new StringWriter();
-}
+},
 /** 
  * \internal 
  */
@@ -838,7 +898,4 @@ function HTMLWriterFilter__flush( str )
     str = str.replace( /\n/g, "<br>" );
     this.mWriter._flush( str );
 }
-HTMLWriterFilter.prototype = new PrinterWriter();
-HTMLWriterFilter.prototype.getWriter = HTMLWriterFilter_getWriter;
-HTMLWriterFilter.prototype.setWriter = HTMLWriterFilter_setWriter;
-HTMLWriterFilter.prototype._flush = HTMLWriterFilter__flush;
+);

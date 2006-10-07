@@ -29,12 +29,16 @@ limitations under the License.
     <li>Added method assertMatches</li>
     <li>New XMLResultPrinter for JUnitReport support</li>
     <li>TextTestRunner supports new argument --xml</li>
+    <li>New TestCollector interface and implementations</li>
+    <li>TextTestRunner supports new argument --run OPTION</li>
     <li>JsUnit Java library with embedded Rhino</li>
 </ul>
 
 \subsection change Design Changes
 
 <ul>
+    <li>Method gluing: The Function object has now a glue method, that will add
+    any function argument to the prototype</li>
     <li>Explicit regular expression support now by assertMatches instead of 
     undocumented functionality in assertEquals</li>
 </ul>
@@ -48,6 +52,8 @@ limitations under the License.
     <li>ResultPrinter failed to print an available CallStack</li>
     <li>ExceptionTestCase does no longer catch AssertionFailedError</li>
     <li>JsUtil.prototype.isRhino is now also true for embedded Rhino</li>
+    <li>BaseTestRunner.getTest returns now a proper TestSuite</li>
+    <li>Fix argument handling for TextTestRunner.start</li>
 </ul>
 
 \section todo ToDo List
