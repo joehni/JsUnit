@@ -27,18 +27,18 @@ limitations under the License.
 <script type="text/javascript" language="JavaScript" src="money/MoneyBag.js"></script>
 <script type="text/javascript" language="JavaScript" src="money/MoneyTest.js"></script>
 <script type="text/javascript" language="JavaScript" src="SimpleTest.js"></script>
-<script type="text/javascript" language="JavaScript" src="AllTests.js"></script>
-
+<script type="text/javascript" language="JavaScript" src="special/Functions.js"></script>
+<script type="text/javascript" language="JavaScript" src="special/FunctionsTest.js"></script>
 </head>
 <body>
 <h1>JsUnit Test</h1>
-<p>Note, for demonstration is <em>SimpleTest.testAdd</em> expected to fail!</p>
+<p><strong>Note, <em>SimpleTest.testAdd</em> is expected to fail for demonstration purposes!</strong></p>
 <script language="JavaScript1.3">
-var runner = new TextTestRunner();
-runner.setPrinter(
-    new ClassicResultPrinter(
-        new HTMLWriterFilter( runner.getPrinter().getWriter())));
-runner.doRun( AllTests.prototype.suite());
+var writer = new HTMLWriterFilter( JsUtil.prototype.getSystemWriter());
+var printer = new ClassicResultPrinter( writer );
+var runner = new EmbeddedTextTestRunner( printer );
+var collector = new TestCaseCollector( this );
+runner.run(collector.collectTests());
 </script>
 </body>
 </html>

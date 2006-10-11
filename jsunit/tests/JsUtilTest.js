@@ -19,8 +19,6 @@ function ErrorTest( name )
 {
     TestCase.call( this, name );
 }
-ErrorTest.prototype = new TestCase();
-ErrorTest.glue(
 function ErrorTest_testAttributes()
 {
     if( Error.prototype.testable )
@@ -29,7 +27,7 @@ function ErrorTest_testAttributes()
         this.assertEquals( "Error", err.name );
         this.assertEquals( "my message", err.message );
     }
-},
+}
 function ErrorTest_testCtorAsFunction()
 {
     if( Error.prototype.testable )
@@ -40,15 +38,14 @@ function ErrorTest_testCtorAsFunction()
         this.assertEquals( "my message", err.message );
     }
 }
-);
+ErrorTest.prototype = new TestCase();
+ErrorTest.glue();
 
 
 function JsUnitErrorTest( name )
 {
     TestCase.call( this, name );
 }
-JsUnitErrorTest.prototype = new TestCase();
-JsUnitErrorTest.glue(
 function JsUnitErrorTest_testAttributes()
 {
     var err = new JsUnitError( "my message" );
@@ -56,68 +53,63 @@ function JsUnitErrorTest_testAttributes()
     this.assertEquals( "my message", err.message );
     err = new JsUnitError();
     this.assertEquals( "", err.message );
-},
+}
 function JsUnitErrorTest_testToString()
 {
     var err = new JsUnitError( "my message" );
     this.assertEquals( "JsUnitError: my message", err.toString());
 }
-);
+JsUnitErrorTest.prototype = new TestCase();
+JsUnitErrorTest.glue();
 
 
 function InterfaceDefinitionErrorTest( name )
 {
     TestCase.call( this, name );
 }
-InterfaceDefinitionErrorTest.prototype = new TestCase();
-InterfaceDefinitionErrorTest.glue(
 function InterfaceDefinitionErrorTest_testAttributes()
 {
     var err = new InterfaceDefinitionError( "my message" );
     this.assertEquals( "InterfaceDefinitionError", err.name );
     this.assertEquals( "my message", err.message );
 }
-);
+InterfaceDefinitionErrorTest.prototype = new TestCase();
+InterfaceDefinitionErrorTest.glue();
 
 
 function FunctionGluingErrorTest( name )
 {
     TestCase.call( this, name );
 }
-FunctionGluingErrorTest.prototype = new TestCase();
-FunctionGluingErrorTest.glue(
 function FunctionGluingErrorTest_testAttributes()
 {
     var err = new FunctionGluingError( "my message" );
     this.assertEquals( "FunctionGluingError", err.name );
     this.assertEquals( "my message", err.message );
 }
-);
+FunctionGluingErrorTest.prototype = new TestCase();
+FunctionGluingErrorTest.glue();
 
 
 function FunctionTest( name )
 {
     TestCase.call( this, name );
 }
-FunctionTest.prototype = new TestCase();
-FunctionTest.glue(
 function FunctionTest_testFulfills()
 {
     function MyInterface1() {}
-    MyInterface1.prototype = new Function();
     MyInterface1.prototype.if1 = function() {}
 
     function MyInterface2() {}
-    MyInterface2.prototype = new Function();
     MyInterface2.prototype.if2 = function() {}
     
     function MyInterface2Ex() {}
     MyInterface2Ex.prototype = new MyInterface2();
     MyInterface2Ex.prototype.if3 = function() {}
-    
+
     function F() {}
     F.prototype.m1 = "member";
-    
+
     this.assertNotNull( F.fulfills );
     var err = null;
     try { F.fulfills( 1 ); } catch( ex ) { err = ex; }
@@ -141,32 +133,40 @@ function FunctionTest_testFulfills()
     G.prototype.if3 = function() {}
 
     G.fulfills( MyInterface1, MyInterface2Ex ); 
-},
+}
 function FunctionTest_testGlue()
 {
-    function F1() {}
-    this.assertUndefined( F1.prototype.a );
-    F1.glue(
-    function F1_a() {}
-    );
-    this.assertEquals( "function", typeof( F1.prototype.a ));
+    this.assertUndefined( FunctionTestGlue.prototype.a );
+    FunctionTestGlue.glue();
+    this.assertEquals( "function", typeof( FunctionTestGlue.prototype.a ));
+    
+    FunctionTestGlue.x = new Object();
+    FunctionTestGlue.x.FunctionTestGlueA_a = function() {};
+    FunctionTestGlueA.glue( FunctionTestGlue.x );
+    this.assertEquals( "function", typeof( FunctionTestGlueA.prototype.a ));
 
     var err = null;
-    try { F1.glue( "Ooops" ); } catch( ex ) { err = ex; }
+    FunctionTestGlue.y = function () {};
+    try { FunctionTestGlue.y.glue(); } catch( ex ) { err = ex; }
     this.assertEquals( "FunctionGluingError", err.name );
-    err = null;
-    try { F1.glue( function F1_1() {} ); } catch( ex ) { err = ex; }
+
+    FunctionTestGlue.z = new Object();
+    FunctionTestGlue.z.FunctionTestGlueZ_11 = function() {};
+    try { FunctionTestGlueZ.glue( FunctionTestGlue.z ); } catch( ex ) { err = ex; }
     this.assertEquals( "FunctionGluingError", err.name );
 }
-);
+FunctionTest.prototype = new TestCase();
+FunctionTest.glue();
+function FunctionTestGlue() {}
+function FunctionTestGlue_a() {}
+function FunctionTestGlueA() {}
+function FunctionTestGlueZ() {}
 
 
 function ArrayTest( name )
 {
     TestCase.call( this, name );
 }
-ArrayTest.prototype = new TestCase();
-ArrayTest.glue(
 function ArrayTest_testPop()
 {
     this.assertEquals( 4, [1,2,3,4].pop());
@@ -180,7 +180,7 @@ function ArrayTest_testPop()
     this.assertEquals( 2, a.pop());
     this.assertEquals( 1, a.pop());
     this.assertUndefined( a.pop());
-},
+}
 function ArrayTest_testPush()
 {
     this.assertEquals( 4, [1,2,3].push( 4 ));
@@ -193,15 +193,14 @@ function ArrayTest_testPush()
     this.assertEquals( 4, a.length );
     this.assertEquals( "1,2,3,4", a.toString());
 }
-);
+ArrayTest.prototype = new TestCase();
+ArrayTest.glue();
 
 
 function StringTest( name )
 {
     TestCase.call( this, name );
 }
-StringTest.prototype = new TestCase();
-StringTest.glue(
 function StringTest_testTrim()
 {
     this.assertEquals( "abc", "bbbabcbbb".trim( "b" ));
@@ -217,15 +216,14 @@ function StringTest_testTrim()
     this.assertEquals( "abc", s.trim( "b" ));
     this.assertEquals( "bbbabcbbb", s );
 }
-);
+StringTest.prototype = new TestCase();
+StringTest.glue();
 
 
 function CallStackTest( name )
 {
     TestCase.call( this, name );
 }
-CallStackTest.prototype = new TestCase();
-CallStackTest.glue(
 function CallStackTest_testCtor()
 {
     if( JsUtil.prototype.hasCallStackSupport )
@@ -240,7 +238,7 @@ function CallStackTest_testCtor()
         this.assertMatches( /^f4\(.*\)$/, cs[4] );
         this.assertMatches( /^CallStackTest_testCtor\(.*\)$/, cs[5] );
     }
-},
+}
 function CallStackTest_testFill()
 {
     if( JsUtil.prototype.hasCallStackSupport )
@@ -253,7 +251,7 @@ function CallStackTest_testFill()
         this.f0();
         this.assertMatches( /^f0\(.*\)$/, this.cs.getStack()[0] );
     }
-},
+}
 function CallStackTest_testGetStack()
 {
     if( JsUtil.prototype.hasCallStackSupport )
@@ -263,7 +261,7 @@ function CallStackTest_testGetStack()
         cs = this.f0();
         this.assertEquals( 10, cs.getStack().length );
     }
-},
+}
 function CallStackTest_testToString()
 {
     if( JsUtil.prototype.hasCallStackSupport )
@@ -274,7 +272,8 @@ function CallStackTest_testToString()
         this.assertTrue( cs.indexOf( "testToString" ) >= 0 );
     }
 }
-);
+CallStackTest.prototype = new TestCase();
+CallStackTest.glue();
 CallStackTest.prototype.ctor = CallStackTest;
 CallStackTest.prototype.f0 = function f0(d) { return new CallStack(d); }
 CallStackTest.prototype.f1 = function f1(d) { return this.f0(d); }
@@ -295,23 +294,20 @@ function PrinterWriterErrorTest( name )
 {
     TestCase.call( this, name );
 }
-PrinterWriterErrorTest.prototype = new TestCase();
-PrinterWriterErrorTest.glue(
 function PrinterWriterErrorTest_testAttributes()
 {
     var err = new PrinterWriterError( "my message" );
     this.assertEquals( "PrinterWriterError", err.name );
     this.assertEquals( "my message", err.message );
 }
-);
+PrinterWriterErrorTest.prototype = new TestCase();
+PrinterWriterErrorTest.glue();
 
 
 function PrinterWriterTest( name )
 {
     TestCase.call( this, name );
 }
-PrinterWriterTest.prototype = new TestCase();
-PrinterWriterTest.glue(
 function PrinterWriterTest_setUp()
 {
     this.mWriter = new PrinterWriter();
@@ -324,17 +320,17 @@ function PrinterWriterTest_setUp()
     {
         return this.mLastLine;
     }
-},
+}
 function PrinterWriterTest_tearDown()
 {
     delete this.mWriter;
-},
+}
 function PrinterWriterTest_testClose()
 {
     this.assertFalse( this.mWriter.mClosed );
     this.mWriter.close();
     this.assertTrue( this.mWriter.mClosed );
-},
+}
 function PrinterWriterTest_testFlush()
 {
     this.assertSame( "", this.mWriter.toString());
@@ -346,7 +342,7 @@ function PrinterWriterTest_testFlush()
     var err = null;
     try { this.mWriter.flush(); } catch( ex ) { err = ex; }
     this.assertEquals( "PrinterWriterError", err.name );
-},
+}
 function PrinterWriterTest_testPrint()
 {
     this.mWriter.print( "Test it" );
@@ -361,22 +357,21 @@ function PrinterWriterTest_testPrint()
     var err = null;
     try { this.mWriter.print( "again" ); } catch( ex ) { err = ex; }
     this.assertEquals( "PrinterWriterError", err.name );
-},
+}
 function PrinterWriterTest_testPrintln()
 {
     this.assertSame( "", this.mWriter.toString());
     this.mWriter.println( "Test it" );
     this.assertEquals( "Test it\n", this.mWriter.toString());
 }
-);
+PrinterWriterTest.prototype = new TestCase();
+PrinterWriterTest.glue();
 
 
 function SystemWriterTest( name )
 {
     TestCase.call( this, name );
 }
-SystemWriterTest.prototype = new TestCase();
-SystemWriterTest.glue(
 function SystemWriterTest_testClose()
 {
     var writer = new SystemWriter();
@@ -385,15 +380,14 @@ function SystemWriterTest_testClose()
     writer.close();
     this.assertFalse( writer.mClosed );
 }
-);
+SystemWriterTest.prototype = new TestCase();
+SystemWriterTest.glue();
 
 
 function StringWriterTest( name )
 {
     TestCase.call( this, name );
 }
-StringWriterTest.prototype = new TestCase();
-StringWriterTest.glue(
 function StringWriterTest_testGet()
 {
     var writer = new StringWriter();
@@ -404,15 +398,14 @@ function StringWriterTest_testGet()
     this.assertEquals( "JsUnit\nrocks!\n", writer.get());
     this.assertTrue( writer.mClosed );
 }
-);
+StringWriterTest.prototype = new TestCase();
+StringWriterTest.glue();
 
 
 function HTMLWriterFilterTest( name )
 {
     TestCase.call( this, name );
 }
-HTMLWriterFilterTest.prototype = new TestCase();
-HTMLWriterFilterTest.glue(
 function HTMLWriterFilterTest_testFlush()
 {
     var filter = new HTMLWriterFilter();
@@ -424,13 +417,13 @@ function HTMLWriterFilterTest_testFlush()
     this.assertMatches( /&quot;/, str );
     this.assertMatches( /&apos;/, str );
     this.assertMatches( /<br>$/, str );
-},
+}
 function HTMLWriterFilterTest_testGetWriter()
 {
     var writer = new PrinterWriter();
     var filter = new HTMLWriterFilter( writer );
     this.assertSame( writer, filter.getWriter());
-},
+}
 function HTMLWriterFilterTest_testSetWriter()
 {
     var filter = new HTMLWriterFilter();
@@ -439,7 +432,8 @@ function HTMLWriterFilterTest_testSetWriter()
     filter.setWriter( writer );
     this.assertSame( writer, filter.getWriter());
 }
-);
+HTMLWriterFilterTest.prototype = new TestCase();
+HTMLWriterFilterTest.glue();
 
 
 function JsUtilTestSuite()

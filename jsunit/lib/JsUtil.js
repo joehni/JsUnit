@@ -88,6 +88,7 @@ else
     Error.prototype.testable = false;
 }
 
+
 /**
  * JsUnitError class.
  * Since ECMA does not define any inheritability of the Error class and the
@@ -128,6 +129,7 @@ JsUnitError.prototype.toString = JsUnitError_toString;
  */
 JsUnitError.prototype.name = "JsUnitError";
 
+
 /**
  * InterfaceDefinitionError class.
  * This error class is used for interface definitions. Such definitions are 
@@ -150,6 +152,7 @@ InterfaceDefinitionError.prototype = new JsUnitError();
  * @type String
  **/
 InterfaceDefinitionError.prototype.name = "InterfaceDefinitionError";
+
 
 /**
  * FunctionGluingError class.
@@ -174,6 +177,7 @@ FunctionGluingError.prototype = new JsUnitError();
  * @type String
  **/
 FunctionGluingError.prototype.name = "FunctionGluingError";
+
 
 /**
  * \class Function
@@ -228,15 +232,34 @@ function Function_fulfills()
  * @exception InterfaceDefinitionError If the current instance of a given
  * argument is not a Function object with a prototype.
  */
-function Function_glue()
+function Function_glue( scope )
 {
-    var functions = arguments;
     if( !this.prototype )
         throw new FunctionGluingError( 
             "Current instance is not a Function definition" );
     var r = /function (\w+)[^\{\}]*\)/;
-    r.exec( this.toString());
+    if( !r.exec( this.toString()))
+        throw new FunctionGluingError( "Cannot glue to anonymous function" );
     var className = new String( RegExp.$1 );
+    if( scope  === undefined )
+        scope = JsUtil.prototype.global;
+    for( var name in scope ) 
+    {
+        if( name.indexOf( className + "_" ) == 0 )
+        {
+            var fnName = name.substr( className.length + 1 );
+            var fn = scope[name];
+            if( typeof( fn ) == "function" ) 
+            {
+                if( ! /^[a-z_][\w]*$/.test( fnName ))
+                    throw new FunctionGluingError( 
+                        "Not a valid method name: " + fnName );
+                this.prototype[fnName] = fn;
+            }
+        }
+    }
+/*
+    var functions = arguments;
     for( var i = 0; i < functions.length; ++i )
     {
         var fn = functions[i];
@@ -252,6 +275,7 @@ function Function_glue()
                 "Not a valid method name: " + name );
         this.prototype[name] = fn;
     }
+*/    
 }
 Function.prototype.fulfills = Function_fulfills;
 Function.prototype.glue = Function_glue;
@@ -356,7 +380,6 @@ String.prototype.trim = String_trim;
 function JsUtil()
 {
 }
-JsUtil.glue(
 /** 
  * Retrieve the caller of a function.
  * @tparam Function fn The function to examine.
@@ -376,7 +399,7 @@ function JsUtil_getCaller( fn )
                 return fn.arguments.caller;
     }
     return undefined;
-},
+}
 /**
  * Includes a JavaScript file.
  * @tparam String fname The file name.
@@ -404,7 +427,7 @@ function JsUtil_include( fname )
         file.Close();
     }
     return ret;
-},
+}
 /**
  * Returns the SystemWriter.
  * Instanciates a SystemWriter depending on the current JavaScript engine.
@@ -416,7 +439,7 @@ function JsUtil_getSystemWriter()
     if( !JsUtil.prototype.mWriter )
         JsUtil.prototype.mWriter = new SystemWriter();
     return JsUtil.prototype.mWriter;
-},
+}
 /**
  * Quits the JavaScript engine.
  * @tparam Number ret The exit code.
@@ -432,8 +455,10 @@ function JsUtil_quit( ret )
     else if( JsUtil.prototype.isWSH )
         WScript.Quit( ret );
 }
-
-);
+JsUtil.prototype.getCaller = JsUtil_getCaller;
+JsUtil.prototype.getSystemWriter = JsUtil_getSystemWriter;
+JsUtil.prototype.include = JsUtil_include;
+JsUtil.prototype.quit = JsUtil_quit;
 /**
  * The SystemWriter.
  * @type SystemWriter
@@ -554,7 +579,7 @@ function CallStack( depth )
     if( JsUtil.prototype.hasCallStackSupport )
         this._fill( depth );
 }
-CallStack.glue(
+
 /**
  * \internal
  */
@@ -597,7 +622,7 @@ function CallStack__fill( depth )
 
     // remove direct calling function CallStack or CallStack_fill
     this.mStack.shift();
-},
+}
 /**
  * Fills the object with the current call stack info.
  * The function collects the current call stack up to the JavaScript engine.
@@ -612,7 +637,7 @@ function CallStack_fill( depth )
     this.mStack = null;
     if( JsUtil.prototype.hasCallStackSupport )
         this._fill( depth );
-},
+}
 /**
  * Retrieve call stack as array.
  * The function returns the call stack as Array of Strings. 
@@ -625,7 +650,7 @@ function CallStack_getStack()
         for( var i = this.mStack.length; i--; )
             a[i] = this.mStack[i];
     return a;
-},
+}
 /**
  * Retrieve call stack as string.
  * The function returns the call stack as string. Each stack frame has an 
@@ -644,8 +669,10 @@ function CallStack_toString()
         }
     return s;
 }
-);
-
+CallStack.prototype._fill = CallStack__fill;
+CallStack.prototype.fill = CallStack_fill;
+CallStack.prototype.getStack = CallStack_getStack;
+CallStack.prototype.toString = CallStack_toString;
 
 /**
  * PrinterWriterError class.
@@ -679,7 +706,6 @@ function PrinterWriter()
     this.mBuffer = null;    
     this.mClosed = false;
 }
-PrinterWriter.glue(
 /**
  * Closes the writer.
  * After closing the steam no further writing is allowed. Multiple calls to
@@ -689,7 +715,7 @@ function PrinterWriter_close()
 {
     this.flush();
     this.mClosed = true;
-},
+}
 /**
  * Flushes the writer.
  * Writes any buffered data to the underlaying output stream system immediatly.
@@ -708,7 +734,7 @@ function PrinterWriter_flush()
     else    
         throw new PrinterWriterError( 
             "'flush' called for closed PrinterWriter." );
-},
+}
 /**
  * Prints into the writer.
  * @tparam Object data The data to print as String.
@@ -729,7 +755,7 @@ function PrinterWriter_print( data )
     else    
         throw new PrinterWriterError( 
             "'print' called for closed PrinterWriter." );
-},
+}
 /**
  * Prints a line into the writer.
  * @tparam Object data The data to print as String.
@@ -740,7 +766,10 @@ function PrinterWriter_println( data )
     this.print( data );
     this.flush();
 }
-);
+PrinterWriter.prototype.close = PrinterWriter_close;
+PrinterWriter.prototype.flush = PrinterWriter_flush;
+PrinterWriter.prototype.print = PrinterWriter_print;
+PrinterWriter.prototype.println = PrinterWriter_println;
 /** 
  * \internal 
  */
@@ -754,8 +783,6 @@ function SystemWriter()
 {
     PrinterWriter.call( this );
 } 
-SystemWriter.prototype = new PrinterWriter();
-SystemWriter.glue(
 /**
  * Closes the writer.
  * Function just flushes the writer. Closing the system writer is not possible.
@@ -763,7 +790,7 @@ SystemWriter.glue(
 function SystemWriter_close() 
 {
     this.flush();
-},
+}
 /** 
  * \internal 
  */
@@ -819,7 +846,9 @@ function SystemWriter__flush( str )
 
     this._flush( str );
 }
-);
+SystemWriter.prototype = new PrinterWriter();
+SystemWriter.prototype.close = SystemWriter_close;
+SystemWriter.prototype._flush = SystemWriter__flush;
 
 
 /**
@@ -830,8 +859,6 @@ function StringWriter()
     PrinterWriter.call( this );
     this.mString = "";
 } 
-StringWriter.prototype = new PrinterWriter();
-StringWriter.glue(
 /**
  * Returns the written String.
  * The function will close also the stream if it is still open.
@@ -842,7 +869,7 @@ function StringWriter_get()
     if( !this.mClosed )
         this.close();
     return this.mString;
-},
+}
 /** 
  * \internal 
  */
@@ -850,7 +877,9 @@ function StringWriter__flush( str )
 {
     this.mString += str;
 }
-);
+StringWriter.prototype = new PrinterWriter();
+StringWriter.prototype.get = StringWriter_get;
+StringWriter.prototype._flush = StringWriter__flush;
 
 
 /**
@@ -865,8 +894,6 @@ function HTMLWriterFilter( writer )
     PrinterWriter.call( this );
     this.setWriter( writer );
 }
-HTMLWriterFilter.prototype = new PrinterWriter();
-HTMLWriterFilter.glue(
 /**
  * Returns the wrapped PrinterWriter.
  * @type PrinterWriter
@@ -874,7 +901,7 @@ HTMLWriterFilter.glue(
 function HTMLWriterFilter_getWriter() 
 {
     return this.mWriter;
-},
+}
 /**
  * Sets the PrinterWriter to wrap.
  * @tparam PrinterWriter writer The writer to filter.
@@ -883,7 +910,7 @@ function HTMLWriterFilter_getWriter()
 function HTMLWriterFilter_setWriter( writer ) 
 {
     this.mWriter = writer ? writer : new StringWriter();
-},
+}
 /** 
  * \internal 
  */
@@ -898,4 +925,7 @@ function HTMLWriterFilter__flush( str )
     str = str.replace( /\n/g, "<br>" );
     this.mWriter._flush( str );
 }
-);
+HTMLWriterFilter.prototype = new PrinterWriter();
+HTMLWriterFilter.prototype.getWriter = HTMLWriterFilter_getWriter;
+HTMLWriterFilter.prototype.setWriter = HTMLWriterFilter_setWriter;
+HTMLWriterFilter.prototype._flush = HTMLWriterFilter__flush;

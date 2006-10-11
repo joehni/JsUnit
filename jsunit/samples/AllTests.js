@@ -54,21 +54,18 @@ function AllTests_suite()
 AllTests.prototype = new TestSuite();
 AllTests.prototype.suite = AllTests_suite;
 
-if( JsUtil.prototype.isShell )
+var args;
+if( this.WScript )
 {
-    var args;
-    if( this.WScript )
-    {
-        args = new Array();
-        for( var i = 0; i < WScript.Arguments.Count(); ++i )
-            args[i] = WScript.Arguments( i );
-    }
-    else if( this.arguments )
-        args = arguments;
-    else
-        args = new Array();
-        
-    var result = TextTestRunner.prototype.main( args );
-    JsUtil.prototype.quit( result );
+    args = new Array();
+    for( var i = 0; i < WScript.Arguments.Count(); ++i )
+        args[i] = WScript.Arguments( i );
 }
+else if( this.arguments )
+    args = arguments;
+else
+    args = new Array();
+    
+var result = TextTestRunner.prototype.main( args );
+JsUtil.prototype.quit( result );
 
