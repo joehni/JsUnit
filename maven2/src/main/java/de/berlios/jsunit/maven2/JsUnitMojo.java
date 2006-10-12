@@ -58,9 +58,9 @@ import java.util.List;
  */
 public class JsUnitMojo extends AbstractMojo {
 
-    private static final String RUN_ALLTESTS = "RUN_ALLTESTS";
-    private static final String RUN_TESTSUITES = "RUN_TESTSUITES";
-    private static final String RUN_TESTCASES = "RUN_TESTCASES";
+    private static final String RUN_ALLTESTS = "ALLTESTS";
+    private static final String RUN_TESTSUITES = "TESTSUITES";
+    private static final String RUN_TESTCASES = "TESTCASES";
     private static final List RUN_TYPES = new ArrayList(Arrays.asList(new String[]{
         RUN_ALLTESTS, RUN_TESTSUITES, RUN_TESTCASES}));
 

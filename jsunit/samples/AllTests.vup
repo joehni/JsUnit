@@ -97,6 +97,20 @@ SOURCE=.\ArrayTest.js
 # End Source File
 # Begin Source File
 
+SOURCE=.\demo\Demo.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# End Target
+# End Project
+
+SOURCE=.\demo\DemoTest.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# End Target
+# End Project
+
 SOURCE=.\money\IMoney.js
 # PROP BASE Deployment_Mode 1
 # PROP Deployment_Mode 1

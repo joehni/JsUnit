@@ -1,8 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
     <!--
         Copyright (C) 2006 Jörg Schaible
-        Created on 17.09.2006 by Jörg Schaible
+        Created on 02.10.2006 by Jörg Schaible
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -24,20 +23,15 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jsunit</artifactId>
+    <artifactId>jsunit-samples</artifactId>
     <packaging>jar</packaging>
-    <name>JsUnit</name>
+    <name>JsUnit Samples</name>
 
     <build>
-        <sourceDirectory>${basedir}/java/main</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>${basedir}/lib</directory>
-            </resource>
-        </resources>
-        <testSourceDirectory>${basedir}/java/test</testSourceDirectory>
+        <directory>../target/sample</directory>
+        <outputDirectory>../target/sample/classes</outputDirectory>
+        <testOutputDirectory>../target/sample/test-classes</testOutputDirectory>
         <plugins>
-            <!-- Need first some kind of beta release ...
             <plugin>
                 <groupId>de.berlios.jsunit</groupId>
                 <artifactId>jsunit-maven2-plugin</artifactId>
@@ -45,19 +39,20 @@
                     <execution>
                         <id>test</id>
                         <configuration>
-                            <sourceDirectory>lib</sourceDirectory>
+                            <sourceDirectory>.</sourceDirectory>
                             <sources>
-                                <source>JsUtil.js</source>
-                                <source>JsUnit.js</source>
+                                <source>money/IMoney.js</source>
+                                <source>money/Money.js</source>
+                                <source>money/MoneyBag.js</source>
                             </sources>
-                            <testSourceDirectory>tests</testSourceDirectory>
-                            <reportsDirectory>target/surefire-reports</reportsDirectory>
+                            <testSourceDirectory>.</testSourceDirectory>
+                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                             <testSuites>
                                 <testSuite>
-                                    <name>JsUnitSuite</name>
-                                    <type>TESTSUITES</type>
+                                    <name>SampleSuite</name>
+                                    <type>TESTCASES</type>
                                     <includes>
-                                        <include>*.js</include>
+                                        <include>money/*.js</include>
                                     </includes>
                                 </testSuite>
                             </testSuites>
@@ -68,41 +63,18 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock-cglib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-        </dependency>
-    </dependencies>
-    
     <reporting>
+        <outputDirectory>${project.build.directory}/site</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>
-
 </project>
-

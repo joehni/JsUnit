@@ -72,7 +72,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("SourceTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("TESTCASES"));
         suite.setName("Source");
         suite.setToDir(outDir);
 
@@ -94,7 +94,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("FirstTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("TESTCASES"));
         suite.setName("First");
         suite.setToDir(outDir);
 
@@ -103,7 +103,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("IsolatedTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("TESTCASES"));
         suite.setName("Isolated");
         suite.setToDir(outDir);
 
@@ -130,7 +130,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("ErrorTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("TESTCASES"));
         suite.setName("Error");
         suite.setToDir(outDir);
 
@@ -153,7 +153,7 @@ public class JsUnitTaskTest extends MockObjectTestCase {
         fileSet.setDir(new File("src/test/js"));
         fileSet.setIncludes("FailureTest.js");
         suite.addFileSet(fileSet);
-        suite.setType(new JsUnitSuite.TestRunType("RUN_TESTCASES"));
+        suite.setType(new JsUnitSuite.TestRunType("TESTCASES"));
         suite.setName("Failure");
         suite.setToDir(outDir);
 

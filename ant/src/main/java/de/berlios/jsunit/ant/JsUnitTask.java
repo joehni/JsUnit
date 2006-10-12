@@ -42,7 +42,7 @@ import java.util.List;
  *   
  *   &lt;jsunit dir=&quot;sourceDir&quot;&gt;
  *       &lt;source file=&quot;money/IMoney.js&quot; /&gt;
- *       &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;RUN_TESTSUITES&quot;&gt;
+ *       &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;TESTSUITES&quot;&gt;
  *           &lt;fileset dir=&quot;.&quot;&gt;
  *               &lt;include name=&quot;* /**Test.js&quot; /&gt;
  *           &lt;/fileset&gt;
@@ -57,14 +57,14 @@ import java.util.List;
  * values:
  * </p>
  * <dl>
- * <dt>RUN_ALLTESTS</dt>
+ * <dt>ALLTESTS</dt>
  * <dd>Looks for a class AllTests dervied from TestSuite and runs its suite.</dd>
- * <dt>RUN_TESTSUITES</dt>
+ * <dt>TESTSUITES</dt>
  * <dd>Looks for all classes ending with TestSuite and that are dervied from TestSuite and run
- * their suites (the default).</dd>
- * <dt>RUN_TESTCASES</dt>
+ * their suites.</dd>
+ * <dt>TESTCASES</dt>
  * <dd>Looks for all classes ending with TestCase and that are dervied from TestCase and runs
- * them.</dd>
+ * them (the default).</dd>
  * </dl>
  * 
  * @author J&ouml;rg Schaible

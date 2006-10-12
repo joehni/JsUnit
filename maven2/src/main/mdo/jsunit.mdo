@@ -40,10 +40,10 @@
                 </field>
                 <field>
                     <name>type</name>
-                    <description>The run type of the test (RUN_ALLTESTS, RUN_TESTSUITES, RUN_TESTCASES).</description>
+                    <description>The run type of the test (ALLTESTS, TESTSUITES, TESTCASES).</description>
                     <version>1.0.0+</version>
                     <type>String</type>
-                    <defaultValue>RUN_TESTCASES</defaultValue>
+                    <defaultValue>TESTCASES</defaultValue>
                 </field>
                 <field>
                     <name>includes</name>

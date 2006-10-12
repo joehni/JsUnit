@@ -50,7 +50,7 @@ public class JsUnitSuite {
 
     private String name;
     private File toDir;
-    private TestRunType type = new TestRunType("RUN_TESTSUITES");
+    private TestRunType type = new TestRunType("TESTCASES");
     private final Vector fileSets = new Vector();
     private int errors;
     private int failures;
@@ -127,7 +127,7 @@ public class JsUnitSuite {
         }
 
         public String[] getValues() {
-            return new String[]{"RUN_ALLTESTS", "RUN_TESTSUITES", "RUN_TESTCASES"};
+            return new String[]{"ALLTESTS", "TESTSUITES", "TESTCASES"};
         }
     }
 

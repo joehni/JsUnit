@@ -1929,6 +1929,9 @@ function TextTestRunner_start( args )
                         else if( optArg == "TESTSUITES" )
                             collector = new TestSuiteCollector( 
                                 JsUtil.prototype.global );
+                        else if( optArg == "ALLTESTS" )
+                            collector = new AllTestsCollector( 
+                                JsUtil.prototype.global );
                         if( collector )
                         {
                             var collection = collector.collectTests();

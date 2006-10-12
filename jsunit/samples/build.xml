@@ -30,7 +30,8 @@
             <source file="money/IMoney.js" />
             <source file="money/Money.js" />
             <source file="money/MoneyBag.js" />
-            <testsuite name="TrivialTests" todir="${test.reports.dir}">
+            <source file="demo/Demo.js" />
+            <testsuite name="LocalTests" todir="${test.reports.dir}">
                 <fileset dir=".">
                     <include name="*Test.js" />
                 </fileset>
@@ -38,6 +39,11 @@
             <testsuite name="MoneyTests" todir="${test.reports.dir}">
                 <fileset dir=".">
                     <include name="money/**Test.js" />
+                </fileset>
+            </testsuite>
+            <testsuite name="DemoSuite" todir="${test.reports.dir}">
+                <fileset dir=".">
+                    <include name="demo/**Test.js" />
                 </fileset>
             </testsuite>
         </jsunit>

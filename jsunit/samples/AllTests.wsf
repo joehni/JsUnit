@@ -20,6 +20,8 @@ limitations under the License.
 <script language="JScript" src="../lib/JsUtil.js" />
 <script language="JScript" src="../lib/JsUnit.js" />
 <script language="JScript" src="ArrayTest.js" />
+<script language="JScript" src="demo/Demo.js" />
+<script language="JScript" src="demo/DemoTest.js" />
 <script language="JScript" src="money/IMoney.js" />
 <script language="JScript" src="money/Money.js" />
 <script language="JScript" src="money/MoneyBag.js" />
