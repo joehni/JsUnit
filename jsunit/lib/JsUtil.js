@@ -674,6 +674,7 @@ CallStack.prototype.fill = CallStack_fill;
 CallStack.prototype.getStack = CallStack_getStack;
 CallStack.prototype.toString = CallStack_toString;
 
+
 /**
  * PrinterWriterError class.
  * This error class is used for errors in the PrinterWriter.

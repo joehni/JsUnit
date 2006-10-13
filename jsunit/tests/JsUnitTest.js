@@ -1566,14 +1566,15 @@ function XMLResultPrinterTest_testEndTest()
 function XMLResultPrinterTest_testPrint()
 {
     var xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>\n'
-        +  '<testsuite errors="0" failures="0" name="TestSuite" tests="1" time="1.1">\n'
+        +  '<testsuite errors="1" failures="0" name="TestSuite" tests="2" time="1.1">\n'
         +  '    <testcase name="TestCase1" time="0.2"/>\n'
         +  '    <testcase name="TestCase2" time="0.9">\n'
         +  '        <error message="An error &lt;&gt;&quot;&apos;!" type=""/>\n'
         +  '    </testcase>\n'
         +  '</testsuite>\n';
     var result = new TestResult();
-    result.mRunTests = 1;
+    result.runCount = function() { return 2; }
+    result.errorCount = function() { return 1; }
     this.printer.mSuite = "TestSuite";
     var test = new Object();
     test.mName = "TestCase1";

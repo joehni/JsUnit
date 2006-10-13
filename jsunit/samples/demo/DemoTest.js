@@ -25,40 +25,118 @@ function EmailValidatorTest( name )
 }
 function EmailValidatorTest_testStandardEmail()
 {
-    this.assertTrue( verifyEmail( "john.doe@acme.com" ));
+    this.assertTrue( validateEmailAddress( "john.doe@acme.com" ));
 }
 function EmailValidatorTest_testEmailToLocalhost()
 {
-    this.assertTrue( verifyEmail( "root@localhost" ));
+    this.assertTrue( validateEmailAddress( "root@localhost" ));
+}
+function EmailValidatorTest_testEmailHasAnAtSign()
+{
+    this.assertFalse( validateEmailAddress( "john.doe.AT.acme.org" ));
 }
 function EmailValidatorTest_testEmailUsesASCII7Charcters()
 {
-    this.assertFalse( verifyEmail( "jörg@localhost" ));
+    this.assertFalse( validateEmailAddress( "jörg@localhost" ));
 }
 function EmailValidatorTest_testDomainHasARoot()
 {
-    this.assertFalse( verifyEmail( "john.doe@noroot" ));
+    this.assertFalse( validateEmailAddress( "john.doe@noroot" ));
 }
 function EmailValidatorTest_testDomainRootHasAtLeastTwoCharacters()
 {
-    this.assertFalse( verifyEmail( "john.doe@test.x" ));
+    this.assertFalse( validateEmailAddress( "john.doe@test.x" ));
 }
 function EmailValidatorTest_testNameMayNotEndWithDot()
 {
-    this.assertFalse( verifyEmail( "john.@test.x" ));
+    this.assertFalse( validateEmailAddress( "john.@test.x" ));
 }
 function EmailValidatorTest_testNameMayNotStartWithDot()
 {
-    this.assertFalse( verifyEmail( ".doe@test.x" ));
+    this.assertFalse( validateEmailAddress( ".doe@test.x" ));
 }
 function EmailValidatorTest_testNameMustExist()
 {
-    this.assertFalse( verifyEmail( "@test.x" ));
+    this.assertFalse( validateEmailAddress( "@test.x" ));
 }
 function EmailValidatorTest_testDomainMustExist()
 {
-    this.assertFalse( verifyEmail( "joehn.doe@" ));
+    this.assertFalse( validateEmailAddress( "joehn.doe@" ));
+}
+function EmailValidatorTest_testUndefinedArgumentAsAddress()
+{
+    this.assertFalse( validateEmailAddress());
+}
+function EmailValidatorTest_testEmptyAddress()
+{
+    this.assertFalse( validateEmailAddress( "" ));
 }
 EmailValidatorTest.prototype = new TestCase();
 EmailValidatorTest.glue();
+
+
+
+function ValidatingElementTest( name )
+{
+    TestCase.call( this, name );
+}
+function ValidatingElementTest_testWithEmailValidator()
+{
+    var element = new Object();
+    var validator = new EmailValidator();
+    var field = new ValidatingFieldElement( element, validator );
+
+    this.assertEquals("#FF0000", element.bgColor);
+    element.value = "john.doe@acme.org";
+    element.onChange();
+    this.assertEquals("#00FF00", element.bgColor);
+}
+function ValidatingElementTest_testWithMock()
+{
+    var element = new Object();
+    var validator = new Validator();
+    validator.validate = function ()
+    {
+        Assert.prototype.assertEquals("demo");
+        this.wasCalled = true;
+    }
+    var field = new ValidatingFieldElement( element, validator );
+
+    element.value = "demo";
+    element.onChange();
+    this.assertTrue(validator.wasCalled);
+}
+ValidatingElementTest.prototype = new TestCase();
+ValidatingElementTest.glue();
+
+
+
+function ObjectProvidingTest( name )
+{
+    TestCase.call( this, name );
+}
+function ObjectProvidingTest_setUp()
+{
+    this.writer = new StringWriter();
+    this.printer = new XMLResultPrinter( this.writer );
+}
+function ObjectProvidingTest_testPrint()
+{
+    var xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>\n'
+        +  '<testsuite errors="0" failures="0" name="TestSuite" tests="1" time="1.1">\n'
+        +  '    <testcase name="TestCase1" time="0.2"/>\n'
+        +  '</testsuite>\n';
+    var result = new TestResult();
+    result.runCount = function() { return 1; }
+    this.printer.mSuite = "TestSuite";
+    var test = new Object();
+    test.mName = "TestCase1";
+    test.mTime = "0.2";
+    this.printer.mTests.push( test );
+    this.printer.print( result, 1100 );
+    this.assertEquals( xml, this.writer.get());
+}
+ObjectProvidingTest.prototype = new TestCase();
+ObjectProvidingTest.glue();
+
 

@@ -16,10 +16,58 @@ limitations under the License.
 */
 
 /**
- * Verifys the syntax of an email address.
- * @tparam String email the email address to verify.
+ * Validates the syntax of an email address.
+ * @tparam String address the email address to validate.
+ * @treturn Boolean Returns true if the email address is valid.
  */
-function verifyEmail( email )
+function validateEmailAddress( address )
 {
-    return /^(\w[\w.]*)*\w+@(localhost|\w+(\.\w{2,})+)$/.test(email);
+    return /^(\w[\w.]*)*\w+@(localhost|\w+(\.\w{2,})+)$/.test( address );
 }
+
+
+/**
+ * A generic validator interface.
+ */
+function Validator()
+{
+}
+/**
+ * Validate a text.
+ * @treturn Boolean Returns true if the text is valid.
+ */
+Validator.prototype.validate = function(text) {}
+
+/**
+ * A validator for an email address.
+ */
+function EmailValidator()
+{
+}
+EmailValidator.prototype = new Validator();
+EmailValidator.prototype.validate = validateEmailAddress;
+EmailValidator.fulfills( Validator );
+
+/**
+ * An element representation of a field.
+ * @ctor
+ * The constructor.
+ * @tparam Object element the element to observe
+ * @tparam Validator validator the validator of the element
+ */
+function ValidatingFieldElement(element, validator)
+{
+    element.fieldReference = this;
+    element.onChange = function () {
+        this.fieldReference.callback();
+    }
+    element.bgColor = "#FF0000";
+    this.validator = validator;
+    this.element = element;
+}
+function ValidatingFieldElement_callback()
+{
+    this.element.bgColor = 
+        this.validator.validate( this.element.value ) ? "#00FF00" : "#FF0000";
+}
+ValidatingFieldElement.prototype.callback = ValidatingFieldElement_callback;
