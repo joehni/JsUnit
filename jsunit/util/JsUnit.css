@@ -19,8 +19,17 @@ h1 { text-align: center; font-family:Times,serif }
 caption { font-weight: bold }
 hr { border-color: rgb(198,166,70); border-style: solid }
 img { border-color: #ffffcc; border-style: ridge; border-width: 6px }
-a.qindex {}
-a.qindexRef {}
+div.tabs { 
+    float: left; 
+    width: 100%; 
+    margin-bottom: 6px; 
+    border-color: rgb(198,166,70); 
+    border-bottom-style: solid; 
+    border-bottom-width: 2px 
+}
+div.tabs ul { margin: 0px; padding-left: 10px; padding-bottom: 8px; list-style: none; }
+div.tabs li, div.tabs form { display: inline; padding: 0px; margin: 0px; }
+div.tabs form { float: right }
 a.el { text-decoration: none; font-weight: bold }
 a.elRef { font-weight: bold }
 a.code { text-decoration: none; font-weight: normal; color: #4444ee }
