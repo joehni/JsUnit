@@ -39,8 +39,8 @@ else
     HAVE_DOT="YES"
 fi
 OUTPUT_DIRECTORY=.
-VERSION=`dirname $0`/version.cfg
-VERSION=`cat $VERSION`
+VERSION=`dirname $0`/../pom.xml
+VERSION=`grep version ../pom.xml | line | sed -e 's,.*<version>\(.\+\)</version>.*,\1,g'`
 GENERATE_HTML=YES
 PERL_PATH=/usr/bin/perl
 if test `uname -s | grep -ic CYGWIN` -gt 0; then
