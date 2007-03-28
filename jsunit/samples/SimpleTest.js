@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,11 +67,7 @@ function SimpleTest_testExceptions()
     }
 }
 SimpleTest.prototype = new TestCase();
-SimpleTest.prototype.setUp = SimpleTest_setUp;
-SimpleTest.prototype.testAdd = SimpleTest_testAdd;
-SimpleTest.prototype.testDivideByZero = SimpleTest_testDivideByZero;
-SimpleTest.prototype.testAsserts = SimpleTest_testAsserts;
-SimpleTest.prototype.testExceptions = SimpleTest_testExceptions;
+SimpleTest.glue();
 
 
 function SimpleTestSuite()

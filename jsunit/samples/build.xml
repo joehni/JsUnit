@@ -26,7 +26,7 @@
         
     <target name="test" depends="clean">
         <mkdir dir="${test.reports.dir}" />
-        <jsunit>
+        <jsunit haltonerror="false" haltonfailure="false">
             <source file="money/IMoney.js" />
             <source file="money/Money.js" />
             <source file="money/MoneyBag.js" />
@@ -41,7 +41,7 @@
                     <include name="money/**Test.js" />
                 </fileset>
             </testsuite>
-            <testsuite name="DemoSuite" todir="${test.reports.dir}">
+            <testsuite name="DemoSuite" todir="${test.reports.dir}" characterSet="UTF-8">
                 <fileset dir=".">
                     <include name="demo/**Test.js" />
                 </fileset>
