@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2006 Jörg Schaible
- * Created on 17.09.2006 by Jörg Schaible
+ * Copyright (C) 2006,2007 Joerg Schaible
+ * Created on 17.09.2006 by Joerg Schaible
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package de.berlios.jsunit.ant;
 import de.berlios.jsunit.JsUnitException;
 import de.berlios.jsunit.JsUnitRhinoRunner;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -30,11 +31,14 @@ import org.apache.tools.ant.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Vector;
@@ -54,6 +58,7 @@ public class JsUnitSuite {
     private final Vector fileSets = new Vector();
     private int errors;
     private int failures;
+    private String charSet;
 
     /**
      * Set the name of the test suite.
@@ -107,6 +112,26 @@ public class JsUnitSuite {
     }
 
     /**
+     * Sets the character set.
+     * 
+     * @param characterSet the name of the character set
+     * @since upcoming
+     */
+    public void setCharacterSet(final String characterSet) {
+        charSet = characterSet;
+    }
+
+    /**
+     * Requests the character set
+     * 
+     * @return the name of the character set or <code>null</code>
+     * @since upcoming
+     */
+    public String getCharacterSet() {
+        return charSet;
+    }
+
+    /**
      * The enumeration fr the test type.
      * 
      * @since upcoming
@@ -140,7 +165,7 @@ public class JsUnitSuite {
      * @since upcoming
      */
     public void run(final Project project, final JsUnitRhinoRunner runner)
-                                                                          throws BuildException {
+        throws BuildException {
         if (!toDir.isDirectory()) {
             toDir.mkdirs();
         }
@@ -151,15 +176,22 @@ public class JsUnitSuite {
             for (int i = 0; i < files.length; i++) {
                 final File file = new File(scanner.getBasedir(), files[i]);
                 try {
-                    runner.load(new FileReader(file), files[i]);
-                    project.log("Loaded " + file.getPath(), Project.MSG_DEBUG);
+                    final InputStream in = new FileInputStream(file);
+                    try {
+                        final Reader reader = charSet != null ? new InputStreamReader(
+                            in, charSet) : new InputStreamReader(in);
+                        runner.load(reader, files[i]);
+                        project.log("Loaded " + file.getPath(), Project.MSG_DEBUG);
+                    } catch (final JsUnitException e) {
+                        throw new BuildException("Cannot evaluate JavaScript code of "
+                            + file.getPath(), e);
+                    } catch (final IOException e) {
+                        throw new BuildException("Cannot read complete " + file.getPath(), e);
+                    } finally {
+                        IOUtils.closeQuietly(in);
+                    }
                 } catch (final FileNotFoundException e) {
                     throw new BuildException("Cannot find " + file.getPath(), e);
-                } catch (final JsUnitException e) {
-                    throw new BuildException("Cannot evaluate JavaScript code of "
-                        + file.getPath(), e);
-                } catch (final IOException e) {
-                    throw new BuildException("Cannot read complete " + file.getPath(), e);
                 }
             }
         }

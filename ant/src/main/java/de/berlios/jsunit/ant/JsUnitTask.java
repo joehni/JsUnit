@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2006 Jörg Schaible
- * Created on 15.09.2006 by Jörg Schaible
+ * Copyright (C) 2006,2007 Joerg Schaible
+ * Created on 15.09.2006 by Joerg Schaible
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,18 @@ import de.berlios.jsunit.JsUnitException;
 import de.berlios.jsunit.JsUnitRhinoRunner;
 import de.berlios.jsunit.JsUnitRuntimeException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,16 +42,16 @@ import java.util.List;
  * XML reports, that can be processed by the Ant junitreport task. Define the task as follows:
  * 
  * <pre>
- *   &lt;taskdef name=&quot;jsunit&quot; className=&quot;de.berlios.jsunit.ant.JsUnitTask&quot; /&gt;
- *   
- *   &lt;jsunit dir=&quot;sourceDir&quot;&gt;
- *       &lt;source file=&quot;money/IMoney.js&quot; /&gt;
- *       &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;TESTSUITES&quot;&gt;
- *           &lt;fileset dir=&quot;.&quot;&gt;
- *               &lt;include name=&quot;* /**Test.js&quot; /&gt;
- *           &lt;/fileset&gt;
- *       &lt;/testsuite&gt;
- *   &lt;/jsunit&gt;
+ *      &lt;taskdef name=&quot;jsunit&quot; className=&quot;de.berlios.jsunit.ant.JsUnitTask&quot; /&gt;
+ *      
+ *      &lt;jsunit dir=&quot;sourceDir&quot;&gt;
+ *          &lt;source file=&quot;money/IMoney.js&quot; /&gt;
+ *          &lt;testsuite name=&quot;MyTestSuite&quot; todir=&quot;build/test-reports&quot; type=&quot;TESTSUITES&quot;&gt;
+ *              &lt;fileset dir=&quot;.&quot;&gt;
+ *                  &lt;include name=&quot;* /**Test.js&quot; /&gt;
+ *              &lt;/fileset&gt;
+ *          &lt;/testsuite&gt;
+ *      &lt;/jsunit&gt;
  * </pre>
  * 
  * <p>
@@ -96,17 +100,26 @@ public class JsUnitTask extends Task {
                 throw new BuildException("Cannot evaluate JavaScript code of JsUnit", e);
             }
             for (final Iterator iterSource = sources.iterator(); iterSource.hasNext();) {
-                final File file = ((SourceFile)iterSource.next()).getFile();
+                final SourceFile source = (SourceFile)iterSource.next();
+                final File file = source.getFile();
+                final String charSet = source.getCharacterSet();
                 try {
-                    runner.load(new FileReader(file), file.getName());
-                    project.log("Loaded " + file.getName(), Project.MSG_DEBUG);
+                    final InputStream in = new FileInputStream(file);
+                    try {
+                        final Reader reader = charSet != null ? new InputStreamReader(
+                            in, charSet) : new InputStreamReader(in);
+                        runner.load(reader, file.getName());
+                        project.log("Loaded " + file.getName(), Project.MSG_DEBUG);
+                    } catch (final JsUnitException e) {
+                        throw new BuildException("Cannot evaluate JavaScript code of "
+                            + file.getName(), e);
+                    } catch (final IOException e) {
+                        throw new BuildException("Cannot read complete " + file.getName(), e);
+                    } finally {
+                        IOUtils.closeQuietly(in);
+                    }
                 } catch (final FileNotFoundException e) {
                     throw new BuildException("Cannot find " + file.getName(), e);
-                } catch (final JsUnitException e) {
-                    throw new BuildException("Cannot evaluate JavaScript code of "
-                        + file.getName(), e);
-                } catch (final IOException e) {
-                    throw new BuildException("Cannot read complete " + file.getName(), e);
                 }
             }
             final JsUnitSuite suite = (JsUnitSuite)iterTest.next();
@@ -130,7 +143,7 @@ public class JsUnitTask extends Task {
     }
 
     /**
-     * Set the source directory.
+     * Sets the source directory.
      * 
      * @param dir the directory.
      * @since upcoming
@@ -140,7 +153,7 @@ public class JsUnitTask extends Task {
     }
 
     /**
-     * Request the haltOnError flag.
+     * Requests the haltOnError flag.
      * 
      * @return <code>true</code> if set
      * @since upcoming
@@ -150,7 +163,7 @@ public class JsUnitTask extends Task {
     }
 
     /**
-     * Set haltOnError flag.
+     * Sets haltOnError flag.
      * 
      * @param haltOnError the value
      * @since upcoming
@@ -160,7 +173,7 @@ public class JsUnitTask extends Task {
     }
 
     /**
-     * Request the haltOnFailure flag.
+     * Requests the haltOnFailure flag.
      * 
      * @return <code>true</code> if set
      * @since upcoming
@@ -170,7 +183,7 @@ public class JsUnitTask extends Task {
     }
 
     /**
-     * Set haltOnFailure flag.
+     * Sets haltOnFailure flag.
      * 
      * @param haltOnFailure the value
      * @since upcoming
@@ -203,15 +216,53 @@ public class JsUnitTask extends Task {
         return source;
     }
 
-    final class SourceFile {
-        File file;
+    /**
+     * A utility bean for a SourceFile.
+     * 
+     * @since upcoming
+     */
+    final public class SourceFile {
+        private File file;
+        private String charSet;
 
-        void setFile(final String name) {
+        /**
+         * Sets the file name.
+         * 
+         * @param name the file name
+         * @since upcoming
+         */
+        public void setFile(final String name) {
             file = new File(dir, name);
         }
 
-        File getFile() {
+        /**
+         * Requests the file name.
+         * 
+         * @return the file name
+         * @since upcoming
+         */
+        public File getFile() {
             return file;
+        }
+
+        /**
+         * Sets the character set.
+         * 
+         * @param characterSet the name of the character set
+         * @since upcoming
+         */
+        public void setCharacterSet(final String characterSet) {
+            charSet = characterSet;
+        }
+
+        /**
+         * Requests the character set
+         * 
+         * @return the name of the character set or <code>null</code>
+         * @since upcoming
+         */
+        public String getCharacterSet() {
+            return charSet;
         }
     }
 }
