@@ -20,7 +20,6 @@ import de.berlios.jsunit.JsUnitException;
 import de.berlios.jsunit.JsUnitRhinoRunner;
 import de.berlios.jsunit.JsUnitRuntimeException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -116,7 +115,11 @@ public class JsUnitTask extends Task {
                     } catch (final IOException e) {
                         throw new BuildException("Cannot read complete " + file.getName(), e);
                     } finally {
-                        IOUtils.closeQuietly(in);
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // ignore
+                        }
                     }
                 } catch (final FileNotFoundException e) {
                     throw new BuildException("Cannot find " + file.getName(), e);

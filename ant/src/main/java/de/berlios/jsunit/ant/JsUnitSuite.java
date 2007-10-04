@@ -19,8 +19,6 @@ package de.berlios.jsunit.ant;
 import de.berlios.jsunit.JsUnitException;
 import de.berlios.jsunit.JsUnitRhinoRunner;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
@@ -34,9 +32,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -132,7 +132,7 @@ public class JsUnitSuite {
     }
 
     /**
-     * The enumeration fr the test type.
+     * The enumeration for the test type.
      * 
      * @since upcoming
      */
@@ -188,7 +188,11 @@ public class JsUnitSuite {
                     } catch (final IOException e) {
                         throw new BuildException("Cannot read complete " + file.getPath(), e);
                     } finally {
-                        IOUtils.closeQuietly(in);
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // ignore
+                        }
                     }
                 } catch (final FileNotFoundException e) {
                     throw new BuildException("Cannot find " + file.getPath(), e);
@@ -252,4 +256,27 @@ public class JsUnitSuite {
         return this.failures;
     }
 
+    private static class TeeOutputStream extends FilterOutputStream {
+        private final OutputStream tee;
+
+        TeeOutputStream(OutputStream out, OutputStream tee) {
+            super(out);
+            this.tee = tee;
+        }
+
+        public void close() throws IOException {
+            super.close();
+            tee.close();
+        }
+
+        public void flush() throws IOException {
+            super.flush();
+            tee.flush();
+        }
+
+        public void write(int b) throws IOException {
+            super.write(b);
+            tee.write(b);
+        }
+    }
 }
