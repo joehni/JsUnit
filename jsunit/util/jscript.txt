@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ limitations under the License.
 Script. This is a service offered by the Operating System. This contains a
 generic engine that is able to run a lot of languages, JScript is just one
 among others.  Microsoft offers in the package JScript and VBScript, other
-venders offer other languages that can be plugged into the engine. Any
+vendors offer other languages that can be plugged into the engine. Any
 application may embed the script engine and process scripts in any of the
 registered languages.</p>
 
@@ -81,10 +81,10 @@ files are also available for the unit tests of JsUnit itself.</p>
 
 \subsection iexplore Internet Explorer
 
-<p>The Internet Explorer's JScript capabilitites are inherited from the
+<p>The Internet Explorer's JScript capabilities are inherited from the
 installed Windows Script. Therefore even an Internet Explorer 3.x may be able
-to run JsUnit, if the engine was updated seperatly. The Internet Explorer adds
-DOM objects to the JScript. The DOM is differrent between the various Internet
+to run JsUnit, if the engine was updated separately. The Internet Explorer adds
+DOM objects to the JScript. The DOM is different between the various Internet
 explorer versions, but independent from the JScript version.</p>
 
 <p>Use the HTML include tag to add JsUnit to your scripts. See the file

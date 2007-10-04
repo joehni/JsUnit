@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -253,7 +253,7 @@ function TestListener()
 {
 }
 /**
- * An occured error was added.
+ * An occurred error was added.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown error.
  */
@@ -293,8 +293,8 @@ function TestResult()
     this.mStop = 0;
 }
 /**
- * Add an occured error.
- * Add an occured error and call the registered listeners.
+ * Add an occurred error.
+ * Add an occurred error and call the registered listeners.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown error.
  */
@@ -305,8 +305,8 @@ function TestResult_addError( test, except )
         this.mListeners[i].addError( test, except );
 }
 /**
- * Add an occured failure.
- * Add an occured failure and call the registered listeners.
+ * Add an occurred failure.
+ * Add an occurred failure and call the registered listeners.
  * @tparam Test test The failed test.
  * @tparam AssertionFailedError afe The thrown assertion failure.
  */
@@ -346,12 +346,12 @@ function TestResult_endTest( test )
         this.mListeners[i].endTest( test );
 }
 /**
- * Retrieve the number of occured errors.
+ * Retrieve the number of occurred errors.
  * @type Number
  */
 function TestResult_errorCount() { return this.mErrors.length; }
 /**
- * Retrieve the number of occured failures.
+ * Retrieve the number of occurred failures.
  * @type Number
  */
 function TestResult_failureCount() { return this.mFailures.length; }
@@ -519,7 +519,7 @@ function Assert_assertFalse( msg, cond )
             , new CallStack(), msg );
 }
 /**
- * Asserts that two floating point values are equal to within a given tolerence.
+ * Asserts that two floating point values are equal to within a given tolerance.
  * @tparam String msg An optional error message.
  * @tparam Object expected The expected value.
  * @tparam Object actual The actual value.
@@ -1062,12 +1062,12 @@ TestSuite.fulfills( Test );
 /**
  * A Decorator for Tests. Use TestDecorator as the base class
  * for defining new test decorators. Test decorator subclasses
- * can be introduced to add behaviour before or after a test
+ * can be introduced to add behavior before or after a test
  * is run.
  * @see Test
  * @ctor
  * Constructor.
- * The constructore saves the test.
+ * The constructor saves the test.
  * @tparam Test test The test to decorate.
  */
 function TestDecorator( test )
@@ -1076,7 +1076,7 @@ function TestDecorator( test )
     this.mTest = test;
 }
 /**
- * The basic run behaviour. The function calls the run method of the decorated
+ * The basic run behavior. The function calls the run method of the decorated
  * test.
  * @tparam TestResult result The test result.
  */
@@ -1132,7 +1132,7 @@ TestDecorator.fulfills( Test );
  * @see TestCase
  * @ctor
  * Constructor.
- * The constructore saves the test.
+ * The constructor saves the test.
  * @tparam Test test The test to decorate.
  */
 function TestSetup( test )
@@ -1460,7 +1460,7 @@ function BaseTestRunner_startTest( test )
 }
 /**
  * Truncates string to maximum length.
- * @tparam String str The string to trancate.
+ * @tparam String str The string to truncate.
  * @treturn String The truncated string.
  */
 function BaseTestRunner_truncate( str ) 
@@ -1485,7 +1485,7 @@ BaseTestRunner.prototype.setPreference( "maxMessageLength", 500 );
 /**
  * TestRunner of JsUnit 1.1
  * @see TextTestRunner
- * @deprecated since 1.2 in favour of TextTestRunner
+ * @deprecated since 1.2 in favor of TextTestRunner
  */
 function TestRunner()
 {
@@ -2015,7 +2015,7 @@ function ClassicResultPrinter( writer )
     ResultPrinter.call( this, writer );
 }
 /**
- * An occured error was added.
+ * An occurred error was added.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
@@ -2033,7 +2033,7 @@ function ClassicResultPrinter_addError( test, except )
     this.writeLn( "ERROR in " + test + ": " + str );
 }
 /**
- * An occured failure was added.
+ * An occurred failure was added.
  * @tparam Test test The failed test.
  * @tparam Error except The thrown exception.
  */
@@ -2126,7 +2126,7 @@ function ClassicResultPrinter_startTest( test )
 /**
  * Write a line of text.
  * @tparam String str The text to print on the line.
- * The method of this object does effectivly nothing. It must be 
+ * The method of this object does effectively nothing. It must be 
  * overloaded with a proper version, that knows how to print a line,
  * if the script engine cannot be detected (yet).
  */
@@ -2285,7 +2285,7 @@ XMLResultPrinter.prototype.printHeader = function() {}
  * Class for an application running test suites reporting in HTML.
  * @see TextTestRunner
  * @see HTMLWriterFilter
- * @deprecated since 1.2 in favour of TextTestRunner in combination with a
+ * @deprecated since 1.2 in favor of TextTestRunner in combination with a
  * HTMLWriterFilter wrapping an arbitrary PrinterWriter.
  */
 function HTMLTestRunner( outdev )
@@ -2392,8 +2392,8 @@ function GenericTestCollector_collectTests()
 /**
  * Test the function to be collected.
  * The method tests the \a testFunc for the class \a type given in the 
- * constructor. A derived implementation may add additional criterias like the
- * existance of a specific method of the class type.
+ * constructor. A derived implementation may add additional criteria like the
+ * existence of a specific method of the class type.
  * @tparam Function testFunc The Function to be tested.
  * @treturn Boolean Returns \c true if the function is a Test.
  */
@@ -2444,7 +2444,7 @@ TestSuiteCollector.prototype = new GenericTestCollector();
 
 
 /**
- * Class for an embeddable text-oriented TestRunner used in other applications
+ * Class for an embeddeable text-oriented TestRunner used in other applications
  * with a status report.
  * @ctor
  * The constructor.

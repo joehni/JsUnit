@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ function ClassName( arg1, arg2 )
 }
 \endcode
 
-<p>After calling the constuctor you should initialize the member variables by
+<p>After calling the constructor you should initialize the member variables by
 assigning them a value:</p>
 
 \code
@@ -74,8 +74,21 @@ ClassName.prototype.f1 = ClassName_f1;
 ClassName.prototype.f2 = ClassName_f2;
 \endcode
 
+<p>The assignment of the methods is quite cumbersome for a big number of 
+member functions and it is easy to forget one.  Therefore the \a Function
+object has been enhanced with a new method \a glue that automates this
+assignment as long as the naming convention is honored:</p>
+
+\code
+function ClassName_f1() {}
+function ClassName_f2() {}
+
+ClassName.prototype = new BaseClass();
+ClassName.glue();
+\endcode
+
 <p>It is no problem to overload a function that was already assigned in a the
-base class. Call the overloaded function using its apply or call method in the
+base class.  Call the overloaded function using its apply or call method in the
 prototype of the constructor:</p>
 
 \code
@@ -97,7 +110,7 @@ ClassName.prototype.v1 = 1;
 \subsection altSyntax Alternative Syntax
 
 <p>The previous chapter followed the coding convention of the JavaScript
-Reference Guide. A convension always imply you may use an alternative coding
+Reference Guide. A convention always imply you may use an alternative coding
 style, the Perl script \ref docScript "js2doxy.pl" will understand even
 this:</p>
 
@@ -128,7 +141,7 @@ engine) will return an anonymous function call.</p>
 <p>JavaScript does not support interfaces (although <i>implements</i> is a
 keyword). Since it is quite handy to be sure that a class supports a defined
 number of functions, the system implements a new member function \a fulfills of
-the class Function that perfoms this action. Since the functions of an
+the class Function that performs this action. Since the functions of an
 interface are never called, they can be implemented quite minimalistic:</p>
 
 \code
@@ -156,8 +169,8 @@ ClassName.fulfills( InterfaceName );
 \dontinclude SimpleTest.js
 
 <p>Writing unit tests you have to write at first test cases for your classes.
-The programming paradigma of eXtreme Programming demands writing your test
-cases first. Then you are able to programm your class against the test case,
+The programming paradigm of eXtreme Programming demands writing your test
+cases first. Then you are able to program your class against the test case,
 so you know when you are ready. Anyway, writing a test case means deriving
 from class TestCase:</p>
 
@@ -211,11 +224,13 @@ this case.</p>
 
 <p>Most supported environments cannot share their test application. Therefore
 are a lot of AllTests*.* files part of the sample package. See the list below
-for all deliveries. Individual execution od the examples is available in the
+for all deliveries. Individual execution of the examples is available in the
 product specific documentation.</p>
 
 <ul>
     <li>\ref scriptengines</li>
+    <li>\ref ant</li>
+    <li>\ref maven2</li>
 </ul>
 
 <table>
@@ -272,6 +287,24 @@ product specific documentation.</p>
     or use <em>jsshell</em> resp. <em>js</em> to run <em>SpiderMonkey</em> 
     built from C source. You may also use <em>cscript</em> for this file or
     <em>kjscmd</em>.</td>
+    
+</tr>
+<tr>
+
+    <td>build.xml</td>
+    
+    <td>\ref ant build file that runs the Ant Task for JsUnit tests with the help 
+    of <em>Rhino</em>. A test report is generated that can be processed by
+    <em>JUnitReport</em>.</td>
+    
+</tr>
+<tr>
+
+    <td>pom.xml</td>
+    
+    <td>Maven 2 project description file that runs the Maven 2 plugin for 
+    JsUnit tests with the help of <em>Rhino</em>. A test report is generated
+    that can be processed by the <em>Surefire Report</em> plugin.</td>
     
 </tr>
 </table>

@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!--
-        Copyright (C) 2006 Jörg Schaible
-        Created on 17.09.2006 by Jörg Schaible
+        Copyright (C) 2006,2007 Joerg Schaible
+        Created on 17.09.2006 by Joerg Schaible
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -112,7 +112,28 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.3</version>
                     <configuration>
                         <forkMode>once</forkMode>
                         <printSummary>true</printSummary>
@@ -121,17 +142,28 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
                     <configuration>
                         <archive>
                             <addMavenDescriptor>false</addMavenDescriptor>
-                            <manifest></manifest>
+                            <manifest>
+                                <addClasspath>false</addClasspath>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
                         </archive>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
+                    <version>2.0.2</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -145,6 +177,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.2</version>
                     <executions>
                         <execution>
                             <id>attach-javadoc</id>
@@ -157,10 +190,35 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.0-beta-5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-eclipse-plugin</artifactId>
                     <configuration>
                         <downloadSources>true</downloadSources>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.modello</groupId>
+                    <artifactId>modello-maven-plugin</artifactId>
+                    <version>1.0-alpha-11</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -177,7 +235,7 @@
 
     <distributionManagement>
         <!--  
-            The servers here defined must also appear in ~/.m2/settings.xml
+            The servers defined here must also appear in ~/.m2/settings.xml
             <settings>
             <servers>
             <server>
@@ -212,7 +270,7 @@
         <site>
             <id>berlios-jsunit-site</id>
             <name>BerliOS JsUnit Site</name>
-            <url>scpexe://shell.berlios.de/home/groups/jsunit/htdocs/</url>
+            <url>scpexe://shell.berlios.de/home/groups/jsunit/htdocs/reports</url>
         </site>
     </distributionManagement>
 

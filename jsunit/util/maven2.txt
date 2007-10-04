@@ -1,0 +1,85 @@
+/*
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 2007 Joerg Schaible
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*!
+
+\htmlonly
+
+<div class="JsUnit">
+
+\endhtmlonly
+
+\page maven2 Apache Maven 2
+
+<p><a href="http://maven.apache.org/">Maven 2</a> is a build tool from the
+Apache Software Foundation generally used for Java development.  It uses a 
+Project Object Model defined in a <em>pom.xml</em> file to describe the build.
+Maven 2 uses a lifecycle where at each phase of this lifecycle different goals
+can be attached that are provided by plugins.  The JsUnit plugin is 
+automatically attached to the test <em>test</em> phase.</p>
+
+<p>The JsUnit plugin uses \ref rhino to perform the JavaScript tests.</p>
+
+\section m2plugin Using the Maven 2 Plugin
+
+<p>The JsUnit Maven plugin has simply to be declared in the <em>build</em>
+section with the other plugins.  As usual with Maven 2 all necessary
+dependencies are automatically available.  The plugin itself is published at
+the Maven repository of BerliOS and in Maven's central repository also.</p>
+
+======= TODO ========
+
+The task itself has a <em>dir</em> attribute that defines the root directory
+for all following file declarations.  A JsUnit task may contain multiple 
+<em>source</em> and <em>testsuite</em> subtasks.  A JavaScript file to test is
+declared with every source tag using the <em>file</em> attribute.  The reason
+for an explicit declaration is a possible dependency between the files, that is 
+resolved by loading them in the declared sequence.
+
+The JavaScript test files are declared using the <em>testsuite</em> subtasks.
+A TestSuite subtask supports following attributes:
+<ul>
+	<li><strong>name</strong>: The name of the test suite</li>
+	<li><strong>todir</strong>: The target directory for the test results</li>
+	<li><strong>type></strong>: The type of the test suite, one of the following values
+		<dl>
+ 			<dt>ALLTESTS</dt>
+ 			<dd>Looks for a class AllTests derived from TestSuite and runs its suite.</dd>
+ 			<dt>TESTSUITES</dt>
+ 			<dd>Looks for all classes ending with TestSuite and that are derived from TestSuite and run their suites.</dd>
+ 			<dt>TESTCASES</dt>
+ 			<dd>Looks for all classes ending with TestCase and that are derived from TestCase and runs them (the default).</dd>
+ 		</dl>
+	</li>
+	<li><strong>characterSet</strong>: The optional character set for the encoding</li>
+</ul>
+
+\section m2example Example build.xml
+ 
+The following JsUnit plugin declaration is used in the POM file of the samples directory.
+ 
+\dontinclude pom.xml
+\skip <plugin>
+\until </plugin>
+
+\htmlonly
+
+</div>
+
+\endhtmlonly
+
+*/

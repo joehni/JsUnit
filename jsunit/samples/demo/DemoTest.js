@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 2006 Joerg Schaible
+Copyright (C) 2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 /**
- * Verifys the syntax of an email address.
+ * Verifies the syntax of an email address.
  * @tparam String email the email address to verify.
  */
 function EmailValidatorTest( name )

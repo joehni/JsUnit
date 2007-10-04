@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ limitations under the License.
 \page products JavaScript Engines and Products
 
 <p>This page give a short overview of the JavaScript language, available
-engines and JavaScript enabled producst. Some of them are explained on
+engines and JavaScript enabled products. Some of them are explained on
 separate pages demonstrating the usage of JavaScript in general and JsUnit
 especially in their context.</p>
 
@@ -38,7 +38,7 @@ itself is not limited for browser usage. A lot of people also accuse the
 language of the reason for browser incompatibilities or security holes, but
 this is not true wither. JavaScript itself has no idea of the DOM or of a file
 system. Any functionality built into the language concerning these topics are
-add-ons by the vendors. Also a lot of vendors have not implemnted the complete
+add-ons by the vendors. Also a lot of vendors have not implemented the complete
 JavaScript standard arising a lot of incompatibilities, too. Therefore you
 have always to separate between the language itself and the version released
 from a vendor.</p>
@@ -64,7 +64,7 @@ ECMA standard.</p>
 </ul>
 
 <p>The JsUnit library has to use exceptions. Exceptions were part of the third
-ECMA language draft und therefore not everywhere available. The JsUnit scripts
+ECMA language draft and therefore not everywhere available. The JsUnit scripts
 are only available on systems that support exceptions. Additionally the
 scripts try to expose the call stack in case of an error. This call stack is
 also subject of compatibility and have changed in various versions of the
@@ -114,6 +114,7 @@ scripts in any of the registered languages.</p>
         </ul>
     </li>
 </ul>
+
 \section enabledproducts JavaScript enabled products
 
 <p>There are a lot of products that are able to process a JavaScript flavor. I

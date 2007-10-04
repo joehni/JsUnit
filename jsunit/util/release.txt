@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ limitations under the License.
     <li>TextTestRunner supports new argument --run OPTION</li>
     <li>Added method assertMatches</li>
     <li>JsUnit Java library with embedded Rhino</li>
-    <li>Ant Task for JsUnit</li>
-    <li>Maven 2 Plugin for JsUnit</li>
+    <li>\ref ant Task for JsUnit</li>
+    <li>\ref maven2 Plugin for JsUnit</li>
 </ul>
 
 \subsection change Design Changes
@@ -111,7 +111,7 @@ fine.</p>
     <li>New utility class JsUtil and enhanced CallStack API</li>
     <li>New utility class hierarchy PrinterWriter</li>
     <li>Special HTML support with HTMLWriterFilter</li>
-    <li>Deprecated CtxRunner and NSServerRunner in favour of a more generic
+    <li>Deprecated CtxRunner and NSServerRunner in favor of a more generic
     solution using a TextTestRunner and the new CtxWriter/NSServerWriter</li>
 </ul>
 
@@ -131,7 +131,7 @@ fine.</p>
     class ClassicReportPrinter</li>
     <li>Use TextTestRunner.prototype.main to call</li>
     <li>Use own Error class hierarchy since ECMA standard does not guarantee
-    consistant behaviour deriving from system classes</li>
+    consistent behavior deriving from system classes</li>
 </ul>
 
 \subsection bug Bug Fixes

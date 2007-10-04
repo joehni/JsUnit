@@ -83,7 +83,7 @@ pseudo code:</p>
 
 </ul>
 
-<p>Keep in mind that pseude C++ is produced. Unlike in C++ it is quite not
+<p>Keep in mind that C++ pseudo code is produced. Unlike in C++ it is quite not
 clear which elements will belong in the end to a class. Therefore the script
 cannot support the grouping commands of DoxyGen.</p>
 
@@ -105,7 +105,7 @@ coding conventions above in some kind of pseudo C++ that can be used to fool
 Doxygen, my favorite non-Java source code documentation tool.</p>
 
 <p>Use the script <em>jsdoc</em> to rebuild the documentation. It is located
-in the utils directory. It depends on a Unix environment including Perl.  In
+in the util directory. It depends on a Unix environment including Perl.  In
 Windows I personally use Cygwin that comes nowadays with quite complete Unix
 packages. Additionally you have to install Doxygen and Graphviz a
 cross-platform drawing toolkit from AT&amp;T. My script expects both tools

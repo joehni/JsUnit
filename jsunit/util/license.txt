@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 
 \section jsunitlicense JsUnit License
 
-<p>Copyright &copy; 1999, 2000, 2001, 2002, 2003, 2006 by 
+<p>Copyright &copy; 1999, 2000, 2001, 2002, 2003, 2006, 2007 by 
 <a href=&quot;mailto:joehni@mail.berlios.de&quot;>J&ouml;rg Schaible</a>.</p>
 
 <p>Starting with JsUnit 1.3 the package is released with Apache License 2.0.

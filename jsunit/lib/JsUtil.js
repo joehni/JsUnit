@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ limitations under the License.
 /**
  * @file
  * Utility classes needed for the JsUnit classes.
- * JsUnit need several helper classes to work properly. This file conatins
+ * JsUnit need several helper classes to work properly. This file contains
  * anything that is not related directly to JsUnit, but may be useful in other
  * environments, too.
  */
@@ -60,7 +60,7 @@ if( !this.Error )
      * @treturn String Returns a \c String containing the Error class name 
      * and the error message.
      * \attention The format of the returned string is not defined by ECMA
-     * and is up to the vendor only. This implementation follows the behaviour
+     * and is up to the vendor only. This implementation follows the behavior
      * of Mozilla.org's SpiderMonkey.
      */
     function Error_toString()
@@ -111,7 +111,7 @@ function JsUnitError( msg )
 /**
  * String representation of the error.
  * The format of the returned string is not defined by ECMA
- * and is up to the vendor only. This implementation follows the behaviour
+ * and is up to the vendor only. This implementation follows the behavior
  * of Mozilla.org's SpiderMonkey.
  * @treturn String Returns a \c String containing the Error class name 
  * and the error message.
@@ -227,7 +227,7 @@ function Function_fulfills()
 }
 /**
  * Glue functions to a JavaScript class as member functions.
- * The method attachs the functions given as arguments to the prototype of the
+ * The method attaches the functions given as arguments to the prototype of the
  * current instance.
  * @exception InterfaceDefinitionError If the current instance of a given
  * argument is not a Function object with a prototype.
@@ -258,24 +258,6 @@ function Function_glue( scope )
             }
         }
     }
-/*
-    var functions = arguments;
-    for( var i = 0; i < functions.length; ++i )
-    {
-        var fn = functions[i];
-        if( typeof( fn ) != "function" )
-            throw new FunctionGluingError( 
-                "Current instance is not a Function definition" );
-        r.exec( fn.toString());
-        var name = new String( RegExp.$1 );
-        if( name.indexOf( className + "_" ) == 0 )
-            name = name.substr( className.length + 1 );
-        if( ! /^[a-z_][\w_]*$/.test( name ))
-            throw new FunctionGluingError( 
-                "Not a valid method name: " + name );
-        this.prototype[name] = fn;
-    }
-*/    
 }
 Function.prototype.fulfills = Function_fulfills;
 Function.prototype.glue = Function_glue;
@@ -355,7 +337,7 @@ if( !Array.prototype.push )
  * also be a regular expression character class like "\\s" (which is the 
  * default).
  *
- * The function removes the given chararcters \a chars from the beginning an 
+ * The function removes the given characters \a chars from the beginning an 
  * the end from the current string and returns the result. The function will 
  * not modify the current string.
  *
@@ -430,7 +412,7 @@ function JsUtil_include( fname )
 }
 /**
  * Returns the SystemWriter.
- * Instanciates a SystemWriter depending on the current JavaScript engine.
+ * Instantiates a SystemWriter depending on the current JavaScript engine.
  * Works for command line shells WSH, Rhino and SpiderMonkey.
  * @type SystemWriter
  */
@@ -557,7 +539,7 @@ JsUtil.prototype.global = this;
 
 /**
  * CallStack object.
- * The object is extremly system dependent, since its functionality is not
+ * The object is extremely system dependent, since its functionality is not
  * within the range of ECMA 262, 3rd edition. It is supported by JScript
  * and SpiderMonkey and was supported in Netscape Enterprise Server 2.x, 
  * but not in the newer version 4.x.
@@ -719,7 +701,7 @@ function PrinterWriter_close()
 }
 /**
  * Flushes the writer.
- * Writes any buffered data to the underlaying output stream system immediatly.
+ * Writes any buffered data to the underlaying output stream system immediately.
  * @exception PrinterWriterError If flush was called after closing.
  */
 function PrinterWriter_flush()

@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -77,14 +77,21 @@ script also from the CVS repository directly.</p>
 <p>The documents include a little manual how to write unit tests with JsUnit.
 The coding conventions follow the guide line of Netscape. Since JUnit is based
 on Java I introduced an interface mechanism used for the JsUnit realization
-following a specific programming convention. The distribution also includes
-some samples demonstrating the usage of JsUnit in different environments.</p>
+following a specific programming convention.</p>
 
 <ul>
     <li>\ref codeConv</li>
     <li>\ref interface</li>
     <li>\ref writing</li>
     <li>\ref examples</li>
+</ul>
+
+<p>The distribution also includes some samples demonstrating the usage of 
+JsUnit in different environments.</p>
+
+<ul>
+    <li>\ref maven2</li>
+    <li>\ref ant</li>
     <li>\ref products</li>
 </ul>
 
@@ -93,7 +100,7 @@ some samples demonstrating the usage of JsUnit in different environments.</p>
 <p>You can e-mail me for any question, suggestion or problem. Join the JsUnit
 mailing list hosted by Yahoo! Groups for more attention and share your request
 and their answer with others that may be interested. Please note that more
-than one JsUnit project exists. Addinionally JsUnit would not have been
+than one JsUnit project exists. Additionally JsUnit would not have been
 possible in the current from with the help of other people.</p>
 
 <ul>
@@ -120,9 +127,9 @@ higher level.</p>
     <li>You appreciate the features that JsUnit already has and you want to
     show your appreciation for implementing these features.</li>
     <li>You are an individual or business user interested in ongoing
-    develpment on this framework.</li>
+    development on this framework.</li>
     <li>You are a business user contributing a fair amount of money for the
-    pontential large benefit (and cost savings) that your company derives from
+    potential large benefit (and cost savings) that your company derives from
     JsUnit development.</li>
     <li>Or, you have just some money to share :)</li>
 </ul>

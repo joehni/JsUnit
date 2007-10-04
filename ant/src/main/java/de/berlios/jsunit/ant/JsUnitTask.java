@@ -61,12 +61,12 @@ import java.util.List;
  * </p>
  * <dl>
  * <dt>ALLTESTS</dt>
- * <dd>Looks for a class AllTests dervied from TestSuite and runs its suite.</dd>
+ * <dd>Looks for a class AllTests derived from TestSuite and runs its suite.</dd>
  * <dt>TESTSUITES</dt>
- * <dd>Looks for all classes ending with TestSuite and that are dervied from TestSuite and run
+ * <dd>Looks for all classes ending with TestSuite and that are derived from TestSuite and run
  * their suites.</dd>
  * <dt>TESTCASES</dt>
- * <dd>Looks for all classes ending with TestCase and that are dervied from TestCase and runs
+ * <dd>Looks for all classes ending with TestCase and that are derived from TestCase and runs
  * them (the default).</dd>
  * </dl>
  * 

@@ -33,7 +33,7 @@ compiling the JavaScript.  Since it is Open Source and especially designed for
 usage in other products, you can find nowadays a lot of applications using
 SpiderMonkey as easy scripting environment. Mozilla browser itself (and
 therefore the Netscape browser also) is using this engine in their browsers.
-This engine extremly fast and reliable.</p>
+This engine extremely fast and reliable.</p>
 
 <ul>
     <li><a href="http://www.mozilla.org/js/spidermonkey">SpiderMoney Homepage</a></li>
@@ -49,7 +49,7 @@ Error object.</p>
 \subsection spidermonkeyexample Examples
 
 <p>The SpiderMonkey sources contain also a shell that is able to execute
-standalone JavaScript sources. You have to optain the sources from the CVS or
+standalone JavaScript sources. You have to obtain the sources from the CVS or
 from a defined tarball and build the shell yourself. Depending on your OS you
 will have an executable js or jsshell.</p>
 

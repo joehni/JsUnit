@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ limitations under the License.
 
 \endhtmlonly
 
-\page acknowledge Acknowledgements
+\page acknowledge Acknowledgments
 
 <p>JsUnit would not have been possible in this form without the work and ideas
 of a lot of other people:</p>
