@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 
 /**
- * Writing unit tests for the JavaScript testing framework JsUnit (Jörg Schaible's version)
+ * Writing unit tests for the JavaScript testing framework JsUnit (Joerg Schaible's version)
  * is somewhat awkward. This is because the author tried to match the framework very closely
  * to Junit and JavaScript does not map real well. This class, therefore, is 
  * an attempt to make writing these unit tests very simple. It searches a specified
