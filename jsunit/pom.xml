@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!--
-        Copyright (C) 2006 Jörg Schaible
-        Created on 17.09.2006 by Jörg Schaible
+        Copyright (C) 2006,2007 Joerg Schaible
+        Created on 17.09.2006 by Joerg Schaible
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -73,10 +73,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>

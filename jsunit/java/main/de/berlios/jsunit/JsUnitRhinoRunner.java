@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2006 Jörg Schaible
- * Created on 16.09.2006 by Jörg Schaible
+ * Copyright (C) 2006,2007 Joerg Schaible
+ * Created on 16.09.2006 by Joerg Schaible
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
 
-import org.apache.commons.io.IOUtils;
-
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,13 +55,13 @@ public class JsUnitRhinoRunner {
         if (is != null) {
             try {
                 final Reader reader = new InputStreamReader(is, "ISO-8859-1");
-                IOUtils.copy(reader, writer);
+                copy(reader, writer);
             } catch (final UnsupportedEncodingException e) {
                 throw new InternalError("Missing standard character set ISO-8859-1");
             } catch (final IOException e) {
                 throw new InternalError("Cannot load resource " + name);
             } finally {
-                IOUtils.closeQuietly(is);
+                close(is);
             }
         } else {
             throw new InternalError("Cannot find resource " + name);
@@ -90,7 +89,7 @@ public class JsUnitRhinoRunner {
 
     /**
      * Load additional code into the JavaScript context. The provided reader is read until
-     * excaution and closed afterwards.
+     * execution and closed afterwards.
      * 
      * @param reader the reader providing the code
      * @param name an identifying name of the code (normally the file name)
@@ -111,7 +110,7 @@ public class JsUnitRhinoRunner {
         } catch (final JavaScriptException e) {
             throw new JsUnitException("Cannot evaluate JavaScript code of " + name, e);
         } finally {
-            IOUtils.closeQuietly(reader);
+            close(reader);
             Context.exit();
         }
     }
@@ -189,7 +188,7 @@ public class JsUnitRhinoRunner {
             }
         } finally {
             Context.exit();
-            IOUtils.closeQuietly(writer);
+            close(writer);
         }
     }
 
@@ -242,7 +241,7 @@ public class JsUnitRhinoRunner {
             }
         } finally {
             Context.exit();
-            IOUtils.closeQuietly(writer);
+            close(writer);
         }
     }
 
@@ -295,7 +294,39 @@ public class JsUnitRhinoRunner {
             }
         } finally {
             Context.exit();
-            IOUtils.closeQuietly(writer);
+            close(writer);
+        }
+    }
+
+    private static void close(final Writer writer) {
+        try {
+            writer.close();
+        } catch (final IOException e) {
+            // ignore
+        }
+    }
+
+    private static void close(final Reader reader) {
+        try {
+            reader.close();
+        } catch (final IOException e) {
+            // ignore
+        }
+    }
+
+    private static void close(final InputStream is) {
+        try {
+            is.close();
+        } catch (final IOException e) {
+            // ignore
+        }
+    }
+
+    private static void copy(final Reader reader, final Writer writer) throws IOException {
+        final Reader in = new BufferedReader(reader, 1024 * 16);
+        int i;
+        while ((i = in.read()) != -1) {
+            writer.write(i);
         }
     }
 }

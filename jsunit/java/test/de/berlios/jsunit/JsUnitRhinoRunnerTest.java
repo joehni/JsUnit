@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Jörg Schaible
+ * Copyright (C) 2006, 2007 Jörg Schaible
  * Created on 16.09.2006 by Jörg Schaible
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,7 @@ import java.io.Writer;
 public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
 
     private JsUnitRhinoRunner runner;
+    private File sampleDir = new File(new File(new File(".."), "jsunit"), "samples");
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -118,7 +119,7 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
     private void loadSampleScript(final String filename)
                                                         throws FileNotFoundException,
                                                         JsUnitException, IOException {
-        final FileReader reader = new FileReader(new File(new File("samples"), filename));
+        final FileReader reader = new FileReader(new File(sampleDir, filename));
         runner.load(reader, filename);
     }
 }
