@@ -82,6 +82,8 @@ limitations under the License.
 
 \subsection v1_2 Version 1.2
 
+<p>2006-06-06: More compliance to JUnit</p>
+
 <p>A lot of internal work has be done. The changes of JUnit 3.8.1
 have been integrated and JsUnit is running quite smoothly for JScript,
 SpiderMonkey, Rhino and KJSCmd. Also the new documentation script works 
