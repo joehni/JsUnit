@@ -1,9 +1,0 @@
-This is JsUnit test framework. JsUnit is a JavaScript port of JUnit.
-
-The framework contains also the Perl script js2doxy.pl that supports Javadoc
-like comments in JavaScript code.
-
-See COPYING for license information.
-
-See doc/index.html for further information especially on the related pages.
-

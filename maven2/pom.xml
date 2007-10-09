@@ -27,6 +27,9 @@
     <artifactId>jsunit-maven2-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>JsUnit Maven2 Plugin</name>
+    <description>
+        Project to build the JsUnit Maven 2 Plugin.
+    </description>
 
     <build>
         <plugins>

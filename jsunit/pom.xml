@@ -27,6 +27,10 @@
     <artifactId>jsunit</artifactId>
     <packaging>jar</packaging>
     <name>JsUnit</name>
+    <description>
+        The JsUnit utilities to embed the JsJunit library into a Java 
+        environment.  It includes the JavaScript part as resources.
+    </description>
 
     <build>
         <sourceDirectory>${basedir}/java/main</sourceDirectory>
@@ -95,7 +99,10 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <siteDirectory>java/site</siteDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

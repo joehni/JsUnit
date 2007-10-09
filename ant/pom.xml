@@ -27,20 +27,9 @@
     <artifactId>jsunit-ant</artifactId>
     <packaging>jar</packaging>
     <name>JsUnit Ant Task</name>
-
-    <build>
-        <!--
-        <resources>
-            <resource>
-                <directory>${basedir}/lib</directory>
-                <targetPath>junit</targetPath>
-                <includes>
-                    <include>**/*.js</include>
-                </includes>
-            </resource>
-    </resources>
-    -->
-    </build>
+    <description>
+        Project to build the JsUnit Ant Task.
+    </description>
 
     <dependencies>
         <dependency>

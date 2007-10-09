@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="JsUnit Maven 2 Plugin">
+  <body>
+    <menu ref="reports"/>
+    <menu ref="parent"/>
+  </body>
+</project>

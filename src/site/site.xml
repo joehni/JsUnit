@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="JsUnit Parent">
+  <!--bannerLeft>
+    <name>JsUnit</name>
+    <src>http://jsunit.berlios.de/images/apache-maven-project.png</src>
+    <href>http://jsunit.berlios.de/</href>
+  </bannerLeft>
+  <bannerRight>
+    <src>http://maven.apache.org/images/maven-small.gif</src>
+  </bannerRight-->
+  <body>
+    <links>
+      <item name="JsUnit" href="http://jsunit.berlios.de/" />
+    </links>
+
+    <menu ref="reports"/>
+    <menu ref="modules"/>
+  </body>
+</project>

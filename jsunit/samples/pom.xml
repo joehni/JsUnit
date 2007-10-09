@@ -20,14 +20,18 @@
     <parent>
         <groupId>de.berlios.jsunit</groupId>
         <artifactId>jsunit-parent</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3-RC1</version>
     </parent>
 
     <artifactId>jsunit-samples</artifactId>
     <packaging>jar</packaging>
     <name>JsUnit Samples</name>
+    <description>
+        Project for Maven 2 for the sample scripts.
+    </description>
 
     <build>
+        <!-- Adjust the paths for this non-conforming directory layout -->
         <directory>../target/sample</directory>
         <outputDirectory>../target/sample/classes</outputDirectory>
         <testOutputDirectory>../target/sample/test-classes</testOutputDirectory>
