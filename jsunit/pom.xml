@@ -39,41 +39,53 @@
             </resource>
         </resources>
         <testSourceDirectory>${basedir}/java/test</testSourceDirectory>
-        <plugins>
-            <!-- Need first some kind of beta release ...
-            <plugin>
-                <groupId>de.berlios.jsunit</groupId>
-                <artifactId>jsunit-maven2-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <configuration>
-                            <sourceDirectory>lib</sourceDirectory>
-                            <sources>
-                                <source>JsUtil.js</source>
-                                <source>JsUnit.js</source>
-                            </sources>
-                            <testSourceDirectory>tests</testSourceDirectory>
-                            <reportsDirectory>target/surefire-reports</reportsDirectory>
-                            <testSuites>
-                                <testSuite>
-                                    <name>JsUnitSuite</name>
-                                    <type>TESTSUITES</type>
-                                    <includes>
-                                        <include>*.js</include>
-                                    </includes>
-                                </testSuite>
-                            </testSuites>
-                        </configuration>
-                        <goals>
-                            <goal>jsunit-test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-        </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <!-- Cannot activate by default, creates cycle in multi-module build -->
+            <id>eat-own-dog-food</id>
+            <activation>
+                <property>
+                    <name>local</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.berlios.jsunit</groupId>
+                        <artifactId>jsunit-maven2-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <configuration>
+                                    <sourceDirectory>lib</sourceDirectory>
+                                    <sources>
+                                        <source>JsUtil.js</source>
+                                        <source>JsUnit.js</source>
+                                    </sources>
+                                    <testSourceDirectory>tests</testSourceDirectory>
+                                    <reportsDirectory>target/surefire-reports</reportsDirectory>
+                                    <testSuites>
+                                        <testSuite>
+                                            <name>JsUnitSuite</name>
+                                            <type>TESTSUITES</type>
+                                            <includes>
+                                                <include>*.js</include>
+                                            </includes>
+                                        </testSuite>
+                                    </testSuites>
+                                </configuration>
+                                <goals>
+                                    <goal>jsunit-test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>

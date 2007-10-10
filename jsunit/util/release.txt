@@ -19,11 +19,14 @@ limitations under the License.
 
 \page release Release Notes
 
-\section currentrelease Release
+\section currentrelease Version 1.3
 
-<p>in Subversion: Current release is version 1.3-SNAPSHOT</p>
+<p>2007-10-10: XML generation, Maven 2 and Ant support</p>
 
 \subsection new New Features
+
+Note: Staring with this version the license of the software has been changed
+to the Apache Software \ref license 2.0
 
 <ul>
     <li>New EmbeddedTextTestRunner for better integration into 
