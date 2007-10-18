@@ -2444,7 +2444,7 @@ TestSuiteCollector.prototype = new GenericTestCollector();
 
 
 /**
- * Class for an embeddeable text-oriented TestRunner used in other applications
+ * Class for an embeddable text-oriented TestRunner used in other applications
  * with a status report.
  * @ctor
  * The constructor.
