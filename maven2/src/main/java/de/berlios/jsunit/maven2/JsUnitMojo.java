@@ -259,9 +259,6 @@ public class JsUnitMojo extends AbstractMojo {
                     break;
                 }
                 logger.debug("Created test report " + file.getName());
-            } catch (final JsUnitException e) {
-                throw new MojoExecutionException("Cannot run JavaScript code of test suite "
-                    + name, e);
             } catch (final IOException e) {
                 throw new MojoExecutionException("Cannot write to file " + file.getName(), e);
             } finally {

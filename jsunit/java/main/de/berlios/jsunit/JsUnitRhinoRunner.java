@@ -149,36 +149,23 @@ public class JsUnitRhinoRunner {
      * by the method (even in case of an exception).
      * 
      * @param writer the writer receiving the result
-     * @throws JsUnitException if no JavaScript class <code>AllTests</code>can be found
      * @throws IOException if writing to the <code>writer</code> fails
      * @throws IllegalArgumentException if <code>writer</code>is <code>null</code>
      * @throws JsUnitRuntimeException if the JavaScript code of the method itself fails
      * @since upcoming
      */
-    public void runAllTests(final Writer writer) throws JsUnitException, IOException {
+    public void runAllTests(final Writer writer) throws IOException {
         if (writer == null) {
             throw new IllegalArgumentException("The writer is null");
         }
         context = Context.enter(context);
         try {
             try {
-                if (Boolean.TRUE != context.evaluateString(
-                    scope,
-                    "this.AllTests && AllTests.prototype && AllTests.prototype.suite && true",
-                    null, 1, null)) {
-                    throw new JsUnitException(
-                        "No JavaScript class AllTests with a suite method found");
-                }
-            } catch (final EcmaError e) {
-                throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
-            } catch (final JavaScriptException e) {
-                throw new JsUnitRuntimeException("Cannot evaluate internal JavaScript code", e);
-            }
-            try {
                 final String xml = (String)context.evaluateString(scope, ""
                     + "var stringWriter = new StringWriter();\n"
-                    + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                    + "runner.doRun(AllTests.prototype.suite());\n"
+                    + "var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                    + "var collector = new AllTestsCollector(this);\n"
+                    + "runner.run(collector.collectTests());\n"
                     + "stringWriter.get();\n", "AllTests", 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
@@ -214,25 +201,12 @@ public class JsUnitRhinoRunner {
         context = Context.enter(context);
         try {
             try {
-                final String xml = (String)context
-                    .evaluateString(
-                        scope,
-                        ""
-                            + "var suite = new TestSuite(\""
-                            + name
-                            + "\");\n"
-                            + "for (fn in this) {\n"
-                            + "    if (new String(fn).match(/TestSuite$/)) {\n"
-                            + "        fn = eval(fn);\n"
-                            + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype.suite) {\n"
-                            + "            suite.addTest(fn.prototype.suite());\n"
-                            + "        }\n"
-                            + "    }\n"
-                            + "}\n"
-                            + "var stringWriter = new StringWriter();\n"
-                            + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                            + "runner.doRun(suite);\n"
-                            + "stringWriter.get();\n", name, 1, null);
+                final String xml = (String)context.evaluateString(scope, ""
+                    + "var stringWriter = new StringWriter();\n"
+                    + "var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                    + "var collector = new TestSuiteCollector(this);\n"
+                    + "runner.run(collector.collectTests(), \""+ name + "\");\n"
+                    + "stringWriter.get();\n", name, 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("JavaScript error running tests", e);
@@ -267,25 +241,12 @@ public class JsUnitRhinoRunner {
         context = Context.enter(context);
         try {
             try {
-                final String xml = (String)context
-                    .evaluateString(
-                        scope,
-                        ""
-                            + "var suite = new TestSuite(\""
-                            + name
-                            + "\");\n"
-                            + "for (fname in this) {\n"
-                            + "    if (new String(fname).match(/Test$/)) {\n"
-                            + "        var fn = eval(fname);\n"
-                            + "        if (typeof(fn) == \"function\" && fn.prototype && fn.prototype instanceof TestCase) {\n"
-                            + "            suite.addTestSuite(fn);\n"
-                            + "        }\n"
-                            + "    }\n"
-                            + "}\n"
-                            + "var stringWriter = new StringWriter();\n"
-                            + "var runner = new TextTestRunner(new XMLResultPrinter(stringWriter));\n"
-                            + "runner.doRun(suite);\n"
-                            + "stringWriter.get();\n", "AllTestCases", 1, null);
+                final String xml = (String)context.evaluateString(scope, ""
+                    + "var stringWriter = new StringWriter();\n"
+                    + "var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));\n"
+                    + "var collector = new TestCaseCollector(this);\n"
+                    + "runner.run(collector.collectTests(), \""+ name + "\");\n"
+                    + "stringWriter.get();\n", name, 1, null);
                 writer.write(xml);
             } catch (final EcmaError e) {
                 throw new JsUnitRuntimeException("JavaScript error running tests", e);

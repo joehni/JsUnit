@@ -98,20 +98,8 @@
             </dependency>
             <dependency>
                 <groupId>jmock</groupId>
-                <artifactId>jmock-cglib</artifactId>
+                <artifactId>jmock</artifactId>
                 <version>1.1.0</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cglib</groupId>
-                        <artifactId>cglib-full</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>2.1_3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

@@ -92,17 +92,14 @@
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
             <groupId>jmock</groupId>
-            <artifactId>jmock-cglib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
+            <artifactId>jmock</artifactId>
         </dependency>
     </dependencies>
     

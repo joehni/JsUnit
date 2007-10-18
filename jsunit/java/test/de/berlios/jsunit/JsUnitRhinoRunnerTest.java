@@ -16,15 +16,13 @@
  */
 package de.berlios.jsunit;
 
-import org.jmock.Mock;
-import org.jmock.cglib.MockObjectTestCase;
+import org.jmock.MockObjectTestCase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 
 
 /**
@@ -59,14 +57,13 @@ public class JsUnitRhinoRunnerTest extends MockObjectTestCase {
 
     public void testMissingAllTests() throws JsUnitException, IOException {
         loadSampleScripts();
-        final Mock mockWriter = mock(Writer.class);
-        mockWriter.expects(once()).method("close");
-        try {
-            runner.runAllTests((Writer)mockWriter.proxy());
-            fail("Thrown " + JsUnitException.class.getName() + " expected");
-        } catch (final JsUnitException e) {
-            assertThat(e.getMessage(), contains("JavaScript class AllTests"));
-        }
+        final StringWriter writer = new StringWriter();
+        runner.runAllTests(writer);
+        final String xml = writer.toString();
+        assertThat(xml, startsWith("<?xml version=\"1.0\" "));
+        assertThat(
+            xml,
+            contains("<testsuite errors=\"0\" failures=\"1\" name=\"AllTests\" tests=\"0\" "));
     }
 
     public void testRunningTestSuites() throws JsUnitException, IOException {

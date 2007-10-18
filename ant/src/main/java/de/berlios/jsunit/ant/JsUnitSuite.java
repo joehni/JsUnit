@@ -221,8 +221,6 @@ public class JsUnitSuite {
                 break;
             }
             project.log("Created test report " + file.getName(), Project.MSG_DEBUG);
-        } catch (final JsUnitException e) {
-            throw new BuildException("Cannot run JavaScript code of test suite " + name, e);
         } catch (final IOException e) {
             throw new BuildException("Cannot write to file " + file.getName(), e);
         } finally {

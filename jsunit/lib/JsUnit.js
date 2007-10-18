@@ -2467,10 +2467,14 @@ function EmbeddedTextTestRunner_createTestResult()
 /**
  * Executes the given tests in the array.
  * @tparam Array<String> testNames The name of the tests to execute.
+ * @tparam String suiteName The name of the generated TestSuite (may be undefined).
  * @treturn TestResult The result of the test.
  */
-function EmbeddedTextTestRunner_run( testNames ) 
+function EmbeddedTextTestRunner_run( testNames, suiteName ) 
 {
+    var result = this.createTestResult();
+    result.addListener( this.mPrinter );
+
     var tests = new Array();
     for( var test in testNames )
     {
@@ -2480,29 +2484,30 @@ function EmbeddedTextTestRunner_run( testNames )
     }
     
     var test;
-    if( tests.length == 0 )
-        test = this.getTest( "AllTests" );
+    if( tests.length == 0 ) {
+        if( typeof( suiteName ) != "string" )
+            suiteName = "AllTests";
+        test = this.getTest( suiteName );
+        if( !test ) {
+            test = new TestSuite();
+            test.setName( suiteName );
+        }
+    }
     else if( tests.length > 1 )
     {
-        test = new TestSuite( "TestCollection" );
+        test = new TestSuite( typeof( suiteName ) != "string" ? "TestCollection" : suiteName );
         for( i = 0; i < tests.length; ++i )
             test.addTest( tests[i] );
     }
     else
         test = tests[0];
 
+    var startTime = new Date();
     if( test )
-    {
-        var result = this.createTestResult();
-        result.addListener( this.mPrinter );
-        var startTime = new Date();
         test.run( result );
-        var endTime = new Date();
-        this.mPrinter.print( result, endTime - startTime );
-        return result;
-    }
-    else
-        return new TestResult();
+    var endTime = new Date();
+    this.mPrinter.print( result, endTime - startTime );
+    return result;
 }
 /**
  * Set printer.
