@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -1718,6 +1718,34 @@ TestSuiteCollectorTest.prototype = new TestCase();
 TestSuiteCollectorTest.glue();
 
 
+function EmbeddedTextTestRunnerTest( name )
+{
+    TestCase.call( this, name );
+}
+function EmbeddedTextTestRunnerTest_testRun()
+{
+    var suite = new TestSuite();
+    suite.run = function() {
+        this[this.getName()] = true;
+    }
+
+    var resultPrinter = new ResultPrinter( new StringWriter());
+    var runner = new EmbeddedTextTestRunner( resultPrinter );
+    runner.getTest = function( name ) {
+        suite.setName( name );
+        return suite;
+    }
+    runner.run();
+    this.assertEquals( "AllTests", suite.getName());
+    this.assertTrue( "AllTests did run", suite["AllTests"]);
+    runner.run( ["JUnitSuite"] );
+    this.assertEquals( "JUnitSuite", suite.getName());
+    this.assertTrue( "JUnitSuite did run", suite["JUnitSuite"]);
+}
+EmbeddedTextTestRunnerTest.prototype = new TestCase();
+EmbeddedTextTestRunnerTest.glue();
+
+
 function JsUnitTestSuite()
 {
     TestSuite.call( this, "JsUnitTest" );
@@ -1743,6 +1771,7 @@ function JsUnitTestSuite()
     this.addTestSuite( GenericTestCollectorTest );
     this.addTestSuite( TestCaseCollectorTest );
     this.addTestSuite( TestSuiteCollectorTest );
+    this.addTestSuite( EmbeddedTextTestRunnerTest );
 }
 JsUnitTestSuite.prototype = new TestSuite();
 JsUnitTestSuite.prototype.suite = function (){ return new JsUnitTestSuite(); }
