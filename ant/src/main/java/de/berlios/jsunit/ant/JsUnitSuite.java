@@ -45,7 +45,7 @@ import java.util.Vector;
 
 
 /**
- * A JsUnit subtask modelling a test suite.
+ * A JsUnit subtask modeling a test suite.
  * 
  * @author J&ouml;rg Schaible
  * @since upcoming
