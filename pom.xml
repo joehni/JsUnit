@@ -20,7 +20,7 @@
     <groupId>de.berlios.jsunit</groupId>
     <artifactId>jsunit-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <name>JsUnit Parent</name>
     <description>
         Parent module of the JsUnit Maven build.  It combines the Java
@@ -34,9 +34,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</connection>
-        <developerConnection>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</developerConnection>
-        <url>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</url>
+        <connection>scm|svn|svn+ssh://svn.berlios.de/svnroot/repos/jsunit/trunk</connection>
+        <developerConnection>scm|svn|svn+ssh://svn.berlios.de/svnroot/repos/jsunit/trunk</developerConnection>
+        <url>http://svn.berlios.de/wsvn/jsunit/trunk</url>
     </scm>
 
     <modules>
