@@ -216,6 +216,34 @@ See below a sample callable from the JavaScript shells:</p>
 <p>This file can also be included from HTML code using a script tag. See
 AllScripts.html that demonstrated this reuse. </p>
 
+\subsection embed Embedding JsUnit
+
+\dontinclude AllTests.html
+
+<p>JsUnit provides a special EmbeddedTextTestRunner that can act as special
+entry point for other applications embedding JsUnit. Such a TestRunner has a
+run method that takes an array of Strings as names of the tests to perform. 
+The ideal combination is a TestCollector implementation that collects these
+names from the current scope. See as example:</p>  
+
+\skip HTMLWriterFilter
+\until runner.run
+
+<p>The EmbeddedTextTestRunner simply takes a ResultPrinter implementation as 
+argument (here an implementation that writes HTML code into the document) and
+uses a TestCaseCollector to find all available TestCase implementations in the
+current scope. As alternative JsUnit provides also an AllTestsCollector and a
+TestSuiteColector.</p>
+
+\dontinclude JsUnitRhinoRunner.java
+
+<p>Have a look at the Java code of the package to see how such a construct is
+used in combination with Rhino - a Java implementation of JavaScript - to 
+generate XML for the various JUnit report generators:</p>
+
+\skip final String xml
+\until writer.write
+
 \subsection examples Examples
 
 <p>The examples are also ports from the originals that accompany JUnit. Please

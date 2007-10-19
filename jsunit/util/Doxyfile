@@ -498,7 +498,7 @@ EXCLUDE                =
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
 # from the input.
 
-EXCLUDE_SYMLINKS       = NO
+EXCLUDE_SYMLINKS       = YES
 
 # If the value of the INPUT tag contains directories, you can use the 
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude 
@@ -523,6 +523,7 @@ EXCLUDE_SYMBOLS        =
 
 EXAMPLE_PATH           = samples \
                          .lib \
+                         java/main/de/berlios/jsunit \
                          conf/ASP
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
@@ -533,6 +534,8 @@ EXAMPLE_PATH           = samples \
 EXAMPLE_PATTERNS       = *.js \
                          *.man \
                          *.xml \
+                         *.html \
+                         *.java \
                          *.asp
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 
