@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007,2008 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -472,6 +472,27 @@ function Assert_assertEquals( msg, expected, actual )
             throw new ComparisonFailure( msg, expected, actual, new CallStack());
         else
             this.fail( "Expected:<" + expected + ">, but was:<" + actual + ">"
+                , new CallStack(), msg );
+}
+/**
+ * Asserts that two values are not equal.
+ * @tparam String msg An optional error message.
+ * @tparam Object expected The expected value.
+ * @tparam Object actual The actual value.
+ * @exception AssertionFailedError Thrown if the expected value is not the 
+ * actual one.
+ * @since upcoming
+ */
+function Assert_assertNotEquals( msg, expected, actual )
+{
+    if( arguments.length == 2 )
+    {
+        actual = expected;
+        expected = msg;
+        msg = null;
+    }
+    if( expected == actual )
+        this.fail( "Expected to get something different than:<" + actual + ">"
                 , new CallStack(), msg );
 }
 /**
