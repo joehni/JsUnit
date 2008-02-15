@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2008 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -243,7 +243,8 @@ function CallStackTest_testFill()
 {
     if( JsUtil.prototype.hasCallStackSupport )
     {
-        this.f0 = function f0( d ) { this.cs.fill(d); }
+        function f0( d ) { this.cs.fill(d); }
+        this.f0 = f0;
 
         this.cs = new CallStack();
         this.f12(13);
@@ -275,19 +276,32 @@ function CallStackTest_testToString()
 CallStackTest.prototype = new TestCase();
 CallStackTest.glue();
 CallStackTest.prototype.ctor = CallStackTest;
-CallStackTest.prototype.f0 = function f0(d) { return new CallStack(d); }
-CallStackTest.prototype.f1 = function f1(d) { return this.f0(d); }
-CallStackTest.prototype.f2 = function f2(d) { return this.f1(d); }
-CallStackTest.prototype.f3 = function f3(d) { return this.f2(d); }
-CallStackTest.prototype.f4 = function f4(d) { return this.f3(d); }
-CallStackTest.prototype.f5 = function f5(d) { return this.f4(d); }
-CallStackTest.prototype.f6 = function f6(d) { return this.f5(d); }
-CallStackTest.prototype.f7 = function f7(d) { return this.f6(d); }
-CallStackTest.prototype.f8 = function f8(d) { return this.f7(d); }
-CallStackTest.prototype.f9 = function f9(d) { return this.f8(d); }
-CallStackTest.prototype.f10 = function f10(d) { return this.f9(d); }
-CallStackTest.prototype.f11 = function f11(d) { return this.f10(d); }
-CallStackTest.prototype.f12 = function f12(d) { return this.f11(d); }
+function f0(d) { return new CallStack(d); }
+CallStackTest.prototype.f0 = f0;
+function f1(d) { return this.f0(d); }
+CallStackTest.prototype.f1 = f1;
+function f2(d) { return this.f1(d); }
+CallStackTest.prototype.f2 = f2;
+function f3(d) { return this.f2(d); }
+CallStackTest.prototype.f3 = f3;
+function f4(d) { return this.f3(d); }
+CallStackTest.prototype.f4 = f4;
+function f5(d) { return this.f4(d); }
+CallStackTest.prototype.f5 = f5;
+function f6(d) { return this.f5(d); }
+CallStackTest.prototype.f6 = f6;
+function f7(d) { return this.f6(d); }
+CallStackTest.prototype.f7 = f7;
+function f8(d) { return this.f7(d); }
+CallStackTest.prototype.f8 = f8;
+function f9(d) { return this.f8(d); }
+CallStackTest.prototype.f9 = f9;
+function f10(d) { return this.f9(d); }
+CallStackTest.prototype.f10 = f10;
+function f11(d) { return this.f10(d); }
+CallStackTest.prototype.f11 = f11;
+function f12(d) { return this.f11(d); }
+CallStackTest.prototype.f12 = f12;
 
 
 function PrinterWriterErrorTest( name )

@@ -1,6 +1,6 @@
 /*
 JsUnit - a JUnit port for JavaScript
-Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007,2008 Joerg Schaible
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -359,6 +359,30 @@ function AssertTest_testAssertEquals()
     {
         this.assertTrue( ex instanceof ComparisonFailure );
         this.assertTrue( ex.toString().indexOf( "...1>" ) > 0 );
+    }
+}
+function AssertTest_testAssertNotEquals()
+{
+    this.mAssert.assertNotEquals( 1, 2 );
+    this.mAssert.assertNotEquals( "Is 1", 1, 2 );
+    try
+    {
+        this.mAssert.assertNotEquals( 1, 1 );
+        this.fail( "'assertNotEquals' should have thrown." );
+    }
+    catch( ex )
+    {
+        this.assertTrue( ex instanceof AssertionFailedError );
+    }
+    try
+    {
+        this.mAssert.assertNotEquals( "Is 1", 1, 1 );
+        this.fail( "'assertNotEquals' should have thrown." );
+    }
+    catch( ex )
+    {
+        this.assertTrue( ex instanceof AssertionFailedError );
+        this.assertTrue( ex.toString().indexOf( "Is 1" ) > 0 );
     }
 }
 function AssertTest_testAssertFalse()
