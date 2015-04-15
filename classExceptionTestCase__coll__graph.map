@@ -1,0 +1,6 @@
+<map id="ExceptionTestCase" name="ExceptionTestCase">
+<area shape="rect" id="node2" href="$classTestCase.html" title="A test case defines the fixture to run multiple tests. " alt="" coords="63,229,161,349"/>
+<area shape="rect" id="node4" href="$classAssert.html" title="A set of assert methods. " alt="" coords="5,49,85,135"/>
+<area shape="rect" id="node6" href="$classTest.html" title="A test can be run and collect its results. " alt="" coords="109,6,248,178"/>
+<area shape="rect" id="node8" href="$classFunction.html" title="Standard ECMA class. " alt="" coords="185,229,276,349"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="BaseTestRunner" name="BaseTestRunner">
+<area shape="rect" id="node5" href="$classEmbeddedTextTestRunner.html" title="Class for an embeddable text&#45;oriented TestRunner used in other applications with a status report..." alt="" coords="5,463,203,548"/>
+<area shape="rect" id="node7" href="$classTestRunner.html" title="TestRunner of JsUnit 1.1. " alt="" coords="227,463,336,548"/>
+<area shape="rect" id="node9" href="$classTextTestRunner.html" title="Class for an application running test suites with a test based status report. " alt="" coords="360,445,509,565"/>
+<area shape="rect" id="node2" href="$classTestListener.html" title="A listener for test progress. " alt="" coords="224,5,339,160"/>
+<area shape="rect" id="node11" href="$classCtxTestRunner.html" title="Class for an application running test suites with the BroadVision ctxdriver and console output..." alt="" coords="207,631,337,734"/>
+<area shape="rect" id="node13" href="$classHTMLTestRunner.html" title="Class for an application running test suites reporting in HTML. " alt="" coords="361,640,508,725"/>
+<area shape="rect" id="node15" href="$classNSServerTestRunner.html" title="Class for an application running test suites with a Netscape Server. " alt="" coords="532,614,697,751"/>
+</map>

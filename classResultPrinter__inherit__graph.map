@@ -1,0 +1,5 @@
+<map id="ResultPrinter" name="ResultPrinter">
+<area shape="rect" id="node5" href="$classClassicResultPrinter.html" title="The ResultPrinter of JsUnit 1.1. " alt="" coords="5,428,168,513"/>
+<area shape="rect" id="node7" href="$classXMLResultPrinter.html" title="Convert the result of a TextTestPrinter into XML to be used by JUnitReport. " alt="" coords="192,341,339,600"/>
+<area shape="rect" id="node2" href="$classTestListener.html" title="A listener for test progress. " alt="" coords="119,5,233,160"/>
+</map>

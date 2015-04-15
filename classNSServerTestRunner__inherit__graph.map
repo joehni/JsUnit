@@ -1,0 +1,5 @@
+<map id="NSServerTestRunner" name="NSServerTestRunner">
+<area shape="rect" id="node2" href="$classTextTestRunner.html" title="Class for an application running test suites with a test based status report. " alt="" coords="13,445,163,565"/>
+<area shape="rect" id="node4" href="$classBaseTestRunner.html" title="General base class for an application running test suites. " alt="" coords="19,208,157,397"/>
+<area shape="rect" id="node6" href="$classTestListener.html" title="A listener for test progress. " alt="" coords="31,5,145,160"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classAssert.html" title="A set of assert methods. " alt="" coords="7,59,65,88"/>
+<area shape="rect" id="node3" href="$classTestCase.html" title="A test case defines the fixture to run multiple tests. " alt="" coords="129,112,207,141"/>
+<area shape="rect" id="node7" href="$classTestDecorator.html" title="A Decorator for Tests. " alt="" coords="116,59,220,88"/>
+<area shape="rect" id="node5" href="$classExceptionTestCase.html" title="A TestCase that expects an exception of class mClass to be thrown. " alt="" coords="271,112,407,141"/>
+<area shape="rect" id="node9" href="$classRepeatedTest.html" title="A Decorator that runs a test repeatedly. " alt="" coords="287,5,391,35"/>
+<area shape="rect" id="node11" href="$classTestSetup.html" title="A Decorator to set up and tear down additional fixture state. " alt="" coords="297,59,380,88"/>
+<area shape="rect" id="node12" href="$classTest.html" title="A test can be run and collect its results. " alt="" coords="12,112,60,141"/>
+<area shape="rect" id="node16" href="$classTestSuite.html" title="A TestSuite is a composition of Tests. " alt="" coords="129,165,207,195"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="TestCase" name="TestCase">
+<area shape="rect" id="node7" href="$classExceptionTestCase.html" title="A TestCase that expects an exception of class mClass to be thrown. " alt="" coords="33,395,191,480"/>
+<area shape="rect" id="node2" href="$classAssert.html" title="A set of assert methods. " alt="" coords="5,49,85,135"/>
+<area shape="rect" id="node4" href="$classTest.html" title="A test can be run and collect its results. " alt="" coords="109,6,248,178"/>
+</map>

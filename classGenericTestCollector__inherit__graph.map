@@ -1,0 +1,5 @@
+<map id="GenericTestCollector" name="GenericTestCollector">
+<area shape="rect" id="node5" href="$classTestCaseCollector.html" title="A TestCase collector for all test cases within a scope. " alt="" coords="5,325,155,411"/>
+<area shape="rect" id="node7" href="$classTestSuiteCollector.html" title="A TestSuite collector for all test suites within a scope. " alt="" coords="179,325,328,411"/>
+<area shape="rect" id="node2" href="$classTestCollector.html" title="A collector for Test classes. " alt="" coords="107,6,227,109"/>
+</map>

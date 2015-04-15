@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node3" href="$classError.html" title="Error class according ECMA specification. " alt="" coords="115,85,165,115"/>
+<area shape="rect" id="node5" href="$classJsUnitError.html" title="JsUnitError class. " alt="" coords="213,85,301,115"/>
+<area shape="rect" id="node7" href="$classAssertionFailedError.html" title="Thrown when a test assertion fails. " alt="" coords="359,5,497,35"/>
+<area shape="rect" id="node11" href="$classFunctionGluingError.html" title="FunctionGluingError class. " alt="" coords="360,59,496,88"/>
+<area shape="rect" id="node13" href="$classInterfaceDefinitionError.html" title="InterfaceDefinitionError class. " alt="" coords="351,112,505,141"/>
+<area shape="rect" id="node15" href="$classPrinterWriterError.html" title="PrinterWriterError class. " alt="" coords="367,165,489,195"/>
+<area shape="rect" id="node9" href="$classComparisonFailure.html" title="Thrown when a test assert comparing equal strings fail. " alt="" coords="555,5,685,35"/>
+</map>

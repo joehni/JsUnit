@@ -1,0 +1,8 @@
+<map id="Error" name="Error">
+<area shape="rect" id="node5" href="$classJsUnitError.html" title="JsUnitError class. " alt="" coords="309,325,416,445"/>
+<area shape="rect" id="node7" href="$classAssertionFailedError.html" title="Thrown when a test assertion fails. " alt="" coords="5,494,165,597"/>
+<area shape="rect" id="node11" href="$classFunctionGluingError.html" title="FunctionGluingError class. " alt="" coords="189,503,347,588"/>
+<area shape="rect" id="node13" href="$classInterfaceDefinitionError.html" title="InterfaceDefinitionError class. " alt="" coords="371,503,547,588"/>
+<area shape="rect" id="node15" href="$classPrinterWriterError.html" title="PrinterWriterError class. " alt="" coords="571,503,712,588"/>
+<area shape="rect" id="node9" href="$classComparisonFailure.html" title="Thrown when a test assert comparing equal strings fail. " alt="" coords="11,645,160,765"/>
+</map>
