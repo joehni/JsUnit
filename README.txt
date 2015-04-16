@@ -1,5 +1,5 @@
 This is JsUnit, a JavaScript unit test framework. JsUnit is a JavaScript 
-port of JUnit.
+port of JUnit 3.8.
 
 Additionally it contains a Maven 2 Plugin and an Ant Task for JsUnit.
 
@@ -8,6 +8,6 @@ like comments in JavaScript code.
 
 See LICENSE.txt for license information.
 
-See jsunit/docs/index.html for further information especially on the related 
-pages.
+See http://joehni.github.io/JsUnit for further information especially on the
+related pages.
 

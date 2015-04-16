@@ -1,2 +1,2 @@
 This product includes software developed by
-Joerg Schaible (http://jsunit.berlios.de/).
+Joerg Schaible (http://joehni.github.io/JsUnit).
