@@ -1,0 +1,32 @@
+* text=auto
+
+AllTestsBV text eol=lf
+AllTestsNS text eol=lf
+genasp text eol=lf
+jsdoc text eol=lf
+
+Doxyfile text
+
+*.asp text
+*.css text
+*.diff text
+*.htm* text
+*.inc text
+*.java text
+*.js text
+*.jsp text
+*.md text
+*.mdo text
+*.patch text
+*.pl text
+*.sln text
+*.txt text
+*.vup text
+*.wsf text
+*.xml text
+
+*.gif binary
+*.jpg binary
+*.png binary
+*.psp binary
+*.vsd binary
